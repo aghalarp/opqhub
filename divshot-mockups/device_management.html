@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+  
+  <head>
+    <title>Device Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/bootstrap-responsive.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </head>
+  
+  <body>
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">Open Power Quality</a>
+          <a></a>
+          <div class="navbar-content">
+            <ul class="nav">
+              <li>
+                <a href="#">Home</a> 
+              </li>
+              <li class="active">
+                <a href="#">Administration</a> 
+              </li>
+              <li>
+                <a href="#">Power Quality Monitoring</a> 
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span4">
+          <ul class="nav  nav-pills nav-stacked">
+            <li>
+              <a href="#">User Information</a> 
+            </li>
+            <li class="active">
+              <a href="#">Device Management</a> 
+            </li>
+            <li>
+              <a href="#">Alert Management</a> 
+            </li>
+          </ul>
+          <div class="well">
+            <p>This page allows you to add and configure devices. This page also allows
+              you to modify your participation in the
+              <a href="#">Community Data Sharing Initiative</a> .</p>
+          </div>
+        </div>
+        <div class="span8">
+          <div class="row-fluid"></div>
+        </div>
+        <div class="span6">
+          <form class="form-vertical well well-small">
+            <label class="control-label">
+              <b>Register New OPQ Device</b> 
+            </label>
+            <br>
+            <div>
+              <input type="text" class="input-medium">
+              <span class="help-inline">OPQ Device ID</span>
+              <button type="submit" class="btn btn-primary pull-right">Register Device</button>
+              <br>
+              <label class="checkbox" for="checkbox">
+                <input type="checkbox" value="true" id="checkbox" name="checkbox"> I want to participate in the
+                <a href="#">Community Data Sharing Initiative</a> .</label>
+            </div>
+          </form>
+          <table class="table well well-small">
+            <thead>
+              <tr>
+                <th>Registered OPQ Devices</th>
+                <th>Participating in
+                  <a href="#">CDSI</a> 
+                </th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>0123-4567-89AB-CDEF</td>
+                <td>Yes (click
+                  <a href="#"> here</a> to opt-out)</td>
+                <td>
+                  <a class="btn btn-danger pull-right">Remove</a> 
+                </td>
+              </tr>
+              <tr>
+                <td>ABCD-EF01-2345-6789</td>
+                <td>No (click
+                  <a href="#"> here</a> to opt-in)</td>
+                <td>
+                  <a class="btn btn-danger pull-right">Remove</a> 
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="span2 well well-small">
+          <p>
+            <b>Register new OPQ device</b>
+            <br> The device ID is a squence of 16 characters and letters that should have
+            been supplied with your OPQ device. This ID can also be obtained by connecting
+            the device to the computer via USB and running the
+            <a href="#">device configuration software</a> .</p>
+          <p>
+            <b>Registered OPQ Devices</b>
+            <br> This lists the devices that are currently registered to your account.
+            <br>
+            <br> You may also opt-in or opt-out each device from the
+            <a href="#">Community Data Sharing Initiative</a> by clicknig the link under the "Participating in CDSI" column.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+
+</html>

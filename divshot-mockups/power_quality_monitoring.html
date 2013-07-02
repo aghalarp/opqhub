@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+  
+  <head>
+    <title>Power Quality Monitoring</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/bootstrap-responsive.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </head>
+  
+  <body>
+    <title>Power Quality Monitoring</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/bootstrap-responsive.css">
+    <link rel="stylesheet" href="css/divshot-util.css">
+    <link rel="stylesheet" href="css/divshot-canvas.css">
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">Open Power Quality</a>
+          <a></a>
+          <div class="navbar-content">
+            <ul class="nav">
+              <li>
+                <a href="#">Home</a> 
+              </li>
+              <li>
+                <a href="#">Administration</a> 
+              </li>
+              <li class="active">
+                <a href="#">Power Quality Monitoring</a> 
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span4">
+        <form class="well well-small">
+          <b>Filter Alerts</b>
+          <label class="checkbox" for="checkbox">
+            <input type="checkbox" value="true" id="checkbox" name="checkbox"> Voltage</label>
+          <input type="text" class="input-mini" value="218"> When voltage is less than (in volts)
+          <br>
+          <input type="text" class="input-mini" value="222"> When voltage is greater than (in volts)
+          <br>
+          <br>
+          <label class="checkbox" for="checkbox">
+            <input type="checkbox" value="true" id="checkbox" name="checkbox"> Frequency</label>
+          <input type="text" class="input-mini" value="218"> When frequency is less than (in Hertz)
+          <br>
+          <input type="text" class="input-mini" value="222"> When frequency is greater than (in Hertz)
+          <br>
+          <br>
+          <label class="checkbox" for="checkbox">
+            <input type="checkbox" value="true" id="checkbox" name="checkbox"> Device</label>
+          <hr>
+          <b>Timeline</b>
+          <br>
+          <select>
+            <option>Past minute</option>
+            <option>Past hour</option>
+            <option>Past day</option>
+            <option>Past week</option>
+            <option>Past month</option>
+            <option>Past year</option>
+            <option>Custom range</option>
+          </select>
+          <br>
+          <b>Custom Time Range</b>
+          <br>
+          <table>
+            <tbody>
+              <tr>
+                <td></td>
+                <td>mm/dd/yyyy</td>
+                <td>hh:mm</td>
+              </tr>
+              <tr>
+                <td>Start Date</td>
+                <td>
+                  <input type="text" class="input-small"> 
+                </td>
+                <td>
+                  <input type="text" class="input-mini"> 
+                </td>
+              </tr>
+              <tr>
+                <td>End Date</td>
+                <td>
+                  <input type="text" class="input-small"> 
+                </td>
+                <td>
+                  <input type="text" class="input-mini"> 
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+      </div>
+      <div class="span9">
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Device</th>
+              <th>Alert Type</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>05-23-2013</td>
+              <td>11:53:03</td>
+              <td>0123-4567-89AB-CDEF</td>
+              <td>
+                <a class="btn btn-block btn-info btn-mini">Frequency</a> 
+              </td>
+              <td>58 Hz (-2 Hz)</td>
+            </tr>
+            <tr>
+              <td>05-23-2013</td>
+              <td>15:00:22</td>
+              <td>0123-4567-89AB-CDEF</td>
+              <td>
+                <a class="btn btn-block btn-danger btn-mini">Voltage</a> 
+              </td>
+              <td>218.3 V (-1.7 V)</td>
+            </tr>
+            <tr>
+              <td>05-23-2013</td>
+              <td>23:44:11</td>
+              <td>ABCD-EF01-2345-6789</td>
+              <td>
+                <a class="btn btn-block btn-inverse btn-mini">Device</a> 
+              </td>
+              <td>Out of Memory</td>
+            </tr>
+            <tr>
+              <td>05-21-2013</td>
+              <td>10:00:00</td>
+              <td>0123-4567-89AB-CDEF</td>
+              <td>
+                <a class="btn btn-block btn-danger btn-mini">Voltage</a> 
+              </td>
+              <td>225.0 V (+5 V)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="well well-small span3">
+        <p>
+          <b>Filter Alerts</b> 
+        </p>This allows you to determine which types of alerts are displayed. You
+        can filter on voltage, frequency, and device alerts. You may also choose
+        the threshold for which these alerts are displayed.
+        <p>
+          <br>
+          <b>Timeline</b>
+          <br> This allows you to choose how many alerts are displayed starting from
+          the current time and going back to a specified point of up to a year.
+          <br>
+          <br> You may also choose "Custom Range" in order to enter your own time range.
+          When entering a custom time range, be sure to use mm/dd/yyyy for the date
+          (i.e. 07/28/2013) and be sure to use a 24 hour clock format for the time
+          (i.e. 23:00 for</p>
+      </div>
+    </div>
+  </body>
+
+</html>

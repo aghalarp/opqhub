@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+  
+  <head>
+    <title>User Administration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/bootstrap-responsive.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </head>
+  
+  <body>
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">Open Power Quality</a>
+          <a></a>
+          <div class="navbar-content">
+            <ul class="nav">
+              <li>
+                <a href="#">Home</a> 
+              </li>
+              <li class="active">
+                <a href="#">Administration</a> 
+              </li>
+              <li>
+                <a href="#">Power Quality Monitoring</a> 
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span4">
+          <ul class="nav  nav-pills nav-stacked">
+            <li class="active">
+              <a href="#">User Information</a> 
+            </li>
+            <li>
+              <a href="#">Device Management</a> 
+            </li>
+            <li>
+              <a href="#">Alert Management</a> 
+            </li>
+          </ul>
+          <div class="well">
+            <p>This page allows you to configure basic information such as e-mail address,
+              password, and your address.</p>
+          </div>
+        </div>
+        <div class="span8">
+          <div class="row-fluid"></div>
+        </div>
+        <div class="span6">
+          <form class="well well-small">
+            <label class="control-label">
+              <b>Account Information</b> 
+            </label>
+            <div>
+              <input type="email" class="input-medium">
+              <span class="help-inline">E-mail Address (username)</span> 
+            </div>
+            <div>
+              <input type="password" class="input-medium">
+              <span class="help-inline">Password</span> 
+            </div>
+            <div>
+              <input type="password" class="input-medium">
+              <span class="help-inline">Verify Password</span> 
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+          </form>
+          <form class="well well-small">
+            <label class="control-label">
+              <b>General Information</b> 
+            </label>
+            <hr>
+            <div>
+              <input type="text" class="input-medium">
+              <span class="help-inline">First Name</span> 
+            </div>
+            <div>
+              <input type="text" class="input-medium">
+              <span class="help-inline">Last Name</span> 
+            </div>
+            <div>
+              <input type="text" class="input-medium">
+              <span class="help-inline">Address</span> 
+            </div>
+            <div>
+              <input type="text" class="input-medium">
+              <span class="help-inline">City</span> 
+            </div>
+            <div>
+              <input type="text" class="input-medium">
+              <span class="help-inline">State</span> 
+            </div>
+            <div>
+              <input type="text" class="input-medium">
+              <span class="help-inline">Zip Code</span> 
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+          </form>
+        </div>
+        <div class="span2 well well-small">
+          <p>
+            <b>Account Information</b>
+            <br> Your account information allows you to access your data on the cloud and
+            to manage OPQ devices under your control. Note that your e-mail address
+            is your username.</p>
+          <p>
+            <b>General Information</b>
+            <br> This data is used to associate location information with your device.
+            This information will
+            <b>NOT</b> be shared unless you opt-in to our
+            <a href="#">Community Data Sharing Initiative</a> .
+            <br>
+            <br> See our
+            <a href="#">Privacy Policy</a> for more information.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+
+</html>
