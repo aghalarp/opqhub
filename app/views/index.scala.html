@@ -1,7 +1,46 @@
-@(message: String)
 
-@main("Welcome to Play 2.1") {
+@main("Home") {
+    <div class="hero-unit hidden-phone">
+        <h1>Welcome to Open Power Quality</h1>
 
-    @play20.welcome(message, style = "Java")
+        <p>An easy way to analyze and view historic power quality information.</p>
 
+        <p>
+            <a class="btn btn-large btn-inverse" href="@routes.SignUp.signUp()"><span class="btn-label">Sign Up Today!</span></a>
+            <a class="btn btn-primary btn-large" href="#"><span class="btn-label">Login</span></a>
+        </p>
+    </div>
+    <a class="btn btn-large btn-primary btn-block visible-phone" href="#"><span class="btn-label">Sign Up Today!</span></a>
+
+    <div class="row main-features">
+        <div class="span4">
+            <div class="well">
+                <h3>Monitor Power Quality</h3>
+
+                <p>Monitor voltage, frequency, and more from your OPQ device.</p>
+                <a class="btn btn-primary"
+                href="#"><span class="btn-label">Find Out More</span></a>
+            </div>
+        </div>
+        <div class="span4">
+            <div class="well">
+                <h3>Powerful Timeline Controls</h3>
+                <p>View power quality information over any range of time.</p>
+                <a class="btn btn-info"
+                href="#">
+                    <span class="btn-label">Find Out More</span>
+                </a>
+            </div>
+        </div>
+        <div class="span4">
+            <div class="well">
+                <h3>Advanced Analysis</h3>
+
+                <p>View plots and figures of power quality data over any time range.</p>
+                <a class="btn btn-success" href="#">
+                    <span class="btn-label">Find Out More</span>
+                </a>
+            </div>
+        </div>
+    </div>
 }

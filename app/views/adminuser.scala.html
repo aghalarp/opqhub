@@ -1,0 +1,72 @@
+@admin("User Management",
+    "This page allows you to configure basic information such as e-mail address, password, and your address.") {
+    <div class="span6">
+        <form class="well well-small">
+            <label class="control-label">
+                <b>Account Information</b>
+            </label>
+
+            <div>
+                <input type="text" class="input-large">
+                <span class="help-inline">First Name <b>*</b></span>
+
+                <div>
+                    <input type="text" class="input-large">
+                    <span class="help-inline">Last Name <b>*</b></span>
+                </div>
+            </div>
+            <div>
+                <input type="email" class="input-large">
+                <span class="help-inline">E-mail Address <b>*</b></span>
+            </div>
+            <div>
+                <input type="password" class="input-large">
+                <span class="help-inline">Password <b>*</b></span>
+            </div>
+            <div>
+                <input type="password" class="input-large">
+                <span class="help-inline">Verify Password <b>*</b></span>
+                <br />
+                <select>
+                    @for(state <- utils.FormUtils.listOfStates) {
+                        <option>@state</option>
+                    }
+                </select>
+                <span class="help-inline">State <b>*</b></span>
+                <div>
+                    <input type="text" class="input-large">
+                    <span class="help-inline">City</span>
+                    <div>
+                        <input type="text" class="input-large">
+                        <span class="help-inline">Zip Code</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <input type="text" class="input-large">
+                <span class="help-inline">Street Name</span>
+            </div>
+            <div>
+                <input type="text" class="input-large">
+                <span class="help-inline">Street Number</span>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+        </form>
+    </div>
+    <div class="span2 well well-small">
+        <p>
+            <b>Account Information</b>
+            <br />
+            Your account information allows you to access your data on the cloud and
+            to manage OPQ devices under your control. Note that your e-mail address
+            is your username.
+        </p>
+        <p>
+            Fields marked with a <b>*</b> are required. All other fields are optional and for research purposes. Provide
+            as little or as much information as you would like. Click <a href="#">here</a> to find out how we use your
+            information.
+        </p>
+    </div>
+}

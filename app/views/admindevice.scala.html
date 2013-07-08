@@ -1,0 +1,57 @@
+@admin("Device Management",
+    "This page allows you to add and configure devices.") {
+    <div class="span6">
+        <form class="form-vertical well well-small">
+            <label class="control-label">
+                <b>Register New OPQ Device</b>
+            </label>
+            <br>
+            <div>
+                <input type="text" class="input-medium">
+                <span class="help-inline">OPQ Device ID</span>
+            </div>
+            <input type="text" class="input-medium">
+            <span class="help-inline">Description</span>
+            <button type="submit" class="btn btn-primary pull-right">Register Device</button>
+        </form>
+        <table class="table well well-small">
+            <thead>
+                <tr>
+                    <th>Registered OPQ Devices</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>0123-4567-89AB-CDEF</td>
+                    <td>Home</td>
+                    <td>
+                        <a class="btn btn-danger pull-right">Remove</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>ABCD-EF01-2345-6789</td>
+                    <td>Office</td>
+                    <td>
+                        <a class="btn btn-danger pull-right">Remove</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="span2 well well-small">
+        <p>
+            <b>Register new OPQ device</b>
+            <br> The device ID is a squence of 16 characters and letters that should have
+            been supplied with your OPQ device.
+        </p>
+        <p>
+            <b>Registered OPQ Devices</b>
+            <br> This lists the devices that are currently registered to your account.
+            <br>
+            <br>
+            <br>
+        </p>
+    </div>
+}

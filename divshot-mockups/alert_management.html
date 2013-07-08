@@ -1,145 +1,173 @@
 <!doctype html>
 <html>
-  
-  <head>
+
+<head>
     <title>Alert Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/bootstrap-responsive.css">
-    <link rel="stylesheet" href="https://djyhxgczejc94.cloudfront.net/builds/a53a947e54f5d93a8f8de57b16d33779f29c046a.css">
+    <link rel="stylesheet"
+          href="https://djyhxgczejc94.cloudfront.net/builds/a53a947e54f5d93a8f8de57b16d33779f29c046a.css">
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-  </head>
-  
-  <body>
-    <title>Alert Management</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" href="css/bootstrap-responsive.css">
-    <link rel="stylesheet" href="https://djyhxgczejc94.cloudfront.net/builds/a53a947e54f5d93a8f8de57b16d33779f29c046a.css">
-    <link rel="stylesheet" href="css/divshot-util.css">
-    <link rel="stylesheet" href="css/divshot-canvas.css">
-    <div class="navbar">
-      <div class="navbar-inner">
+</head>
+
+<body>
+<title>Alert Management</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+<link rel="stylesheet" href="css/bootstrap.css">
+<link rel="stylesheet" href="css/bootstrap-responsive.css">
+<link rel="stylesheet" href="https://djyhxgczejc94.cloudfront.net/builds/a53a947e54f5d93a8f8de57b16d33779f29c046a.css">
+<link rel="stylesheet" href="css/divshot-util.css">
+<link rel="stylesheet" href="css/divshot-canvas.css">
+<div class="navbar">
+    <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="#">Open Power Quality</a>
-          <a></a>
-          <div class="navbar-content">
-            <ul class="nav">
-              <li>
-                <a href="#">Home</a> 
-              </li>
-              <li class="active">
-                <a href="#">Administration</a> 
-              </li>
-            </ul>
-          </div>
+            <a class="brand" href="#">Open Power Quality</a>
+            <div class="navbar-content">
+                <ul class="nav">
+                    <li>
+                        <a href="#">Home</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">Administration</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-      </div>
     </div>
-    <div class="container-fluid">
-      <div class="row-fluid">
+</div>
+<div class="container-fluid">
+    <div class="row-fluid">
         <div class="span4">
-          <ul class="nav  nav-pills nav-stacked">
-            <li>
-              <a href="#">User Information</a> 
-            </li>
-            <li>
-              <a href="#">Device Management</a> 
-            </li>
-            <li class="active">
-              <a href="#">Alert Management</a> 
-            </li>
-          </ul>
-          <div class="well">
-            <p>This page allows you to manage and create power quality events. When a
-              power quality event occurs, an e-mail will be sent to the e-mail address
-              provided under
-              <a href="#">User Information.</a> 
-            </p>
-          </div>
-        </div>
-        <div class="span8">
-          <div class="row-fluid"></div>
+            <ul class="nav  nav-pills nav-stacked">
+                <li>
+                    <a href="#">User Information</a>
+                </li>
+                <li>
+                    <a href="#">Device Management</a>
+                </li>
+                <li class="active">
+                    <a href="#">Alert Management</a>
+                </li>
+                <li>
+                    <a href="#">CDSI Management</a>
+                </li>
+            </ul>
+            <div class="well">
+                <p>This page allows you to manage and create power quality events. When a
+                    power quality event occurs, an e-mail will be sent to the e-mail address
+                    provided under
+                    <a href="#">User Information.</a>
+                </p>
+            </div>
         </div>
         <div class="span6">
-          <form class="form-vertical well well-small">
-            <label class="control-label">
-              <b>New Power Quality Alert</b> 
-            </label>
-            <div>
-              <select>
-                <option>0123-4567-89AB-CDEF</option>
-                <option>ABCD-EF01-2345-6789</option>
-              </select>Device Id</div>
-            <div class="control-group">
-              <label class="control-label">Alert Types (check all that apply)</label>
-              <label class="checkbox" for="checkbox">
-                <input type="checkbox" value="true" id="checkbox" name="checkbox"> Voltage Alert</label>
-              <input type="text" class="input-mini" value="218"> When voltage is less than (in volts)
-              <br>
-              <input type="text" class="input-mini" value="222"> When voltage is greater than (in volts)
-              <br>
-              <br>
-              <label class="checkbox" for="checkbox">
-                <input type="checkbox" value="true" id="checkbox" name="checkbox"> Frequency Alert</label>
-              <input type="text" class="input-mini" value="58.5"> When frequency is less than (in Hertz)
-              <br>
-              <input type="text" class="input-mini" value="62.5"> When frequency is greater than (in Hertz)
-              <br>
-              <br>
-              <label class="checkbox" for="checkbox">
-                <input type="checkbox" value="true" id="checkbox" name="checkbox"> Device Alert</label>
-              <button type="submit" class="btn btn-primary">Create Alert</button>
-            </div>
-          </form>
-          <table class="table well well-small">
-            <thead>
-              <tr>
-                <th>Current Alerts</th>
-                <th>Alert Types</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>0123-4567-89AB-CDEF</td>
-                <td>Voltage, Device</td>
-                <td>
-                  <a class="btn btn-danger pull-right">Remove</a> 
-                </td>
-              </tr>
-              <tr>
-                <td>ABCD-EF01-2345-6789</td>
-                <td>Frequency, Device</td>
-                <td>
-                  <a class="btn btn-danger pull-right">Remove</a> 
-                </td>
-              </tr>
-            </tbody>
-          </table>
+            <form class="form-vertical well well-small">
+                <label class="control-label">
+                    <b>New Power Quality Alert</b>
+                </label>
+                <div>
+                    <select>
+                        <option>0123...CDEF (Home)</option>
+                        <option>ABCD...6789 (Office)</option>
+                    </select> Device Id
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Alert Types (check all that apply)</label>
+                    <label class="checkbox" for="voltage_alert_checkbox">
+                        <input type="checkbox" value="true" id="voltage_alert_checkbox" name="checkbox"> Voltage Alert
+                    </label>
+                    <input type="text" class="input-mini" value="218"> When voltage is less than (in volts)
+                    <br>
+                    <input type="text" class="input-mini" value="222"> When voltage is greater than (in volts)
+                    <br>
+                    <br>
+                    <label class="checkbox" for="frequency_alert_checkbox">
+                        <input type="checkbox" value="true" id="frequency_alert_checkbox" name="checkbox"> Frequency Alert
+                    </label>
+                    <input type="text" class="input-mini" value="58.5"> When frequency is less than (in Hertz)
+                    <br>
+                    <input type="text" class="input-mini" value="62.5"> When frequency is greater than (in Hertz)
+                    <br>
+                    <br>
+                    <label class="checkbox" for="device_alert_checkbox">
+                        <input type="checkbox" value="true" id="device_alert_checkbox" name="checkbox"> Device Alert
+                    </label>
+                    <hr />
+                    <b>Alert Types</b><br />
+                    <label class="checkbox" for="email_alert_checkbox">
+                        <input type="checkbox" value="true" id="email_alert_checkbox" name="checkbox"> Alert me via e-mail
+                    </label>
+                    <input type="text" class="input-large" id="email"> E-mail Address
+                    <br />
+                    <br />
+                    <label class="checkbox" for="sms_alert_checkbox">
+                        <input type="checkbox" value="true" id="sms_alert_checkbox" name="checkbox"> Alert me via SMS
+                    </label>
+                    <select>
+                        <option>ATT</option>
+                        <option>Sprint</option>
+                        <option>Verizon</option>
+                    </select> Wireless Carrier
+                    <br />
+                    <input type="text" class="large" id="wireless_number"> Wireless Number
+                    <hr />
+                    <button type="submit" class="btn btn-primary">Create Alert</button>
+                </div>
+            </form>
+            <table class="table well well-small">
+                <thead>
+                <tr>
+                    <th>Current Alerts</th>
+                    <th>Alert Types</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>0123-4567-89AB-CDEF (Home)</td>
+                    <td>Voltage, Device</td>
+                    <td>
+                        <a class="btn btn-danger pull-right">Remove</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>ABCD-EF01-2345-6789 (Office) </td>
+                    <td>Frequency, Device</td>
+                    <td>
+                        <a class="btn btn-danger pull-right">Remove</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
         <div class="span2 well well-small">
-          <p>
-            <b>New Power Quality Alert</b> &nbsp;
-            <br> Create a new alert for the specified device. Make sure you've added your
-            device through
-            <a href="#">Device Management</a> .
-            <br>
-            <br> You may also select three alert types. Voltage, frequency, and device
-            alerts.
-            <br>
-            <br> Device alerts occur when there is a prolem with the OPQ hardware device.</p>
-          <p></p>
-          <p>
-            <b>Current Alerts</b>
-            <br> View previously created alerts and alert types. Remove previously created
-            alerts.</p>
+            <p>
+                <b>New Power Quality Alert</b> &nbsp;
+                <br>
+                Create a new alert for the specified device. Make sure you've added your
+                device through
+                <a href="#">Device Management</a> .
+                <br>
+                <br>
+                You may also select three alert types. Voltage, frequency, and device
+                alerts.
+                <br>
+                <br>
+                Device alerts occur when there is a prolem with the OPQ hardware device.
+            </p>
+            <p>
+                <b>Current Alerts</b>
+                <br>
+                View previously created alerts and alert types. Remove previously created
+                alerts.
+            </p>
         </div>
-      </div>
     </div>
-  </body>
+</div>
+</body>
 
 </html>

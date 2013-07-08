@@ -1,0 +1,28 @@
+@(title: String, description: String)(content: Html)
+
+@main(title) {
+    <div class="row-fluid">
+        <div class="span4">
+            <ul class="nav  nav-pills nav-stacked">
+                <li class="active">
+                    <a href="@routes.Administration.user()">User Management</a>
+                </li>
+                <li>
+                    <a href="@routes.Administration.device()">Device Management</a>
+                </li>
+                <li>
+                    <a href="@routes.Administration.alert()">Alert Management</a>
+                </li>
+                <li>
+                    <a href="@routes.Administration.cdsi()">CDSI Management</a>
+                </li>
+            </ul>
+            <div class="well">
+                <p>
+                    @description
+                </p>
+            </div>
+        </div>
+        @content
+    </div>
+}

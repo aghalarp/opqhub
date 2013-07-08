@@ -1,0 +1,106 @@
+@admin("Alert Management",
+    "This page allows you to manage and create power quality events.") {
+    <div class="span6">
+        <form class="form-vertical well well-small">
+            <label class="control-label">
+                <b>New Power Quality Alert</b>
+            </label>
+            <div>
+                <select>
+                    <option>0123...CDEF (Home)</option>
+                    <option>ABCD...6789 (Office)</option>
+                </select> Device Id
+            </div>
+            <div class="control-group">
+                <label class="control-label">Alert Types (check all that apply)</label>
+                <label class="checkbox" for="voltage_alert_checkbox">
+                    <input type="checkbox" value="true" id="voltage_alert_checkbox" name="checkbox"> Voltage Alert
+                </label>
+                <input type="text" class="input-mini" value="218"> When voltage is less than (in volts)
+                <br>
+                <input type="text" class="input-mini" value="222"> When voltage is greater than (in volts)
+                <br>
+                <br>
+                <label class="checkbox" for="frequency_alert_checkbox">
+                    <input type="checkbox" value="true" id="frequency_alert_checkbox" name="checkbox"> Frequency Alert
+                </label>
+                <input type="text" class="input-mini" value="58.5"> When frequency is less than (in Hertz)
+                <br>
+                <input type="text" class="input-mini" value="62.5"> When frequency is greater than (in Hertz)
+                <br>
+                <br>
+                <label class="checkbox" for="device_alert_checkbox">
+                    <input type="checkbox" value="true" id="device_alert_checkbox" name="checkbox"> Device Alert
+                </label>
+                <hr />
+                <b>Alert Types</b><br />
+                <label class="checkbox" for="email_alert_checkbox">
+                    <input type="checkbox" value="true" id="email_alert_checkbox" name="checkbox"> Alert me via e-mail
+                </label>
+                <input type="text" class="input-large" id="email"> E-mail Address
+                <br />
+                <br />
+                <label class="checkbox" for="sms_alert_checkbox">
+                    <input type="checkbox" value="true" id="sms_alert_checkbox" name="checkbox"> Alert me via SMS
+                </label>
+                <select>
+                    <option>ATT</option>
+                    <option>Sprint</option>
+                    <option>Verizon</option>
+                </select> Wireless Carrier
+                <br />
+                <input type="text" class="large" id="wireless_number"> Wireless Number
+                <hr />
+                <button type="submit" class="btn btn-primary">Create Alert</button>
+            </div>
+        </form>
+        <table class="table well well-small">
+            <thead>
+                <tr>
+                    <th>Current Alerts</th>
+                    <th>Alert Types</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>0123-4567-89AB-CDEF (Home)</td>
+                    <td>Voltage, Device</td>
+                    <td>
+                        <a class="btn btn-danger pull-right">Remove</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>ABCD-EF01-2345-6789 (Office) </td>
+                    <td>Frequency, Device</td>
+                    <td>
+                        <a class="btn btn-danger pull-right">Remove</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="span2 well well-small">
+        <p>
+            <b>New Power Quality Alert</b> &nbsp;
+            <br>
+            Create a new alert for the specified device. Make sure you've added your
+            device through
+            <a href="#">Device Management</a> .
+            <br>
+            <br>
+            You may also select three alert types. Voltage, frequency, and device
+            alerts.
+            <br>
+            <br>
+            Device alerts occur when there is a prolem with the OPQ hardware device.
+        </p>
+        <p>
+            <b>Current Alerts</b>
+            <br>
+            View previously created alerts and alert types. Remove previously created
+            alerts.
+        </p>
+    </div>
+
+}
