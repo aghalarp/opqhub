@@ -2,19 +2,46 @@
 
 @main(title) {
     <div class="row-fluid">
+
+        <!-- Side menu -->
         <div class="span4">
             <ul class="nav  nav-pills nav-stacked">
-                <li class="active">
-                    <a href="@routes.Administration.user()">User Management</a>
+
+                <!-- User Administration Tab -->
+                @if(title.toLowerCase().contains("user")) {
+                    <li class="active">
+                } else {
+                    <li>
+                }
+                    <a href="@routes.Administration.user()">User Administration</a>
                 </li>
-                <li>
-                    <a href="@routes.Administration.device()">Device Management</a>
+
+
+                <!-- Device Administration Tab -->
+                @if(title.toLowerCase().contains("device")) {
+                    <li class="active">
+                } else {
+                    <li>
+                }
+                    <a href="@routes.Administration.device()">Device Administration</a>
                 </li>
-                <li>
-                    <a href="@routes.Administration.alert()">Alert Management</a>
+
+                <!-- Alert Administration Tab -->
+                @if(title.toLowerCase().contains("alert")) {
+                    <li class="active">
+                } else {
+                    <li>
+                }
+                    <a href="@routes.Administration.alert()">Alert Administration</a>
                 </li>
-                <li>
-                    <a href="@routes.Administration.cdsi()">CDSI Management</a>
+
+                <!-- CDSI Administration Tab -->
+                @if(title.toLowerCase().contains("cdsi")) {
+                    <li class="active">
+                } else {
+                    <li>
+                }
+                    <a href="@routes.Administration.cdsi()">CDSI Administration</a>
                 </li>
             </ul>
             <div class="well">

@@ -18,19 +18,7 @@
             <div class="navbar-inner">
                 <div class="container">
                     <a class="brand" href="#">Open Power Quality</a>
-                    <div class="navbar-content">
-                        <ul class="nav">
-                            <li class="active">
-                                <a href="@routes.Application.index()">Home</a>
-                            </li>
-                            <li>
-                                <a href="@routes.Administration.user()">Administration</a>
-                            </li>
-                            <li>
-                                <a href="@routes.PowerQualityMonitoring.index()">Power Quality Monitoring</a>
-                            </li>
-                        </ul>
-                    </div>
+                    @mainmenu(title)
                 </div>
             </div>
         </div>
