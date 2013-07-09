@@ -1,5 +1,15 @@
 @(title: String)(content: Html)
 
+@createMenuItem(text: String, selectOn: String, link: play.api.mvc.Call) = {
+    @if(title.toLowerCase().contains(selectOn)) {
+        <li class="active">
+    } else {
+        <li>
+    }
+    <a href="@link">@text</a>
+    </li>
+}
+
 <!DOCTYPE html>
 
 <html>
@@ -18,7 +28,13 @@
             <div class="navbar-inner">
                 <div class="container">
                     <a class="brand" href="#">Open Power Quality</a>
-                    @mainmenu(title)
+                    <div class="navbar-content">
+                        <ul class="nav">
+                            @createMenuItem("Home", "home", routes.Application.index())
+                            @createMenuItem("Administration", "administration", routes.Administration.user())
+                            @createMenuItem("Power Quality Monitoring", "power quality monitoring", routes.PowerQualityMonitoring.index())
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
