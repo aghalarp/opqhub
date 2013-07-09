@@ -1,20 +1,20 @@
 @main("Power Quality Monitoring") {
     <div class="row">
-        <div class="span4">
+        <div class="span3">
             <form class="well well-small">
                 <b>Filter Alerts</b>
                 <label class="checkbox" for="voltage_checkbox">
                     <input type="checkbox" value="true" id="voltage_checkbox" name="checkbox"> Voltage</label>
-                <input type="text" class="input-mini" value="218"> When voltage is less than (in volts)
+                <input type="text" class="input-mini" value="218"> Voltage less than
                 <br>
-                <input type="text" class="input-mini" value="222"> When voltage is greater than (in volts)
+                <input type="text" class="input-mini" value="222"> Voltage greater than
                 <br>
                 <br>
                 <label class="checkbox" for="frequency_checkbox">
                     <input type="checkbox" value="true" id="frequency_checkbox" name="checkbox"> Frequency</label>
-                <input type="text" class="input-mini" value="218"> When frequency is less than (in Hertz)
+                <input type="text" class="input-mini" value="218"> Frequency less than
                 <br>
-                <input type="text" class="input-mini" value="222"> When frequency is greater than (in Hertz)
+                <input type="text" class="input-mini" value="222"> Frequency greater than
                 <br>
                 <br>
                 <label class="checkbox" for="device_checkbox">
@@ -79,6 +79,7 @@
                     <tr>
                         <th>Date</th>
                         <th>Time</th>
+                        <th>Duration</th>
                         <th>Device</th>
                         <th>Alert Type</th>
                         <th>Details</th>
@@ -88,6 +89,7 @@
                     <tr>
                         <td>05-23-2013</td>
                         <td>11:53:03</td>
+                        <td>1.2 s</td>
                         <td>0123-4567-89AB-CDEF (Home)</td>
                         <td>
                             <a class="btn btn-block btn-info btn-mini">Frequency</a>
@@ -97,6 +99,7 @@
                     <tr>
                         <td>05-23-2013</td>
                         <td>15:00:22</td>
+                        <td>0.56 s</td>
                         <td>0123-4567-89AB-CDEF (Home)</td>
                         <td>
                             <a class="btn btn-block btn-danger btn-mini">Voltage</a>
@@ -106,6 +109,7 @@
                     <tr>
                         <td>05-23-2013</td>
                         <td>23:44:11</td>
+                        <td>3.5 s</td>
                         <td>ABCD-EF01-2345-6789 (Office)</td>
                         <td>
                             <a class="btn btn-block btn-inverse btn-mini">Device</a>
@@ -115,6 +119,7 @@
                     <tr>
                         <td>05-21-2013</td>
                         <td>10:00:00</td>
+                        <td>3 days</td>
                         <td>0123-4567-89AB-CDEF (Office)</td>
                         <td>
                             <a class="btn btn-block btn-danger btn-mini">Voltage</a>
@@ -124,6 +129,7 @@
                 </tbody>
             </table>
         </div>
+        <!--
         <div class="well well-small span3">
             <p>
                 <b>Filter Alerts</b>
@@ -146,5 +152,6 @@
                 (i.e. 23:00 instead of 11 PM).
             </p>
         </div>
+        -->
     </div>
 }
