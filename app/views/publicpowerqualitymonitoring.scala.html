@@ -1,6 +1,6 @@
-@main("Power Quality Monitoring", extraJavascripts = "OpenLayers.js") {
+@main("Power Quality Monitoring") {
     <div class="row">
-        <div class="span3">
+        <div class="span3" id="map-controls">
             <form class="well well-small">
                 <b>Filter Alerts</b>
                 <label class="checkbox" for="voltage_checkbox">
@@ -16,19 +16,7 @@
                 <br>
                 <input type="text" class="input-mini" value="222"> Frequency greater than
                 <br>
-                <br>
-                <label class="checkbox" for="device_checkbox">
-                    <input type="checkbox" value="true" id="device_checkbox" name="checkbox"> Device</label>
-                <hr>
-                <b>Filter Devices</b>
-                <label class="checkbox" for="device_0_checkbox">
-                    <input type="checkbox" value="true" id="device_0_checkbox" name="checkbox" checked="checked">
-                    <span>0123-4567-89AB-CDEF (Home)</span>
-                </label>
-                <label class="checkbox" for="device_1_checkbox">
-                    <input type="checkbox" value="true" id="device_1_checkbox" name="checkbox" checked="checked">
-                    <span>ABCD-EF01-2345-6789 (Office)</span>
-                </label>
+
                 <hr>
                 <b>Timeline</b>
                 <br>
@@ -73,36 +61,33 @@
                 </table>
             </form>
         </div>
-        <div class="span9">
+
             <!-- Start of OSM -->
-            <div id="public-map">
+        <div id="public-map" class="span9"></div>
+        <script defer="defer" type="text/javascript">
 
-            </div>
+            function createMarker(lon, lat, icon) {
+            var marker = new OpenLayers.LonLat(lon, lat).transform(projection, map.getProjectionObject());
+            markers.addMarker(new OpenLayers.Marker(marker, icon.clone()));
+            }
 
-        </div>
-        <!--
-        <div class="well well-small span3">
-            <p>
-                <b>Filter Alerts</b>
-                <br />
-                This allows you to determine which types of alerts are displayed. You
-                can filter on voltage, frequency, and device alerts. You may also choose
-                the threshold for which these alerts are displayed.
-            </p>
-            <p>
-                <br>
-                <b>Timeline</b>
-                <br>
-                This allows you to choose how many alerts are displayed starting from
-                the current time and going back to a specified point of up to a year.
-                <br>
-                <br>
-                You may also choose "Custom Range" in order to enter your own time range.
-                When entering a custom time range, be sure to use mm/dd/yyyy for the date
-                (i.e. 07/28/2013) and be sure to use a 24 hour clock format for the time
-                (i.e. 23:00 instead of 11 PM).
-            </p>
-        </div>
-        -->
+            // Base map centered on Honolulu
+            var map             = new OpenLayers.Map('public-map');
+            var osm             = new OpenLayers.Layer.OSM();
+            var projection      = new OpenLayers.Projection("EPSG:4326")
+            var center          = new OpenLayers.LonLat(-157.8583,21.3069);
+            var zoom            = 9;
+            map.addLayer(osm);
+            map.setCenter(center.transform(projection, map.getProjectionObject()), zoom);
+
+            // Create markers
+            var frequencyIcon   = new OpenLayers.Icon("@routes.Assets.at("images/frequency-alert-icon.png")");
+            var voltageIcon     = new OpenLayers.Icon("@routes.Assets.at("images/voltage-alert-icon.png")");
+            var markers         = new OpenLayers.Layer.Markers("Markers");
+            map.addLayer(markers);
+            createMarker(-157.8583, 21.3069, frequencyIcon); // Honolulu
+            createMarker(-157.8036, 21.4181, voltageIcon); // Kaneohe
+            createMarker(-157.8081, 21.3147, voltageIcon); // Manoa
+        </script>
     </div>
 }
