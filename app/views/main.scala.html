@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String, extraStylesheets: String = "", extraJavascripts: String = "")(content: Html)
 
 @createMenuItem(text: String, selectOn: String, link: play.api.mvc.Call) = {
     @if(title.toLowerCase().contains(selectOn)) {
@@ -20,8 +20,18 @@
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap-responsive.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/opq-ao.css")">
+
+        @for(css <- extraStylesheets.split(",")) {
+            <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/")">
+        }
+
         <script src="@routes.Assets.at("javascripts/bootstrap.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")" type="text/javascript"></script>
+
+        @for(js <- extraJavascripts.split(",")) {
+            <script src="@routes.Assets.at("javascripts/@js")" type="text/javascript"></script>
+        }
+
     </head>
     <body>
         <div class="navbar">
@@ -32,7 +42,7 @@
                         <ul class="nav">
                             @createMenuItem("Home", "home", routes.Application.index())
                             @createMenuItem("Administration", "administration", routes.Administration.user())
-                            @createMenuItem("Power Quality Monitoring", "power quality monitoring", routes.PowerQualityMonitoring.index())
+                            @createMenuItem("Power Quality Monitoring", "power quality monitoring", routes.PowerQualityMonitoring.publicMonitor())
                         </ul>
                     </div>
                 </div>

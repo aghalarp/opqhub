@@ -1,0 +1,108 @@
+@main("Power Quality Monitoring", extraJavascripts = "OpenLayers.js") {
+    <div class="row">
+        <div class="span3">
+            <form class="well well-small">
+                <b>Filter Alerts</b>
+                <label class="checkbox" for="voltage_checkbox">
+                    <input type="checkbox" value="true" id="voltage_checkbox" name="checkbox"> Voltage</label>
+                <input type="text" class="input-mini" value="218"> Voltage less than
+                <br>
+                <input type="text" class="input-mini" value="222"> Voltage greater than
+                <br>
+                <br>
+                <label class="checkbox" for="frequency_checkbox">
+                    <input type="checkbox" value="true" id="frequency_checkbox" name="checkbox"> Frequency</label>
+                <input type="text" class="input-mini" value="218"> Frequency less than
+                <br>
+                <input type="text" class="input-mini" value="222"> Frequency greater than
+                <br>
+                <br>
+                <label class="checkbox" for="device_checkbox">
+                    <input type="checkbox" value="true" id="device_checkbox" name="checkbox"> Device</label>
+                <hr>
+                <b>Filter Devices</b>
+                <label class="checkbox" for="device_0_checkbox">
+                    <input type="checkbox" value="true" id="device_0_checkbox" name="checkbox" checked="checked">
+                    <span>0123-4567-89AB-CDEF (Home)</span>
+                </label>
+                <label class="checkbox" for="device_1_checkbox">
+                    <input type="checkbox" value="true" id="device_1_checkbox" name="checkbox" checked="checked">
+                    <span>ABCD-EF01-2345-6789 (Office)</span>
+                </label>
+                <hr>
+                <b>Timeline</b>
+                <br>
+                <select>
+                    <option>Past minute</option>
+                    <option>Past hour</option>
+                    <option>Past day</option>
+                    <option>Past week</option>
+                    <option>Past month</option>
+                    <option>Past year</option>
+                    <option>Custom range</option>
+                </select>
+                <br>
+                <b>Custom Time Range</b>
+                <br>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>mm/dd/yyyy</td>
+                            <td>hh:mm</td>
+                        </tr>
+                        <tr>
+                            <td>Start Date</td>
+                            <td>
+                                <input type="text" class="input-small">
+                            </td>
+                            <td>
+                                <input type="text" class="input-mini">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>End Date</td>
+                            <td>
+                                <input type="text" class="input-small">
+                            </td>
+                            <td>
+                                <input type="text" class="input-mini">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <div class="span9">
+            <!-- Start of OSM -->
+            <div id="public-map">
+
+            </div>
+
+        </div>
+        <!--
+        <div class="well well-small span3">
+            <p>
+                <b>Filter Alerts</b>
+                <br />
+                This allows you to determine which types of alerts are displayed. You
+                can filter on voltage, frequency, and device alerts. You may also choose
+                the threshold for which these alerts are displayed.
+            </p>
+            <p>
+                <br>
+                <b>Timeline</b>
+                <br>
+                This allows you to choose how many alerts are displayed starting from
+                the current time and going back to a specified point of up to a year.
+                <br>
+                <br>
+                You may also choose "Custom Range" in order to enter your own time range.
+                When entering a custom time range, be sure to use mm/dd/yyyy for the date
+                (i.e. 07/28/2013) and be sure to use a 24 hour clock format for the time
+                (i.e. 23:00 instead of 11 PM).
+            </p>
+        </div>
+        -->
+    </div>
+}
