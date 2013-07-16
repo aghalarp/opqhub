@@ -4,6 +4,16 @@
 
 /* Open Street Map Styles */
 #public-map {
-    width: 100%;
-    height: 100%;
+    padding-left: 20px;
+    height: 500px;
+}
+
+#map-controls {
+    padding-right: 20px;
+}
+
+div.olControlAttribution, div.olControlScaleLine {
+    font-family: Verdana;
+    font-size: 0.7em;
+    bottom: 3px;
 }
