@@ -59,6 +59,21 @@
                         </tr>
                     </tbody>
                 </table>
+                <hr />
+                <b>Summary of Events</b>
+                <br />
+                <table id="event-summary">
+                    <tr>
+                        <td>Voltage</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>Frequency</td>
+                        <td>1</td>
+                    </tr>
+                </table>
+                <hr />
+                <a href="@routes.PowerQualityMonitoring.getAlerts()">Download Visible Alerts (.csv)</a>
             </form>
         </div>
 
@@ -88,6 +103,8 @@
             createMarker(-157.8583, 21.3069, frequencyIcon); // Honolulu
             createMarker(-157.8036, 21.4181, voltageIcon); // Kaneohe
             createMarker(-157.8081, 21.3147, voltageIcon); // Manoa
+
+
         </script>
     </div>
 }
