@@ -17,3 +17,8 @@ div.olControlAttribution, div.olControlScaleLine {
     font-size: 0.7em;
     bottom: 3px;
 }
+
+#event-summary td {
+    padding: 5px;
+    margin: 5px;
+}
