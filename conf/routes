@@ -3,20 +3,21 @@
 # ~~~~
 
 # Home page
-GET        /                       controllers.Application.index()
+GET        /                            controllers.Application.index()
 
 # Sign Up
-GET        /signup                 controllers.SignUp.signUp()
+GET        /signup                      controllers.SignUp.signUp()
 
 # Administration
-GET        /private/admin/user             controllers.Administration.user()
-GET        /private/admin/device           controllers.Administration.device()
-GET        /private/admin/alert            controllers.Administration.alert()
-GET        /private/admin/cdsi             controllers.Administration.cdsi()
+GET        /private/admin/user          controllers.Administration.user()
+GET        /private/admin/device        controllers.Administration.device()
+GET        /private/admin/alert         controllers.Administration.alert()
+GET        /private/admin/cdsi          controllers.Administration.cdsi()
 
 # Power Quality Monitoring
-GET        /private/monitor        controllers.PowerQualityMonitoring.privateMonitor()
-GET        /public/monitor         controllers.PowerQualityMonitoring.publicMonitor()
+GET        /private/monitor             controllers.PowerQualityMonitoring.privateMonitor()
+GET        /public/monitor              controllers.PowerQualityMonitoring.publicMonitor()
+GET        /public/alerts               controllers.PowerQualityMonitoring.getAlerts()
 
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file           controllers.Assets.at(path="/public", file)
+GET        /assets/*file                controllers.Assets.at(path="/public", file)
