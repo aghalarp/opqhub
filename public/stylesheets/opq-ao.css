@@ -4,21 +4,19 @@
 
 /* Open Street Map Styles */
 #public-map {
-    padding-left: 20px;
-    height: 500px;
+    height: 680px;
 }
 
 #map-controls {
     padding-right: 20px;
 }
 
-div.olControlAttribution, div.olControlScaleLine {
-    font-family: Verdana;
-    font-size: 0.7em;
-    bottom: 3px;
+#event-summary td {
+    padding: 5px;
+    margin: 5px;
 }
 
-#event-summary td {
+#popup-table td {
     padding: 5px;
     margin: 5px;
 }

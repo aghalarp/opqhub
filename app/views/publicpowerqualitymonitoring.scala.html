@@ -1,3 +1,5 @@
+@(alerts: List[models.Alert], devices: List[models.OpqDevice])
+
 @main("Power Quality Monitoring") {
     <div class="row">
         <div class="span3" id="map-controls">
@@ -64,6 +66,10 @@
                 <br />
                 <table id="event-summary">
                     <tr>
+                        <td>Devices</td>
+                        <td>@devices.length</td>
+                    </tr>
+                    <tr>
                         <td>Voltage</td>
                         <td>2</td>
                     </tr>
@@ -77,34 +83,81 @@
             </form>
         </div>
 
-            <!-- Start of OSM -->
+        <!-- Start of Leaflet -->
+        <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
         <div id="public-map" class="span9"></div>
-        <script defer="defer" type="text/javascript">
 
-            function createMarker(lon, lat, icon) {
-            var marker = new OpenLayers.LonLat(lon, lat).transform(projection, map.getProjectionObject());
-            markers.addMarker(new OpenLayers.Marker(marker, icon.clone()));
+        <script type="text/javascript">
+            // Setup basic map with OSM layer
+            var map = L.map('public-map');
+            var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            var osmAttrib='Map data © OpenStreetMap contributors';
+            var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
+            map.addLayer(osm);
+
+            // Center map over Oahu
+            map.setView([21.4667, -157.9833], 10);
+
+            // Create the icons
+            var deviceMarker = L.icon({
+                iconUrl: '@routes.Assets.at("images/opq-icon.png")'
+            });
+            var frequencyMarker = L.icon({
+                iconUrl: '@routes.Assets.at("images/frequency-alert-icon.png")'
+            });
+            var voltageMarker = L.icon({
+               iconUrl: '@routes.Assets.at("images/voltage-alert-icon.png")'
+            });
+
+            // Create pop-up templates
+            function makeTable(vals) {
+                var table = "<table id='popup-table'>";
+
+                for(i = 0; i < vals.length; i += 2) {
+                    table += '<tr><td><b>' + vals[i] + '</b></td><td>' + vals[i + 1] + '</td></tr>';
+                }
+
+                table += "</table>"
+
+                return table;
             }
 
-            // Base map centered on Honolulu
-            var map             = new OpenLayers.Map('public-map');
-            var osm             = new OpenLayers.Layer.OSM();
-            var projection      = new OpenLayers.Projection("EPSG:4326");
-            var center          = new OpenLayers.LonLat(-157.8583,21.3069);
-            var zoom            = 9;
-            map.addLayer(osm);
-            map.setCenter(center.transform(projection, map.getProjectionObject()), zoom);
+            function deviceTemplate(deviceId, latitude, longitude) {
+                return makeTable(["Device ID", deviceId, "Latitude", latitude, "Longitude", longitude]);
+            }
 
-            // Create markers
-            var frequencyIcon   = new OpenLayers.Icon("@routes.Assets.at("images/frequency-alert-icon.png")");
-            var voltageIcon     = new OpenLayers.Icon("@routes.Assets.at("images/voltage-alert-icon.png")");
-            var markers         = new OpenLayers.Layer.Markers("Markers");
-            map.addLayer(markers);
-            createMarker(-157.8583, 21.3069, frequencyIcon); // Honolulu
-            createMarker(-157.8036, 21.4181, voltageIcon); // Kaneohe
-            createMarker(-157.8081, 21.3147, voltageIcon); // Manoa
+            function alertTemplate(alertType, date, duration, alertValue, description, latitude, longitude) {
+                return makeTable([
+                    "Alert Type", alertType,
+                    "Date", date,
+                    "Duration", duration,
+                    "Alert Value", alertValue,
+                    "Description", description,
+                    "Latitude", latitude,
+                    "Longitude", longitude
+                ]);
+            }
 
+            // Display devices
+            @for(device <- devices) {
+                L.marker([@device.getLatitude(), @device.getLongitude()], {icon: deviceMarker}).addTo(map)
+                    .bindPopup(deviceTemplate(@device.getDeviceId, @device.getLatitude, @device.getLongitude));
+            }
 
+            // Display alerts
+            @for(alert <- alerts) {
+                @if(alert.getAlertType().equals(Alert.AlertType.FREQUENCY)) {
+                    L.marker([@alert.latitude, @alert.longitude], {icon: frequencyMarker}).addTo(map)
+                        .bindPopup(alertTemplate('@alert.getAlertType', '@alert.getDate', @alert.getDuration + ' ms',
+                            @alert.getAlertValue + 'Hz', '@alert.getDescription', @alert.latitude, @alert.longitude));
+                }
+                @if(alert.getAlertType().equals(Alert.AlertType.VOLTAGE)) {
+                    L.marker([@alert.latitude, @alert.longitude], {icon: voltageMarker}).addTo(map)
+                    .bindPopup(alertTemplate('@alert.getAlertType', '@alert.getDate', @alert.getDuration + ' ms',
+                        @alert.getAlertValue + ' V', '@alert.getDescription', @alert.latitude, @alert.longitude));
+                }
+            }
         </script>
+
     </div>
 }
