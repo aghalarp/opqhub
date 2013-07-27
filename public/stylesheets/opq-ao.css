@@ -2,6 +2,16 @@
     margin-top: 10px;
 }
 
+/* Wizard Styles */
+.step-pane {
+    padding-top: 10px;
+}
+
+/* Description Panes */
+.bold {
+    font-weight: bold;
+}
+
 /* Open Street Map Styles */
 #public-map {
     height: 680px;
