@@ -1,0 +1,32 @@
+@(title: String, publicMenu: Boolean)
+
+    @createMenuItem(text: String, selectOn: String, link: play.api.mvc.Call) = {
+    @if(title.toLowerCase().contains(selectOn)) {
+        <li class="active">
+        } else {
+        <li>
+        }
+        <a href="@link">@text</a>
+    </li>
+    }
+
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="brand" href="#">Open Power Quality</a>
+            <div class="navbar-content">
+                <ul class="nav">
+                @if(publicMenu) {
+                    @createMenuItem("Getting Started", "getting started with opq", routes.Application.index())
+                    @createMenuItem("Public Power Quality Monitoring", "power quality monitoring", routes.PowerQualityMonitoring.publicMonitor())
+                } else {
+                    @createMenuItem("Home", "home", routes.Application.index())
+                    @createMenuItem("Administration", "administration", routes.Administration.user())
+                    @createMenuItem("Private Power Quality Monitoring", "private power quality monitoring", routes.PowerQualityMonitoring.privateMonitor())
+                    @createMenuItem("Public Power Quality Monitoring", "public power quality monitoring", routes.PowerQualityMonitoring.publicMonitor())
+                }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
