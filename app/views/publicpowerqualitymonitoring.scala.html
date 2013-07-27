@@ -147,18 +147,18 @@
             }
 
             // Display alerts
-            @*@for(alert <- alerts) {
+            @for(alert <- alerts) {
             @if(alert.getAlertType().equals(models.Alert.AlertType.FREQUENCY)) {
                 L.marker([@alert.latitude, @alert.longitude], {icon: frequencyMarker}).addTo(map)
-                .bindPopup(alertTemplate('@alert.getAlertType', '@alert.getTimestamp', @alert.getDuration + ' s',
+                .bindPopup(alertTemplate('@alert.getAlertType', '@alert.getDate', @alert.getDuration + ' s',
                 @alert.getAlertValue + 'Hz', @alert.latitude, @alert.longitude));
             }
             @if(alert.getAlertType().equals(models.Alert.AlertType.VOLTAGE)) {
                 L.marker([@alert.latitude, @alert.longitude], {icon: voltageMarker}).addTo(map)
-                .bindPopup(alertTemplate('@alert.getAlertType', '@alert.getTimestamp', @alert.getDuration + ' s',
+                .bindPopup(alertTemplate('@alert.getAlertType', '@alert.getDate', @alert.getDuration + ' s',
                 @alert.getAlertValue + ' V', @alert.latitude, @alert.longitude));
             }
-            } *@
+            }
         </script>
 
     </div>
