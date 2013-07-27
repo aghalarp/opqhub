@@ -7,6 +7,7 @@ GET        /                            controllers.Application.index()
 
 # Sign Up
 GET        /signup                      controllers.SignUp.signUp()
+GET        /public/wizard               controllers.Wizard.index()
 
 # Administration
 GET        /private/admin/user          controllers.Administration.user()
@@ -18,6 +19,9 @@ GET        /private/admin/cdsi          controllers.Administration.cdsi()
 GET        /private/monitor             controllers.PowerQualityMonitoring.privateMonitor()
 GET        /public/monitor              controllers.PowerQualityMonitoring.publicMonitor()
 GET        /public/alerts               controllers.PowerQualityMonitoring.getAlerts()
+
+# Handling WebSockets
+GET        /private/ws                  controllers.WebSockets.handleSocket()
 
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file                controllers.Assets.at(path="/public", file)
