@@ -1,6 +1,6 @@
 package models;
 
-public class OpqDevice {
+public class pqDevice {
   private Long deviceId;
   private Double longitude;
   private Double latitude;
