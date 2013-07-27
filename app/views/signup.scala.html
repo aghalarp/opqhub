@@ -1,4 +1,4 @@
-@main("Sign Up") {
+@main("Sign Up", menu("Sign Up", true)) {
     <div class="span6">
         <form class="well well-small">
             <label class="control-label">
@@ -25,9 +25,9 @@
                 <span class="help-inline">Verify Password <b>*</b></span>
                 <br />
                 <select>
-                    @for(state <- utils.FormUtils.listOfStates) {
-                        <option>@state</option>
-                    }
+                @for(state <- utils.FormUtils.listOfStates) {
+                    <option>@state</option>
+                }
                 </select>
                 <span class="help-inline">State <b>*</b></span>
                 <div>
