@@ -11,8 +11,8 @@ import java.util.List;
 
 public class PowerQualityMonitoring extends Controller {
   public static Result publicMonitor() {
-    List<Alert> alerts = new LinkedList<>();
-    List<OpqDevice> devices = new LinkedList<OpqDevice>();
+    List<models.Alert> alerts = new LinkedList<>();
+    List<models.OpqDevice> devices = new LinkedList<OpqDevice>();
 
     // For mockup purposes, lets create some fake devices, and fake alerts.
     devices.add(new OpqDevice(0L, 21.3069, -157.8583)); // Honolulu
@@ -30,7 +30,7 @@ public class PowerQualityMonitoring extends Controller {
     alerts.add(new Alert(Alert.AlertType.VOLTAGE, new Date(), 2500L, 122.0, "High Voltage (+2 V)", 21.4022, -157.7394)); // Kailua
     alerts.add(new Alert(Alert.AlertType.VOLTAGE, new Date(), 500L, 118.3, "Low Voltage (-1.7 V)", 21.3147, -157.8081)); // Manoa
 
-    return ok(views.html.publicpowerqualitymonitoring.render(alerts, devices));
+    return ok(views.html.publicpowerqualitymonitoring.render(alerts, devices, true));
   }
 
   public static Result privateMonitor() {
