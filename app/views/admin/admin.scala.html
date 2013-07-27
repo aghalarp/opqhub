@@ -1,19 +1,19 @@
 @(title: String, description: String)(content: Html)
 
-@createMenuItem(text: String, selectOn: String, link: play.api.mvc.Call) = {
+    @createMenuItem(text: String, selectOn: String, link: play.api.mvc.Call) = {
     @if(title.toLowerCase().contains(selectOn)) {
         <li class="active">
-    } else {
+        } else {
         <li>
-    }
-    <a href="@link">@text</a>
+        }
+        <a href="@link">@text</a>
     </li>
-}
+    }
 
-@main(title) {
+@main(title, menu(title, false)) {
     <div class="row-fluid">
 
-        <!-- Side menu -->
+            <!-- Side menu -->
         <div class="span4">
             <ul class="nav  nav-pills nav-stacked">
                 @createMenuItem("User Administration", "user", routes.Administration.user())
@@ -23,7 +23,7 @@
             </ul>
             <div class="well">
                 <p>
-                    @description
+                @description
                 </p>
             </div>
         </div>
