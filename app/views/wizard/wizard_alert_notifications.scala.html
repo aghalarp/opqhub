@@ -1,0 +1,65 @@
+
+
+<div class="row">
+    <div class="span9">
+        <form class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label" for="emailAlert">E-Mail Alert</label>
+                <div class="controls">
+                    <input type="checkbox" id="emailAlert">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="emailAlertAddr">Alert Address</label>
+                <div class="controls">
+                    <input type="email" id="emailAlertAddr" placeholder="john.doe@@email.com">
+                </div>
+            </div>
+            <hr />
+            <div class="control-group">
+                <label class="control-label" for="smsAlert">SMS Alert</label>
+                <div class="controls">
+                    <input type="checkbox" id="smsAlert">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="smsCarrier">SMS Carrier</label>
+                <div class="controls">
+                    <select id="smsCarrier">
+                    @for(carrier <- utils.FormUtils.getSmsCarriers) {
+                        <option>@carrier</option>
+                    }
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="smsNumber">SMS Number</label>
+                <div class="controls">
+                    <input type="text" id="smsNumber" placeholder="808-555-5555">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="span3">
+        <div class="well well-small">
+            <p class="bold">Alert Notifications</p>
+            <p>
+                This section allows you to create notifications for alerts triggered in the previous section.
+                Notifications come in the form of SMS alerts, e-mail alerts, or both.
+            </p>
+            <p class="bold">E-Mail Alert</p>
+            <p>
+                To enable e-mail alerts, make sure the "E-Mail Alert" checkbox is selected. Then supply an e-mail
+                address that the alert should be sent to.
+            </p>
+            <p class="bold">SMS Alert</p>
+            <p>
+                To enable SMS alerts, make sure the "SMS Alert" checkbox is selected. Then select the carrier that
+                your SMS phone is under. Finally, provide your SMS number.
+            </p>
+            <p>
+                Examples: Offices, basement, uptown, etc
+            </p>
+        </div>
+    </div>
+</div>

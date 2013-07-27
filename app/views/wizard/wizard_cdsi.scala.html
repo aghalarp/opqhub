@@ -1,0 +1,93 @@
+<div class="row">
+    <div class="span9">
+        <form class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label" for="deviceState">Device State</label>
+                <div class="controls">
+                    <input type="checkbox" id="optState">
+                    <select id="deviceState">
+                    @for(state <- utils.FormUtils.listOfStates) {
+                        <option>@state</option>
+                    }
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="deviceCity">Device City</label>
+                <div class="controls">
+                    <input type="checkbox" id="optCity">
+                    <input type="text" id="deviceCity" placeholder="Kailua-Kona">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="deviceZip">Device Zip</label>
+                <div class="controls">
+                    <input type="checkbox" id="optZip">
+                    <input type="text" id="deviceZip" placeholder="96739">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="deviceStreetName">Device Street Name</label>
+                <div class="controls">
+                    <input type="checkbox" id="optStreetName">
+                    <input type="text" id="deviceStreetName" placeholder="Maple Ave">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="deviceStreetNumber">Device Street Number</label>
+                <div class="controls">
+                    <input type="checkbox" id="optStreetNumber">
+                    <input type="text" id="deviceStreetNumber" placeholder="111">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="deviceLatitude">Device Latitude</label>
+                <div class="controls">
+                    <input type="checkbox" id="optLatitude">
+                    <input type="text" id="deviceLatitude" placeholder="19.6406">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="deviceLongitude">Device Longitude</label>
+                <div class="controls">
+                    <input type="checkbox" id="optLongitude">
+                    <input type="text" id="deviceLongitude" placeholder="-155.9956">
+                </div>
+            </div>
+            <hr />
+            <div class="control-group">
+                <label class="control-label" for="optCdsi">Participate in CDSI</label>
+                <div class="controls">
+                    <input type="checkbox" id="optCdsi">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="span3">
+        <div class="well well-small">
+            <p class="bold">Community Data Sharing Initiative</p>
+            <p>
+                The Community Data Sharing Initiative (CDSI) allows users to opt-in for sharing their power quality
+                information to the public. You may include as little or as much information as you feel comfortable
+                with.
+            </p>
+            <p>
+                Please note that all fields refer to the location of the device you registered in "step 3".
+            </p>
+            <p class="bold">Opting-In</p>
+            <p>
+                To opt-in to the Community Data Sharing Initiative, make sure "Participate in CDSI" is selected. Then,
+                for each field that you would like to share with the public, make sure the checkbox for that field is
+                selected and that a correct value for that field is entered.
+            </p>
+            <p class="bold">
+                When Finished
+            </p>
+            <p>
+                This is the last step in the wizard. Review the information in previous steps and select "Finish" to
+                save the changes and exit the wizard. Remember, all of this information can later be edited in the
+                "Administration" section of the website.
+            </p>
+        </div>
+    </div>
+</div>

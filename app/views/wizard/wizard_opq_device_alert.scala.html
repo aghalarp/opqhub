@@ -1,0 +1,76 @@
+<div class="row">
+    <div class="span9">
+        <form class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label" for="voltageAlert">Voltage Alert</label>
+                <div class="controls">
+                    <input type="checkbox" id="voltageAlert">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="minVoltageAlert">Minimum Voltage</label>
+                <div class="controls">
+                    <input type="text" id="minVoltageAlert" placeholder="117">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="maxVoltageAlert">Maximum Voltage</label>
+                <div class="controls">
+                    <input type="text" id="maxVoltageAlert" placeholder="122">
+                </div>
+            </div>
+            <hr />
+            <div class="control-group">
+                <label class="control-label" for="frequencyAlert">Frequency Alert</label>
+                <div class="controls">
+                    <input type="checkbox" id="frequencyAlert">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="minFrequencyAlert">Minimum Frequency</label>
+                <div class="controls">
+                    <input type="text" id="minFrequencyAlert" placeholder="57">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="maxFrequencyAlert">Maximum Frequency</label>
+                <div class="controls">
+                    <input type="text" id="maxFrequencyAlert" placeholder="62">
+                </div>
+            </div>
+            <hr />
+            <div class="control-group">
+                <label class="control-label" for="deviceAlert">Device Alert</label>
+                <div class="controls">
+                    <input type="checkbox" id="deviceAlert">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="span3">
+        <div class="well well-small">
+            <p class="bold">Alerts</p>
+            <p>
+                This section allows you to configure when your device should generate an alert based on the current
+                voltage and frequency readings.
+            </p>
+            <p class="bold">Voltage Alert</p>
+            <p>
+                To create a voltage alert, make sure that the "Voltage Alert" checkbox is selected. Then supply the
+                minimum and maximum voltage range for which voltages should trigger an event. If the voltage is ever
+                below the minimum of above the maximum range, then an alert will be triggered.
+            </p>
+            <p class="bold">Frequency Alert</p>
+            <p>
+                To create a frequency alert, make sure that the "Frequency Alert" checkbox is selected. Then supply the
+                minimum and maximum frequency range for which frequencies should not trigger an event.
+                If the frequency is ever below the minimum or above the maximum range, then an alert will be triggered.
+            </p>
+            <p class="bold">Device Alert</p>
+            <p>
+                Device alerts are triggered when there is an issue with the OPQ hardware device itself. If you want
+                the device to be able to trigger alerts, make sure the "Device Alert" checkbox is selected.
+            </p>
+        </div>
+    </div>
+</div>

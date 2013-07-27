@@ -1,0 +1,56 @@
+@main("OPQ Wizard", menu("OPQ Wizard", true)) {
+    <script type="text/javascript">
+            $('#opq-wizard').wizard();
+    </script>
+
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <div id="opq-wizard" class="wizard">
+                    <ul class="steps">
+                        <li data-target="#step1" class="active">
+                            <span class="badge badge-info">1</span>
+                                Information
+                                <span class="chevron">
+                            </span>
+                        </li>
+                        <li data-target="#step2"><span class="badge">2</span>
+                            Optional Information<span class="chevron"></span></li>
+                        <li data-target="#step3"><span class="badge">3</span>
+                            Device<span class="chevron"></span></li>
+                        <li data-target="#step4"><span class="badge">4</span>
+                            Alerts<span class="chevron"></span></li>
+                        <li data-target="#step5"><span class="badge">5</span>
+                            Notifications<span class="chevron"></span></li>
+                        <li data-target="#step6"><span class="badge">6</span>
+                            CDSI<span class="chevron"></span></li>
+                    </ul>
+                    <div class="actions">
+                        <button type="button" class="btn btn-mini btn-prev"> <i class="icon-arrow-left"></i>Prev</button>
+                        <button type="button" class="btn btn-mini btn-next" data-last="Finish">Next<i class="icon-arrow-right"></i></button>
+                    </div>
+                </div>
+                <div class="step-content">
+                    <div class="step-pane active" id="step1">
+                        @wizard_user_info()
+                    </div>
+                    <div class="step-pane" id="step2">
+                        @wizard_optional_user_info()
+                    </div>
+                    <div class="step-pane" id="step3">
+                        @wizard_opq_device()
+                    </div>
+                    <div class="step-pane" id="step4">
+                        @wizard_opq_device_alert()
+                    </div>
+                    <div class="step-pane" id="step5">
+                        @wizard_alert_notifications()
+                    </div>
+                    <div class="step-pane" id="step6">
+                        @wizard_cdsi()
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
