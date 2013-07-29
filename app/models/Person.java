@@ -36,7 +36,7 @@ public class Person extends Model {
   private String streetName;
   private String streetNumber;
 
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
   private List<OpqDevice> devices = new ArrayList<>();
 
   public Person(String firstName, String lastName, String email, String passwordHash, String state, String city,
