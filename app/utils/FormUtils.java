@@ -19,11 +19,20 @@
 
 package utils;
 
+/**
+ * Provides various helper utilities for dealing with forms.
+ */
 public class FormUtils {
+  /**
+   * Ensure that util class can not be instantiated.
+   */
   private FormUtils() {
     throw new AssertionError("FormUtils should not be instantiated");
   }
 
+  /**
+   * List of United States states in alphabetical order.
+   */
   public static final String[] LIST_OF_STATES = {
     "Alabama",
     "Alaska",
@@ -76,7 +85,15 @@ public class FormUtils {
     "Wisconsin",
     "Wyoming"
   };
-  // See: https://en.wikipedia.org/wiki/List_of_SMS_gateways
+
+  /**
+   * List of popular U.S. based wireless carriers and their sms gateways.
+   *
+   * To use the gateways, simply send an e-mail to the address associated with the wireless carrier and replace
+   * the pound symbol "#" with the users sms number.
+   * See: https://en.wikipedia.org/wiki/List_of_SMS_gateways
+   */
+
   private static final String[][] SMS_CARRIERS = {
     {"Alltel",        "#@sms.alltelwireless.com"},
     {"AT&T",          "#@txt.att.net"},
@@ -89,6 +106,10 @@ public class FormUtils {
     {"Virgin Mobile", "#@vmobl.com"}
   };
 
+  /**
+   * Returns the list of popular U.S. carriers without their associated sms e-mail address.
+   * @return List of popular U.S. sms carriers.
+   */
   public static String[] getSmsCarriers() {
     String[] carriers = new String[SMS_CARRIERS.length];
     for (int i = 0; i < carriers.length; i++) {
