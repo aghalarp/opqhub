@@ -23,7 +23,6 @@
 GET        /                            controllers.Application.index()
 
 # Sign Up
-GET        /signup                      controllers.SignUp.signUp()
 GET        /public/wizard               controllers.Wizard.index()
 
 # Administration
