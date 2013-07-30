@@ -25,8 +25,15 @@ import play.mvc.WebSocket;
 
 import java.util.Arrays;
 
+/**
+ * Provides methods for handling packets sent to this server from a WebSockets client.
+ */
 public class WebSockets extends Controller {
 
+  /**
+   * Create a WebSocket object who can receive connections, receive packets, and break connections.
+   * @return A WebSocket object.
+   */
   public static WebSocket<String> handleSocket() {
     return new WebSocket<String>() {
       @Override
@@ -48,6 +55,10 @@ public class WebSockets extends Controller {
     };
   }
 
+  /**
+   * Determines the type of packet that was received from the WebSocket, and calls the correct sub-handler.
+   * @param packet The packet received from the WebSocket object.
+   */
   private static void handlePacket(String packet) {
     switch(packet.split(",")[1]) {
       case "A":
@@ -61,16 +72,29 @@ public class WebSockets extends Controller {
     }
   }
 
+  /**
+   * Handles receiving of alert packets from device.
+   *
+   * Once a valid alert is received, add it to the database.
+   * @param packet Alert packet from device.
+   */
   private static void handleAlert(String packet) {
     String[] alertParts = packet.split(",");
     System.out.println("Received alert...");
     System.out.println(Arrays.toString(alertParts));
-    //models.Alert alert = new models.Alert();
+    // TODO: Add to database.
   }
 
+  /**
+   * Handles receiving of measurement packets from device.
+   *
+   * When a valid measurement is received, that measurement is added to the database.
+   * @param packet Measurement packet from device.
+   */
   private static void handleMeasurement(String packet) {
     String[] data = packet.split(",");
     System.out.println("Received measurement...");
     System.out.println(Arrays.toString(data));
+    // TODO: Add to database.
   }
 }

@@ -23,10 +23,17 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.index;
 
+/**
+ * Contains methods for interacting with the views and models for OPQ's homepage.
+ */
 public class Application extends Controller {
-  
+
+  /**
+   * Render the view for the homepage.
+   * @return The rendered view for the homepage.
+   */
     public static Result index() {
-        return ok(index.render());
+      return ok(index.render());
     }
   
 }

@@ -26,20 +26,40 @@ import views.html.admin.admincdsi;
 import views.html.admin.admindevice;
 import views.html.admin.adminuser;
 
+/**
+ * Contains methods which allow users to interact with the views and models for administrating their account and
+ * their device.
+ */
 public class Administration extends Controller {
 
+  /**
+   * Render the view for user administration.
+   * @return The rendered view for user administration.
+   */
   public static Result user() {
     return ok(adminuser.render());
   }
 
+  /**
+   * Render the view for device administration.
+   * @return The rendered view for device administration.
+   */
   public static Result device() {
     return ok(admindevice.render());
   }
 
+  /**
+   * Render the view for alert administration.
+   * @return The rendered view for alert administration.
+   */
   public static Result alert() {
     return ok(adminalert.render());
   }
 
+  /**
+   * Render the view for CDSI administration.
+   * @return The rendered view for CDSI administration.
+   */
   public static Result cdsi() {
     return ok(admincdsi.render());
   }

@@ -28,19 +28,33 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Contains methods for modifying views and models for both private and public power quality monitoring.
+ */
 public class PowerQualityMonitoring extends Controller {
+
+  /**
+   * Render a public "google-maps" style map with devices and alerts from users who are participating in the CDSI.
+   * @return Rendered view of publics devices and public alerts.
+   */
   public static Result publicMonitor() {
     List<models.Alert> alerts = new LinkedList<>();
     List<models.OpqDevice> devices = OpqDevice.find().where().eq("participatingInCdsi", true).findList();
-
-
     return ok(views.html.publicpowerqualitymonitoring.render(alerts, devices, true));
   }
 
+  /**
+   * Render a view which contains a list of power quality events for the current logged in user.
+   * @return Rendered view of power quality events for current user.
+   */
   public static Result privateMonitor() {
     return ok(views.html.privatepowerqualitymonitoring.render());
   }
 
+  /**
+   * Mockup method that should be removed once the DB is correctly implemented.
+   * @return A csv view of alerts.
+   */
   public static Result getAlerts() {
     String alerts = "lat\tlon\ttitle\tdescription\ticon\n"
       + "21.3069\t-157.8583\tFrequency Alert\t57 Hz (4 sec)\t"

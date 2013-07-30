@@ -23,7 +23,14 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.wizard.wizard;
 
+/**
+ * Contains methods for interacting with views and models for sign-up wizard.
+ */
 public class Wizard extends Controller {
+  /**
+   * Render the view for the sign-up wizard.
+   * @return Rendered view of the sign-up wizard.
+   */
   public static Result index() {
     return ok(wizard.render());
   }
