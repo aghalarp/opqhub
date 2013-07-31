@@ -19,14 +19,24 @@
 
 package tests;
 
-import models.*;
-import org.junit.*;
-import play.test.*;
+import models.Alert;
+import models.AlertNotification;
+import models.ExternalEvent;
+import models.Measurement;
+import models.OpqDevice;
+import models.Person;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import play.test.FakeApplication;
 
-import java.util.*;
+import java.util.List;
 
-import static org.junit.Assert.*;
-import static play.test.Helpers.*;
+import static org.junit.Assert.assertEquals;
+import static play.test.Helpers.fakeApplication;
+import static play.test.Helpers.inMemoryDatabase;
+import static play.test.Helpers.start;
+import static play.test.Helpers.stop;
 
 /**
  * Contains methods that test the model portion of our MVC.

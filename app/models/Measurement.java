@@ -22,7 +22,10 @@ package models;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 /**
  * This contains methods pertaining to persisted measurement objects.

@@ -21,7 +21,10 @@ package models;
 
 import play.db.ebean.Model;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 /**
  * Contains methods for viewing managing persistent AlertNotifications.

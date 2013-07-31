@@ -19,7 +19,8 @@
 
 package utils;
 
-import java.security.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Provides various helper utilities for dealing with forms.
