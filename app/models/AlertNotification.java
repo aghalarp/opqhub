@@ -21,9 +21,7 @@ package models;
 
 import play.db.ebean.Model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 /**
  * Contains methods for viewing managing persistent AlertNotifications.
@@ -31,6 +29,7 @@ import javax.persistence.ManyToOne;
  * AlertNotifications are created by the user to determine what their OPQ device views as power quality alerts.
  * They can also be configured so that SMS messages or emails are generated when an alert is triggered.
  */
+@Entity
 public class AlertNotification extends Model {
   /**
    * Primary key.
@@ -100,6 +99,37 @@ public class AlertNotification extends Model {
    * Any value greate than this maximum should trigger an alert.
    */
   private Double maxAcceptableFrequency;
+
+  /**
+   * Convenience method for test package.
+   * @param voltageAlertNotification Should bad voltages trigger an alert.
+   * @param frequencyAlertNotification Should bad frequencies trigger an alert.
+   * @param alertViaEmail Should users be e-mailed on alerts.
+   * @param alertViaSms Should users be texted on alerts.
+   * @param smsCarrier Carrier of users text service.
+   * @param smsNumber Users sms number.
+   * @param notificationEmail Users notification email.
+   * @param minAcceptableFrequency Min frequency that will not trigger alert.
+   * @param maxAcceptableFrequency Max frequency that will not trigger alert.
+   * @param minAcceptableVoltage Min voltage that will not trigger an alert.
+   * @param maxAcceptableVoltage Max voltage that will not trigger an alert.
+   */
+  public AlertNotification(Boolean voltageAlertNotification, Boolean frequencyAlertNotification,
+                           Boolean alertViaEmail, Boolean alertViaSms, String smsCarrier, String smsNumber,
+                           String notificationEmail, Double minAcceptableFrequency, Double maxAcceptableFrequency,
+                           Double minAcceptableVoltage, Double maxAcceptableVoltage) {
+    this.setVoltageAlertNotification(voltageAlertNotification);
+    this.setFrequencyAlertNotification(frequencyAlertNotification);
+    this.setAlertViaEmail(alertViaEmail);
+    this.setAlertViaSms(alertViaSms);
+    this.setSmsCarrier(smsCarrier);
+    this.setSmsNumber(smsNumber);
+    this.setNotificationEmail(notificationEmail);
+    this.setMinAcceptableFrequency(minAcceptableFrequency);
+    this.setMaxAcceptableFrequency(maxAcceptableFrequency);
+    this.setMinAcceptableVoltage(minAcceptableVoltage);
+    this.setMaxAcceptableVoltage(maxAcceptableVoltage);
+  }
 
   /**
    * Many alert notifications may be set up for a single device.

@@ -22,15 +22,14 @@ package models;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 /**
  * This contains methods pertaining to persisted measurement objects.
  *
  * Measures are made by an opq device and contain a voltage, frequency measurement from a single point in time.
  */
+@Entity
 public class Measurement extends Model {
   /**
    * The primary key.

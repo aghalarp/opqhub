@@ -24,9 +24,7 @@ package models;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +34,7 @@ import java.util.List;
  * External events can be created by users in order to "tag" power events as being caused by some outside event.
  * Maybe a storm came through, a tree hit the power lines, or somebody ran into a telephone pole.
  */
+@Entity
 public class ExternalEvent extends Model {
   /**
    * The primary key.

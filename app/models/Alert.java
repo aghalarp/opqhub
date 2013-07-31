@@ -22,9 +22,7 @@ package models;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 /**
  * This contains methods for viewing and modifying the persistent Alert object.
@@ -32,6 +30,7 @@ import javax.persistence.ManyToOne;
  * Alerts are triggered when power quality is not up to snuff. They indicate that either the voltage or frequency are
  * off the status-quo, or that an error has occured with the user's opq-device.
  */
+@Entity
 public class Alert extends Model {
   /**
    * Enumeration of current alert types.

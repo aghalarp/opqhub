@@ -22,10 +22,7 @@ package models;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +32,7 @@ import java.util.List;
  * OPQ devices have an id, description, and optional locational information. OPQ devices tend to link the rest of
  * the persisted object together.
  */
+@Entity
 public class OpqDevice extends Model {
   /**
    * The primary key.
@@ -128,7 +126,17 @@ public class OpqDevice extends Model {
   @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
   private List<Alert> alerts = new ArrayList<>();
 
-  // TODO: Implement constructor
+  /**
+   * Convenience constructor for test package.
+   * @param deviceId Id of the device as 16 hex digits.
+   * @param description Short description of the device.
+   * @param state State that device is located in.
+   */
+  public OpqDevice(Long deviceId, String description, String state) {
+    this.setDeviceId(deviceId);
+    this.setDescription(description);
+    this.setState(state);
+  }
 
   /**
    * Finder for filtering persisted devices.

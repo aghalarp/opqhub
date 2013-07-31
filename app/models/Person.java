@@ -23,15 +23,14 @@ import com.avaje.ebean.validation.Email;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Contains methods relating to the persisted Person entity.
  */
+@Entity
 public class Person extends Model {
   /**
    * Primary key.
@@ -62,7 +61,7 @@ public class Person extends Model {
    * Password hash.
    */
   @Required
-  private String passwordHash;
+  private byte[] passwordHash;
 
   /**
    * State.
@@ -89,6 +88,31 @@ public class Person extends Model {
    * Street number.
    */
   private String streetNumber;
+
+  /**
+   * Convenience constructor for creating Person objects while testing.
+   * @param firstName The first name of the person.
+   * @param lastName The last name of the person.
+   * @param email The email of the person.
+   * @param passwordHash The password hash of the person.
+   * @param state The state of the person.
+   * @param city The city of the person.
+   * @param zip The zip of the person.
+   * @param streetName The street name that the person lives on.
+   * @param streetNumber The street number that the person lives at.
+   */
+  public Person(String firstName, String lastName, String email, byte[] passwordHash, String state, String city,
+                String zip, String streetName, String streetNumber) {
+    this.setFirstName(firstName);
+    this.setLastName(lastName);
+    this.setEmail(email);
+    this.setPasswordHash(passwordHash);
+    this.setState(state);
+    this.setCity(city);
+    this.setZip(zip);
+    this.setStreetName(streetName);
+    this.setStreetNumber(streetNumber);
+  }
 
   /**
    * Devices that this person is associated with.
@@ -174,7 +198,7 @@ public class Person extends Model {
    * Gets person's password hash.
    * @return Person's password hash.
    */
-  public String getPasswordHash() {
+  public byte[] getPasswordHash() {
     return passwordHash;
   }
 
@@ -182,7 +206,7 @@ public class Person extends Model {
    * Sets the person's password hash.
    * @param passwordHash The password hash for this person.
    */
-  public void setPasswordHash(String passwordHash) {
+  public void setPasswordHash(byte[] passwordHash) {
     this.passwordHash = passwordHash;
   }
 
