@@ -19,6 +19,8 @@
 
 package utils;
 
+import java.security.*;
+
 /**
  * Provides various helper utilities for dealing with forms.
  */
@@ -116,6 +118,29 @@ public final class FormUtils {
       carriers[i] = SMS_CARRIERS[i][0];
     }
     return carriers;
+  }
+
+  /**
+   * Hashes a password using the SHA-256 algorithm.
+   * @param password The password to be hashed.
+   * @return The secure hash of the password.
+   */
+  public static byte[] hashPassword(String password) {
+    MessageDigest md;
+    byte[] data = password.getBytes();
+    byte[] hashed;
+
+    try {
+      md = MessageDigest.getInstance("SHA-256");
+      md.update(data);
+      hashed = md.digest();
+    }
+    catch (NoSuchAlgorithmException e) {
+      hashed = new byte[0];
+      System.err.println("This system does not support the SHA-256 hashing algorithm.");
+      e.printStackTrace();
+    }
+    return hashed;
   }
 
 }
