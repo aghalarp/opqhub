@@ -99,31 +99,6 @@ public class Person extends Model {
   private List<OpqDevice> devices = new ArrayList<>();
 
   /**
-   * Convenience constructor.
-   * @param firstName First name of the person.
-   * @param lastName Last name of the person.
-   * @param email E-mail of the person.
-   * @param passwordHash Password hash of the person.
-   * @param state State person resides in.
-   * @param city City person resides in.
-   * @param zip Zip that person resides in.
-   * @param streetName Street name that person resides on.
-   * @param streetNumber Street number that person resides on.
-   */
-  public Person(String firstName, String lastName, String email, String passwordHash, String state, String city,
-                String zip, String streetName, String streetNumber) {
-    this.setFirstName(firstName);
-    this.setLastName(lastName);
-    this.setEmail(email);
-    this.setPasswordHash(passwordHash);
-    this.setState(state);
-    this.setCity(city);
-    this.setZip(zip);
-    this.setStreetName(streetName);
-    this.setStreetNumber(streetNumber);
-  }
-
-  /**
    * Finder for filtering persisted person entities.
    * @return New finder for filtering persisted person entities.
    */

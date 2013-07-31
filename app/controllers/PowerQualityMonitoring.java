@@ -19,12 +19,10 @@
 
 package controllers;
 
-import models.Alert;
 import models.OpqDevice;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 

@@ -22,7 +22,7 @@ package utils;
 /**
  * Provides various helper utilities for dealing with forms.
  */
-public class FormUtils {
+public final class FormUtils {
   /**
    * Ensure that util class can not be instantiated.
    */
