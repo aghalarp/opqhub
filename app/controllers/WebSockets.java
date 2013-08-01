@@ -1,3 +1,22 @@
+/*
+  This file is part of opq-ao.
+
+  opa-ao is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  opa-ao is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with opq-ao.  If not, see <http://www.gnu.org/licenses/>.
+
+  Copyright 2013 Anthony Christe
+ */
+
 package controllers;
 
 import play.libs.F;
@@ -6,8 +25,15 @@ import play.mvc.WebSocket;
 
 import java.util.Arrays;
 
+/**
+ * Provides methods for handling packets sent to this server from a WebSockets client.
+ */
 public class WebSockets extends Controller {
 
+  /**
+   * Create a WebSocket object who can receive connections, receive packets, and break connections.
+   * @return A WebSocket object.
+   */
   public static WebSocket<String> handleSocket() {
     return new WebSocket<String>() {
       @Override
@@ -29,6 +55,10 @@ public class WebSockets extends Controller {
     };
   }
 
+  /**
+   * Determines the type of packet that was received from the WebSocket, and calls the correct sub-handler.
+   * @param packet The packet received from the WebSocket object.
+   */
   private static void handlePacket(String packet) {
     switch(packet.split(",")[1]) {
       case "A":
@@ -37,19 +67,34 @@ public class WebSockets extends Controller {
       case "M":
         handleMeasurement(packet);
         break;
+      default:
+        System.out.println("Unknown packet type");
     }
   }
 
+  /**
+   * Handles receiving of alert packets from device.
+   *
+   * Once a valid alert is received, add it to the database.
+   * @param packet Alert packet from device.
+   */
   private static void handleAlert(String packet) {
     String[] alertParts = packet.split(",");
     System.out.println("Received alert...");
     System.out.println(Arrays.toString(alertParts));
-    //models.Alert alert = new models.Alert();
+    // TODO: Add to database.
   }
 
+  /**
+   * Handles receiving of measurement packets from device.
+   *
+   * When a valid measurement is received, that measurement is added to the database.
+   * @param packet Measurement packet from device.
+   */
   private static void handleMeasurement(String packet) {
     String[] data = packet.split(",");
     System.out.println("Received measurement...");
     System.out.println(Arrays.toString(data));
+    // TODO: Add to database.
   }
 }

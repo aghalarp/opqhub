@@ -1,5 +1,4 @@
 import sbt._
-import Keys._
 import play.Project._
 
 object ApplicationBuild extends Build {
@@ -9,7 +8,7 @@ object ApplicationBuild extends Build {
 
   val appDependencies = Seq(
     // Add your project dependencies here,
-    //"mysql" % "mysql-connector-java" % "5.1.21",
+    "mysql" % "mysql-connector-java" % "5.1.21",
     javaCore,
     javaJdbc,
     javaEbean
