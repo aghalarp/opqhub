@@ -85,7 +85,7 @@ public class ModelTests {
                                                                 "email@email.com", 58.0, 62.0, 158.0, 162.0);
 
     // Create an OpqDevice model object
-    OpqDevice opqDevice = new OpqDevice(0x0123456789ABCDEFL, "description", "Hawaii");
+    OpqDevice opqDevice = new OpqDevice("0x0123456789ABCDEF", "description", "Hawaii");
 
     // Associate external event with alert
     externalEvent.getAlerts().add(alert);
