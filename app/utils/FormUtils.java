@@ -19,8 +19,12 @@
 
 package utils;
 
+import play.Logger;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Provides various helper utilities for dealing with forms.
@@ -34,9 +38,9 @@ public final class FormUtils {
   }
 
   /**
-   * List of United States states in alphabetical order.
+   * Array of United States states in alphabetical order.
    */
-  public static final String[] LIST_OF_STATES = {
+  public static final String[] ARRAY_OF_STATES = {
     "Alabama",
     "Alaska",
     "Arizona",
@@ -90,6 +94,11 @@ public final class FormUtils {
   };
 
   /**
+   * List of U.S. states in alphabetical order.
+   */
+  public static final List<String> LIST_OF_STATES = Arrays.asList(ARRAY_OF_STATES);
+
+  /**
    * List of popular U.S. based wireless carriers and their sms gateways.
    *
    * To use the gateways, simply send an e-mail to the address associated with the wireless carrier and replace
@@ -122,6 +131,11 @@ public final class FormUtils {
   }
 
   /**
+   * List of popular US SMS carriers.
+   */
+  public static final List<String> LIST_OF_SMS_CARRIERS = Arrays.asList(getSmsCarriers());
+
+  /**
    * Hashes a password using the SHA-256 algorithm.
    * @param password The password to be hashed.
    * @return The secure hash of the password.
@@ -138,7 +152,7 @@ public final class FormUtils {
     }
     catch (NoSuchAlgorithmException e) {
       hashed = new byte[0];
-      System.err.println("This system does not support the SHA-256 hashing algorithm.");
+      Logger.error("This system does not support the SHA-256 hashing algorithm.");
       e.printStackTrace();
     }
     return hashed;
