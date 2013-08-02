@@ -1,83 +1,59 @@
 @*
-    This file is part of opq-ao.
+This file is part of opq-ao.
 
-    opa-ao is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+opa-ao is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    opa-ao is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+opa-ao is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with opq-ao.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 
-    Copyright 2013 Anthony Christe
+Copyright 2013 Anthony Christe
 *@
 
+@(personForm: Form[models.Person])
+
+@import helper._
+  @implicitFieldConstructor = @{
+    FieldConstructor(twitterBootstrapInput.render)
+  }
+
 <div class="row">
-    <div class="span9">
-        <form class="form-horizontal">
-            <div class="control-group">
-                <label class="control-label" for="firstName">First Name</label>
-                <div class="controls">
-                    <input type="text" id="firstName" placeholder="John" required>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="lastName">Last Name</label>
-                <div class="controls">
-                    <input type="text" id="lastName" placeholder="Doe" required>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="email">E-Mail</label>
-                <div class="controls">
-                    <input required type="email" id="email" placeholder="john.doe@@email.com">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="password">Password</label>
-                <div class="controls">
-                    <input type="password" id="password" placeholder="Password" required>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="reenterPassword">Re-enter Password</label>
-                <div class="controls">
-                    <input type="password" id="reenterPassword" placeholder="Password" required>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="userState">State</label>
-                <div class="controls">
-                    <select id="userState">
-                    @for(state <- utils.FormUtils.LIST_OF_STATES) {
-                        <option>@state</option>
-                    }
-                    </select>
-                </div>
-            </div>
-        </form>
+  <div class="span9">
+    @inputText(
+      personForm("firstName"), '_label -> "First Name", 'placeholder -> "John", 'id -> "firstName")
+    @inputText(personForm("lastName"), '_label -> "Last Name", 'placeholder -> "Doe", 'id -> "lastName")
+    @inputText(personForm("email"), '_label -> "E-Mail", 'placeholder -> "john.doe@email.com", 'id -> "email")
+    @inputPassword(personForm("password"), '_label -> "Password", 'placeholder -> "Password", 'id -> "password")
+    @select(
+      personForm("state"),
+      options = options(utils.FormUtils.LIST_OF_STATES),
+      '_label -> "State",
+      '_default -> "Hawaii",
+      'id -> "state")
+  </div>
+  <div class="span3">
+    <div class="well well-small">
+      <p class="bold">Welcome to the OPQ Wizard</p>
+      <p>
+        This wizard will walk you through the steps needed to
+        create an account and also register your OPQ device. You can go back to any step
+        at any time and all of this information can be updated in the future from the
+        administration panel.
+      </p>
+      <p class="bold">User Information</p>
+      <p>
+        This information is required to create an account on openpowerquality.org.
+      </p>
+      <p>
+        All fields are <b>required</b>.
+      </p>
     </div>
-    <div class="span3">
-        <div class="well well-small">
-            <p class="bold">Welcome to the OPQ Wizard</p>
-            <p>
-                                       This wizard will walk you through the steps needed to
-                create an account and also register your OPQ device. You can go back to any step
-                at any time and all of this information can be updated in the future from the
-                administration panel.
-            </p>
-            <p class="bold">User Information</p>
-            <p>
-                                       This information is required to create an account on openpowerquality.org.
-            </p>
-            <p>
-                                       All fields are <b>required</b>.
-            </p>
-        </div>
-    </div>
+  </div>
 </div>

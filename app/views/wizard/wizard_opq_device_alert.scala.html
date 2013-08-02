@@ -17,54 +17,24 @@
     Copyright 2013 Anthony Christe
 *@
 
+@(alertNotificationForm: Form[models.AlertNotification])
+
+@import helper._
+  @implicitFieldConstructor = @{
+    FieldConstructor(twitterBootstrapInput.render)
+  }
+
 <div class="row">
     <div class="span9">
-        <form class="form-horizontal">
-            <div class="control-group">
-                <label class="control-label" for="voltageAlert">Voltage Alert</label>
-                <div class="controls">
-                    <input type="checkbox" id="voltageAlert">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="minVoltageAlert">Minimum Voltage</label>
-                <div class="controls">
-                    <input type="text" id="minVoltageAlert" placeholder="117">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="maxVoltageAlert">Maximum Voltage</label>
-                <div class="controls">
-                    <input type="text" id="maxVoltageAlert" placeholder="122">
-                </div>
-            </div>
-            <hr />
-            <div class="control-group">
-                <label class="control-label" for="frequencyAlert">Frequency Alert</label>
-                <div class="controls">
-                    <input type="checkbox" id="frequencyAlert">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="minFrequencyAlert">Minimum Frequency</label>
-                <div class="controls">
-                    <input type="text" id="minFrequencyAlert" placeholder="57">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="maxFrequencyAlert">Maximum Frequency</label>
-                <div class="controls">
-                    <input type="text" id="maxFrequencyAlert" placeholder="62">
-                </div>
-            </div>
-            <hr />
-            <div class="control-group">
-                <label class="control-label" for="deviceAlert">Device Alert</label>
-                <div class="controls">
-                    <input type="checkbox" id="deviceAlert">
-                </div>
-            </div>
-        </form>
+      @checkbox(alertNotificationForm("voltageAlertNotification"), '_label -> "Voltage Alert", 'id -> "voltageAlert")
+      @inputText(alertNotificationForm("minAcceptableVoltage"), '_label -> "Minimum Voltage", 'placeholder -> "117", 'id -> "minAcceptableVoltage")
+      @inputText(alertNotificationForm("maxAcceptableVoltage"), '_label -> "Maximum Voltage", 'placeholder -> "123", 'id -> "maxAcceptableVoltage")
+      <hr />
+      @checkbox(alertNotificationForm("frequencyAlertNotification"), '_label -> "Frequency Alert", 'id -> "frequencyAlert")
+      @inputText(alertNotificationForm("minAcceptableFrequency"), '_label -> "Minimum Frequency", 'placeholder -> "57", 'id -> "minAcceptableFrequency")
+      @inputText(alertNotificationForm("maxAcceptableFrequency"), '_label -> "Maximum Frequency", 'placeholder -> "63", 'id -> "maxAcceptableFrequency")
+      <hr />
+      @checkbox(alertNotificationForm("deviceAlertNotification"), '_label -> "Device Alert", 'id -> "deviceAlert")
     </div>
     <div class="span3">
         <div class="well well-small">

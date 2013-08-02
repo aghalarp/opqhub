@@ -17,6 +17,15 @@
     Copyright 2013 Anthony Christe
 *@
 
+@(
+    personForm: Form[models.Person],
+    opqDeviceForm: Form[models.OpqDevice],
+    alertNotificationForm: Form[models.AlertNotification]
+)
+
+@import helper._
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.render) }
+
 @main("OPQ Wizard", menu("OPQ Wizard", true)) {
     <script type="text/javascript">
             $('#opq-wizard').wizard();
@@ -50,24 +59,26 @@
                     </div>
                 </div>
                 <div class="step-content">
-                    <div class="step-pane active" id="step1">
-                        @wizard_user_info()
-                    </div>
-                    <div class="step-pane" id="step2">
-                        @wizard_optional_user_info()
-                    </div>
-                    <div class="step-pane" id="step3">
-                        @wizard_opq_device()
-                    </div>
-                    <div class="step-pane" id="step4">
-                        @wizard_opq_device_alert()
-                    </div>
-                    <div class="step-pane" id="step5">
-                        @wizard_alert_notifications()
-                    </div>
-                    <div class="step-pane" id="step6">
-                        @wizard_cdsi()
-                    </div>
+                    @form(routes.Wizard.save(), 'class -> "form-horizontal") {
+                      <div class="step-pane active" id="step1">
+                          @wizard_user_info(personForm)
+                      </div>
+                      <div class="step-pane" id="step2">
+                          @wizard_optional_user_info(personForm)
+                      </div>
+                      <div class="step-pane" id="step3">
+                          @wizard_opq_device(opqDeviceForm)
+                      </div>
+                      <div class="step-pane" id="step4">
+                          @wizard_opq_device_alert(alertNotificationForm)
+                      </div>
+                      <div class="step-pane" id="step5">
+                          @wizard_alert_notifications(alertNotificationForm)
+                      </div>
+                      <div class="step-pane" id="step6">
+                          @wizard_cdsi(opqDeviceForm)
+                      </div>
+                    }
                 </div>
             </div>
         </div>

@@ -17,70 +17,23 @@
     Copyright 2013 Anthony Christe
 *@
 
+@(opqDeviceForm: Form[models.OpqDevice])
+
+@import helper._
+  @implicitFieldConstructor = @{
+    FieldConstructor(twitterBootstrapInput.render)
+  }
+
 <div class="row">
     <div class="span9">
-        <form class="form-horizontal">
-            <div class="control-group">
-                <label class="control-label" for="deviceState">Device State</label>
-                <div class="controls">
-                    <input type="checkbox" id="optState">
-                    <select id="deviceState">
-                    @for(state <- utils.FormUtils.LIST_OF_STATES) {
-                        <option>@state</option>
-                    }
-                    </select>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="deviceCity">Device City</label>
-                <div class="controls">
-                    <input type="checkbox" id="optCity">
-                    <input type="text" id="deviceCity" placeholder="Kailua-Kona">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="deviceZip">Device Zip</label>
-                <div class="controls">
-                    <input type="checkbox" id="optZip">
-                    <input type="text" id="deviceZip" placeholder="96739">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="deviceStreetName">Device Street Name</label>
-                <div class="controls">
-                    <input type="checkbox" id="optStreetName">
-                    <input type="text" id="deviceStreetName" placeholder="Maple Ave">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="deviceStreetNumber">Device Street Number</label>
-                <div class="controls">
-                    <input type="checkbox" id="optStreetNumber">
-                    <input type="text" id="deviceStreetNumber" placeholder="111">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="deviceLatitude">Device Latitude</label>
-                <div class="controls">
-                    <input type="checkbox" id="optLatitude">
-                    <input type="text" id="deviceLatitude" placeholder="19.6406">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="deviceLongitude">Device Longitude</label>
-                <div class="controls">
-                    <input type="checkbox" id="optLongitude">
-                    <input type="text" id="deviceLongitude" placeholder="-155.9956">
-                </div>
-            </div>
-            <hr />
-            <div class="control-group">
-                <label class="control-label" for="optCdsi">Participate in CDSI</label>
-                <div class="controls">
-                    <input type="checkbox" id="optCdsi">
-                </div>
-            </div>
-        </form>
+      @inputText(opqDeviceForm("city"), '_label -> "Device City", 'placeholder -> "Kailua-Kona", 'id -> "deviceCity")
+      @inputText(opqDeviceForm("zip"), '_label -> "Device Zip", 'placeholder -> "96739", 'id -> "deviceZip")
+      @inputText(opqDeviceForm("streetName"), '_label -> "Device Street Name", 'placeholder -> "Palani Rd", 'id -> "deviceStreetName")
+      @inputText(opqDeviceForm("streetNumber"), '_label -> "Device Street Number", 'placeholder -> "111", 'id -> "deviceStreetNumber")
+      @inputText(opqDeviceForm("latitude"), '_label -> "Device Latitude", 'placeholder -> "19.6406", 'id -> "deviceLatitude")
+      @inputText(opqDeviceForm("longitude"), '_label -> "Device Longitude", 'placeholder -> "-155.9956", 'id -> "deviceLongitude")
+      <hr />
+      @checkbox(opqDeviceForm("participatingInCdsi"), '_label -> "Participate in CDSI", 'id -> "participateInCdsi")
     </div>
     <div class="span3">
         <div class="well well-small">
@@ -96,8 +49,8 @@
             <p class="bold">Opting-In</p>
             <p>
                 To opt-in to the Community Data Sharing Initiative, make sure "Participate in CDSI" is selected. Then,
-                for each field that you would like to share with the public, make sure the checkbox for that field is
-                selected and that a correct value for that field is entered.
+                for each field that you would like to share with the public, fill it in. If you do not want to share
+                a field with the public, leave it blank.
             </p>
             <p class="bold">
                 When Finished

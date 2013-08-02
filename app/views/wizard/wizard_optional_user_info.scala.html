@@ -17,34 +17,19 @@
     Copyright 2013 Anthony Christe
 *@
 
+@(personForm: Form[models.Person])
+
+@import helper._
+  @implicitFieldConstructor = @{
+    FieldConstructor(twitterBootstrapInput.render)
+  }
+
 <div class="row">
     <div class="span9">
-        <form class="form-horizontal">
-            <div class="control-group">
-                <label class="control-label" for="userCity">City</label>
-                <div class="controls">
-                    <input type="text" id="userCity" placeholder="Kailua-Kona">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="userZip">Zip</label>
-                <div class="controls">
-                    <input type="text" id="userZip" placeholder="96739">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="userStreetName">Street Name</label>
-                <div class="controls">
-                    <input type="text" id="userStreetName" placeholder="Willow Ave">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="userStreetNumber">Street Number</label>
-                <div class="controls">
-                    <input type="text" id="userStreetNumber" placeholder="111">
-                </div>
-            </div>
-        </form>
+      @inputText(personForm("city"), '_label -> "City", 'placeholder -> "Kailua-Kona", 'id -> "userCity")
+      @inputText(personForm("zip"), '_label -> "Zip", 'placeholder -> "96739", 'id -> "userZip")
+      @inputText(personForm("streetName"), '_label -> "Street Name", 'placeholder -> "Palani Rd", 'id -> "userStreetName")
+      @inputText(personForm("streetNumber"), '_label -> "Street Number", 'placeholder -> "111", 'id -> "userStreetNumber")
     </div>
     <div class="span3">
         <div class="well well-small">

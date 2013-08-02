@@ -17,45 +17,25 @@
     Copyright 2013 Anthony Christe
 *@
 
+@(alertNotificationForm: Form[models.AlertNotification])
+
+@import helper._
+  @implicitFieldConstructor = @{
+    FieldConstructor(twitterBootstrapInput.render)
+  }
+
 <div class="row">
     <div class="span9">
-        <form class="form-horizontal">
-            <div class="control-group">
-                <label class="control-label" for="emailAlert">E-Mail Alert</label>
-                <div class="controls">
-                    <input type="checkbox" id="emailAlert">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="emailAlertAddr">Alert Address</label>
-                <div class="controls">
-                    <input type="email" id="emailAlertAddr" placeholder="john.doe@@email.com">
-                </div>
-            </div>
-            <hr />
-            <div class="control-group">
-                <label class="control-label" for="smsAlert">SMS Alert</label>
-                <div class="controls">
-                    <input type="checkbox" id="smsAlert">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="smsCarrier">SMS Carrier</label>
-                <div class="controls">
-                    <select id="smsCarrier">
-                    @for(carrier <- utils.FormUtils.getSmsCarriers) {
-                        <option>@carrier</option>
-                    }
-                    </select>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="smsNumber">SMS Number</label>
-                <div class="controls">
-                    <input type="text" id="smsNumber" placeholder="808-555-5555">
-                </div>
-            </div>
-        </form>
+      @checkbox(alertNotificationForm("alertViaEmail"), '_label -> "E-Mail Alert", 'id -> "emailAlert")
+      @inputText(alertNotificationForm("notificationEmail"), '_label -> "Alert Address", 'placeholder -> "john.doe@email.com", 'id -> "notificationEmail")
+      <hr />
+      @checkbox(alertNotificationForm("alertViaSms"), '_label -> "SMS Alert", 'id -> "smsAlert")
+      @select(
+        alertNotificationForm("smsCarrier"),
+        options = options(utils.FormUtils.LIST_OF_SMS_CARRIERS),
+        '_label -> "SMS Carrier",
+        'id -> "smsCarrier")
+      @inputText(alertNotificationForm("smsNumber"), '_label -> "SMS Number", 'placeholder -> "808-555-5555", 'id -> "smsNumber")
     </div>
     <div class="span3">
         <div class="well well-small">
