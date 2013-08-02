@@ -75,6 +75,13 @@ public class Person extends Model {
   private byte[] passwordHash;
 
   /**
+   * Password salt.
+   * The salt is a random 32 byte value generated at account creating or password update.
+   */
+  @Required
+  private byte[] passwordSalt;
+
+  /**
    * State.
    */
   @Required
@@ -211,7 +218,8 @@ public class Person extends Model {
    * @param password The plain-text password to generate a hash for.
    */
   public void setPassword(String password) {
-    this.setPasswordHash(utils.FormUtils.hashPassword(password));
+    this.setPasswordSalt(utils.FormUtils.generateRandomSalt());
+    this.setPasswordHash(utils.FormUtils.hashPassword(password, this.getPasswordSalt()));
   }
 
   /**
@@ -228,6 +236,22 @@ public class Person extends Model {
    */
   public void setPasswordHash(byte[] passwordHash) {
     this.passwordHash = passwordHash;
+  }
+
+  /**
+   * Returns this person's salt value.
+   * @return This person's salt value.
+   */
+  public byte[] getPasswordSalt() {
+    return this.passwordSalt;
+  }
+
+  /**
+   * Set this person's salt.
+   * @param passwordSalt 32-bit random salt.
+   */
+  public void setPasswordSalt(byte[] passwordSalt) {
+    this.passwordSalt = passwordSalt;
   }
 
   /**

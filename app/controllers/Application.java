@@ -19,9 +19,17 @@
 
 package controllers;
 
+import models.Person;
+import play.data.Form;
+import play.data.validation.Constraints;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.index;
+import views.html.login;
+
+import java.util.Arrays;
+
+import static play.data.Form.form;
 
 /**
  * Contains methods for interacting with the views and models for OPQ's homepage.
@@ -30,10 +38,49 @@ public class Application extends Controller {
 
   /**
    * Render the view for the homepage.
+   *
    * @return The rendered view for the homepage.
    */
-    public static Result index() {
-      return ok(index.render());
+  public static Result index() {
+    return ok(index.render());
+  }
+
+  public static Result login() {
+    return ok(login.render(form(Login.class)));
+  }
+
+  public static Result authenticate() {
+    Form<Login> loginForm = form(Login.class).bindFromRequest();
+    if(loginForm.hasErrors()) {
+      return badRequest(login.render(loginForm));
     }
-  
+    else {
+      session().clear();
+      session("email", loginForm.get().email);
+      return redirect(routes.Application.index());
+    }
+  }
+
+  public static class Login {
+    @Constraints.Required
+    @Constraints.Email
+    public String email;
+
+    @Constraints.Required
+    public String password;
+
+    public String validate() {
+      // First try to find a person with a matching email
+      Person person = Person.find().where().eq("email", email).findUnique();
+      if(person == null) {
+        return "Invalid user or password";
+      }
+      // See if the passwords match
+      byte[] hashedPassword = utils.FormUtils.hashPassword(password, person.getPasswordSalt());
+      if(!Arrays.equals(person.getPasswordHash(), hashedPassword)) {
+        return "Invalid email or password";
+      }
+      return null;
+    }
+  }
 }

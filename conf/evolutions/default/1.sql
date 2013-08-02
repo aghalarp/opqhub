@@ -74,6 +74,7 @@ create table person (
   email                     varchar(255),
   password                  varchar(255),
   password_hash             varbinary(255),
+  password_salt             varbinary(255),
   state                     varchar(255),
   city                      varchar(255),
   zip                       varchar(255),

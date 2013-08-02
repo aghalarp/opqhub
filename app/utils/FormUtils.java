@@ -23,6 +23,7 @@ import play.Logger;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
 
@@ -140,10 +141,14 @@ public final class FormUtils {
    * @param password The password to be hashed.
    * @return The secure hash of the password.
    */
-  public static byte[] hashPassword(String password) {
+  public static byte[] hashPassword(String password, byte[] salt) {
     MessageDigest md;
-    byte[] data = password.getBytes();
+    byte[] passwordBytes = password.getBytes();
+    byte[] data = new byte[salt.length + passwordBytes.length];
     byte[] hashed;
+
+    System.arraycopy(salt, 0, data, 0, salt.length);
+    System.arraycopy(passwordBytes, 0, data, salt.length, passwordBytes.length);
 
     try {
       md = MessageDigest.getInstance("SHA-256");
@@ -156,6 +161,17 @@ public final class FormUtils {
       e.printStackTrace();
     }
     return hashed;
+  }
+
+  /**
+   * Generates a random 32 bytes salt.
+   * @return Random 32 byte salt.
+   */
+  public static byte[] generateRandomSalt() {
+    byte[] salt = new byte[32];
+    SecureRandom random = new SecureRandom();
+    random.nextBytes(salt);
+    return salt;
   }
 
 }
