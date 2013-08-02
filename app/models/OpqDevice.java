@@ -57,10 +57,11 @@ public class OpqDevice extends Model {
   @Constraints.Required
   private String description;
 
-  // TODO: Figure out rest of constraints
+
   /**
    * State that the device is located in (not optional).
    */
+  @Constraints.Required
   private String state;
 
   /**
@@ -136,7 +137,7 @@ public class OpqDevice extends Model {
    * @param description Short description of the device.
    * @param state State that device is located in.
    */
-  public OpqDevice(Long deviceId, String description, String state) {
+  public OpqDevice(String deviceId, String description, String state) {
     this.setDeviceId(deviceId);
     this.setDescription(description);
     this.setState(state);
@@ -178,8 +179,8 @@ public class OpqDevice extends Model {
    * Sets the device id.
    * @param deviceId A unique 64-bit int.
    */
-  public void setDeviceId(Long deviceId) {
-    this.deviceId = deviceId;
+  public void setDeviceId(String deviceId) {
+    this.deviceId = Long.parseLong(deviceId.replaceAll("-", ""), 16);
   }
 
   /**
