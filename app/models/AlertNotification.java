@@ -51,6 +51,11 @@ public class AlertNotification extends Model {
    */
   private Boolean frequencyAlertNotification;
 
+  /**
+   * If true, then alerts will be triggered on device malfunctions
+   */
+  private Boolean deviceAlertNotification;
+
   // TODO: Implement sending of e-mail on alert.
   /**
    * If true, alerts should trigger an e-mail message.
@@ -164,6 +169,22 @@ public class AlertNotification extends Model {
    */
   public void setPrimaryKey(Long primaryKey) {
     this.primaryKey = primaryKey;
+  }
+
+  /**
+   * Tests whether or not alerts should be triggered on device malfunctions.
+   * @return Whether or not alerts should be triggered on device malfunctions.
+   */
+  public Boolean getDeviceAlertNotification() {
+    return this.deviceAlertNotification;
+  }
+
+  /**
+   * Set whether or not alerts should be triggered on device malfunctions.
+   * @param deviceAlertNotification True to trigger, false otherwise.
+   */
+  public void setDeviceAlertNotification(boolean deviceAlertNotification) {
+    this.deviceAlertNotification = deviceAlertNotification;
   }
 
   /**
