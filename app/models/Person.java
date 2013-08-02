@@ -61,6 +61,14 @@ public class Person extends Model {
   private String email;
 
   /**
+   * Password.
+   * The password itself should never be stored to the DB.
+   * This field is simply used as a temp. location while the password hash is created.
+   */
+  @Required
+  private String password;
+
+  /**
    * Password hash.
    */
   @Required
@@ -195,6 +203,15 @@ public class Person extends Model {
    */
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  /**
+   * Uses the supplied password to create a password hash.
+   *
+   * @param password The plain-text password to generate a hash for.
+   */
+  public void setPassword(String password) {
+    this.setPasswordHash(utils.FormUtils.hashPassword(password));
   }
 
   /**
