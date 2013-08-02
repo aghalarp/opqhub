@@ -24,6 +24,7 @@ GET        /                            controllers.Application.index()
 
 # Sign Up
 GET        /public/wizard               controllers.Wizard.index()
+POST       /public/wizard/save          controllers.Wizard.save()
 
 # Administration
 GET        /private/admin/user          controllers.Administration.user()
