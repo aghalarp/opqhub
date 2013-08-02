@@ -19,6 +19,7 @@
 
 package controllers;
 
+import models.Alert;
 import models.OpqDevice;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -36,7 +37,7 @@ public class PowerQualityMonitoring extends Controller {
    * @return Rendered view of publics devices and public alerts.
    */
   public static Result publicMonitor() {
-    List<models.Alert> alerts = new LinkedList<>();
+    List<models.Alert> alerts = Alert.find().all();
     List<models.OpqDevice> devices = OpqDevice.find().where().eq("participatingInCdsi", true).findList();
     return ok(views.html.publicpowerqualitymonitoring.render(alerts, devices, true));
   }
