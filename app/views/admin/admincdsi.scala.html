@@ -29,6 +29,11 @@
     <div class="span9">
 
         <table class="table well well-small">
+          @if(flash.contains("updated")) {
+            <p class="success">
+            @flash.get("updated")
+            </p>
+          }
             <thead>
                 <tr>
                     <th>Device Id</th>
