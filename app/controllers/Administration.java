@@ -38,13 +38,14 @@ import java.util.List;
 import static play.data.Form.form;
 
 /**
- * Contains methods which allow users to interact with the views and models for administrating their account and
- * their device.
+ * Contains methods which allow users to interact with the views and models for administrating their account and their
+ * device.
  */
 public class Administration extends Controller {
 
   /**
    * Render the view for user administration.
+   *
    * @return The rendered view for user administration.
    */
   @Security.Authenticated(Secured.class)
@@ -59,7 +60,7 @@ public class Administration extends Controller {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     Form<Person> personForm = form(Person.class).bindFromRequest();
 
-    if(personForm.hasErrors()) {
+    if (personForm.hasErrors()) {
       return ok(error.render("Problem updating person", personForm.errors().toString()));
     }
 
@@ -69,6 +70,7 @@ public class Administration extends Controller {
 
   /**
    * Render the view for device administration.
+   *
    * @return The rendered view for device administration.
    */
   @Security.Authenticated(Secured.class)
@@ -78,7 +80,7 @@ public class Administration extends Controller {
     List<OpqDevice> opqDevices = person.getDevices();
     List<Form<OpqDevice>> opqDeviceForms = new ArrayList<>();
 
-    for(OpqDevice opqDevice : opqDevices) {
+    for (OpqDevice opqDevice : opqDevices) {
       opqDeviceForms.add(form(OpqDevice.class).fill(opqDevice));
     }
 
@@ -88,7 +90,7 @@ public class Administration extends Controller {
   @Security.Authenticated(Secured.class)
   public static Result saveDevice() {
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
-    if(opqDeviceForm.hasErrors()) {
+    if (opqDeviceForm.hasErrors()) {
       return ok(error.render("Problem saving new device", opqDeviceForm.errors().toString()));
     }
 
@@ -108,7 +110,7 @@ public class Administration extends Controller {
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
 
-    if(opqDeviceForm.hasErrors()) {
+    if (opqDeviceForm.hasErrors()) {
       return ok(error.render("Problem updating device", opqDeviceForm.errors().toString()));
     }
 
@@ -120,7 +122,9 @@ public class Administration extends Controller {
 
   /**
    * Warning: Don't call this unless you want every relationship attached to it deleted as well.
+   *
    * @param deviceId Device id.
+   *
    * @return Redirect back to devices page.
    */
   @Security.Authenticated(Secured.class)
@@ -134,6 +138,7 @@ public class Administration extends Controller {
 
   /**
    * Render the view for alert administration.
+   *
    * @return The rendered view for alert administration.
    */
   @Security.Authenticated(Secured.class)
@@ -144,9 +149,9 @@ public class Administration extends Controller {
     Form<AlertNotification> alertNotificationForm;
     List<String> deviceIds = new ArrayList<>();
 
-    for(OpqDevice opqDevice : devices) {
+    for (OpqDevice opqDevice : devices) {
       deviceIds.add(opqDevice.getDeviceId());
-      for(AlertNotification alertNotification : opqDevice.getAlertNotifications()) {
+      for (AlertNotification alertNotification : opqDevice.getAlertNotifications()) {
         alertNotificationForm = form(AlertNotification.class).fill(alertNotification);
         alertNotificationForm.data().put("deviceId", opqDevice.getDeviceId());
         alertNotificationForms.add(alertNotificationForm);
@@ -162,12 +167,13 @@ public class Administration extends Controller {
   public static Result saveAlert() {
     Form<AlertNotification> alertNotificationForm = form(AlertNotification.class).bindFromRequest();
 
-    if(alertNotificationForm.hasErrors()) {
+    if (alertNotificationForm.hasErrors()) {
       return ok(error.render("Problem creating new alert notification", alertNotificationForm.errors().toString()));
     }
 
     AlertNotification alertNotification = alertNotificationForm.get();
-    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", alertNotificationForm.data().get("deviceId")).findUnique();
+    OpqDevice opqDevice =
+        OpqDevice.find().where().eq("deviceId", alertNotificationForm.data().get("deviceId")).findUnique();
 
     opqDevice.getAlertNotifications().add(alertNotification);
     alertNotification.setDevice(opqDevice);
@@ -182,7 +188,7 @@ public class Administration extends Controller {
   public static Result updateAlert(String id) {
     Form<AlertNotification> alertNotificationForm = form(AlertNotification.class).bindFromRequest();
 
-    if(alertNotificationForm.hasErrors()) {
+    if (alertNotificationForm.hasErrors()) {
       return ok(error.render("Problem updating alert notifications", alertNotificationForm.errors().toString()));
     }
 
@@ -193,6 +199,7 @@ public class Administration extends Controller {
 
   /**
    * Render the view for CDSI administration.
+   *
    * @return The rendered view for CDSI administration.
    */
   @Security.Authenticated(Secured.class)
@@ -200,7 +207,7 @@ public class Administration extends Controller {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     List<Form<OpqDevice>> opqDeviceForms = new ArrayList<>();
 
-    for(OpqDevice opqDevice : person.getDevices()) {
+    for (OpqDevice opqDevice : person.getDevices()) {
       opqDeviceForms.add(form(OpqDevice.class).fill(opqDevice));
     }
 
@@ -212,7 +219,7 @@ public class Administration extends Controller {
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
 
-    if(opqDeviceForm.hasErrors()) {
+    if (opqDeviceForm.hasErrors()) {
       return ok(error.render("Problem updating CDSI information", opqDeviceForm.errors().toString()));
     }
 

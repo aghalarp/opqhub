@@ -32,9 +32,9 @@ import java.util.List;
 
 /**
  * Contains methods for manipulating persisted OpqDevices.
- *
- * OPQ devices have an id, description, and optional locational information. OPQ devices tend to link the rest of
- * the persisted object together.
+ * <p/>
+ * OPQ devices have an id, description, and optional locational information. OPQ devices tend to link the rest of the
+ * persisted object together.
  */
 @Entity
 public class OpqDevice extends Model {
@@ -51,8 +51,7 @@ public class OpqDevice extends Model {
   private String deviceId;
 
   /**
-   * Short description of the device.
-   * I.e. basement, office, etc.
+   * Short description of the device. I.e. basement, office, etc.
    */
   @Constraints.Required
   private String description;
@@ -101,7 +100,7 @@ public class OpqDevice extends Model {
 
   /**
    * Person that this device is associated with.
-   *
+   * <p/>
    * Each device is associated with one and only one person.
    */
   @ManyToOne(cascade = CascadeType.ALL)
@@ -109,7 +108,7 @@ public class OpqDevice extends Model {
 
   /**
    * Measurements that this device is associated with.
-   *
+   * <p/>
    * Each device can be associated with many measurements.
    */
   @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
@@ -117,7 +116,7 @@ public class OpqDevice extends Model {
 
   /**
    * Alert notifications that this device is associated with.
-   *
+   * <p/>
    * Each device can be associated with many alert notifications.
    */
   @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
@@ -125,7 +124,7 @@ public class OpqDevice extends Model {
 
   /**
    * Alerts that this device is associated with.
-   *
+   * <p/>
    * Each device can be associated with many alerts.
    */
   @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
@@ -133,9 +132,10 @@ public class OpqDevice extends Model {
 
   /**
    * Convenience constructor for test package.
-   * @param deviceId Id of the device as 16 hex digits.
+   *
+   * @param deviceId    Id of the device as 16 hex digits.
    * @param description Short description of the device.
-   * @param state State that device is located in.
+   * @param state       State that device is located in.
    */
   public OpqDevice(String deviceId, String description, String state) {
     this.setDeviceId(deviceId);
@@ -145,6 +145,7 @@ public class OpqDevice extends Model {
 
   /**
    * Finder for filtering persisted devices.
+   *
    * @return Finder for filtering persisted devices.
    */
   public static Finder<Long, OpqDevice> find() {
@@ -153,6 +154,7 @@ public class OpqDevice extends Model {
 
   /**
    * Gets the primary key.
+   *
    * @return The primary key.
    */
   public Long getPrimaryKey() {
@@ -161,6 +163,7 @@ public class OpqDevice extends Model {
 
   /**
    * Sets the primary key.
+   *
    * @param primaryKey The primary key.
    */
   public void setPrimaryKey(Long primaryKey) {
@@ -169,6 +172,7 @@ public class OpqDevice extends Model {
 
   /**
    * Gets the device id.
+   *
    * @return The device id (unique 64-bit int).
    */
   public String getDeviceId() {
@@ -177,6 +181,7 @@ public class OpqDevice extends Model {
 
   /**
    * Sets the device id.
+   *
    * @param deviceId A unique 64-bit represented as a String.
    */
   public void setDeviceId(String deviceId) {
@@ -185,6 +190,7 @@ public class OpqDevice extends Model {
 
   /**
    * Gets the short description of the device.
+   *
    * @return Short description of device.
    */
   public String getDescription() {
@@ -193,6 +199,7 @@ public class OpqDevice extends Model {
 
   /**
    * Sets the short description of the device.
+   *
    * @param description Short description of the device.
    */
   public void setDescription(String description) {
@@ -201,6 +208,7 @@ public class OpqDevice extends Model {
 
   /**
    * Gets the state that this device resides in.
+   *
    * @return State this this device resides in.
    */
   public String getState() {
@@ -209,6 +217,7 @@ public class OpqDevice extends Model {
 
   /**
    * Sets the state that this device resides in.
+   *
    * @param state State this this device resides in.
    */
   public void setState(String state) {
@@ -217,6 +226,7 @@ public class OpqDevice extends Model {
 
   /**
    * Gets the city that this device resides in.
+   *
    * @return The city that this device resides in.
    */
   public String getCity() {
@@ -225,6 +235,7 @@ public class OpqDevice extends Model {
 
   /**
    * Sets the city that this device resides in.
+   *
    * @param city City that this device resides in.
    */
   public void setCity(String city) {
@@ -233,6 +244,7 @@ public class OpqDevice extends Model {
 
   /**
    * Gets the zip that this device resides in.
+   *
    * @return Zip that this device resides in.
    */
   public String getZip() {
@@ -241,6 +253,7 @@ public class OpqDevice extends Model {
 
   /**
    * Sets the zip that this device resides in.
+   *
    * @param zip Zip that this device resides in.
    */
   public void setZip(String zip) {
@@ -249,6 +262,7 @@ public class OpqDevice extends Model {
 
   /**
    * Gets the street name that this device resides on.
+   *
    * @return Street name that this device resides on.
    */
   public String getStreetName() {
@@ -257,6 +271,7 @@ public class OpqDevice extends Model {
 
   /**
    * Sets the street name that this device resides on.
+   *
    * @param streetName Street name that this device resides on.
    */
   public void setStreetName(String streetName) {
@@ -265,6 +280,7 @@ public class OpqDevice extends Model {
 
   /**
    * Gets the street number that this device resides on.
+   *
    * @return Street number that this device resides on.
    */
   public String getStreetNumber() {
@@ -273,6 +289,7 @@ public class OpqDevice extends Model {
 
   /**
    * Sets the street number that this device resides on.
+   *
    * @param streetNumber Street number that this device resides on.
    */
   public void setStreetNumber(String streetNumber) {
@@ -281,6 +298,7 @@ public class OpqDevice extends Model {
 
   /**
    * Gets the longitude that this device resides at.
+   *
    * @return Longitude that this device resides at.
    */
   public Double getLongitude() {
@@ -289,6 +307,7 @@ public class OpqDevice extends Model {
 
   /**
    * Sets the longitude that this device resides at.
+   *
    * @param longitude Longitude that this device resides at.
    */
   public void setLongitude(Double longitude) {
@@ -297,6 +316,7 @@ public class OpqDevice extends Model {
 
   /**
    * Gets the latitude that this device resides at.
+   *
    * @return Latitude that this device resides at.
    */
   public Double getLatitude() {
@@ -305,6 +325,7 @@ public class OpqDevice extends Model {
 
   /**
    * Sets the latitude that this device resides at.
+   *
    * @param latitude The latitude that this device resides at.
    */
   public void setLatitude(Double latitude) {
@@ -313,6 +334,7 @@ public class OpqDevice extends Model {
 
   /**
    * Gets whether or not this device is participating in CDSI.
+   *
    * @return Participating in CDSI.
    */
   public Boolean getParticipatingInCdsi() {
@@ -321,6 +343,7 @@ public class OpqDevice extends Model {
 
   /**
    * Set whether or not this device is participating in CDSI.
+   *
    * @param participatingInCdsi Participating in CDSI.
    */
   public void setParticipatingInCdsi(Boolean participatingInCdsi) {
@@ -329,6 +352,7 @@ public class OpqDevice extends Model {
 
   /**
    * Get the person associated with this device.
+   *
    * @return Person associated with this device.
    */
   public Person getPerson() {
@@ -337,6 +361,7 @@ public class OpqDevice extends Model {
 
   /**
    * Set the person associated with this device.
+   *
    * @param person Person associated with this device.
    */
   public void setPerson(Person person) {
@@ -345,6 +370,7 @@ public class OpqDevice extends Model {
 
   /**
    * Get measurements associated with this device.
+   *
    * @return Measurements associated with this device.
    */
   public List<Measurement> getMeasurements() {
@@ -353,6 +379,7 @@ public class OpqDevice extends Model {
 
   /**
    * Set measurements associated with this device.
+   *
    * @param measurements Measurements associated with this device.
    */
   public void setMeasurements(List<Measurement> measurements) {
@@ -361,6 +388,7 @@ public class OpqDevice extends Model {
 
   /**
    * Get alert notifications associated with this device.
+   *
    * @return Alert notifications associated with this device.
    */
   public List<AlertNotification> getAlertNotifications() {
@@ -369,6 +397,7 @@ public class OpqDevice extends Model {
 
   /**
    * Set alert notifications associated with this device.
+   *
    * @param alertNotifications Alert notifications associated with this device.
    */
   public void setAlertNotifications(List<AlertNotification> alertNotifications) {
@@ -377,6 +406,7 @@ public class OpqDevice extends Model {
 
   /**
    * Get alerts associated with this device.
+   *
    * @return Alerts associated with this device.
    */
   public List<Alert> getAlerts() {
@@ -385,6 +415,7 @@ public class OpqDevice extends Model {
 
   /**
    * Set alerts associated with this device.
+   *
    * @param alerts Alerts associated with this device.
    */
   public void setAlerts(List<Alert> alerts) {

@@ -61,9 +61,8 @@ public class Person extends Model {
   private String email;
 
   /**
-   * Password.
-   * The password itself should never be stored to the DB.
-   * This field is simply used as a temp. location while the password hash is created.
+   * Password. The password itself should never be stored to the DB. This field is simply used as a temp. location while
+   * the password hash is created.
    */
   private String password;
 
@@ -74,8 +73,7 @@ public class Person extends Model {
   private byte[] passwordHash;
 
   /**
-   * Password salt.
-   * The salt is a random 32 byte value generated at account creating or password update.
+   * Password salt. The salt is a random 32 byte value generated at account creating or password update.
    */
   @Required
   private byte[] passwordSalt;
@@ -108,14 +106,15 @@ public class Person extends Model {
 
   /**
    * Convenience constructor for creating Person objects while testing.
-   * @param firstName The first name of the person.
-   * @param lastName The last name of the person.
-   * @param email The email of the person.
+   *
+   * @param firstName    The first name of the person.
+   * @param lastName     The last name of the person.
+   * @param email        The email of the person.
    * @param passwordHash The password hash of the person.
-   * @param state The state of the person.
-   * @param city The city of the person.
-   * @param zip The zip of the person.
-   * @param streetName The street name that the person lives on.
+   * @param state        The state of the person.
+   * @param city         The city of the person.
+   * @param zip          The zip of the person.
+   * @param streetName   The street name that the person lives on.
    * @param streetNumber The street number that the person lives at.
    */
   public Person(String firstName, String lastName, String email, byte[] passwordHash, String state, String city,
@@ -133,7 +132,7 @@ public class Person extends Model {
 
   /**
    * Devices that this person is associated with.
-   *
+   * <p/>
    * Each person may be associated with multiple devices.
    */
   @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
@@ -141,6 +140,7 @@ public class Person extends Model {
 
   /**
    * Finder for filtering persisted person entities.
+   *
    * @return New finder for filtering persisted person entities.
    */
   public static Finder<Long, Person> find() {
@@ -149,6 +149,7 @@ public class Person extends Model {
 
   /**
    * Gets the primary key.
+   *
    * @return The primary key.
    */
   public long getPrimaryKey() {
@@ -157,6 +158,7 @@ public class Person extends Model {
 
   /**
    * Sets the primary key.
+   *
    * @param primaryKey The primary key.
    */
   public void setPrimaryKey(long primaryKey) {
@@ -165,6 +167,7 @@ public class Person extends Model {
 
   /**
    * Gets the first name.
+   *
    * @return Person's first name.
    */
   public String getFirstName() {
@@ -173,6 +176,7 @@ public class Person extends Model {
 
   /**
    * Sets person's first name.
+   *
    * @param firstName Person's first name.
    */
   public void setFirstName(String firstName) {
@@ -181,6 +185,7 @@ public class Person extends Model {
 
   /**
    * Gets the person's last name.
+   *
    * @return Person's last name.
    */
   public String getLastName() {
@@ -189,6 +194,7 @@ public class Person extends Model {
 
   /**
    * Sets the person's last name.
+   *
    * @param lastName Person's last name.
    */
   public void setLastName(String lastName) {
@@ -197,6 +203,7 @@ public class Person extends Model {
 
   /**
    * Gets the person's e-mail.
+   *
    * @return The person's e-mail.
    */
   public String getEmail() {
@@ -205,6 +212,7 @@ public class Person extends Model {
 
   /**
    * Sets the person's e-mail.
+   *
    * @param email Person's e-mail.
    */
   public void setEmail(String email) {
@@ -213,6 +221,7 @@ public class Person extends Model {
 
   /**
    * Return the password.
+   *
    * @return The person.
    */
   public String getPassword() {
@@ -233,6 +242,7 @@ public class Person extends Model {
 
   /**
    * Gets person's password hash.
+   *
    * @return Person's password hash.
    */
   public byte[] getPasswordHash() {
@@ -241,6 +251,7 @@ public class Person extends Model {
 
   /**
    * Sets the person's password hash.
+   *
    * @param passwordHash The password hash for this person.
    */
   public void setPasswordHash(byte[] passwordHash) {
@@ -249,6 +260,7 @@ public class Person extends Model {
 
   /**
    * Returns this person's salt value.
+   *
    * @return This person's salt value.
    */
   public byte[] getPasswordSalt() {
@@ -257,6 +269,7 @@ public class Person extends Model {
 
   /**
    * Set this person's salt.
+   *
    * @param passwordSalt 32-bit random salt.
    */
   public void setPasswordSalt(byte[] passwordSalt) {
@@ -265,6 +278,7 @@ public class Person extends Model {
 
   /**
    * Gets state person resides in.
+   *
    * @return State person resides in.
    */
   public String getState() {
@@ -273,6 +287,7 @@ public class Person extends Model {
 
   /**
    * Sets state person resides in.
+   *
    * @param state State person resides in.
    */
   public void setState(String state) {
@@ -281,6 +296,7 @@ public class Person extends Model {
 
   /**
    * Gets city person resides in.
+   *
    * @return City person resides in.
    */
   public String getCity() {
@@ -289,6 +305,7 @@ public class Person extends Model {
 
   /**
    * Sets city person resides in.
+   *
    * @param city City person resides in.
    */
   public void setCity(String city) {
@@ -297,6 +314,7 @@ public class Person extends Model {
 
   /**
    * Gets zip code person resides in.
+   *
    * @return Zip code person resides in.
    */
   public String getZip() {
@@ -305,6 +323,7 @@ public class Person extends Model {
 
   /**
    * Sets zip code person resides in.
+   *
    * @param zip Zip code person resides in.
    */
   public void setZip(String zip) {
@@ -313,6 +332,7 @@ public class Person extends Model {
 
   /**
    * Gets street name person resides in.
+   *
    * @return Street name person resides in.
    */
   public String getStreetName() {
@@ -321,6 +341,7 @@ public class Person extends Model {
 
   /**
    * Sets street name person resides in.
+   *
    * @param streetName Street name person resides in.
    */
   public void setStreetName(String streetName) {
@@ -329,6 +350,7 @@ public class Person extends Model {
 
   /**
    * Gets street number person resides in.
+   *
    * @return Street number person resides in.
    */
   public String getStreetNumber() {
@@ -337,6 +359,7 @@ public class Person extends Model {
 
   /**
    * Set street number person resides in.
+   *
    * @param streetNumber Street number person resides at.
    */
   public void setStreetNumber(String streetNumber) {
@@ -345,6 +368,7 @@ public class Person extends Model {
 
   /**
    * Devices associated with this person.
+   *
    * @return Devices associated with this person.
    */
   public List<OpqDevice> getDevices() {
@@ -353,6 +377,7 @@ public class Person extends Model {
 
   /**
    * Set devices associated with this person.
+   *
    * @param devices Devices associated with this person.
    */
   public void setDevices(List<OpqDevice> devices) {

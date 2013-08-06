@@ -29,7 +29,7 @@ import javax.persistence.ManyToOne;
 
 /**
  * This contains methods pertaining to persisted measurement objects.
- *
+ * <p/>
  * Measures are made by an opq device and contain a voltage, frequency measurement from a single point in time.
  */
 @Entity
@@ -60,7 +60,7 @@ public class Measurement extends Model {
 
   /**
    * The device that this measurement is associated with.
-   *
+   * <p/>
    * All measurements belong to one and only one device.
    */
   @Required
@@ -71,7 +71,7 @@ public class Measurement extends Model {
    * Convenience constructor.
    *
    * @param timestamp Timestamp of measurement (milliseconds since epoch).
-   * @param voltage Voltage of measurement (in Volts).
+   * @param voltage   Voltage of measurement (in Volts).
    * @param frequency Frequency of measurement (in Hertz).
    */
   public Measurement(Long timestamp, Double voltage, Double frequency) {
@@ -82,6 +82,7 @@ public class Measurement extends Model {
 
   /**
    * Create a finder object for finding persisted measurements in DB.
+   *
    * @return A new finder object for finding persisted measurements.
    */
   public static Finder<Long, Measurement> find() {
@@ -90,6 +91,7 @@ public class Measurement extends Model {
 
   /**
    * Gets the primary key.
+   *
    * @return The primary key.
    */
   public Long getPrimaryKey() {
@@ -98,6 +100,7 @@ public class Measurement extends Model {
 
   /**
    * Sets the primary key.
+   *
    * @param primaryKey The primary key.
    */
   public void setPrimaryKey(Long primaryKey) {
@@ -106,6 +109,7 @@ public class Measurement extends Model {
 
   /**
    * Gets the timestamp of the measurement.
+   *
    * @return Timestamp of measurement (in milliseconds since epoch).
    */
   public Long getTimestamp() {
@@ -114,6 +118,7 @@ public class Measurement extends Model {
 
   /**
    * Sets the timestamp of the measurement.
+   *
    * @param timestamp Timestamp of the measurement (milliseconds since epoch).
    */
   public void setTimestamp(Long timestamp) {
@@ -122,6 +127,7 @@ public class Measurement extends Model {
 
   /**
    * Gets the measurement's voltage.
+   *
    * @return Measurement's voltage (in Volts).
    */
   public Double getVoltage() {
@@ -130,6 +136,7 @@ public class Measurement extends Model {
 
   /**
    * Sets the voltage for this measurement.
+   *
    * @param voltage Voltage (in Volts).
    */
   public void setVoltage(Double voltage) {
@@ -138,6 +145,7 @@ public class Measurement extends Model {
 
   /**
    * Gets the frequency of this measurement.
+   *
    * @return The frequency (in Hertz).
    */
   public Double getFrequency() {
@@ -146,6 +154,7 @@ public class Measurement extends Model {
 
   /**
    * Sets the frequency of this measurement.
+   *
    * @param frequency Frequency (in Hertz).
    */
   public void setFrequency(Double frequency) {
@@ -154,6 +163,7 @@ public class Measurement extends Model {
 
   /**
    * Gets the device associated with this measurement.
+   *
    * @return Device associated with this measurement.
    */
   public OpqDevice getDevice() {
@@ -162,6 +172,7 @@ public class Measurement extends Model {
 
   /**
    * Sets the device associated with this measurement.
+   *
    * @param device Device associated with this measurement.
    */
   public void setDevice(OpqDevice device) {

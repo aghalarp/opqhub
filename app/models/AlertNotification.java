@@ -28,9 +28,9 @@ import javax.persistence.ManyToOne;
 
 /**
  * Contains methods for viewing managing persistent AlertNotifications.
- *
- * AlertNotifications are created by the user to determine what their OPQ device views as power quality alerts.
- * They can also be configured so that SMS messages or emails are generated when an alert is triggered.
+ * <p/>
+ * AlertNotifications are created by the user to determine what their OPQ device views as power quality alerts. They can
+ * also be configured so that SMS messages or emails are generated when an alert is triggered.
  */
 @Entity
 public class AlertNotification extends Model {
@@ -74,8 +74,8 @@ public class AlertNotification extends Model {
   private Boolean alertViaSms;
 
   /**
-   * Carrier that user wants alerts sent to.
-   * This currently only works for a couple of major carriers in the United States.
+   * Carrier that user wants alerts sent to. This currently only works for a couple of major carriers in the United
+   * States.
    */
   private String smsCarrier;
 
@@ -85,42 +85,43 @@ public class AlertNotification extends Model {
   private String smsNumber;
 
   /**
-   * The minimum voltages (in Volts) that should not trigger alert.
-   * Any value less than this minimum should trigger an alert.
+   * The minimum voltages (in Volts) that should not trigger alert. Any value less than this minimum should trigger an
+   * alert.
    */
   private Double minAcceptableVoltage;
 
   /**
-   * Maximum voltage (in Volts) that should not trigger alert.
-   * Any value greater than this maximum should trigger an alert.
+   * Maximum voltage (in Volts) that should not trigger alert. Any value greater than this maximum should trigger an
+   * alert.
    */
   private Double maxAcceptableVoltage;
 
   /**
-   * The minimum frequency (in Hertz) that should not trigger an alert.
-   * Any value less than this minimum should trigger an alert.
+   * The minimum frequency (in Hertz) that should not trigger an alert. Any value less than this minimum should trigger
+   * an alert.
    */
   private Double minAcceptableFrequency;
 
   /**
-   * The maximum frequency (in Hertz) that should not trigger an alert.
-   * Any value greate than this maximum should trigger an alert.
+   * The maximum frequency (in Hertz) that should not trigger an alert. Any value greate than this maximum should
+   * trigger an alert.
    */
   private Double maxAcceptableFrequency;
 
   /**
    * Convenience method for test package.
-   * @param voltageAlertNotification Should bad voltages trigger an alert.
+   *
+   * @param voltageAlertNotification   Should bad voltages trigger an alert.
    * @param frequencyAlertNotification Should bad frequencies trigger an alert.
-   * @param alertViaEmail Should users be e-mailed on alerts.
-   * @param alertViaSms Should users be texted on alerts.
-   * @param smsCarrier Carrier of users text service.
-   * @param smsNumber Users sms number.
-   * @param notificationEmail Users notification email.
-   * @param minAcceptableFrequency Min frequency that will not trigger alert.
-   * @param maxAcceptableFrequency Max frequency that will not trigger alert.
-   * @param minAcceptableVoltage Min voltage that will not trigger an alert.
-   * @param maxAcceptableVoltage Max voltage that will not trigger an alert.
+   * @param alertViaEmail              Should users be e-mailed on alerts.
+   * @param alertViaSms                Should users be texted on alerts.
+   * @param smsCarrier                 Carrier of users text service.
+   * @param smsNumber                  Users sms number.
+   * @param notificationEmail          Users notification email.
+   * @param minAcceptableFrequency     Min frequency that will not trigger alert.
+   * @param maxAcceptableFrequency     Max frequency that will not trigger alert.
+   * @param minAcceptableVoltage       Min voltage that will not trigger an alert.
+   * @param maxAcceptableVoltage       Max voltage that will not trigger an alert.
    */
   public AlertNotification(Boolean voltageAlertNotification, Boolean frequencyAlertNotification,
                            Boolean alertViaEmail, Boolean alertViaSms, String smsCarrier, String smsNumber,
@@ -149,6 +150,7 @@ public class AlertNotification extends Model {
 
   /**
    * Create a finder for finding persisted AlertNotifications.
+   *
    * @return A new finder for finding persisted AlertNotifications.
    */
   public static Finder<Long, AlertNotification> find() {
@@ -157,6 +159,7 @@ public class AlertNotification extends Model {
 
   /**
    * Get the primary key.
+   *
    * @return The primary key.
    */
   public Long getPrimaryKey() {
@@ -165,6 +168,7 @@ public class AlertNotification extends Model {
 
   /**
    * Set the primary key.
+   *
    * @param primaryKey The primary key.
    */
   public void setPrimaryKey(Long primaryKey) {
@@ -173,6 +177,7 @@ public class AlertNotification extends Model {
 
   /**
    * Tests whether or not alerts should be triggered on device malfunctions.
+   *
    * @return Whether or not alerts should be triggered on device malfunctions.
    */
   public Boolean getDeviceAlertNotification() {
@@ -181,6 +186,7 @@ public class AlertNotification extends Model {
 
   /**
    * Set whether or not alerts should be triggered on device malfunctions.
+   *
    * @param deviceAlertNotification True to trigger, false otherwise.
    */
   public void setDeviceAlertNotification(boolean deviceAlertNotification) {
@@ -189,6 +195,7 @@ public class AlertNotification extends Model {
 
   /**
    * Tests whether or not alerts should be triggered for abnormal voltages.
+   *
    * @return Should voltage alerts be triggered.
    */
   public Boolean getVoltageAlertNotification() {
@@ -197,6 +204,7 @@ public class AlertNotification extends Model {
 
   /**
    * Set whether or not alerts should be triggered for abnormal voltage readings.
+   *
    * @param voltageAlertNotification True to trigger, false otherwise.
    */
   public void setVoltageAlertNotification(Boolean voltageAlertNotification) {
@@ -205,6 +213,7 @@ public class AlertNotification extends Model {
 
   /**
    * Tests whether or not alerts should be triggered for abnormal frequency readings.
+   *
    * @return Should frequency alerts be triggered.
    */
   public Boolean getFrequencyAlertNotification() {
@@ -213,6 +222,7 @@ public class AlertNotification extends Model {
 
   /**
    * Set whether or not alerts should be triggered for abnormal frequency readings.
+   *
    * @param frequencyAlertNotification True to trigger, false otherwise.
    */
   public void setFrequencyAlertNotification(Boolean frequencyAlertNotification) {
@@ -221,6 +231,7 @@ public class AlertNotification extends Model {
 
   /**
    * Tests whether alerts should trigger an e-mail notification.
+   *
    * @return Whether alerts should trigger an e-mail notification.
    */
   public Boolean getAlertViaEmail() {
@@ -229,6 +240,7 @@ public class AlertNotification extends Model {
 
   /**
    * Set whether or not users should be notified by e-mail on alerts.
+   *
    * @param alertViaEmail If true alerts will trigger e-mails, false otherwise.
    */
   public void setAlertViaEmail(Boolean alertViaEmail) {
@@ -237,6 +249,7 @@ public class AlertNotification extends Model {
 
   /**
    * Get e-mail address for e-mail notifications.
+   *
    * @return The e-mail address associated with this alert notification.
    */
   public String getNotificationEmail() {
@@ -245,6 +258,7 @@ public class AlertNotification extends Model {
 
   /**
    * Sets the e-mail address associated with this alert notification.
+   *
    * @param notificationEmail E-mail address associated with this alert notification.
    */
   public void setNotificationEmail(String notificationEmail) {
@@ -253,6 +267,7 @@ public class AlertNotification extends Model {
 
   /**
    * Tests whether or not this alert notification should trigger an sms notification.
+   *
    * @return if true, then sms notifications will be sent, false otherwise.
    */
   public Boolean getAlertViaSms() {
@@ -261,6 +276,7 @@ public class AlertNotification extends Model {
 
   /**
    * Sets whether or not this alert notification should trigger an sms notification.
+   *
    * @param alertViaSms True to trigger an sms notification, false otherwise.
    */
   public void setAlertViaSms(Boolean alertViaSms) {
@@ -269,6 +285,7 @@ public class AlertNotification extends Model {
 
   /**
    * Gets the sms carrier name associated with this alert notification.
+   *
    * @return The sms carrier name associated with this alert notification.
    */
   public String getSmsCarrier() {
@@ -277,8 +294,9 @@ public class AlertNotification extends Model {
 
   /**
    * Sets the sms carrier associated with this alert notification.
-   * @param smsCarrier The name of the SMS carrier associated with this notification. See utils/FormUtils.java
-   *                   for an a list of currently available carriers.
+   *
+   * @param smsCarrier The name of the SMS carrier associated with this notification. See utils/FormUtils.java for an a
+   *                   list of currently available carriers.
    */
   public void setSmsCarrier(String smsCarrier) {
     this.smsCarrier = smsCarrier;
@@ -286,6 +304,7 @@ public class AlertNotification extends Model {
 
   /**
    * Gets the sms number associated with this alert notification.
+   *
    * @return The sms number associated with this alert notification.
    */
   public String getSmsNumber() {
@@ -294,8 +313,9 @@ public class AlertNotification extends Model {
 
   /**
    * Sets the sms number associated with this alert notification.
-   * @param smsNumber The sms number associated with this alert notification.
-   *                  The format of the number should be ########## as a string.
+   *
+   * @param smsNumber The sms number associated with this alert notification. The format of the number should be
+   *                  ########## as a string.
    */
   public void setSmsNumber(String smsNumber) {
     this.smsNumber = smsNumber;
@@ -303,6 +323,7 @@ public class AlertNotification extends Model {
 
   /**
    * Gets the minimum voltage that will not trigger an alert.
+   *
    * @return The minimum voltage in volts.
    */
   public Double getMinAcceptableVoltage() {
@@ -311,6 +332,7 @@ public class AlertNotification extends Model {
 
   /**
    * Sets the minimum voltage that will not cause an alert.
+   *
    * @param minAcceptableVoltage Minimum voltage (in volts).
    */
   public void setMinAcceptableVoltage(Double minAcceptableVoltage) {
@@ -319,6 +341,7 @@ public class AlertNotification extends Model {
 
   /**
    * Gets maximum voltage that will not trigger an alert.
+   *
    * @return Maximum voltage (in volts).
    */
   public Double getMaxAcceptableVoltage() {
@@ -327,6 +350,7 @@ public class AlertNotification extends Model {
 
   /**
    * Sets maximum voltage that will not cause an alert.
+   *
    * @param maxAcceptableVoltage Maximum voltage (in volts).
    */
   public void setMaxAcceptableVoltage(Double maxAcceptableVoltage) {
@@ -335,6 +359,7 @@ public class AlertNotification extends Model {
 
   /**
    * Gets minimum frequency that will not cause an alert.
+   *
    * @return Minimum frequency (in Hertz).
    */
   public Double getMinAcceptableFrequency() {
@@ -343,6 +368,7 @@ public class AlertNotification extends Model {
 
   /**
    * Sets minimum frequency that should not cause an alert.
+   *
    * @param minAcceptableFrequency Minimum frequency (in Hertz).
    */
   public void setMinAcceptableFrequency(Double minAcceptableFrequency) {
@@ -351,6 +377,7 @@ public class AlertNotification extends Model {
 
   /**
    * Gets maximum frequency that will not cause an alert.
+   *
    * @return Maximum frequency (in Hertz).
    */
   public Double getMaxAcceptableFrequency() {
@@ -359,6 +386,7 @@ public class AlertNotification extends Model {
 
   /**
    * Sets the maximum frequency that should not cause an alert.
+   *
    * @param maxAcceptableFrequency Maximum frequency (in Hertz).
    */
   public void setMaxAcceptableFrequency(Double maxAcceptableFrequency) {
@@ -367,6 +395,7 @@ public class AlertNotification extends Model {
 
   /**
    * Gets device associated with this alert notification.
+   *
    * @return Device associated with this alert notification.
    */
   public OpqDevice getDevice() {
@@ -375,6 +404,7 @@ public class AlertNotification extends Model {
 
   /**
    * Sets the device associated with this alert notification.
+   *
    * @param device Device associated with this alert notification.
    */
   public void setDevice(OpqDevice device) {

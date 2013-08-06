@@ -40,6 +40,7 @@ import static play.data.Form.form;
 public class Wizard extends Controller {
   /**
    * Render the view for the sign-up wizard.
+   *
    * @return Rendered view of the sign-up wizard.
    */
   public static Result index() {
@@ -52,26 +53,27 @@ public class Wizard extends Controller {
 
   /**
    * Persists information from wizard view to DB.
+   *
    * @return A redirection back to the home page.
    */
   public static Result save() {
     // Get person information
     Form<Person> personForm = form(Person.class).bindFromRequest();
-    if(personForm.hasErrors()) {
+    if (personForm.hasErrors()) {
       return makeError("Person form validation errors", personForm.errors());
     }
     Person person = personForm.get();
 
     // Get device information
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
-    if(opqDeviceForm.hasErrors()) {
+    if (opqDeviceForm.hasErrors()) {
       return makeError("Error parsing OPQ Device info", opqDeviceForm.errors());
     }
     OpqDevice opqDevice = opqDeviceForm.get();
 
     // Get alert notification information
     Form<AlertNotification> alertNotificationForm = form(AlertNotification.class).bindFromRequest();
-    if(alertNotificationForm.hasErrors()) {
+    if (alertNotificationForm.hasErrors()) {
       return makeError("Error parsing alert info", alertNotificationForm.errors());
     }
     AlertNotification alertNotification = alertNotificationForm.get();

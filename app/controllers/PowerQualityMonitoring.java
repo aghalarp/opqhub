@@ -36,6 +36,7 @@ public class PowerQualityMonitoring extends Controller {
 
   /**
    * Render a public "google-maps" style map with devices and alerts from users who are participating in the CDSI.
+   *
    * @return Rendered view of publics devices and public alerts.
    */
   public static Result publicMonitor() {
@@ -47,6 +48,7 @@ public class PowerQualityMonitoring extends Controller {
 
   /**
    * Render a view which contains a list of power quality events for the current logged in user.
+   *
    * @return Rendered view of power quality events for current user.
    */
   @Security.Authenticated(Secured.class)
@@ -54,8 +56,8 @@ public class PowerQualityMonitoring extends Controller {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     List<Alert> alerts = new ArrayList<>();
 
-    for(OpqDevice device : person.getDevices()) {
-      for(Alert alert : device.getAlerts()) {
+    for (OpqDevice device : person.getDevices()) {
+      for (Alert alert : device.getAlerts()) {
         alerts.add(alert);
       }
     }
@@ -65,16 +67,17 @@ public class PowerQualityMonitoring extends Controller {
 
   /**
    * Mockup method that should be removed once the DB is correctly implemented.
+   *
    * @return A csv view of alerts.
    */
   public static Result getAlerts() {
     String alerts = "lat\tlon\ttitle\tdescription\ticon\n"
-      + "21.3069\t-157.8583\tFrequency Alert\t57 Hz (4 sec)\t"
-      + "http://localhost:9000/assets/images/frequency-alert-icon.png\n"
-      + "21.4181\t-157.8036\tVoltage Alert\t115 V (3 sec)\t"
-      + "http://localhost:9000/assets/images/voltage-alert-icon.png\n"
-      + "21.3147\t-157.8081\tVoltage Alert\t122 V (4 sec)\t"
-      + "http://localhost:9000/assets/images/voltage-alert-icon.png\n";
+                    + "21.3069\t-157.8583\tFrequency Alert\t57 Hz (4 sec)\t"
+                    + "http://localhost:9000/assets/images/frequency-alert-icon.png\n"
+                    + "21.4181\t-157.8036\tVoltage Alert\t115 V (3 sec)\t"
+                    + "http://localhost:9000/assets/images/voltage-alert-icon.png\n"
+                    + "21.3147\t-157.8081\tVoltage Alert\t122 V (4 sec)\t"
+                    + "http://localhost:9000/assets/images/voltage-alert-icon.png\n";
     return ok(alerts);
   }
 }

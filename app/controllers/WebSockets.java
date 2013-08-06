@@ -41,6 +41,7 @@ public class WebSockets extends Controller {
 
   /**
    * Create a WebSocket object who can receive connections, receive packets, and break connections.
+   *
    * @return A WebSocket object.
    */
   public static WebSocket<String> handleSocket() {
@@ -66,10 +67,11 @@ public class WebSockets extends Controller {
 
   /**
    * Determines the type of packet that was received from the WebSocket, and calls the correct sub-handler.
+   *
    * @param packet The packet received from the WebSocket object.
    */
   private static void handlePacket(String packet) {
-    switch(packet.split(",")[PACKET_TYPE]) {
+    switch (packet.split(",")[PACKET_TYPE]) {
       case "A":
         handleAlert(packet);
         break;
@@ -83,8 +85,9 @@ public class WebSockets extends Controller {
 
   /**
    * Handles receiving of alert packets from device.
-   *
+   * <p/>
    * Once a valid alert is received, add it to the database.
+   *
    * @param packet Alert packet from device.
    */
   private static void handleAlert(String packet) {
@@ -93,7 +96,7 @@ public class WebSockets extends Controller {
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", alertParts[DEVICE_ID]).findUnique();
     Alert.AlertType alertType;
 
-    switch(alertParts[ALERT_TYPE]) {
+    switch (alertParts[ALERT_TYPE]) {
       case "D":
         alertType = Alert.AlertType.DEVICE;
         break;
@@ -120,8 +123,9 @@ public class WebSockets extends Controller {
 
   /**
    * Handles receiving of measurement packets from device.
-   *
+   * <p/>
    * When a valid measurement is received, that measurement is added to the database.
+   *
    * @param packet Measurement packet from device.
    */
   private static void handleMeasurement(String packet) {

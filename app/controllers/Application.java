@@ -57,7 +57,7 @@ public class Application extends Controller {
 
   public static Result authenticate() {
     Form<Login> loginForm = form(Login.class).bindFromRequest();
-    if(loginForm.hasErrors()) {
+    if (loginForm.hasErrors()) {
       return badRequest(login.render(loginForm));
     }
     else {
@@ -78,12 +78,12 @@ public class Application extends Controller {
     public String validate() {
       // First try to find a person with a matching email
       Person person = Person.find().where().eq("email", email).findUnique();
-      if(person == null) {
+      if (person == null) {
         return "Invalid email or password";
       }
       // See if the passwords match
       byte[] hashedPassword = utils.FormUtils.hashPassword(password, person.getPasswordSalt());
-      if(!Arrays.equals(person.getPasswordHash(), hashedPassword)) {
+      if (!Arrays.equals(person.getPasswordHash(), hashedPassword)) {
         return "Invalid email or password";
       }
       return null;
