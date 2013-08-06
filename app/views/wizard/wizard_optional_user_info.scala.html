@@ -1,46 +1,48 @@
 @*
-    This file is part of opq-ao.
+This file is part of opq-ao.
 
-    opa-ao is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+opa-ao is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    opa-ao is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+opa-ao is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with opq-ao.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 
-    Copyright 2013 Anthony Christe
+Copyright 2013 Anthony Christe
 *@
 
 @(personForm: Form[models.Person])
 
-@import helper._
+  @import helper._
   @implicitFieldConstructor = @{
     FieldConstructor(twitterBootstrapInput.render)
   }
 
-<div class="row">
+  <div class="row">
     <div class="span9">
       @inputText(personForm("city"), '_label -> "City", 'placeholder -> "Kailua-Kona", 'id -> "userCity")
       @inputText(personForm("zip"), '_label -> "Zip", 'placeholder -> "96739", 'id -> "userZip")
-      @inputText(personForm("streetName"), '_label -> "Street Name", 'placeholder -> "Palani Rd", 'id -> "userStreetName")
-      @inputText(personForm("streetNumber"), '_label -> "Street Number", 'placeholder -> "111", 'id -> "userStreetNumber")
+      @inputText(personForm("streetName"), '_label -> "Street Name", 'placeholder -> "Palani Rd",
+        'id -> "userStreetName")
+      @inputText(personForm("streetNumber"), '_label -> "Street Number", 'placeholder -> "111",
+        'id -> "userStreetNumber")
     </div>
     <div class="span3">
-        <div class="well well-small">
-            <p class="bold">Optional User Information</p>
-            <p>
+      <div class="well well-small">
+        <p class="bold">Optional User Information</p>
+        <p>
                 This information is only used for research purposes in order to locate where users are in relation
-                to their OPQ devices. Feel free to include as little or as much information as you feel comfortable with.
-            </p>
-            <p>
+          to their OPQ devices. Feel free to include as little or as much information as you feel comfortable with.
+        </p>
+        <p>
                 All fields are <b>optional</b>.
             </p>
-        </div>
+      </div>
     </div>
-</div>
+  </div>

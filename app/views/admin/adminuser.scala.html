@@ -1,67 +1,69 @@
 @*
-    This file is part of opq-ao.
+This file is part of opq-ao.
 
-    opa-ao is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+opa-ao is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    opa-ao is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+opa-ao is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with opq-ao.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 
-    Copyright 2013 Anthony Christe
+Copyright 2013 Anthony Christe
 *@
 
 @(personForm: Form[models.Person])
 
-@import helper._
+  @import helper._
   @implicitFieldConstructor = @{
     FieldConstructor(twitterBootstrapInput.render)
   }
 
-@admin("User Administration",
+  @admin("User Administration",
     "This page allows you to configure basic information such as e-mail address, password, and your address.") {
     <div class="span7">
-      @form(routes.Administration.updateUser(), 'class -> "form-horizontal well well-small", 'name -> "userAdminForm") {
-        @inputText(
-          personForm("firstName"), '_label -> "First Name", 'placeholder -> "John", 'id -> "firstName")
-        @inputText(personForm("lastName"), '_label -> "Last Name", 'placeholder -> "Doe", 'id -> "lastName")
-        @inputText(personForm("email"), '_label -> "E-Mail", 'placeholder -> "john.doe@email.com", 'id -> "email")
-        @inputPassword(personForm("password"), '_label -> "Password", 'placeholder -> "Password", 'id -> "password")
-        @select(
-          personForm("state"),
-          options = options(utils.FormUtils.LIST_OF_STATES),
-          '_label -> "State",
-          '_default -> "--- Select State ---",
-          'id -> "personState")
-        @inputText(personForm("city"), '_label -> "City", 'placeholder -> "Kailua-Kona", 'id -> "userCity")
-        @inputText(personForm("zip"), '_label -> "Zip", 'placeholder -> "96739", 'id -> "userZip")
-        @inputText(personForm("streetName"), '_label -> "Street Name", 'placeholder -> "Palani Rd", 'id -> "userStreetName")
-        @inputText(personForm("streetNumber"), '_label -> "Street Number", 'placeholder -> "111", 'id -> "userStreetNumber")
-        <div class="control-group">
-          <div class="controls">
-            <input type="submit" class="btn-primary" value="Update User Information" />
-          </div>
+    @form(routes.Administration.updateUser(), 'class -> "form-horizontal well well-small", 'name -> "userAdminForm") {
+      @inputText(
+        personForm("firstName"), '_label -> "First Name", 'placeholder -> "John", 'id -> "firstName")
+      @inputText(personForm("lastName"), '_label -> "Last Name", 'placeholder -> "Doe", 'id -> "lastName")
+      @inputText(personForm("email"), '_label -> "E-Mail", 'placeholder -> "john.doe@email.com", 'id -> "email")
+      @inputPassword(personForm("password"), '_label -> "Password", 'placeholder -> "Password", 'id -> "password")
+      @select(
+        personForm("state"),
+        options = options(utils.FormUtils.LIST_OF_STATES),
+        '_label -> "State",
+        '_default -> "--- Select State ---",
+        'id -> "personState")
+      @inputText(personForm("city"), '_label -> "City", 'placeholder -> "Kailua-Kona", 'id -> "userCity")
+      @inputText(personForm("zip"), '_label -> "Zip", 'placeholder -> "96739", 'id -> "userZip")
+      @inputText(personForm("streetName"), '_label -> "Street Name", 'placeholder -> "Palani Rd",
+        'id -> "userStreetName")
+      @inputText(personForm("streetNumber"), '_label -> "Street Number", 'placeholder -> "111",
+        'id -> "userStreetNumber")
+      <div class="control-group">
+        <div class="controls">
+          <input type="submit" class="btn-primary" value="Update User Information" />
         </div>
-      }
+      </div>
+    }
     </div>
     <div class="span2 well well-small">
-        <p>
-            <b>Account Information</b>
-            <br />
-            Your account information allows you to access your data on the cloud and
-            to manage OPQ devices under your control. Note that your e-mail address
-            is your username.
-        </p>
-        <p>
-            Fields marked with a <b>*</b> are required. All other fields are optional and for research purposes. Provide
-            as little or as much information as you would like. Click <a href="#">here</a> to find out how we use your
-            information.
-        </p>
+      <p>
+        <b>Account Information</b>
+        <br />
+        Your account information allows you to access your data on the cloud and
+        to manage OPQ devices under your control. Note that your e-mail address
+        is your username.
+      </p>
+      <p>
+        Fields marked with a <b>*</b> are required. All other fields are optional and for research purposes. Provide
+        as little or as much information as you would like. Click <a href="#">here</a> to find out how we use your
+        information.
+      </p>
     </div>
-}
+  }

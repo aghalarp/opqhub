@@ -23,12 +23,26 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 
+/**
+ * Allows us to use annotation based security by checking the username and defining what happens
+ * when a user attempts to access an area and they are not authorized.
+ */
 public class Secured extends Security.Authenticator {
+  /**
+   * Returns either the e-mail of the current logged in user or null.
+   * @param context Current context storing session.
+   * @return Either the e-mail of the current logged in user or null.
+   */
   @Override
   public String getUsername(Http.Context context) {
     return context.session().get("email");
   }
 
+  /**
+   * This method is perform when a user attempts to access a restricted method without proper credentials.
+   * @param context Current context storing session.
+   * @return Redirect to login page.
+   */
   @Override
   public Result onUnauthorized(Http.Context context) {
     return redirect(routes.Application.login());

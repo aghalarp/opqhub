@@ -92,6 +92,14 @@ public class Wizard extends Controller {
     return redirect(routes.Application.index());
   }
 
+  /**
+   * Makes an error message out of a short description and a list of errors.
+   *
+   * This method should eventually be deleted as full validation is used.
+   * @param name Name of the error (short description).
+   * @param errors Map of errors returned by play.
+   * @return Rendered error page displaying errors.
+   */
   private static Result makeError(String name, Map<String, List<ValidationError>> errors) {
     return ok(error.render(name, errors.toString()));
   }

@@ -19,100 +19,102 @@ Copyright 2013 Anthony Christe
 
 @(opqDeviceForm: Form[models.OpqDevice], opqDeviceForms: List[Form[models.OpqDevice]])
 
-@import helper._
+  @import helper._
   @implicitFieldConstructor = @{
     FieldConstructor(twitterBootstrapInput.render)
   }
 
-@admin("Device Administration",
-  "This page allows you to add and configure devices.") {
-  <div class="span7">
-    <table class="table well well-small">
-      @if(flash.contains("updated")) {
-        <p class="success">
-        @flash.get("updated")
-        </p>
-      }
-      @if(flash.contains("added")) {
-        <p class="success">
-        @flash.get("added")
-        </p>
-      }
-      <thead>
-        <tr>
-          <th>Device Id</th>
-          <th>Description</th>
-          <th>State</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for(deviceForm <- opqDeviceForms) {
+  @admin("Device Administration",
+    "This page allows you to add and configure devices.") {
+    <div class="span7">
+      <table class="table well well-small">
+        @if(flash.contains("updated")) {
+          <p class="success">
+          @flash.get("updated")
+          </p>
+        }
+        @if(flash.contains("added")) {
+          <p class="success">
+          @flash.get("added")
+          </p>
+        }
+        <thead>
           <tr>
-          @form(routes.Administration.updateDevice(deviceForm("deviceId").value), 'class -> "form-inline") {
-            <td>@inputText(deviceForm("deviceId"), '_showConstraints -> false, '_label -> "", 'readonly -> "readonly", 'class -> "input-medium")</td>
-            <td>@inputText(deviceForm("description"), '_showConstraints -> false, '_label -> "", 'class -> "input-small")</td>
-            <td>@select(
-              deviceForm("state"),
-              options = options(utils.FormUtils.LIST_OF_STATES),
-              '_label -> "",
-              '_showConstraints -> false,
-              'id -> "deviceState",
-              'class -> "input-medium")</td>
-            <td>
-              <input type="submit" class="btn btn-warning pull-right" value="Update">
-            </td>
+            <th>Device Id</th>
+            <th>Description</th>
+            <th>State</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(deviceForm <- opqDeviceForms) {
+            <tr>
+            @form(routes.Administration.updateDevice(deviceForm("deviceId").value), 'class -> "form-inline") {
+              <td>@inputText(deviceForm("deviceId"), '_showConstraints -> false, '_label -> "", 'readonly -> "readonly",
+                'class -> "input-medium")</td>
+              <td>@inputText(deviceForm("description"), '_showConstraints -> false, '_label -> "",
+                'class -> "input-small")</td>
+              <td>@select(
+                deviceForm("state"),
+                options = options(utils.FormUtils.LIST_OF_STATES),
+                '_label -> "",
+                '_showConstraints -> false,
+                'id -> "deviceState",
+                'class -> "input-medium")</td>
+              <td>
+                <input type="submit" class="btn btn-warning pull-right" value="Update">
+              </td>
+            }
+            </tr>
           }
-          </tr>
-        }
-        @form(routes.Administration.saveDevice(), 'class -> "form-inline") {
-          <tr>
-            <td>
-            @inputText(opqDeviceForm("deviceId"),
-              '_label -> "",
-              'placeholder -> "0123-4567-89AB-CDEF",
-              '_showConstraints -> false,
-              'class -> "input-medium",
-              'id -> "deviceId")
-            </td>
-            <td>
-            @inputText(opqDeviceForm("description"),
-              '_label -> "",
-              'placeholder -> "Office",
-              '_showConstraints -> false,
-              'class -> "input-small",
-              'id -> "deviceDescription")
-            </td>
-            <td>
-            @select(
-              opqDeviceForm("state"),
-              options = options(utils.FormUtils.LIST_OF_STATES),
-              '_label -> "",
-              '_showConstraints -> false,
-              '_default -> "--- Select State ---",
-              'id -> "deviceState",
-              'class -> "input-medium")
-            </td>
-            <td>
-              <input type="submit" value="Add Device" class="btn btn-primary pull-right" />
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-  <div class="span2 well well-small">
-    <p>
-      <b>Register new OPQ device</b>
-      <br> The device ID is a squence of 16 characters and letters that should have
-      been supplied with your OPQ device.
-    </p>
-    <p>
-      <b>Registered OPQ Devices</b>
-      <br> This lists the devices that are currently registered to your account.
-      <br>
-      <br>
-      <br>
-    </p>
-  </div>
-}
+          @form(routes.Administration.saveDevice(), 'class -> "form-inline") {
+            <tr>
+              <td>
+              @inputText(opqDeviceForm("deviceId"),
+                '_label -> "",
+                'placeholder -> "0123-4567-89AB-CDEF",
+                '_showConstraints -> false,
+                'class -> "input-medium",
+                'id -> "deviceId")
+              </td>
+              <td>
+              @inputText(opqDeviceForm("description"),
+                '_label -> "",
+                'placeholder -> "Office",
+                '_showConstraints -> false,
+                'class -> "input-small",
+                'id -> "deviceDescription")
+              </td>
+              <td>
+              @select(
+                opqDeviceForm("state"),
+                options = options(utils.FormUtils.LIST_OF_STATES),
+                '_label -> "",
+                '_showConstraints -> false,
+                '_default -> "--- Select State ---",
+                'id -> "deviceState",
+                'class -> "input-medium")
+              </td>
+              <td>
+                <input type="submit" value="Add Device" class="btn btn-primary pull-right" />
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="span2 well well-small">
+      <p>
+        <b>Register new OPQ device</b>
+        <br> The device ID is a squence of 16 characters and letters that should have
+        been supplied with your OPQ device.
+      </p>
+      <p>
+        <b>Registered OPQ Devices</b>
+        <br> This lists the devices that are currently registered to your account.
+        <br>
+        <br>
+        <br>
+      </p>
+    </div>
+  }

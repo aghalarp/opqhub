@@ -45,16 +45,28 @@ public class Application extends Controller {
     return ok(index.render());
   }
 
+  /**
+   * Logs out current user by clearing the session.
+   * @return Redirect to log-in page.
+   */
   public static Result logout() {
     session().clear();
     flash("success", "You've been logged out");
     return redirect(routes.Application.login());
   }
 
+  /**
+   * Display the login page.
+   * @return Rendered view of the login page.
+   */
   public static Result login() {
     return ok(login.render(form(Login.class)));
   }
 
+  /**
+   * Authenticates a user by storing their email in the session.
+   * @return Redirect to private power monitoring.
+   */
   public static Result authenticate() {
     Form<Login> loginForm = form(Login.class).bindFromRequest();
     if (loginForm.hasErrors()) {
@@ -67,14 +79,27 @@ public class Application extends Controller {
     }
   }
 
+  /**
+   * This class is used as an object to bind to the login form.
+   */
   public static class Login {
+    /**
+     * E-mail address of the user.
+     */
     @Constraints.Required
     @Constraints.Email
     public String email;
 
+    /**
+     * Password of the user.
+     */
     @Constraints.Required
     public String password;
 
+    /**
+     * Attempts to validate user by first matching the e-mail, and then matching the password hash.
+     * @return Either an error message or null for success.
+     */
     public String validate() {
       // First try to find a person with a matching email
       Person person = Person.find().where().eq("email", email).findUnique();

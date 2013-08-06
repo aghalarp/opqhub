@@ -1,51 +1,51 @@
 @*
-    This file is part of opq-ao.
+This file is part of opq-ao.
 
-    opa-ao is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+opa-ao is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    opa-ao is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+opa-ao is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with opq-ao.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 
-    Copyright 2013 Anthony Christe
+Copyright 2013 Anthony Christe
 *@
 
 @(title: String, description: String)(content: Html)
 
-    @createMenuItem(text: String, selectOn: String, link: play.api.mvc.Call) = {
+  @createMenuItem(text: String, selectOn: String, link: play.api.mvc.Call) = {
     @if(title.toLowerCase().contains(selectOn)) {
-        <li class="active">
-        } else {
-        <li>
-        }
-        <a href="@link">@text</a>
-    </li>
-    }
+      <li class="active">
+      } else {
+      <li>
+      }
+    <a href="@link">@text</a>
+  </li>
+  }
 
-@main(title, menu(title, false)) {
+  @main(title, menu(title, false)) {
     <div class="row-fluid">
 
-            <!-- Side menu -->
-        <div class="span3">
-            <ul class="nav  nav-pills nav-stacked">
-                @createMenuItem("User Administration", "user", routes.Administration.user())
-                @createMenuItem("Device Administration", "device", routes.Administration.device())
-                @createMenuItem("Alert Administration", "alert", routes.Administration.alert())
-                @createMenuItem("CDSI Administration", "cdsi", routes.Administration.cdsi())
-            </ul>
-            <div class="well">
-                <p>
-                @description
-                </p>
-            </div>
+        <!-- Side menu -->
+      <div class="span3">
+        <ul class="nav  nav-pills nav-stacked">
+          @createMenuItem("User Administration", "user", routes.Administration.user())
+          @createMenuItem("Device Administration", "device", routes.Administration.device())
+          @createMenuItem("Alert Administration", "alert", routes.Administration.alert())
+          @createMenuItem("CDSI Administration", "cdsi", routes.Administration.cdsi())
+        </ul>
+        <div class="well">
+          <p>
+          @description
+          </p>
         </div>
-        @content
+      </div>
+      @content
     </div>
-}
+  }

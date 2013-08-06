@@ -32,11 +32,34 @@ import java.util.Arrays;
  * Provides methods for handling packets sent to this server from a WebSockets client.
  */
 public class WebSockets extends Controller {
+  /**
+   * Location of device id field in alert packet.
+   */
   public static final int DEVICE_ID = 0;
+
+  /**
+   * Location of packet type in web socket packet.
+   */
   public static final int PACKET_TYPE = 1;
+
+  /**
+   * Location of alert type in alert packet.
+   */
   public static final int ALERT_TYPE = 2;
+
+  /**
+   * Location of timestamp in alert packet.
+   */
   public static final int TIMESTAMP = 3;
+
+  /**
+   * Location of duration in alert packet.
+   */
   public static final int DURATION = 4;
+
+  /**
+   * Location of alert value in alert packet.
+   */
   public static final int ALERT_VALUE = 5;
 
   /**

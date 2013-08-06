@@ -49,7 +49,6 @@ POST        /private/admin/cdsi/update/:deviceId    controllers.Administration.u
 # Power Quality Monitoring
 GET         /private/monitor                        controllers.PowerQualityMonitoring.privateMonitor()
 GET         /public/monitor                         controllers.PowerQualityMonitoring.publicMonitor()
-GET         /public/alerts                          controllers.PowerQualityMonitoring.getAlerts()
 
 # Handling WebSockets
 GET         /private/ws                             controllers.WebSockets.handleSocket()

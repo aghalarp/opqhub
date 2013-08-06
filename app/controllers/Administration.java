@@ -55,6 +55,10 @@ public class Administration extends Controller {
     return ok(adminuser.render(personForm));
   }
 
+  /**
+   * Updates person fields and redirects back to person administration.
+   * @return Redirect to person administration.
+   */
   @Security.Authenticated(Secured.class)
   public static Result updateUser() {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
@@ -80,6 +84,7 @@ public class Administration extends Controller {
     List<OpqDevice> opqDevices = person.getDevices();
     List<Form<OpqDevice>> opqDeviceForms = new ArrayList<>();
 
+    // For each device, fill a form with values from that device
     for (OpqDevice opqDevice : opqDevices) {
       opqDeviceForms.add(form(OpqDevice.class).fill(opqDevice));
     }
@@ -87,9 +92,14 @@ public class Administration extends Controller {
     return ok(admindevice.render(opqDeviceForm, opqDeviceForms));
   }
 
+  /**
+   * Saves a new OPQ device to the DB.
+   * @return Redirect to device administration.
+   */
   @Security.Authenticated(Secured.class)
   public static Result saveDevice() {
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
+
     if (opqDeviceForm.hasErrors()) {
       return ok(error.render("Problem saving new device", opqDeviceForm.errors().toString()));
     }
@@ -105,6 +115,11 @@ public class Administration extends Controller {
     return redirect(routes.Administration.device());
   }
 
+  /**
+   * Updates device fields.
+   * @param deviceId The device id.
+   * @return Redirect to device administration.
+   */
   @Security.Authenticated(Secured.class)
   public static Result updateDevice(String deviceId) {
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
@@ -149,8 +164,10 @@ public class Administration extends Controller {
     Form<AlertNotification> alertNotificationForm;
     List<String> deviceIds = new ArrayList<>();
 
+    // For each device, store the device id
     for (OpqDevice opqDevice : devices) {
       deviceIds.add(opqDevice.getDeviceId());
+      // For each alert notification per device, create a form with data from that alert notification.
       for (AlertNotification alertNotification : opqDevice.getAlertNotifications()) {
         alertNotificationForm = form(AlertNotification.class).fill(alertNotification);
         alertNotificationForm.data().put("deviceId", opqDevice.getDeviceId());
@@ -159,10 +176,13 @@ public class Administration extends Controller {
     }
 
     alertNotificationForm = form(AlertNotification.class);
-
     return ok(adminalert.render(alertNotificationForm, alertNotificationForms, deviceIds));
   }
 
+  /**
+   * Saves a bew alert notification to the DB.
+   * @return Redirect to alert administration.
+   */
   @Security.Authenticated(Secured.class)
   public static Result saveAlert() {
     Form<AlertNotification> alertNotificationForm = form(AlertNotification.class).bindFromRequest();
@@ -184,6 +204,11 @@ public class Administration extends Controller {
     return redirect(routes.Administration.alert());
   }
 
+  /**
+   * Updates an alert notification.
+   * @param id The primary key of the alert notifiation.
+   * @return Redirect to alert administration.
+   */
   @Security.Authenticated(Secured.class)
   public static Result updateAlert(String id) {
     Form<AlertNotification> alertNotificationForm = form(AlertNotification.class).bindFromRequest();
@@ -207,6 +232,7 @@ public class Administration extends Controller {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     List<Form<OpqDevice>> opqDeviceForms = new ArrayList<>();
 
+    // For each device, fill a form with that device's values
     for (OpqDevice opqDevice : person.getDevices()) {
       opqDeviceForms.add(form(OpqDevice.class).fill(opqDevice));
     }
@@ -214,6 +240,11 @@ public class Administration extends Controller {
     return ok(admincdsi.render(opqDeviceForms));
   }
 
+  /**
+   * Update CDSI information connected to an opq device.
+   * @param deviceId The device id.
+   * @return Redirect to cdsi administration.
+   */
   @Security.Authenticated(Secured.class)
   public static Result updateCdsi(String deviceId) {
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
@@ -222,7 +253,6 @@ public class Administration extends Controller {
     if (opqDeviceForm.hasErrors()) {
       return ok(error.render("Problem updating CDSI information", opqDeviceForm.errors().toString()));
     }
-
 
     opqDeviceForm.get().update(opqDevice.getPrimaryKey());
     flash("updated", "Updated CDSI Participation");

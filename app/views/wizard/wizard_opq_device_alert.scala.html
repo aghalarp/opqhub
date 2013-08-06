@@ -1,65 +1,70 @@
 @*
-    This file is part of opq-ao.
+This file is part of opq-ao.
 
-    opa-ao is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+opa-ao is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    opa-ao is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+opa-ao is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with opq-ao.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 
-    Copyright 2013 Anthony Christe
+Copyright 2013 Anthony Christe
 *@
 
 @(alertNotificationForm: Form[models.AlertNotification])
 
-@import helper._
+  @import helper._
   @implicitFieldConstructor = @{
     FieldConstructor(twitterBootstrapInput.render)
   }
 
-<div class="row">
+  <div class="row">
     <div class="span9">
       @checkbox(alertNotificationForm("voltageAlertNotification"), '_label -> "Voltage Alert", 'id -> "voltageAlert")
-      @inputText(alertNotificationForm("minAcceptableVoltage"), '_label -> "Minimum Voltage", 'placeholder -> "117", 'id -> "minAcceptableVoltage")
-      @inputText(alertNotificationForm("maxAcceptableVoltage"), '_label -> "Maximum Voltage", 'placeholder -> "123", 'id -> "maxAcceptableVoltage")
-      <hr />
-      @checkbox(alertNotificationForm("frequencyAlertNotification"), '_label -> "Frequency Alert", 'id -> "frequencyAlert")
-      @inputText(alertNotificationForm("minAcceptableFrequency"), '_label -> "Minimum Frequency", 'placeholder -> "57", 'id -> "minAcceptableFrequency")
-      @inputText(alertNotificationForm("maxAcceptableFrequency"), '_label -> "Maximum Frequency", 'placeholder -> "63", 'id -> "maxAcceptableFrequency")
-      <hr />
+      @inputText(alertNotificationForm("minAcceptableVoltage"), '_label -> "Minimum Voltage", 'placeholder -> "117",
+        'id -> "minAcceptableVoltage")
+      @inputText(alertNotificationForm("maxAcceptableVoltage"), '_label -> "Maximum Voltage", 'placeholder -> "123",
+        'id -> "maxAcceptableVoltage")
+    <hr />
+      @checkbox(alertNotificationForm("frequencyAlertNotification"), '_label -> "Frequency Alert",
+        'id -> "frequencyAlert")
+      @inputText(alertNotificationForm("minAcceptableFrequency"), '_label -> "Minimum Frequency", 'placeholder -> "57",
+        'id -> "minAcceptableFrequency")
+      @inputText(alertNotificationForm("maxAcceptableFrequency"), '_label -> "Maximum Frequency", 'placeholder -> "63",
+        'id -> "maxAcceptableFrequency")
+    <hr />
       @checkbox(alertNotificationForm("deviceAlertNotification"), '_label -> "Device Alert", 'id -> "deviceAlert")
     </div>
     <div class="span3">
-        <div class="well well-small">
-            <p class="bold">Alerts</p>
-            <p>
+      <div class="well well-small">
+        <p class="bold">Alerts</p>
+        <p>
                 This section allows you to configure when your device should generate an alert based on the current
-                voltage and frequency readings.
-            </p>
-            <p class="bold">Voltage Alert</p>
-            <p>
+          voltage and frequency readings.
+        </p>
+        <p class="bold">Voltage Alert</p>
+        <p>
                 To create a voltage alert, make sure that the "Voltage Alert" checkbox is selected. Then supply the
-                minimum and maximum voltage range for which voltages should trigger an event. If the voltage is ever
-                below the minimum of above the maximum range, then an alert will be triggered.
-            </p>
-            <p class="bold">Frequency Alert</p>
-            <p>
+          minimum and maximum voltage range for which voltages should trigger an event. If the voltage is ever
+          below the minimum of above the maximum range, then an alert will be triggered.
+        </p>
+        <p class="bold">Frequency Alert</p>
+        <p>
                 To create a frequency alert, make sure that the "Frequency Alert" checkbox is selected. Then supply the
-                minimum and maximum frequency range for which frequencies should not trigger an event.
-                If the frequency is ever below the minimum or above the maximum range, then an alert will be triggered.
-            </p>
-            <p class="bold">Device Alert</p>
-            <p>
+          minimum and maximum frequency range for which frequencies should not trigger an event.
+          If the frequency is ever below the minimum or above the maximum range, then an alert will be triggered.
+        </p>
+        <p class="bold">Device Alert</p>
+        <p>
                 Device alerts are triggered when there is an issue with the OPQ hardware device itself. If you want
-                the device to be able to trigger alerts, make sure the "Device Alert" checkbox is selected.
-            </p>
-        </div>
+          the device to be able to trigger alerts, make sure the "Device Alert" checkbox is selected.
+        </p>
+      </div>
     </div>
-</div>
+  </div>

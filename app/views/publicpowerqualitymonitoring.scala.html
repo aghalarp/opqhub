@@ -1,184 +1,184 @@
 @*
-    This file is part of opq-ao.
+This file is part of opq-ao.
 
-    opa-ao is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+opa-ao is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    opa-ao is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+opa-ao is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with opq-ao.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 
-    Copyright 2013 Anthony Christe
+Copyright 2013 Anthony Christe
 *@
 
 @(alerts: List[models.Alert], devices: List[models.OpqDevice], loggedOut: Boolean)
 
-@main("Public Power Quality Monitoring", menu("Public Power Quality Monitoring", loggedOut)) {
+  @main("Public Power Quality Monitoring", menu("Public Power Quality Monitoring", loggedOut)) {
     <div class="row">
-        <div class="span3" id="map-controls">
-            <form class="well well-small">
-                <b>Filter Alerts</b>
-                <label class="checkbox" for="voltage_checkbox">
-                    <input type="checkbox" value="true" id="voltage_checkbox" name="checkbox"> Voltage</label>
-                <input type="text" class="input-mini" value="218"> Voltage less than
-                <br>
-                <input type="text" class="input-mini" value="222"> Voltage greater than
-                <br>
-                <br>
-                <label class="checkbox" for="frequency_checkbox">
-                    <input type="checkbox" value="true" id="frequency_checkbox" name="checkbox"> Frequency</label>
-                <input type="text" class="input-mini" value="218"> Frequency less than
-                <br>
-                <input type="text" class="input-mini" value="222"> Frequency greater than
-                <br>
+      <div class="span3" id="map-controls">
+        <form class="well well-small">
+          <b>Filter Alerts</b>
+          <label class="checkbox" for="voltage_checkbox">
+            <input type="checkbox" value="true" id="voltage_checkbox" name="checkbox"> Voltage</label>
+          <input type="text" class="input-mini" value="218"> Voltage less than
+          <br>
+          <input type="text" class="input-mini" value="222"> Voltage greater than
+          <br>
+          <br>
+          <label class="checkbox" for="frequency_checkbox">
+            <input type="checkbox" value="true" id="frequency_checkbox" name="checkbox"> Frequency</label>
+          <input type="text" class="input-mini" value="218"> Frequency less than
+          <br>
+          <input type="text" class="input-mini" value="222"> Frequency greater than
+          <br>
 
-                <hr>
-                <b>Timeline</b>
-                <br>
-                <select>
-                    <option>Past minute</option>
-                    <option>Past hour</option>
-                    <option>Past day</option>
-                    <option>Past week</option>
-                    <option>Past month</option>
-                    <option>Past year</option>
-                    <option>Custom range</option>
-                </select>
-                <br>
-                <b>Custom Time Range</b>
-                <br>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td></td>
-                            <td>mm/dd/yyyy</td>
-                            <td>hh:mm</td>
-                        </tr>
-                        <tr>
-                            <td>Start Date</td>
-                            <td>
-                                <input type="text" class="input-small">
-                            </td>
-                            <td>
-                                <input type="text" class="input-mini">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>End Date</td>
-                            <td>
-                                <input type="text" class="input-small">
-                            </td>
-                            <td>
-                                <input type="text" class="input-mini">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <hr />
-                <b>Summary of Events</b>
-                <br />
-                <table id="event-summary">
-                    <tr>
-                        <td>Devices</td>
-                        <td>@devices.length</td>
-                    </tr>
-                    <tr>
-                        <td>Voltage</td>
-                        <td>2</td>
-                    </tr>
-                    <tr>
-                        <td>Frequency</td>
-                        <td>1</td>
-                    </tr>
-                </table>
-                <hr />
-                <a href="@routes.PowerQualityMonitoring.getAlerts()">Download Visible Alerts (.csv)</a>
-            </form>
-        </div>
+          <hr>
+          <b>Timeline</b>
+          <br>
+          <select>
+            <option>Past minute</option>
+            <option>Past hour</option>
+            <option>Past day</option>
+            <option>Past week</option>
+            <option>Past month</option>
+            <option>Past year</option>
+            <option>Custom range</option>
+          </select>
+          <br>
+          <b>Custom Time Range</b>
+          <br>
+          <table>
+            <tbody>
+              <tr>
+                <td></td>
+                <td>mm/dd/yyyy</td>
+                <td>hh:mm</td>
+              </tr>
+              <tr>
+                <td>Start Date</td>
+                <td>
+                  <input type="text" class="input-small">
+                </td>
+                <td>
+                  <input type="text" class="input-mini">
+                </td>
+              </tr>
+              <tr>
+                <td>End Date</td>
+                <td>
+                  <input type="text" class="input-small">
+                </td>
+                <td>
+                  <input type="text" class="input-mini">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <hr />
+          <b>Summary of Events</b>
+          <br />
+          <table id="event-summary">
+            <tr>
+              <td>Devices</td>
+              <td>@devices.length</td>
+            </tr>
+            <tr>
+              <td>Voltage</td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <td>Frequency</td>
+              <td>1</td>
+            </tr>
+          </table>
+          <hr />
+          <a href="#">Download Visible Alerts (.csv)</a>
+        </form>
+      </div>
 
-            <!-- Start of Leaflet -->
-        <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
-        <div id="public-map" class="span9"></div>
+        <!-- Start of Leaflet -->
+      <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
+      <div id="public-map" class="span9"></div>
 
-        <script type="text/javascript">
-            // Make sure the correct css file is included
-            addDynamicCss("@routes.Assets.at("stylesheets/leaflet.css")");
+      <script type="text/javascript">
+        // Make sure the correct css file is included
+        addDynamicCss("@routes.Assets.at("stylesheets/leaflet.css")");
 
-            // Setup basic map with OSM layer
-            var map = L.map('public-map');
-            var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-            var osmAttrib='Map data © OpenStreetMap contributors';
-            var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
-            map.addLayer(osm);
+        // Setup basic map with OSM layer
+        var map = L.map('public-map');
+        var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        var osmAttrib='Map data © OpenStreetMap contributors';
+        var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
+        map.addLayer(osm);
 
-            // Center map over Oahu
-            map.setView([21.4667, -157.9833], 10);
+        // Center map over Oahu
+        map.setView([21.4667, -157.9833], 10);
 
-            // Create the icons
-            var deviceMarker = L.icon({
-            iconUrl: '@routes.Assets.at("images/opq-icon.png")'
-            });
-            var frequencyMarker = L.icon({
-            iconUrl: '@routes.Assets.at("images/frequency-alert-icon.png")'
-            });
-            var voltageMarker = L.icon({
-            iconUrl: '@routes.Assets.at("images/voltage-alert-icon.png")'
-            });
+        // Create the icons
+        var deviceMarker = L.icon({
+        iconUrl: '@routes.Assets.at("images/opq-icon.png")'
+        });
+        var frequencyMarker = L.icon({
+        iconUrl: '@routes.Assets.at("images/frequency-alert-icon.png")'
+        });
+        var voltageMarker = L.icon({
+        iconUrl: '@routes.Assets.at("images/voltage-alert-icon.png")'
+        });
 
-            // Create pop-up templates
-            function makeTable(vals) {
-            var table = "<table id='popup-table'>";
+        // Create pop-up templates
+        function makeTable(vals) {
+        var table = "<table id='popup-table'>";
 
-            for(i = 0; i < vals.length; i += 2) {
-            table += '<tr><td><b>' + vals[i] + '</b></td><td>' + vals[i + 1] + '</td></tr>';
-            }
+        for(i = 0; i < vals.length; i += 2) {
+        table += '<tr><td><b>' + vals[i] + '</b></td><td>' + vals[i + 1] + '</td></tr>';
+        }
 
-            table += "</table>"
+        table += "</table>"
 
-            return table;
-            }
+        return table;
+        }
 
-            function deviceTemplate(deviceId, latitude, longitude) {
-            return makeTable(["Device ID", deviceId, "Latitude", latitude, "Longitude", longitude]);
-            }
+        function deviceTemplate(deviceId, latitude, longitude) {
+        return makeTable(["Device ID", deviceId, "Latitude", latitude, "Longitude", longitude]);
+        }
 
-            function alertTemplate(alertType, timestamp, duration, alertValue, latitude, longitude) {
-            return makeTable([
-            "Alert Type", alertType,
-            "Date", timestamp,
-            "Duration", duration,
-            "Alert Value", alertValue,
-            "Latitude", latitude,
-            "Longitude", longitude
-            ]);
-            }
+        function alertTemplate(alertType, timestamp, duration, alertValue, latitude, longitude) {
+        return makeTable([
+        "Alert Type", alertType,
+        "Date", timestamp,
+        "Duration", duration,
+        "Alert Value", alertValue,
+        "Latitude", latitude,
+        "Longitude", longitude
+        ]);
+        }
 
-            // Display devices
-            @for(device <- devices) {
-                L.marker([@device.getLatitude(), @device.getLongitude()], {icon: deviceMarker}).addTo(map)
-                .bindPopup(deviceTemplate("@device.getDeviceId", @device.getLatitude, @device.getLongitude));
-            }
+        // Display devices
+        @for(device <- devices) {
+          L.marker([@device.getLatitude(), @device.getLongitude()], {icon: deviceMarker}).addTo(map)
+          .bindPopup(deviceTemplate("@device.getDeviceId", @device.getLatitude, @device.getLongitude));
+        }
 
-            // Display alerts
-            @for(alert <- alerts) {
-                @if(alert.getAlertType().equals(models.Alert.AlertType.FREQUENCY)) {
-                    L.marker([@alert.getDevice.getLatitude, @alert.getDevice.getLongitude], {icon: frequencyMarker}).addTo(map)
-                    .bindPopup(alertTemplate('@alert.getAlertType', '@alert.getTimestamp', @alert.getAlertDuration + ' ms',
-                    @alert.getAlertValue + 'Hz', @alert.getDevice.getLatitude, @alert.getDevice.getLongitude));
-                }
-                @if(alert.getAlertType().equals(models.Alert.AlertType.VOLTAGE)) {
-                    L.marker([@alert.getDevice.getLatitude, @alert.getDevice.getLongitude], {icon: voltageMarker}).addTo(map)
-                    .bindPopup(alertTemplate('@alert.getAlertType', '@alert.getTimestamp', @alert.getAlertDuration + ' ms',
-                    @alert.getAlertValue + ' V', @alert.getDevice.getLatitude, @alert.getDevice.getLongitude));
-                }
-            }
-        </script>
+        // Display alerts
+        @for(alert <- alerts) {
+          @if(alert.getAlertType().equals(models.Alert.AlertType.FREQUENCY)) {
+            L.marker([@alert.getDevice.getLatitude, @alert.getDevice.getLongitude], {icon: frequencyMarker}).addTo(map)
+            .bindPopup(alertTemplate('@alert.getAlertType', '@alert.getTimestamp', @alert.getAlertDuration + ' ms',
+            @alert.getAlertValue + 'Hz', @alert.getDevice.getLatitude, @alert.getDevice.getLongitude));
+          }
+          @if(alert.getAlertType().equals(models.Alert.AlertType.VOLTAGE)) {
+            L.marker([@alert.getDevice.getLatitude, @alert.getDevice.getLongitude], {icon: voltageMarker}).addTo(map)
+            .bindPopup(alertTemplate('@alert.getAlertType', '@alert.getTimestamp', @alert.getAlertDuration + ' ms',
+            @alert.getAlertValue + ' V', @alert.getDevice.getLatitude, @alert.getDevice.getLongitude));
+      }
+      }
+      </script>
 
     </div>
-}
+  }

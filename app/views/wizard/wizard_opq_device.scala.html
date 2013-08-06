@@ -1,33 +1,35 @@
 @*
-    This file is part of opq-ao.
+This file is part of opq-ao.
 
-    opa-ao is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+opa-ao is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    opa-ao is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+opa-ao is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with opq-ao.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 
-    Copyright 2013 Anthony Christe
+Copyright 2013 Anthony Christe
 *@
 
 @(opqDeviceForm: Form[models.OpqDevice])
 
-@import helper._
+  @import helper._
   @implicitFieldConstructor = @{
     FieldConstructor(twitterBootstrapInput.render)
   }
 
-<div class="row">
+  <div class="row">
     <div class="span9">
-      @inputText(opqDeviceForm("deviceId"), '_label -> "Device Id", 'placeholder -> "0123-4567-89AB-CDEF", 'id -> "deviceId")
-      @inputText(opqDeviceForm("description"), '_label -> "Device Description", 'placeholder -> "Office", 'id -> "deviceDescription")
+      @inputText(opqDeviceForm("deviceId"), '_label -> "Device Id", 'placeholder -> "0123-4567-89AB-CDEF",
+        'id -> "deviceId")
+      @inputText(opqDeviceForm("description"), '_label -> "Device Description", 'placeholder -> "Office",
+        'id -> "deviceDescription")
       @select(
         opqDeviceForm("state"),
         options = options(utils.FormUtils.LIST_OF_STATES),
@@ -36,27 +38,27 @@
         'id -> "deviceState")
     </div>
     <div class="span3">
-        <div class="well well-small">
-            <p class="bold">OPQ Device</p>
-            <p>
+      <div class="well well-small">
+        <p class="bold">OPQ Device</p>
+        <p>
                 This section allows you to register your OPQ device.
-            </p>
-            <p class="bold">Device Id</p>
-            <p>
+        </p>
+        <p class="bold">Device Id</p>
+        <p>
                 The OPQ device id can be found on a sticker attached to your OPQ device. The id is represented by
-                16 hexadecimal digits split into groups of 4 digits.
-            </p>
-            <p>
+          16 hexadecimal digits split into groups of 4 digits.
+        </p>
+        <p>
                 Example: 0123-4567-89AB-CDEF
-            </p>
-            <p class="bold">Device Description</p>
-            <p>
+        </p>
+        <p class="bold">Device Description</p>
+        <p>
                 Provide a short description of your device. This makes it easy to differentiate between multiple
-                devices your control without having to memorize their device id.
-            </p>
-            <p>
+          devices your control without having to memorize their device id.
+        </p>
+        <p>
                 Examples: Offices, basement, uptown, etc
-            </p>
-        </div>
+        </p>
+      </div>
     </div>
-</div>
+  </div>

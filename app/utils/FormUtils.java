@@ -166,7 +166,7 @@ public final class FormUtils {
   }
 
   /**
-   * Generates a random 32 bytes salt.
+   * Generates a random 32 byte salt.
    *
    * @return Random 32 byte salt.
    */

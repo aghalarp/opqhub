@@ -1,60 +1,61 @@
 @*
-    This file is part of opq-ao.
+This file is part of opq-ao.
 
-    opa-ao is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+opa-ao is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    opa-ao is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+opa-ao is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with opq-ao.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 
-    Copyright 2013 Anthony Christe
+Copyright 2013 Anthony Christe
 *@
 
 @main("Getting Started with OPQ", menu("Getting Started with OPQ", true)) {
-    <div class="container">
-        <div class="hero-unit hidden-phone">
-            <h1>Welcome to Open Power Quality</h1>
-            <p>To get started, select one of the two options below.</p>
-            <p>
-                <a class="btn btn-large btn-inverse" href="@routes.Wizard.index()"><span class="btn-label">Set Up Device</span></a>
-                <a class="btn btn-large btn-primary" href="@routes.Application.login()"><span class="btn-label">Login</span></a>
-            </p>
-        </div>
-        <div class="row main-features">
-            <div class="span6">
-                <div class="well">
-                    <h3>What is Open Power Quality?</h3>
-                    <p>
-                        Open Power Quality (OPQ) is a project developed at the University of Hawaii at Manoa which
-                        allows for distributed power quality analysis.
-                    </p>
-                    <p>
-                        <a class="btn btn-primary" href="#"><span class="btn-label">Find Out More</span></a>
-                    </p>
-                </div>
-            </div>
-            <div class="span6">
-                <div class="well">
-                    <h3>Community Data Sharing Initiative</h3>
-                    <p>
-                        OPQ device users may choose to share power quality information with the public. That
-                        information is publicly available in one of two formats. A map view for visual analysis,
-                        and the ability to download a comma separated value file of power quality information.
-                    </p>
-                    <p>
-                        <a class="btn btn-primary" href="@routes.PowerQualityMonitoring.publicMonitor()"><span class="btn-label">
-                            Public Power Quality Monitoring</span></a>
-                    </p>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    <div class="hero-unit hidden-phone">
+      <h1>Welcome to Open Power Quality</h1>
+      <p>To get started, select one of the two options below.</p>
+      <p>
+        <a class="btn btn-large btn-inverse" href="@routes.Wizard.index()"><span class="btn-label">
+          Set Up Device</span></a>
+        <a class="btn btn-large btn-primary" href="@routes.Application.login()"><span class="btn-label">Login</span></a>
+      </p>
     </div>
+    <div class="row main-features">
+      <div class="span6">
+        <div class="well">
+          <h3>What is Open Power Quality?</h3>
+          <p>
+            Open Power Quality (OPQ) is a project developed at the University of Hawaii at Manoa which
+            allows for distributed power quality analysis.
+          </p>
+          <p>
+            <a class="btn btn-primary" href="#"><span class="btn-label">Find Out More</span></a>
+          </p>
+        </div>
+      </div>
+      <div class="span6">
+        <div class="well">
+          <h3>Community Data Sharing Initiative</h3>
+          <p>
+            OPQ device users may choose to share power quality information with the public. That
+            information is publicly available in one of two formats. A map view for visual analysis,
+            and the ability to download a comma separated value file of power quality information.
+          </p>
+          <p>
+            <a class="btn btn-primary" href="@routes.PowerQualityMonitoring.publicMonitor()"><span class="btn-label">
+              Public Power Quality Monitoring</span></a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 }
 

@@ -19,41 +19,41 @@ Copyright 2013 Anthony Christe
 
 @(personForm: Form[models.Person])
 
-@import helper._
+  @import helper._
   @implicitFieldConstructor = @{
     FieldConstructor(twitterBootstrapInput.render)
   }
 
-<div class="row">
-  <div class="span9">
-    @inputText(
-      personForm("firstName"), '_label -> "First Name", 'placeholder -> "John", 'id -> "firstName")
-    @inputText(personForm("lastName"), '_label -> "Last Name", 'placeholder -> "Doe", 'id -> "lastName")
-    @inputText(personForm("email"), '_label -> "E-Mail", 'placeholder -> "john.doe@email.com", 'id -> "email")
-    @inputPassword(personForm("password"), '_label -> "Password", 'placeholder -> "Password", 'id -> "password")
-    @select(
-      personForm("state"),
-      options = options(utils.FormUtils.LIST_OF_STATES),
-      '_label -> "State",
-      '_default -> "--- Select State ---",
-      'id -> "personState")
-  </div>
-  <div class="span3">
-    <div class="well well-small">
-      <p class="bold">Welcome to the OPQ Wizard</p>
-      <p>
+  <div class="row">
+    <div class="span9">
+      @inputText(
+        personForm("firstName"), '_label -> "First Name", 'placeholder -> "John", 'id -> "firstName")
+      @inputText(personForm("lastName"), '_label -> "Last Name", 'placeholder -> "Doe", 'id -> "lastName")
+      @inputText(personForm("email"), '_label -> "E-Mail", 'placeholder -> "john.doe@email.com", 'id -> "email")
+      @inputPassword(personForm("password"), '_label -> "Password", 'placeholder -> "Password", 'id -> "password")
+      @select(
+        personForm("state"),
+        options = options(utils.FormUtils.LIST_OF_STATES),
+        '_label -> "State",
+        '_default -> "--- Select State ---",
+        'id -> "personState")
+    </div>
+    <div class="span3">
+      <div class="well well-small">
+        <p class="bold">Welcome to the OPQ Wizard</p>
+        <p>
         This wizard will walk you through the steps needed to
-        create an account and also register your OPQ device. You can go back to any step
-        at any time and all of this information can be updated in the future from the
-        administration panel.
-      </p>
-      <p class="bold">User Information</p>
-      <p>
+          create an account and also register your OPQ device. You can go back to any step
+          at any time and all of this information can be updated in the future from the
+          administration panel.
+        </p>
+        <p class="bold">User Information</p>
+        <p>
         This information is required to create an account on openpowerquality.org.
-      </p>
-      <p>
+        </p>
+        <p>
         All fields are <b>required</b>.
       </p>
+      </div>
     </div>
   </div>
-</div>
