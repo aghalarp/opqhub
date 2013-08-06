@@ -225,6 +225,7 @@ public class Administration extends Controller {
 
 
     opqDeviceForm.get().update(opqDevice.getPrimaryKey());
+    flash("updated", "Updated CDSI Participation");
     return redirect(routes.Administration.cdsi());
   }
 }
