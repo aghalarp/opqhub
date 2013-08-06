@@ -17,62 +17,38 @@
     Copyright 2013 Anthony Christe
 *@
 
+@(personForm: Form[models.Person])
+
+@import helper._
+  @implicitFieldConstructor = @{
+    FieldConstructor(twitterBootstrapInput.render)
+  }
+
 @admin("User Administration",
     "This page allows you to configure basic information such as e-mail address, password, and your address.") {
-    <div class="span6">
-        <form class="well well-small">
-            <label class="control-label">
-                <b>Account Information</b>
-            </label>
-
-            <div>
-                <input type="text" class="input-large">
-                <span class="help-inline">First Name <b>*</b></span>
-
-                <div>
-                    <input type="text" class="input-large">
-                    <span class="help-inline">Last Name <b>*</b></span>
-                </div>
-            </div>
-            <div>
-                <input type="email" class="input-large">
-                <span class="help-inline">E-mail Address <b>*</b></span>
-            </div>
-            <div>
-                <input type="password" class="input-large">
-                <span class="help-inline">Password <b>*</b></span>
-            </div>
-            <div>
-                <input type="password" class="input-large">
-                <span class="help-inline">Verify Password <b>*</b></span>
-                <br />
-                <select>
-                    @for(state <- utils.FormUtils.ARRAY_OF_STATES) {
-                        <option>@state</option>
-                    }
-                </select>
-                <span class="help-inline">State <b>*</b></span>
-                <div>
-                    <input type="text" class="input-large">
-                    <span class="help-inline">City</span>
-                    <div>
-                        <input type="text" class="input-large">
-                        <span class="help-inline">Zip Code</span>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <input type="text" class="input-large">
-                <span class="help-inline">Street Name</span>
-            </div>
-            <div>
-                <input type="text" class="input-large">
-                <span class="help-inline">Street Number</span>
-            </div>
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Update</button>
-            </div>
-        </form>
+    <div class="span7">
+      @form(routes.Administration.updateUser(), 'class -> "form-horizontal well well-small", 'name -> "userAdminForm") {
+        @inputText(
+          personForm("firstName"), '_label -> "First Name", 'placeholder -> "John", 'id -> "firstName")
+        @inputText(personForm("lastName"), '_label -> "Last Name", 'placeholder -> "Doe", 'id -> "lastName")
+        @inputText(personForm("email"), '_label -> "E-Mail", 'placeholder -> "john.doe@email.com", 'id -> "email")
+        @inputPassword(personForm("password"), '_label -> "Password", 'placeholder -> "Password", 'id -> "password")
+        @select(
+          personForm("state"),
+          options = options(utils.FormUtils.LIST_OF_STATES),
+          '_label -> "State",
+          '_default -> "--- Select State ---",
+          'id -> "personState")
+        @inputText(personForm("city"), '_label -> "City", 'placeholder -> "Kailua-Kona", 'id -> "userCity")
+        @inputText(personForm("zip"), '_label -> "Zip", 'placeholder -> "96739", 'id -> "userZip")
+        @inputText(personForm("streetName"), '_label -> "Street Name", 'placeholder -> "Palani Rd", 'id -> "userStreetName")
+        @inputText(personForm("streetNumber"), '_label -> "Street Number", 'placeholder -> "111", 'id -> "userStreetNumber")
+        <div class="control-group">
+          <div class="controls">
+            <input type="submit" class="btn-primary" value="Update User Information" />
+          </div>
+        </div>
+      }
     </div>
     <div class="span2 well well-small">
         <p>

@@ -33,6 +33,11 @@ Copyright 2013 Anthony Christe
           @loginForm.globalError.message
         </p>
       }
+      @if(flash.contains("success")) {
+        <p class="success">
+          @flash.get("success")
+        </p>
+      }
       <hr />
       @form(action = routes.Application.authenticate(), 'class -> "form-horizontal") {
         @inputText(loginForm("email"), '_label -> "E-Mail Address", 'placeholder -> "john.doe@email.com", 'id -> "email", 'class -> "input-xlarge")

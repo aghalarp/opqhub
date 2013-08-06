@@ -1,125 +1,71 @@
 @*
-    This file is part of opq-ao.
+This file is part of opq-ao.
 
-    opa-ao is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+opa-ao is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    opa-ao is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+opa-ao is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with opq-ao.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 
-    Copyright 2013 Anthony Christe
+Copyright 2013 Anthony Christe
 *@
 
-@admin("Alert Administration",
-    "This page allows you to manage and create power quality events.") {
-    <div class="span6">
-        <form class="form-vertical well well-small">
-            <label class="control-label">
-                <b>New Power Quality Alert</b>
-            </label>
-            <div>
-                <select>
-                    <option>0123...CDEF (Home)</option>
-                    <option>ABCD...6789 (Office)</option>
-                </select> Device Id
-            </div>
-            <div class="control-group">
-                <label class="control-label">Alert Types (check all that apply)</label>
-                <label class="checkbox" for="voltage_alert_checkbox">
-                    <input type="checkbox" value="true" id="voltage_alert_checkbox" name="checkbox"> Voltage Alert
-                </label>
-                <input type="text" class="input-mini" value="218"> When voltage is less than (in volts)
-                <br>
-                <input type="text" class="input-mini" value="222"> When voltage is greater than (in volts)
-                <br>
-                <br>
-                <label class="checkbox" for="frequency_alert_checkbox">
-                    <input type="checkbox" value="true" id="frequency_alert_checkbox" name="checkbox"> Frequency Alert
-                </label>
-                <input type="text" class="input-mini" value="58.5"> When frequency is less than (in Hertz)
-                <br>
-                <input type="text" class="input-mini" value="62.5"> When frequency is greater than (in Hertz)
-                <br>
-                <br>
-                <label class="checkbox" for="device_alert_checkbox">
-                    <input type="checkbox" value="true" id="device_alert_checkbox" name="checkbox"> Device Alert
-                </label>
-                <hr />
-                <b>Alert Types</b><br />
-                <label class="checkbox" for="email_alert_checkbox">
-                    <input type="checkbox" value="true" id="email_alert_checkbox" name="checkbox"> Alert me via e-mail
-                </label>
-                <input type="text" class="input-large" id="email"> E-mail Address
-                <br />
-                <br />
-                <label class="checkbox" for="sms_alert_checkbox">
-                    <input type="checkbox" value="true" id="sms_alert_checkbox" name="checkbox"> Alert me via SMS
-                </label>
-                <select>
-                    <option>ATT</option>
-                    <option>Sprint</option>
-                    <option>Verizon</option>
-                </select> Wireless Carrier
-                <br />
-                <input type="text" class="large" id="wireless_number"> Wireless Number
-                <hr />
-                <button type="submit" class="btn btn-primary">Create Alert</button>
-            </div>
-        </form>
-        <table class="table well well-small">
-            <thead>
-                <tr>
-                    <th>Current Alerts</th>
-                    <th>Alert Types</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>0123-4567-89AB-CDEF (Home)</td>
-                    <td>Voltage, Device</td>
-                    <td>
-                        <a class="btn btn-danger pull-right">Remove</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>ABCD-EF01-2345-6789 (Office) </td>
-                    <td>Frequency, Device</td>
-                    <td>
-                        <a class="btn btn-danger pull-right">Remove</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="span2 well well-small">
-        <p>
-            <b>New Power Quality Alert</b> &nbsp;
-            <br>
-            Create a new alert for the specified device. Make sure you've added your
-            device through
-            <a href="#">Device Management</a> .
-            <br>
-            <br>
-            You may also select three alert types. Voltage, frequency, and device
-            alerts.
-            <br>
-            <br>
-            Device alerts occur when there is a prolem with the OPQ hardware device.
-        </p>
-        <p>
-            <b>Current Alerts</b>
-            <br>
-            View previously created alerts and alert types. Remove previously created
-            alerts.
-        </p>
-    </div>
+@(alertNotificationForms: List[Form[AlertNotification]])
 
+@import helper._
+  @implicitFieldConstructor = @{
+    FieldConstructor(twitterBootstrapInput.render)
+  }
+
+@admin("Alert Administration",
+  "This page allows you to manage and create power quality events.") {
+  <div class="span9">
+
+    <table class="table well well-small">
+      @if(flash.contains("updated")) {
+        <p class="success">
+        @flash.get("updated")
+        </p>
+      }
+      <thead>
+        <tr>
+          <th>Device Id</th>
+          <th>Voltage Alert</th>
+          <th>Min. Voltage</th>
+          <th>Max. Voltage</th>
+          <th>Frequency Alert</th>
+          <th>Min. Frequency</th>
+          <th>Max. Frequency</th>
+          <th>Device Alert</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+
+      @for(alertNotificationForm <- alertNotificationForms) {
+        @form(routes.Administration.updateAlert(alertNotificationForm("primaryKey").value), 'class -> "form-inline") {
+        <tr>
+          <td>@inputText(alertNotificationForm("deviceId"), '_showConstraints -> false, '_label -> "", 'class -> "input-medium", 'readonly -> "readonly")</td>
+          <td>@checkbox(alertNotificationForm("voltageAlertNotification"), '_showConstraints -> false, '_label -> "")</td>
+          <td>@inputText(alertNotificationForm("minAcceptableVoltage"), '_showConstraints -> false, '_label -> "", 'class -> "input-mini")</td>
+          <td>@inputText(alertNotificationForm("maxAcceptableVoltage"), '_showConstraints -> false, '_label -> "", 'class -> "input-mini")</td>
+          <td>@checkbox(alertNotificationForm("frequencyAlertNotification"), '_showConstraints -> false, '_label -> "")</td>
+          <td>@inputText(alertNotificationForm("minAcceptableFrequency"), '_showConstraints -> false, '_label -> "", 'class -> "input-mini")</td>
+          <td>@inputText(alertNotificationForm("maxAcceptableFrequency"), '_showConstraints -> false, '_label -> "", 'class -> "input-mini")</td>
+          <td>@checkbox(alertNotificationForm("deviceAlertNotification"), '_showConstraints -> false, '_label -> "")</td>
+          <td><input type="submit" class="btn btn-warning pull-right" value="Update"></td>
+        </tr>
+        }
+      }
+
+      </tbody>
+    </table>
+  </div>
 }

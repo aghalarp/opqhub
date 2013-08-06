@@ -48,7 +48,7 @@ public class OpqDevice extends Model {
    * The device id as a 64-bit integer.
    */
   @Constraints.Required
-  private Long deviceId;
+  private String deviceId;
 
   /**
    * Short description of the device.
@@ -171,16 +171,16 @@ public class OpqDevice extends Model {
    * Gets the device id.
    * @return The device id (unique 64-bit int).
    */
-  public Long getDeviceId() {
+  public String getDeviceId() {
     return deviceId;
   }
 
   /**
    * Sets the device id.
-   * @param deviceId A unique 64-bit int.
+   * @param deviceId A unique 64-bit represented as a String.
    */
   public void setDeviceId(String deviceId) {
-    this.deviceId = Long.parseLong(deviceId.replaceAll("-", ""), 16);
+    this.deviceId = deviceId;
   }
 
   /**

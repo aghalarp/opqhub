@@ -28,7 +28,14 @@
 
 @main("OPQ Wizard", menu("OPQ Wizard", true)) {
     <script type="text/javascript">
-            $('#opq-wizard').wizard();
+      $('#opq-wizard').wizard();
+
+      $(document).ready(function() {
+        $('#opq-wizard').on('finished', function(e, data) {
+          document.wizardForm.submit();
+        });
+      });
+
     </script>
 
     <div class="container">
@@ -59,7 +66,7 @@
                     </div>
                 </div>
                 <div class="step-content">
-                    @form(routes.Wizard.save(), 'class -> "form-horizontal") {
+                    @form(routes.Wizard.save(), 'class -> "form-horizontal", 'name -> "wizardForm") {
                       <div class="step-pane active" id="step1">
                           @wizard_user_info(personForm)
                       </div>

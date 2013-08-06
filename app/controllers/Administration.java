@@ -19,12 +19,23 @@
 
 package controllers;
 
+import models.AlertNotification;
+import models.OpqDevice;
+import models.Person;
+import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import views.html.admin.adminalert;
 import views.html.admin.admincdsi;
 import views.html.admin.admindevice;
 import views.html.admin.adminuser;
+import views.html.error;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static play.data.Form.form;
 
 /**
  * Contains methods which allow users to interact with the views and models for administrating their account and
@@ -36,30 +47,129 @@ public class Administration extends Controller {
    * Render the view for user administration.
    * @return The rendered view for user administration.
    */
+  @Security.Authenticated(Secured.class)
   public static Result user() {
-    return ok(adminuser.render());
+    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    Form<Person> personForm = form(Person.class).fill(person);
+    return ok(adminuser.render(personForm));
+  }
+
+  @Security.Authenticated(Secured.class)
+  public static Result updateUser() {
+    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    Form<Person> personForm = form(Person.class).bindFromRequest();
+
+    if(personForm.hasErrors()) {
+      return ok(error.render("Problem updating person", personForm.errors().toString()));
+    }
+
+    personForm.get().update(person.getPrimaryKey());
+    return redirect(routes.Administration.user());
   }
 
   /**
    * Render the view for device administration.
    * @return The rendered view for device administration.
    */
+  @Security.Authenticated(Secured.class)
   public static Result device() {
-    return ok(admindevice.render());
+    Form<OpqDevice> opqDeviceForm = form(OpqDevice.class);
+    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    List<OpqDevice> opqDevices = person.getDevices();
+    List<Form<OpqDevice>> opqDeviceForms = new ArrayList<>();
+
+    for(OpqDevice opqDevice : opqDevices) {
+      opqDeviceForms.add(form(OpqDevice.class).fill(opqDevice));
+    }
+
+    return ok(admindevice.render(opqDeviceForm, opqDeviceForms));
+  }
+
+  @Security.Authenticated(Secured.class)
+  public static Result saveDevice() {
+    Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
+    if(opqDeviceForm.hasErrors()) {
+      return ok(error.render("Problem saving new device", opqDeviceForm.errors().toString()));
+    }
+
+    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    OpqDevice opqDevice = opqDeviceForm.get();
+    person.getDevices().add(opqDevice);
+    opqDevice.setPerson(person);
+    opqDevice.save();
+    person.save();
+
+    flash("added", "Device added");
+    return redirect(routes.Administration.device());
+  }
+
+  @Security.Authenticated(Secured.class)
+  public static Result updateDevice(String deviceId) {
+    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
+    Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
+
+    if(opqDeviceForm.hasErrors()) {
+      return ok(error.render("Problem updating device", opqDeviceForm.errors().toString()));
+    }
+
+    opqDeviceForm.get().update(opqDevice.getPrimaryKey());
+    flash("updated", "Device updated");
+    return redirect(routes.Administration.device());
+  }
+
+  /**
+   * Warning: Don't call this unless you want every relationship attached to it deleted as well.
+   * @param deviceId Device id.
+   * @return Redirect back to devices page.
+   */
+  @Security.Authenticated(Secured.class)
+  public static Result deleteDevice(String deviceId) {
+    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
+    opqDevice.delete();
+    opqDevice.save();
+
+    return redirect(routes.Administration.device());
   }
 
   /**
    * Render the view for alert administration.
    * @return The rendered view for alert administration.
    */
+  @Security.Authenticated(Secured.class)
   public static Result alert() {
-    return ok(adminalert.render());
+    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    List<OpqDevice> devices = person.getDevices();
+    List<Form<AlertNotification>> alertNotificationForms = new ArrayList<>();
+    Form<AlertNotification> alertNotificationForm;
+
+    for(OpqDevice opqDevice : devices) {
+      for(AlertNotification alertNotification : opqDevice.getAlertNotifications()) {
+        alertNotificationForm = form(AlertNotification.class).fill(alertNotification);
+        alertNotificationForm.data().put("deviceId", opqDevice.getDeviceId());
+        alertNotificationForms.add(alertNotificationForm);
+      }
+    }
+
+    return ok(adminalert.render(alertNotificationForms));
+  }
+
+  public static Result updateAlert(String id) {
+    Form<AlertNotification> alertNotificationForm = form(AlertNotification.class).bindFromRequest();
+
+    if(alertNotificationForm.hasErrors()) {
+      return ok(error.render("Problem updating alert notifications", alertNotificationForm.errors().toString()));
+    }
+
+    alertNotificationForm.get().update(Long.parseLong(id));
+    flash("updated", "Updated device alert");
+    return redirect(routes.Administration.alert());
   }
 
   /**
    * Render the view for CDSI administration.
    * @return The rendered view for CDSI administration.
    */
+  @Security.Authenticated(Secured.class)
   public static Result cdsi() {
     return ok(admincdsi.render());
   }

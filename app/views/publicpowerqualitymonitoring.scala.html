@@ -162,7 +162,7 @@
             // Display devices
             @for(device <- devices) {
                 L.marker([@device.getLatitude(), @device.getLongitude()], {icon: deviceMarker}).addTo(map)
-                .bindPopup(deviceTemplate(@device.getDeviceId, @device.getLatitude, @device.getLongitude));
+                .bindPopup(deviceTemplate("@device.getDeviceId", @device.getLatitude, @device.getLongitude));
             }
 
             // Display alerts

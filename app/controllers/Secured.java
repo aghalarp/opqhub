@@ -1,8 +1,36 @@
+/*
+  This file is part of opq-ao.
+
+  opa-ao is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  opa-ao is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with opq-ao.  If not, see <http://www.gnu.org/licenses/>.
+
+  Copyright 2013 Anthony Christe
+ */
+
 package controllers;
 
-/**
- * Created with IntelliJ IDEA. User: anthony Date: 8/2/13 Time: 2:37 PM To change this template use File | Settings |
- * File Templates.
- */
-public class Secured {
+import play.mvc.Http;
+import play.mvc.Result;
+import play.mvc.Security;
+
+public class Secured extends Security.Authenticator {
+  @Override
+  public String getUsername(Http.Context context) {
+    return context.session().get("email");
+  }
+
+  @Override
+  public Result onUnauthorized(Http.Context  context) {
+    return redirect(routes.Application.login());
+  }
 }

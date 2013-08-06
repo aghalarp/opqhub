@@ -53,7 +53,7 @@ create table measurement (
 
 create table opq_device (
   primary_key               bigint auto_increment not null,
-  device_id                 bigint,
+  device_id                 varchar(255),
   description               varchar(255),
   state                     varchar(255),
   city                      varchar(255),

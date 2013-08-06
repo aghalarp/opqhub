@@ -23,6 +23,7 @@ import models.Alert;
 import models.OpqDevice;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -39,13 +40,15 @@ public class PowerQualityMonitoring extends Controller {
   public static Result publicMonitor() {
     List<models.Alert> alerts = Alert.find().all();
     List<models.OpqDevice> devices = OpqDevice.find().where().eq("participatingInCdsi", true).findList();
-    return ok(views.html.publicpowerqualitymonitoring.render(alerts, devices, true));
+    boolean loggedOut = !(session().containsKey("email"));
+    return ok(views.html.publicpowerqualitymonitoring.render(alerts, devices, loggedOut));
   }
 
   /**
    * Render a view which contains a list of power quality events for the current logged in user.
    * @return Rendered view of power quality events for current user.
    */
+  @Security.Authenticated(Secured.class)
   public static Result privateMonitor() {
     return ok(views.html.privatepowerqualitymonitoring.render());
   }

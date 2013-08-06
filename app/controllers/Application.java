@@ -45,6 +45,12 @@ public class Application extends Controller {
     return ok(index.render());
   }
 
+  public static Result logout() {
+    session().clear();
+    flash("success", "You've been logged out");
+    return redirect(routes.Application.login());
+  }
+
   public static Result login() {
     return ok(login.render(form(Login.class)));
   }
@@ -57,7 +63,7 @@ public class Application extends Controller {
     else {
       session().clear();
       session("email", loginForm.get().email);
-      return redirect(routes.Application.index());
+      return redirect(routes.PowerQualityMonitoring.privateMonitor());
     }
   }
 
@@ -73,7 +79,7 @@ public class Application extends Controller {
       // First try to find a person with a matching email
       Person person = Person.find().where().eq("email", email).findUnique();
       if(person == null) {
-        return "Invalid user or password";
+        return "Invalid email or password";
       }
       // See if the passwords match
       byte[] hashedPassword = utils.FormUtils.hashPassword(password, person.getPasswordSalt());

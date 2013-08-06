@@ -27,12 +27,12 @@
 <div class="row">
     <div class="span9">
       @inputText(opqDeviceForm("deviceId"), '_label -> "Device Id", 'placeholder -> "0123-4567-89AB-CDEF", 'id -> "deviceId")
-      @inputText(opqDeviceForm("description"), '_label -> "Device Description", 'placeholder -> "office", 'id -> "deviceDescription")
+      @inputText(opqDeviceForm("description"), '_label -> "Device Description", 'placeholder -> "Office", 'id -> "deviceDescription")
       @select(
         opqDeviceForm("state"),
         options = options(utils.FormUtils.LIST_OF_STATES),
         '_label -> "State",
-        '_default -> "Hawaii",
+        '_default -> "--- Select State ---",
         'id -> "deviceState")
     </div>
     <div class="span3">
