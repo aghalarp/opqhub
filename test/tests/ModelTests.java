@@ -68,7 +68,7 @@ public class ModelTests {
   @Test
   public void testModels() {
     // Create a person model object
-    Person person = new Person("firstName", "lastName", "email@email.com", utils.FormUtils.hashPassword("password"),
+    Person person = new Person("firstName", "lastName", "email@email.com", utils.FormUtils.hashPassword("password", new byte[] {1, 2}),
                                "state", "city", "zip", "streetName", "streetNumber");
 
     // Create a measurement model object
@@ -77,15 +77,17 @@ public class ModelTests {
     // Create an external event model object
     ExternalEvent externalEvent = new ExternalEvent("Weather", "Flossie", 1L, 2L);
 
+    OpqDevice opqDevice = new OpqDevice("1111-1111-1111-111", "description", "Hawaii");
+
     // Create an alert model object
-    Alert alert = new Alert(Alert.AlertType.FREQUENCY, 57.0, 1L, 2L);
+    Alert alert = new Alert(opqDevice, Alert.AlertType.FREQUENCY, 1L, 1L, 1.0);
 
     // Create an alert notification model object
     AlertNotification alertNotification = new AlertNotification(true, true, true, true, "AT&T", "5555555555",
                                                                 "email@email.com", 58.0, 62.0, 158.0, 162.0);
 
     // Create an OpqDevice model object
-    OpqDevice opqDevice = new OpqDevice("0x0123456789ABCDEF", "description", "Hawaii");
+
 
     // Associate external event with alert
     externalEvent.getAlerts().add(alert);

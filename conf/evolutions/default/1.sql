@@ -4,7 +4,7 @@
 # --- !Ups
 
 create table alert (
-  primary_key               bigint auto_increment not null,
+  primary_key               bigint not null,
   alert_type                integer,
   alert_value               double,
   timestamp                 bigint,
@@ -16,13 +16,13 @@ create table alert (
 ;
 
 create table alert_notification (
-  primary_key               bigint auto_increment not null,
-  voltage_alert_notification tinyint(1) default 0,
-  frequency_alert_notification tinyint(1) default 0,
-  device_alert_notification tinyint(1) default 0,
-  alert_via_email           tinyint(1) default 0,
+  primary_key               bigint not null,
+  voltage_alert_notification boolean,
+  frequency_alert_notification boolean,
+  device_alert_notification boolean,
+  alert_via_email           boolean,
   notification_email        varchar(255),
-  alert_via_sms             tinyint(1) default 0,
+  alert_via_sms             boolean,
   sms_carrier               varchar(255),
   sms_number                varchar(255),
   min_acceptable_voltage    double,
@@ -34,7 +34,7 @@ create table alert_notification (
 ;
 
 create table external_event (
-  primary_key               bigint auto_increment not null,
+  primary_key               bigint not null,
   event_type                varchar(255),
   event_description         varchar(255),
   timestamp                 bigint,
@@ -43,7 +43,7 @@ create table external_event (
 ;
 
 create table measurement (
-  primary_key               bigint auto_increment not null,
+  primary_key               bigint not null,
   timestamp                 bigint,
   voltage                   double,
   frequency                 double,
@@ -52,7 +52,7 @@ create table measurement (
 ;
 
 create table opq_device (
-  primary_key               bigint auto_increment not null,
+  primary_key               bigint not null,
   device_id                 varchar(255),
   description               varchar(255),
   state                     varchar(255),
@@ -62,13 +62,13 @@ create table opq_device (
   street_number             varchar(255),
   longitude                 double,
   latitude                  double,
-  participating_in_cdsi     tinyint(1) default 0,
+  participating_in_cdsi     boolean,
   person_primary_key        bigint,
   constraint pk_opq_device primary key (primary_key))
 ;
 
 create table person (
-  primary_key               bigint auto_increment not null,
+  primary_key               bigint not null,
   first_name                varchar(255),
   last_name                 varchar(255),
   email                     varchar(255),
@@ -82,6 +82,18 @@ create table person (
   street_number             varchar(255),
   constraint pk_person primary key (primary_key))
 ;
+
+create sequence alert_seq;
+
+create sequence alert_notification_seq;
+
+create sequence external_event_seq;
+
+create sequence measurement_seq;
+
+create sequence opq_device_seq;
+
+create sequence person_seq;
 
 alter table alert add constraint fk_alert_device_1 foreign key (device_primary_key) references opq_device (primary_key) on delete restrict on update restrict;
 create index ix_alert_device_1 on alert (device_primary_key);
@@ -98,19 +110,31 @@ create index ix_opq_device_person_5 on opq_device (person_primary_key);
 
 # --- !Downs
 
-SET FOREIGN_KEY_CHECKS=0;
+SET REFERENTIAL_INTEGRITY FALSE;
 
-drop table alert;
+drop table if exists alert;
 
-drop table alert_notification;
+drop table if exists alert_notification;
 
-drop table external_event;
+drop table if exists external_event;
 
-drop table measurement;
+drop table if exists measurement;
 
-drop table opq_device;
+drop table if exists opq_device;
 
-drop table person;
+drop table if exists person;
 
-SET FOREIGN_KEY_CHECKS=1;
+SET REFERENTIAL_INTEGRITY TRUE;
+
+drop sequence if exists alert_seq;
+
+drop sequence if exists alert_notification_seq;
+
+drop sequence if exists external_event_seq;
+
+drop sequence if exists measurement_seq;
+
+drop sequence if exists opq_device_seq;
+
+drop sequence if exists person_seq;
 
