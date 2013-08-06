@@ -41,8 +41,10 @@ POST        /private/admin/device/update/:id        controllers.Administration.u
 GET         /private/admin/device/delete/:id        controllers.Administration.deleteDevice(id: String)
 
 GET         /private/admin/alert                    controllers.Administration.alert()
+POST        /private/admin/alert/save               controllers.Administration.saveAlert()
 POST        /private/admin/alert/update/:id         controllers.Administration.updateAlert(id: String)
 GET         /private/admin/cdsi                     controllers.Administration.cdsi()
+POST        /private/admin/cdsi/update/:deviceId    controllers.Administration.updateCdsi(deviceId: String)
 
 # Power Quality Monitoring
 GET         /private/monitor                        controllers.PowerQualityMonitoring.privateMonitor()

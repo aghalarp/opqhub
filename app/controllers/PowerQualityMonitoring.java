@@ -21,11 +21,12 @@ package controllers;
 
 import models.Alert;
 import models.OpqDevice;
+import models.Person;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,7 +51,16 @@ public class PowerQualityMonitoring extends Controller {
    */
   @Security.Authenticated(Secured.class)
   public static Result privateMonitor() {
-    return ok(views.html.privatepowerqualitymonitoring.render());
+    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    List<Alert> alerts = new ArrayList<>();
+
+    for(OpqDevice device : person.getDevices()) {
+      for(Alert alert : device.getAlerts()) {
+        alerts.add(alert);
+      }
+    }
+
+    return ok(views.html.privatepowerqualitymonitoring.render(alerts));
   }
 
   /**

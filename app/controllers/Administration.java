@@ -117,6 +117,7 @@ public class Administration extends Controller {
     return redirect(routes.Administration.device());
   }
 
+
   /**
    * Warning: Don't call this unless you want every relationship attached to it deleted as well.
    * @param deviceId Device id.
@@ -141,8 +142,10 @@ public class Administration extends Controller {
     List<OpqDevice> devices = person.getDevices();
     List<Form<AlertNotification>> alertNotificationForms = new ArrayList<>();
     Form<AlertNotification> alertNotificationForm;
+    List<String> deviceIds = new ArrayList<>();
 
     for(OpqDevice opqDevice : devices) {
+      deviceIds.add(opqDevice.getDeviceId());
       for(AlertNotification alertNotification : opqDevice.getAlertNotifications()) {
         alertNotificationForm = form(AlertNotification.class).fill(alertNotification);
         alertNotificationForm.data().put("deviceId", opqDevice.getDeviceId());
@@ -150,9 +153,32 @@ public class Administration extends Controller {
       }
     }
 
-    return ok(adminalert.render(alertNotificationForms));
+    alertNotificationForm = form(AlertNotification.class);
+
+    return ok(adminalert.render(alertNotificationForm, alertNotificationForms, deviceIds));
   }
 
+  @Security.Authenticated(Secured.class)
+  public static Result saveAlert() {
+    Form<AlertNotification> alertNotificationForm = form(AlertNotification.class).bindFromRequest();
+
+    if(alertNotificationForm.hasErrors()) {
+      return ok(error.render("Problem creating new alert notification", alertNotificationForm.errors().toString()));
+    }
+
+    AlertNotification alertNotification = alertNotificationForm.get();
+    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", alertNotificationForm.data().get("deviceId")).findUnique();
+
+    opqDevice.getAlertNotifications().add(alertNotification);
+    alertNotification.setDevice(opqDevice);
+
+    opqDevice.save();
+    alertNotification.save();
+    flash("added", "Added new device alert");
+    return redirect(routes.Administration.alert());
+  }
+
+  @Security.Authenticated(Secured.class)
   public static Result updateAlert(String id) {
     Form<AlertNotification> alertNotificationForm = form(AlertNotification.class).bindFromRequest();
 
@@ -171,6 +197,27 @@ public class Administration extends Controller {
    */
   @Security.Authenticated(Secured.class)
   public static Result cdsi() {
-    return ok(admincdsi.render());
+    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    List<Form<OpqDevice>> opqDeviceForms = new ArrayList<>();
+
+    for(OpqDevice opqDevice : person.getDevices()) {
+      opqDeviceForms.add(form(OpqDevice.class).fill(opqDevice));
+    }
+
+    return ok(admincdsi.render(opqDeviceForms));
+  }
+
+  @Security.Authenticated(Secured.class)
+  public static Result updateCdsi(String deviceId) {
+    Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
+    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
+
+    if(opqDeviceForm.hasErrors()) {
+      return ok(error.render("Problem updating CDSI information", opqDeviceForm.errors().toString()));
+    }
+
+
+    opqDeviceForm.get().update(opqDevice.getPrimaryKey());
+    return redirect(routes.Administration.cdsi());
   }
 }

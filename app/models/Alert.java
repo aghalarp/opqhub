@@ -79,7 +79,8 @@ public class Alert extends Model {
    * @param timestamp     Timestamp for when alert happened representing number of milliseconds since epoch.
    * @param alertDuration Number of milliseconds that alert occurred for.
    */
-  public Alert(AlertType alertType, Double alertValue, Long timestamp, Long alertDuration) {
+  public Alert(OpqDevice device, AlertType alertType, Long timestamp, Long alertDuration, Double alertValue) {
+    this.setDevice(device);
     this.setAlertType(alertType);
     this.setAlertValue(alertValue);
     this.setTimestamp(timestamp);

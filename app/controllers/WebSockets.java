@@ -19,6 +19,9 @@
 
 package controllers;
 
+import models.Alert;
+import models.OpqDevice;
+import play.Logger;
 import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.WebSocket;
@@ -29,6 +32,12 @@ import java.util.Arrays;
  * Provides methods for handling packets sent to this server from a WebSockets client.
  */
 public class WebSockets extends Controller {
+  public static final int DEVICE_ID = 0;
+  public static final int PACKET_TYPE = 1;
+  public static final int ALERT_TYPE = 2;
+  public static final int TIMESTAMP = 3;
+  public static final int DURATION = 4;
+  public static final int ALERT_VALUE = 5;
 
   /**
    * Create a WebSocket object who can receive connections, receive packets, and break connections.
@@ -60,7 +69,7 @@ public class WebSockets extends Controller {
    * @param packet The packet received from the WebSocket object.
    */
   private static void handlePacket(String packet) {
-    switch(packet.split(",")[1]) {
+    switch(packet.split(",")[PACKET_TYPE]) {
       case "A":
         handleAlert(packet);
         break;
@@ -80,9 +89,33 @@ public class WebSockets extends Controller {
    */
   private static void handleAlert(String packet) {
     String[] alertParts = packet.split(",");
-    System.out.println("Received alert...");
-    System.out.println(Arrays.toString(alertParts));
-    // TODO: Add to database.
+
+    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", alertParts[DEVICE_ID]).findUnique();
+    Alert.AlertType alertType;
+
+    switch(alertParts[ALERT_TYPE]) {
+      case "D":
+        alertType = Alert.AlertType.DEVICE;
+        break;
+      case "F":
+        alertType = Alert.AlertType.FREQUENCY;
+        break;
+      case "V":
+        alertType = Alert.AlertType.VOLTAGE;
+        break;
+      default:
+        alertType = null;
+        Logger.error("Unknown alert type " + alertParts[ALERT_TYPE]);
+    }
+
+    Long alertDuration = Long.parseLong(alertParts[DURATION]);
+    Long timestamp = Long.parseLong(alertParts[TIMESTAMP]);
+    Double alertValue = Double.parseDouble(alertParts[ALERT_VALUE]);
+
+    Alert alert = new Alert(opqDevice, alertType, timestamp, alertDuration, alertValue);
+    alert.save();
+    opqDevice.getAlerts().add(alert);
+    opqDevice.save();
   }
 
   /**

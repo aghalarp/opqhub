@@ -17,108 +17,51 @@
     Copyright 2013 Anthony Christe
 *@
 
+@(opqDeviceForms: List[Form[OpqDevice]])
+
+@import helper._
+  @implicitFieldConstructor = @{
+    FieldConstructor(twitterBootstrapInput.render)
+  }
+
 @admin("CDSI Administration",
     "This page also allows you to manage your participation in the <a href=\"#\">Community Data Sharing Initiative</a> .") {
-    <div class="span7">
-        <form class="form-vertical well well-small">
-            <b>Manage Participation</b>
-            <br>
-            <select>
-                <option>0123...CEDF (Home)</option>
-                <option>ABCD...6789 (Office)</option>
-            </select>
-            <span class="help-inline">Device ID</span>
+    <div class="span9">
 
-            <div>
-                <input type="checkbox" value="true" id="state_checkbox" name="checkbox">
-                <select>
-                    @for(state <- utils.FormUtils.ARRAY_OF_STATES) {
-                        <option>@state</option>
-                    }
-                </select>
-                <span class="help-inline">State</span>
-            </div>
-            <div>
-                <input type="checkbox" value="true" id="city_checkbox" name="checkbox">
-                <input type="text" class="input-large">
-                <span class="help-inline">City</span>
-            </div>
-            <div>
-                <input type="checkbox" value="true" id="zip_checkbox" name="checkbox">
-                <input type="text" class="input-large">
-                <span class="help-inline">Zip</span>
-            </div>
-            <div>
-                <input type="checkbox" value="true" id="street_name_checkbox" name="checkbox">
-                <input type="text" class="input-large">
-                <span class="help-inline">Street Name</span>
-            </div>
-            <div>
-                <input type="checkbox" value="true" id="street_number_checkbox" name="checkbox">
-                <input type="text" class="input-large">
-                <span class="help-inline">Street Number</span>
-            </div>
-            <hr>
-            <div>
-                <label class="checkbox" for="checkbox">
-                    <input type="checkbox" value="true" id="checkbox" name="checkbox"> I want to participate in the
-                    <a href="#">Community Data Sharing Initiative</a>
-                    <button type="submit" class="btn btn-primary pull-right">Save</button>
-                    .</label>
-            </div>
-        </form>
         <table class="table well well-small">
             <thead>
                 <tr>
-                    <th>Participating Devices</th>
-                    <th>State</th>
+                    <th>Device Id</th>
+                    <th>CDSI</th>
                     <th>City</th>
                     <th>Zip</th>
                     <th>Street Name</th>
                     <th>Street #</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>0123-4567-89AB-CDEF (Home)</td>
-                    <td>Yes</td>
-                    <td>Yes</td>
-                    <td>Yes</td>
-                    <td>No</td>
-                    <td>No</td>
-                    <td>
-                        <a class="btn btn-danger pull-right">Update</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>ABCD-EF01-2345-6789 (Office)</td>
-                    <td>Yes</td>
-                    <td>Yes</td>
-                    <td>Yes</td>
-                    <td>Yes</td>
-                    <td>No</td>
-                    <td>
-                        <a class="btn btn-danger pull-right">Update</a>
-                    </td>
-                </tr>
+                @for(opqDeviceForm <- opqDeviceForms) {
+                  @form(routes.Administration.updateCdsi(opqDeviceForm("deviceId").value), 'class -> "form-inline") {
+                    <input type="hidden" name="state" value='@opqDeviceForm("state").value'>
+                    <input type="hidden" name="description" value='@opqDeviceForm("description").value'>
+                    <tr>
+                      <td>@inputText(opqDeviceForm("deviceId"), '_showConstraints -> false, '_label -> "", 'class -> "input-medium", 'readonly -> "readonly")</td>
+                      <td>@checkbox(opqDeviceForm("participatingInCdsi"), '_showConstraints -> false, '_label -> "")</td>
+                      <td>@inputText(opqDeviceForm("city"), '_showConstraints -> false, '_label -> "", 'class -> "input-small")</td>
+                      <td>@inputText(opqDeviceForm("zip"), '_showConstraints -> false, '_label -> "", 'class -> "input-mini")</td>
+                      <td>@inputText(opqDeviceForm("streetName"), '_showConstraints -> false, '_label -> "", 'class -> "input-small")</td>
+                      <td>@inputText(opqDeviceForm("streetNumber"), '_showConstraints -> false, '_label -> "", 'class -> "input-mini")</td>
+                      <td>@inputText(opqDeviceForm("latitude"), '_showConstraints -> false, '_label -> "", 'class -> "input-mini")</td>
+                      <td>@inputText(opqDeviceForm("longitude"), '_showConstraints -> false, '_label -> "", 'class -> "input-small")</td>
+                      <td><input type="submit" class="btn btn-warning pull-right" value="Update"></td>
+                    </tr>
+                  }
+                }
             </tbody>
         </table>
     </div>
-    <div class="span2 well well-small">
-        <p>
-            <b>Manage Participation</b>
-            <br> To make information available to the CDSI, select a device you wish to
-            share information from, and then select which fields you would like to
-            make public about the device.</p>
 
-        <p>
-            <b>Participating Devices</b>
-            <br> This lists the devices that are currently participating in the CDSI. &nbsp;
-            &nbsp; &nbsp; &nbsp;
-            <br>
-            <br>
-            <br>
-        </p>
-    </div>
 }
