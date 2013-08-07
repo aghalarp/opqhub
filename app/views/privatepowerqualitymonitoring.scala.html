@@ -102,7 +102,6 @@ Copyright 2013 Anthony Christe
         </form>
       </div>
       <div class="span9">
-
         <table class="table table-striped table-bordered">
           <thead>
             <tr>
@@ -120,9 +119,17 @@ Copyright 2013 Anthony Christe
               <td>@alert.getDevice.getDeviceId</td>
               <td>@alert.getDevice.getDescription</td>
               <td>@alert.getAlertType</td>
-              <td>@alert.getTimestamp</td>
+              <td>@utils.DateUtils.toDateTime(alert.getTimestamp)</td>
               <td>@alert.getAlertDuration</td>
-              <td>@alert.getAlertValue</td>
+              <td>
+                @alert.getAlertValue
+                @if(alert.getAlertType.equals(Alert.AlertType.FREQUENCY)) {
+                  Hz
+                }
+                @if(alert.getAlertType.equals(Alert.AlertType.VOLTAGE)) {
+                  Volts
+                }
+              </td>
             </tr>
           }
           </tbody>

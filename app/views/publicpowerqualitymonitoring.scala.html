@@ -169,12 +169,12 @@ Copyright 2013 Anthony Christe
         @for(alert <- alerts) {
           @if(alert.getAlertType().equals(models.Alert.AlertType.FREQUENCY)) {
             L.marker([@alert.getDevice.getLatitude, @alert.getDevice.getLongitude], {icon: frequencyMarker}).addTo(map)
-            .bindPopup(alertTemplate('@alert.getAlertType', '@alert.getTimestamp', @alert.getAlertDuration + ' ms',
+            .bindPopup(alertTemplate('@alert.getAlertType', '@utils.DateUtils.toDateTime(alert.getTimestamp)', @alert.getAlertDuration + ' ms',
             @alert.getAlertValue + 'Hz', @alert.getDevice.getLatitude, @alert.getDevice.getLongitude));
           }
           @if(alert.getAlertType().equals(models.Alert.AlertType.VOLTAGE)) {
             L.marker([@alert.getDevice.getLatitude, @alert.getDevice.getLongitude], {icon: voltageMarker}).addTo(map)
-            .bindPopup(alertTemplate('@alert.getAlertType', '@alert.getTimestamp', @alert.getAlertDuration + ' ms',
+            .bindPopup(alertTemplate('@alert.getAlertType', '@utils.DateUtils.toDateTime(alert.getTimestamp)', @alert.getAlertDuration + ' ms',
             @alert.getAlertValue + ' V', @alert.getDevice.getLatitude, @alert.getDevice.getLongitude));
       }
       }
