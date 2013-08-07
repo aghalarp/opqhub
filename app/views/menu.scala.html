@@ -48,6 +48,9 @@ Copyright 2013 Anthony Christe
               routes.PowerQualityMonitoring.publicMonitor())
           }
           </ul>
+          @if(!publicMenu) {
+            <a href="@routes.Application.logout()" class="btn btn-primary pull-right">Logout</a>
+          }
         </div>
       </div>
     </div>
