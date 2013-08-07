@@ -27,10 +27,12 @@ Copyright 2013 Anthony Christe
   <div class="row">
     <div class="span9">
       @checkbox(alertNotificationForm("alertViaEmail"), '_label -> "E-Mail Alert", 'id -> "emailAlert")
+      <input type="hidden" name="alertViaEmail" value="false" />
       @inputText(alertNotificationForm("notificationEmail"), '_label -> "Alert Address",
         'placeholder -> "john.doe@email.com", 'id -> "notificationEmail")
     <hr />
       @checkbox(alertNotificationForm("alertViaSms"), '_label -> "SMS Alert", 'id -> "smsAlert")
+      <input type="hidden" name="alertViaSms" value="false" />
       @select(
         alertNotificationForm("smsCarrier"),
         options = options(utils.FormUtils.LIST_OF_SMS_CARRIERS),

@@ -61,17 +61,26 @@ Copyright 2013 Anthony Christe
             <tr>
               <td>@inputText(alertForm("deviceId"), '_showConstraints -> false, '_label -> "", 'class -> "",
                 'readonly -> "readonly")</td>
-              <td>@checkbox(alertForm("voltageAlertNotification"), '_showConstraints -> false, '_label -> "")</td>
+              <td>
+                @checkbox(alertForm("voltageAlertNotification"), '_showConstraints -> false, '_label -> "")
+                <input type="hidden" name="voltageAlertNotification" value="false" />
+              </td>
               <td>@inputText(alertForm("minAcceptableVoltage"), '_showConstraints -> false, '_label -> "",
                 'class -> "input-mini")</td>
               <td>@inputText(alertForm("maxAcceptableVoltage"), '_showConstraints -> false, '_label -> "",
                 'class -> "input-mini")</td>
-              <td>@checkbox(alertForm("frequencyAlertNotification"), '_showConstraints -> false, '_label -> "")</td>
+              <td>
+                @checkbox(alertForm("frequencyAlertNotification"), '_showConstraints -> false, '_label -> "")
+                <input type="hidden" name="frequencyAlertNotification" value="false" />
+              </td>
               <td>@inputText(alertForm("minAcceptableFrequency"), '_showConstraints -> false, '_label -> "",
                 'class -> "input-mini")</td>
               <td>@inputText(alertForm("maxAcceptableFrequency"), '_showConstraints -> false, '_label -> "",
                 'class -> "input-mini")</td>
-              <td>@checkbox(alertForm("deviceAlertNotification"), '_showConstraints -> false, '_label -> "")</td>
+              <td>
+                @checkbox(alertForm("deviceAlertNotification"), '_showConstraints -> false, '_label -> "")
+                <input type="hidden" name="deviceAlertNotification" value="false" />
+              </td>
               <td><input type="submit" class="btn btn-warning pull-right" value="Update"></td>
             </tr>
           }

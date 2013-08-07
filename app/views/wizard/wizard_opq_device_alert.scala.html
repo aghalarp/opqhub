@@ -27,6 +27,7 @@ Copyright 2013 Anthony Christe
   <div class="row">
     <div class="span9">
       @checkbox(alertNotificationForm("voltageAlertNotification"), '_label -> "Voltage Alert", 'id -> "voltageAlert")
+      <input type="hidden" name="voltageAlertNotification" value="false" />
       @inputText(alertNotificationForm("minAcceptableVoltage"), '_label -> "Minimum Voltage", 'placeholder -> "117",
         'id -> "minAcceptableVoltage")
       @inputText(alertNotificationForm("maxAcceptableVoltage"), '_label -> "Maximum Voltage", 'placeholder -> "123",
@@ -34,12 +35,14 @@ Copyright 2013 Anthony Christe
     <hr />
       @checkbox(alertNotificationForm("frequencyAlertNotification"), '_label -> "Frequency Alert",
         'id -> "frequencyAlert")
+      <input type="hidden" name="frequencyAlertNotification" value="false" />
       @inputText(alertNotificationForm("minAcceptableFrequency"), '_label -> "Minimum Frequency", 'placeholder -> "57",
         'id -> "minAcceptableFrequency")
       @inputText(alertNotificationForm("maxAcceptableFrequency"), '_label -> "Maximum Frequency", 'placeholder -> "63",
         'id -> "maxAcceptableFrequency")
     <hr />
       @checkbox(alertNotificationForm("deviceAlertNotification"), '_label -> "Device Alert", 'id -> "deviceAlert")
+      <input type="hidden" name="deviceAlertNotification" value="false" />
     </div>
     <div class="span3">
       <div class="well well-small">

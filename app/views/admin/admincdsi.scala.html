@@ -56,7 +56,10 @@ Copyright 2013 Anthony Christe
           <tr>
             <td>@inputText(opqDeviceForm("deviceId"), '_showConstraints -> false, '_label -> "",
               'class -> "input-medium", 'readonly -> "readonly")</td>
-            <td>@checkbox(opqDeviceForm("participatingInCdsi"), '_showConstraints -> false, '_label -> "")</td>
+            <td>
+              @checkbox(opqDeviceForm("participatingInCdsi"), '_showConstraints -> false, '_label -> "")
+              <input type="hidden" name="participatingInCdsi" value="false" />
+            </td>
             <td>@inputText(opqDeviceForm("city"), '_showConstraints -> false, '_label -> "", 'class -> "input-small")
             </td>
             <td>@inputText(opqDeviceForm("zip"), '_showConstraints -> false, '_label -> "", 'class -> "input-mini")</td>
