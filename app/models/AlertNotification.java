@@ -189,7 +189,7 @@ public class AlertNotification extends Model {
    *
    * @param deviceAlertNotification True to trigger, false otherwise.
    */
-  public void setDeviceAlertNotification(boolean deviceAlertNotification) {
+  public void setDeviceAlertNotification(Boolean deviceAlertNotification) {
     this.deviceAlertNotification = deviceAlertNotification;
   }
 
