@@ -34,6 +34,7 @@ import views.html.error;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static play.data.Form.form;
 
@@ -255,7 +256,26 @@ public class Administration extends Controller {
     }
 
     opqDeviceForm.get().update(opqDevice.getPrimaryKey());
+    System.out.println(getGeocodedString(opqDeviceForm.data()));
     flash("updated", "Updated CDSI Participation");
     return redirect(routes.Administration.cdsi());
+  }
+
+
+
+  private static String getGeocodedString(Map<String, String> data) {
+    StringBuilder stringBuilder = new StringBuilder();
+
+    String state = (data.containsKey("state")) ? data.get("state") : "";
+    String city = (data.containsKey("city")) ? data.get("city") : "";
+    String postalCode = (data.containsKey("zip")) ? data.get("zip") : "";
+    String streetNumber = (data.containsKey("streetNumber")) ? data.get("streetNumber") : "";
+    String streetName = (data.containsKey("streetName")) ? data.get("streetName") : "";
+
+    String searchUrl = "http://nominatim.openstreetmap.org/search";
+    String queryString = String.format("?state=%s&city=%s&postalcode=%s&street=%s+%s&format=json&email=achriste@hawaii.edu",
+                                       state, city, postalCode, streetNumber, streetName);
+
+    return String.format("%s%s", searchUrl, queryString);
   }
 }

@@ -27,6 +27,28 @@ Copyright 2013 Anthony Christe
 @admin("CDSI Administration",
   "This page also allows you to manage your participation in the" +
       " <a href=\"#\">Community Data Sharing Initiative</a> .") {
+
+  <script type="text/javascript">
+    function updateAndSubmit(formName) {
+      var form  = document.forms[formName];
+      var state         = "state="        + form.elements["state"].value.split(' ' ).join("+");
+      var city          = "&city="        + form.elements["city" ].value.split(' ' ).join("+");
+      var zip           = "&postalcode="  + form.elements["zip" ].value.split(' ' ).join("+");
+      var streetName    =                   form.elements["streetName" ].value.split(' ' ).join("+");
+      var streetNumber  =                   form.elements["streetNumber" ].value.split(' ' ).join("+");
+      var street        = "&street="      + streetNumber + "+" + streetName;
+
+      var queryUrl = "http://nominatim.openstreetmap.org/search?";
+      var queryString = queryUrl + state + city + street + "&format=json&email=achriste\u0040hawaii.edu";
+
+      var oReq = new XMLHttpRequest();
+      oReq.open("GET", queryString, false);
+      oReq.send();
+
+      console.log(oReq.responseText);
+    }
+  </script>
+
   <div class="span9">
 
     <table class="table well well-small">
@@ -50,7 +72,11 @@ Copyright 2013 Anthony Christe
       </thead>
       <tbody>
       @for(opqDeviceForm <- opqDeviceForms) {
-        @form(routes.Administration.updateCdsi(opqDeviceForm("deviceId").value), 'class -> "form-inline") {
+        @form(
+          routes.Administration.updateCdsi(opqDeviceForm("deviceId").value),
+          'class -> "form-inline",
+          'name -> opqDeviceForm("deviceId").value
+        ) {
           <input type="hidden" name="state" value='@opqDeviceForm("state").value'>
           <input type="hidden" name="description" value='@opqDeviceForm("description").value'>
           <tr>
@@ -60,7 +86,8 @@ Copyright 2013 Anthony Christe
               @checkbox(opqDeviceForm("participatingInCdsi"), '_showConstraints -> false, '_label -> "")
               <input type="hidden" name="participatingInCdsi" value="false" />
             </td>
-            <td>@inputText(opqDeviceForm("city"), '_showConstraints -> false, '_label -> "", 'class -> "input-small")
+            <td>@inputText(opqDeviceForm("city"), '_showConstraints -> false, '_label -> "", 'class -> "input-small",
+              'name -> "city")
             </td>
             <td>@inputText(opqDeviceForm("zip"), '_showConstraints -> false, '_label -> "", 'class -> "input-mini")</td>
             <td>@inputText(opqDeviceForm("streetName"), '_showConstraints -> false, '_label -> "",
@@ -71,7 +98,10 @@ Copyright 2013 Anthony Christe
               'class -> "input-mini")</td>
             <td>@inputText(opqDeviceForm("longitude"), '_showConstraints -> false, '_label -> "",
               'class -> "input-small")</td>
-            <td><input type="submit" class="btn btn-warning pull-right" value="Update"></td>
+            <td>
+              <input type="button" class="btn btn-warning pull-right" value="Update"
+                onclick=updateAndSubmit('@opqDeviceForm("deviceId").value')>
+            </td>
           </tr>
         }
       }
