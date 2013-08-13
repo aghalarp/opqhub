@@ -16,8 +16,7 @@ along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 
 Copyright 2013 Anthony Christe
 *@
-
-@(opqDeviceForms: List[Form[OpqDevice]])
+@(opqDevices: List[OpqDevice])
 
 @import helper._
   @implicitFieldConstructor = @{
@@ -28,85 +27,49 @@ Copyright 2013 Anthony Christe
   "This page also allows you to manage your participation in the" +
       " <a href=\"#\">Community Data Sharing Initiative</a> .") {
 
-  <script type="text/javascript">
-    function updateAndSubmit(formName) {
-      var form  = document.forms[formName];
-      var state         = "state="        + form.elements["state"].value.split(' ' ).join("+");
-      var city          = "&city="        + form.elements["city" ].value.split(' ' ).join("+");
-      var zip           = "&postalcode="  + form.elements["zip" ].value.split(' ' ).join("+");
-      var streetName    =                   form.elements["streetName" ].value.split(' ' ).join("+");
-      var streetNumber  =                   form.elements["streetNumber" ].value.split(' ' ).join("+");
-      var street        = "&street="      + streetNumber + "+" + streetName;
-
-      var queryUrl = "http://nominatim.openstreetmap.org/search?";
-      var queryString = queryUrl + state + city + street + "&format=json&email=achriste\u0040hawaii.edu";
-
-      var oReq = new XMLHttpRequest();
-      oReq.open("GET", queryString, false);
-      oReq.send();
-
-      console.log(oReq.responseText);
-    }
-  </script>
-
   <div class="span9">
-
-    <table class="table well well-small">
+    <table class="table table-striped">
       @if(flash.contains("updated")) {
         <p class="success">
         @flash.get("updated")
         </p>
       }
       <thead>
-        <tr>
-          <th>Device Id</th>
-          <th>CDSI</th>
-          <th>City</th>
-          <th>Zip</th>
-          <th>Street Name</th>
-          <th>Street #</th>
-          <th>Latitude</th>
-          <th>Longitude</th>
-          <th></th>
-        </tr>
+        <th>Device Id</th>
+        <th>Description</th>
+        <th>CDSI</th>
+        <th>City</th>
+        <th>Zip</th>
+        <th>Street Name</th>
+        <th>Street Number</th>
+        <th><!-- Left blank for update button --></th>
       </thead>
       <tbody>
-      @for(opqDeviceForm <- opqDeviceForms) {
-        @form(
-          routes.Administration.updateCdsi(opqDeviceForm("deviceId").value),
-          'class -> "form-inline",
-          'name -> opqDeviceForm("deviceId").value
-        ) {
-          <input type="hidden" name="state" value='@opqDeviceForm("state").value'>
-          <input type="hidden" name="description" value='@opqDeviceForm("description").value'>
+        @for(opqDevice <- opqDevices) {
           <tr>
-            <td>@inputText(opqDeviceForm("deviceId"), '_showConstraints -> false, '_label -> "",
-              'class -> "input-medium", 'readonly -> "readonly")</td>
+            <td>@opqDevice.getDeviceId</td>
+            <td>@opqDevice.getDescription</td>
             <td>
-              @checkbox(opqDeviceForm("participatingInCdsi"), '_showConstraints -> false, '_label -> "")
-              <input type="hidden" name="participatingInCdsi" value="false" />
+              @if(opqDevice.getParticipatingInCdsi) {
+                Yes
+              } else {
+                No
+              }
             </td>
-            <td>@inputText(opqDeviceForm("city"), '_showConstraints -> false, '_label -> "", 'class -> "input-small",
-              'name -> "city")
-            </td>
-            <td>@inputText(opqDeviceForm("zip"), '_showConstraints -> false, '_label -> "", 'class -> "input-mini")</td>
-            <td>@inputText(opqDeviceForm("streetName"), '_showConstraints -> false, '_label -> "",
-              'class -> "input-small")</td>
-            <td>@inputText(opqDeviceForm("streetNumber"), '_showConstraints -> false, '_label -> "",
-              'class -> "input-mini")</td>
-            <td>@inputText(opqDeviceForm("latitude"), '_showConstraints -> false, '_label -> "",
-              'class -> "input-mini")</td>
-            <td>@inputText(opqDeviceForm("longitude"), '_showConstraints -> false, '_label -> "",
-              'class -> "input-small")</td>
+            <td>@opqDevice.getCity</td>
+            <td>@opqDevice.getZip</td>
+            <td>@opqDevice.getStreetName</td>
+            <td>@opqDevice.getStreetNumber</td>
             <td>
-              <input type="button" class="btn btn-warning pull-right" value="Update"
-                onclick=updateAndSubmit('@opqDeviceForm("deviceId").value')>
+              <a href="@routes.Administration.editCdsi(opqDevice.getDeviceId)" class="btn btn-warning pull-right">
+                Update
+              </a>
             </td>
           </tr>
         }
-      }
       </tbody>
     </table>
   </div>
+
 
 }

@@ -50,6 +50,14 @@
     height: 680px;
 }
 
+#cdsi-map {
+    height: 400px;
+}
+
+#wizard-map {
+    height: 300px;
+}
+
 #map-controls {
     padding-right: 20px;
 }

@@ -20,38 +20,40 @@
 # ~~~~
 
 # Home page
-GET         /                                       controllers.Application.index()
+GET         /                                         controllers.Application.index()
 
 # Sign Up
-GET         /public/wizard                          controllers.Wizard.index()
-POST        /public/wizard/save                     controllers.Wizard.save()
+GET         /public/wizard                            controllers.Wizard.index()
+POST        /public/wizard/save                       controllers.Wizard.save()
 
 # Log in/out
-GET         /public/login                           controllers.Application.login()
-POST        /public/login/authenticate              controllers.Application.authenticate()
-GET         /private/logout                         controllers.Application.logout()
+GET         /public/login                             controllers.Application.login()
+POST        /public/login/authenticate                controllers.Application.authenticate()
+GET         /private/logout                           controllers.Application.logout()
 
 # Administration
-GET         /private/admin/user                     controllers.Administration.user()
-POST        /private/admin/user/update              controllers.Administration.updateUser()
+GET         /private/admin/user                       controllers.Administration.user()
+POST        /private/admin/user/update                controllers.Administration.updateUser()
 
-GET         /private/admin/device                   controllers.Administration.device()
-POST        /private/admin/device/save              controllers.Administration.saveDevice()
-POST        /private/admin/device/update/:id        controllers.Administration.updateDevice(id: String)
-GET         /private/admin/device/delete/:id        controllers.Administration.deleteDevice(id: String)
+GET         /private/admin/device                     controllers.Administration.device()
+POST        /private/admin/device/save                controllers.Administration.saveDevice()
+POST        /private/admin/device/update/:id          controllers.Administration.updateDevice(id: String)
+GET         /private/admin/device/delete/:id          controllers.Administration.deleteDevice(id: String)
 
-GET         /private/admin/alert                    controllers.Administration.alert()
-POST        /private/admin/alert/save               controllers.Administration.saveAlert()
-POST        /private/admin/alert/update/:id         controllers.Administration.updateAlert(id: String)
-GET         /private/admin/cdsi                     controllers.Administration.cdsi()
-POST        /private/admin/cdsi/update/:deviceId    controllers.Administration.updateCdsi(deviceId: String)
+GET         /private/admin/alert                      controllers.Administration.alert()
+POST        /private/admin/alert/save                 controllers.Administration.saveAlert()
+POST        /private/admin/alert/update/:id           controllers.Administration.updateAlert(id: String)
+
+GET         /private/admin/cdsi                       controllers.Administration.cdsi()
+GET         /private/admin/cdsi/update/:deviceId      controllers.Administration.editCdsi(deviceId: String)
+POST        /private/admin/cdsi/update/:primaryKey    controllers.Administration.updateCdsi(primaryKey: Long)
 
 # Power Quality Monitoring
-GET         /private/monitor                        controllers.PowerQualityMonitoring.privateMonitor()
-GET         /public/monitor                         controllers.PowerQualityMonitoring.publicMonitor()
+GET         /private/monitor                          controllers.PowerQualityMonitoring.privateMonitor()
+GET         /public/monitor                           controllers.PowerQualityMonitoring.publicMonitor()
 
 # Handling WebSockets
-GET         /private/ws                             controllers.WebSockets.handleSocket()
+GET         /private/ws                               controllers.WebSockets.handleSocket()
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                           controllers.Assets.at(path="/public", file)
+GET         /assets/*file                             controllers.Assets.at(path="/public", file)

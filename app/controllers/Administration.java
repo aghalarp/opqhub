@@ -30,6 +30,7 @@ import views.html.admin.adminalert;
 import views.html.admin.admincdsi;
 import views.html.admin.admindevice;
 import views.html.admin.adminuser;
+import views.html.admin.updatecdsi;
 import views.html.error;
 
 import java.util.ArrayList;
@@ -231,14 +232,9 @@ public class Administration extends Controller {
   @Security.Authenticated(Secured.class)
   public static Result cdsi() {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
-    List<Form<OpqDevice>> opqDeviceForms = new ArrayList<>();
+    List<OpqDevice> opqDevices = person.getDevices();
 
-    // For each device, fill a form with that device's values
-    for (OpqDevice opqDevice : person.getDevices()) {
-      opqDeviceForms.add(form(OpqDevice.class).fill(opqDevice));
-    }
-
-    return ok(admincdsi.render(opqDeviceForms));
+    return ok(admincdsi.render(opqDevices));
   }
 
   /**
@@ -247,17 +243,38 @@ public class Administration extends Controller {
    * @return Redirect to cdsi administration.
    */
   @Security.Authenticated(Secured.class)
-  public static Result updateCdsi(String deviceId) {
-    Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
-    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
+  public static Result editCdsi(String deviceId) {
+    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    List<OpqDevice> opqDevices = person.getDevices();
+    OpqDevice opqDevice = null;
+    Form<OpqDevice> opqDeviceForm;
 
-    if (opqDeviceForm.hasErrors()) {
-      return ok(error.render("Problem updating CDSI information", opqDeviceForm.errors().toString()));
+    for(OpqDevice device : opqDevices) {
+      if(device.getDeviceId().equals(deviceId)) {
+        opqDevice = device;
+        break;
+      }
     }
 
-    opqDeviceForm.get().update(opqDevice.getPrimaryKey());
-    System.out.println(getGeocodedString(opqDeviceForm.data()));
-    flash("updated", "Updated CDSI Participation");
+    if(opqDevice == null) {
+      return ok(error.render("Unknown device", ""));
+    }
+
+    opqDeviceForm = form(OpqDevice.class).fill(opqDevice);
+
+    return ok(updatecdsi.render(opqDeviceForm));
+  }
+
+  @Security.Authenticated(Secured.class)
+  public static Result updateCdsi(Long primaryKey) {
+    Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
+
+    if(opqDeviceForm.hasErrors()) {
+      return ok(error.render("Problem updating CDSI", opqDeviceForm.errors().toString()));
+    }
+
+    opqDeviceForm.get().update(primaryKey);
+    flash("updated", "CDSI updated");
     return redirect(routes.Administration.cdsi());
   }
 
