@@ -73,111 +73,20 @@ Copyright 2013 Anthony Christe
 Start of cdsi map
 *@
 <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/opq-maps.js")" type="text/javascript"></script>
 <div id="cdsi-map" class="span9"></div>
 <script type="text/javascript">
   /* Make sure the leaflet CSS is loaded */
   addDynamicCss ( '  @routes.Assets.at("stylesheets/leaflet.css") ');
 
-  /* Since the state is in a select box, we need to get the value of it when it changes */
-  //var state;
-
-  //$("#deviceState" ).change(function(){
-  //  state = $(this ).val();
-  //});
-
-  /* Construct an instance of the leaflet map using OSM tiles */
-  var map           = L.map ( 'wizard-map' ) ;
-  var osmUrl        = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' ;
-  var osmAttrib     = 'Map data © OpenStreetMap contributors' ;
-  var osm           = new L.TileLayer ( osmUrl, { attribution : osmAttrib } ) ;
-  var boundingBoxLayer = new L.layerGroup( ).addTo(map);
-  var geoJsonLayer  = L.geoJson ( ).addTo ( map );
-  var iconLayer = new L.layerGroup( ).addTo(map);
-  var deviceMarker = L.icon({iconUrl: '@routes.Assets.at("images/opq-icon.png")'});
-  map.addLayer ( osm ) ;
-  map.setView ([ 21.4667, - 157.9833 ], 10 ) ;
-
-  /* When the preview button is clicked, update the map */
-  $("#previewLocation" ).on("click", function (event) {
-    //console.log(state);
-    getMapInfo();
+  $("#opq-wizard" ).on("change", function(e, data) {
+    if(data.step === 5) {
+      initMap("wizard-map", "deviceState", "deviceCity", "deviceZip", "deviceStreetName", "deviceStreetNumber", "latitude", "longitude");
+    }
   });
 
-  /* Makes an ajax json request using the current available address information */
-  function getMapInfo() {
-    var state         = $ ( "#deviceState" ).val( );
-    var city          = $ ( "#deviceCity" ).val( );
-    var zip           = $ ( "#deviceZip" ).val( );
-    var streetName    = $ ( "#deviceStreetName" ).val ( );
-    var streetNumber  = $ ( "#deviceStreetNumber" ).val ( );
-    var query         = streetNumber + " " + streetName + " " + city + " " + state + " " + zip;
-    console.log(query);
-    var nominatimApi = "http://nominatim.openstreetmap.org/search/";
+  $("#previewLocation" ).on("click", function(){
+     previewMap();
+  });
 
-    /* Make the actual request. Once the data has been received, call updateMap with new data */
-    $.getJSON ( nominatimApi, {
-      q : query,
-      countrycodes : "us",
-      format : "json",
-      polygon_geojson : 1,
-      email : "achriste@@hawaii.edu"
-    }).done(function (data) {
-      updateMap(data);
-    });
-  }
-
-  /* Attempts to draw a bounding box, polygon, and marker of with given address information */
-  function updateMap(data) {
-    /* First clear the map */
-    clearMap();
-
-    /* The leaflet API may return multiple locations. The first location _should_ be the one we're looking for,
-       but there is no guaranty. Handling multiple locations might take some thinking, so hopefully the first
-       location returned works.
-     */
-    var dataIndex = 0;
-
-    /* Retrieve data passed in from json request */
-    var boundingBoxCoords = data[ dataIndex ].boundingbox;
-    var latitude = data[ dataIndex ].lat;
-    var longitude = data[ dataIndex ].lon;
-    var polygon = data[ dataIndex ].geojson;
-
-    /* Update the hidden lat/lon fields */
-    $("#latitude" ).val(latitude);
-    $("#longitude" ).val(longitude);
-
-    /* Create bounding box polygon */
-    var southWest   = new L.LatLng(boundingBoxCoords[0], boundingBoxCoords[2]);
-    var northEast   = new L.LatLng(boundingBoxCoords[1], boundingBoxCoords[3]);
-    var bounds      = new L.LatLngBounds ( southWest, northEast ) ;
-    L.polygon ([
-      bounds.getNorthWest ( ),
-      bounds.getNorthEast ( ),
-      bounds.getSouthEast ( ),
-      bounds.getSouthWest ( )
-    ], {color: 'red'} ).addTo(boundingBoxLayer);
-
-    /* Create geojson polygon */
-    geoJsonLayer.addData ( polygon ) ;
-
-    /* Add device icon */
-    L.marker([latitude, longitude], {icon: deviceMarker}).addTo(iconLayer)
-    .bindPopup("Latitude: " + latitude + "<br />" + "Longitude: " + longitude);
-
-    /* Center over new latitude/longitude */
-    map.panTo([latitude, longitude], 10);
-  }
-
-  /*
-    Clears all layers on the map and re-initializes them.
-   */
-  function clearMap() {
-    map.removeLayer(geoJsonLayer);
-    map.removeLayer(boundingBoxLayer);
-    map.removeLayer(iconLayer);
-    geoJsonLayer = L.geoJson ( ).addTo ( map ) ;
-    boundingBoxLayer = new L.layerGroup( ).addTo(map);
-    iconLayer = new L.layerGroup( ).addTo(map);
-  }
 </script>
