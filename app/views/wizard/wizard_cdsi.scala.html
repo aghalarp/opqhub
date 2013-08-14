@@ -78,12 +78,16 @@ Start of cdsi map
 <script type="text/javascript">
   /* Make sure the leaflet CSS is loaded */
   addDynamicCss ( '  @routes.Assets.at("stylesheets/leaflet.css") ');
-
-  $("#opq-wizard" ).on("change", function(e, data) {
-    if(data.step === 5) {
-      initMap("wizard-map", "deviceState", "deviceCity", "deviceZip", "deviceStreetName", "deviceStreetNumber", "latitude", "longitude");
+  var i = 0;
+  $("#opq-wizard" ).on("changed", function(e) {
+    i++;
+    if(i === 5) {
+    initMap("wizard-map", "deviceState", "deviceCity", "deviceZip", "deviceStreetName", "deviceStreetNumber", "latitude", "longitude");
     }
-  });
+    });
+
+
+
 
   $("#previewLocation" ).on("click", function(){
      previewMap();
