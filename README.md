@@ -5,5 +5,5 @@ Cloud based power quality management.
 
 Build Status
 =====
-[![Build Status](https://pele.ci.cloudbees.com/buildStatus/icon?job=opq-ao)](https://pele.ci.cloudbees.com/job/opq-ao/)
+[![Build Status](https://openpowerquality.ci.cloudbees.com/buildStatus/icon?job=demo)](https://openpowerquality.ci.cloudbees.com/job/demo/)
 
