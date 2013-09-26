@@ -114,6 +114,8 @@ public class WebSockets extends Controller {
    * @param packet Alert packet from device.
    */
   private static void handleAlert(String packet) {
+    // TODO: Make sure device id actually exists so we don't screw up the DB
+    // TODO: Make sure device id actually exists so we don't screw up the DB
     String[] alertParts = packet.split(",");
 
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", alertParts[DEVICE_ID]).findUnique();

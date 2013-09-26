@@ -2,6 +2,20 @@
     margin-top: 10px;
 }
 
+/* Image in Hero Unit */
+.hero-unit {
+    background-image: url('../images/smartgrid.png');
+}
+
+/* Update colors in hero unit */
+.fuelux .hero-unit h1  {
+    color: #ffffff;
+}
+
+.hero-font {
+    color: #ffffff;
+}
+
 /* Form Messages */
 .error {
     text-align: center;
