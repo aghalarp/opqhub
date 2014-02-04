@@ -11,7 +11,7 @@ create table alert (
   alert_duration            bigint,
   device_primary_key        bigint,
   external_event_primary_key bigint,
-  constraint ck_alert_alert_type check (alert_type in (0,1,2)),
+  constraint ck_alert_alert_type check (alert_type in (0,1,2,3)),
   constraint pk_alert primary key (primary_key))
 ;
 

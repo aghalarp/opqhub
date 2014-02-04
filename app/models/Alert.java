@@ -19,6 +19,7 @@
 
 package models;
 
+import org.openpowerquality.protocol.OpqPacket;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
@@ -44,7 +45,7 @@ public class Alert extends Model {
    * The type of alert as given by the AlertType Enum.
    */
   @Required
-  private AlertType alertType;
+  private OpqPacket.PacketType alertType;
   /**
    * The value of the alert in either Hertz or Volts depending on the alert type.
    */
@@ -79,7 +80,7 @@ public class Alert extends Model {
    * @param timestamp     Timestamp for when alert happened representing number of milliseconds since epoch.
    * @param alertDuration Number of milliseconds that alert occurred for.
    */
-  public Alert(OpqDevice device, AlertType alertType, Long timestamp, Long alertDuration, Double alertValue) {
+  public Alert(OpqDevice device, OpqPacket.PacketType alertType, Long timestamp, Long alertDuration, Double alertValue) {
     this.setDevice(device);
     this.setAlertType(alertType);
     this.setAlertValue(alertValue);
@@ -119,7 +120,7 @@ public class Alert extends Model {
    *
    * @return The alert type.
    */
-  public AlertType getAlertType() {
+  public OpqPacket.PacketType getAlertType() {
     return alertType;
   }
 
@@ -130,7 +131,7 @@ public class Alert extends Model {
    *
    * @param alertType The alert type.
    */
-  public void setAlertType(AlertType alertType) {
+  public void setAlertType(OpqPacket.PacketType alertType) {
     this.alertType = alertType;
   }
 
@@ -222,49 +223,6 @@ public class Alert extends Model {
    */
   public void setExternalEvent(ExternalEvent externalEvent) {
     this.externalEvent = externalEvent;
-  }
-
-  /**
-   * Enumeration of current alert types.
-   */
-  public enum AlertType {
-    /**
-     * Alert that is triggered when something is wrong with an OPQ device.
-     */
-    DEVICE("Device"),
-
-    /**
-     * Alert that is triggered when specified frequency is too high or too low.
-     */
-    FREQUENCY("Frequency"),
-
-    /**
-     * Alert that is triggered when specified voltage is too high ot too low.
-     */
-    VOLTAGE("Voltage");
-    /**
-     * Human readable name of alert type.
-     */
-    private String name;
-
-    /**
-     * Sets up the human readable name of alert type.
-     *
-     * @param name Human readable name of alert type.
-     */
-    private AlertType(String name) {
-      this.name = name;
-    }
-
-    /**
-     * Returns human readable name of alert type.
-     *
-     * @return Human readable name of alert type.
-     */
-    @Override
-    public String toString() {
-      return name;
-    }
   }
 
 }

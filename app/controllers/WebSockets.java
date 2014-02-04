@@ -19,6 +19,8 @@
 
 package controllers;
 
+import models.Alert;
+import models.OpqDevice;
 import org.openpowerquality.protocol.OpqPacket;
 import play.libs.F;
 import play.mvc.Controller;
@@ -64,7 +66,16 @@ public class WebSockets extends Controller {
    * @param opqPacket The packet received from the WebSocket object.
    */
   private static void handlePacket(OpqPacket opqPacket) {
-
+    switch(opqPacket.getType()) {
+      case ALERT_FREQUENCY:
+      case ALERT_VOLTAGE:
+      case ALERT_DEVICE:
+        handleAlert(opqPacket);
+        break;
+      case MEASUREMENT:
+        handleMeasurement(opqPacket);
+        break;
+    }
   }
 
   /**
@@ -74,10 +85,28 @@ public class WebSockets extends Controller {
    *
    * @param packet Alert packet from device.
    */
-  private static void handleAlert(String packet) {
+  private static void handleAlert(OpqPacket opqPacket) {
+    Long deviceId = opqPacket.getDeviceId();
+    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
+
+    if(opqDevice == null) {
+      System.out.println("Device is null");
+    }
+
+    Alert alert = new Alert(
+        opqDevice,
+        opqPacket.getType(),
+        opqPacket.getTimestamp(),
+        opqPacket.getAlertDuration(),
+        opqPacket.getAlertValue());
+
+    alert.save();
+    opqDevice.getAlerts().add(alert);
+    opqDevice.save();
+
+
     /*// TODO: Make sure device id actually exists so we don't screw up the DB
-    // TODO: Make sure device id actually exists so we don't screw up the DB
-    String[] alertParts = packet.split(",");
+
 
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", alertParts[DEVICE_ID]).findUnique();
     Alert.AlertType alertType;
@@ -114,7 +143,7 @@ public class WebSockets extends Controller {
    *
    * @param packet Measurement packet from device.
    */
-  private static void handleMeasurement(String packet) {
+  private static void handleMeasurement(OpqPacket opqPacket) {
     /*String[] data = packet.split(",");
     System.out.println("Received measurement...");
     System.out.println(Arrays.toString(data));
