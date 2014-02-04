@@ -123,7 +123,7 @@ public class Administration extends Controller {
    * @return Redirect to device administration.
    */
   @Security.Authenticated(Secured.class)
-  public static Result updateDevice(String deviceId) {
+  public static Result updateDevice(Long deviceId) {
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
 
@@ -145,7 +145,7 @@ public class Administration extends Controller {
    * @return Redirect back to devices page.
    */
   @Security.Authenticated(Secured.class)
-  public static Result deleteDevice(String deviceId) {
+  public static Result deleteDevice(Long deviceId) {
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
     opqDevice.delete();
     opqDevice.save();
@@ -168,11 +168,11 @@ public class Administration extends Controller {
 
     // For each device, store the device id
     for (OpqDevice opqDevice : devices) {
-      deviceIds.add(opqDevice.getDeviceId());
+      deviceIds.add(Long.toString(opqDevice.getDeviceId()));
       // For each alert notification per device, create a form with data from that alert notification.
       for (AlertNotification alertNotification : opqDevice.getAlertNotifications()) {
         alertNotificationForm = form(AlertNotification.class).fill(alertNotification);
-        alertNotificationForm.data().put("deviceId", opqDevice.getDeviceId());
+        alertNotificationForm.data().put("deviceId", Long.toString(opqDevice.getDeviceId()));
         alertNotificationForms.add(alertNotificationForm);
       }
     }
@@ -243,7 +243,7 @@ public class Administration extends Controller {
    * @return Redirect to cdsi administration.
    */
   @Security.Authenticated(Secured.class)
-  public static Result editCdsi(String deviceId) {
+  public static Result editCdsi(Long deviceId) {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     List<OpqDevice> opqDevices = person.getDevices();
     OpqDevice opqDevice = null;

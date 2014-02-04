@@ -49,7 +49,7 @@ Copyright 2013 Anthony Christe
         <tbody>
           @for(deviceForm <- opqDeviceForms) {
             <tr>
-            @form(routes.Administration.updateDevice(deviceForm("deviceId").value), 'class -> "form-inline") {
+            @form(routes.Administration.updateDevice(Long.parseLong(deviceForm("deviceId").value)), 'class -> "form-inline") {
               <td>@inputText(deviceForm("deviceId"), '_showConstraints -> false, '_label -> "", 'readonly -> "readonly",
                 'class -> "input-medium")</td>
               <td>@inputText(deviceForm("description"), '_showConstraints -> false, '_label -> "",

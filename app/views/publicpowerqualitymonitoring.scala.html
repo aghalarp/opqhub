@@ -159,6 +159,7 @@ Copyright 2013 Anthony Christe
         ]);
         }
 
+        @*
         // Display devices
         @for(device <- devices) {
           L.marker([@device.getLatitude(), @device.getLongitude()], {icon: deviceMarker}).addTo(map)
@@ -179,7 +180,7 @@ Copyright 2013 Anthony Christe
               @alert.getAlertValue + ' V', @alert.getDevice.getLatitude, @alert.getDevice.getLongitude));
             }
           }
-      }
+      }   *@
       </script>
 
     </div>

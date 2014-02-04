@@ -53,16 +53,9 @@ create table measurement (
 
 create table opq_device (
   primary_key               bigint auto_increment not null,
-  device_id                 varchar(255),
+  device_id                 bigint,
   description               varchar(255),
-  state                     varchar(255),
-  city                      varchar(255),
-  zip                       varchar(255),
-  street_name               varchar(255),
-  street_number             varchar(255),
-  longitude                 double,
-  latitude                  double,
-  participating_in_cdsi     tinyint(1) default 0,
+  sharing_data              tinyint(1) default 0,
   person_primary_key        bigint,
   constraint pk_opq_device primary key (primary_key))
 ;

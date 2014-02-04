@@ -37,15 +37,15 @@ POST        /private/admin/user/update                controllers.Administration
 
 GET         /private/admin/device                     controllers.Administration.device()
 POST        /private/admin/device/save                controllers.Administration.saveDevice()
-POST        /private/admin/device/update/:id          controllers.Administration.updateDevice(id: String)
-GET         /private/admin/device/delete/:id          controllers.Administration.deleteDevice(id: String)
+POST        /private/admin/device/update/:id          controllers.Administration.updateDevice(id: Long)
+GET         /private/admin/device/delete/:id          controllers.Administration.deleteDevice(id: Long)
 
 GET         /private/admin/alert                      controllers.Administration.alert()
 POST        /private/admin/alert/save                 controllers.Administration.saveAlert()
 POST        /private/admin/alert/update/:id           controllers.Administration.updateAlert(id: String)
 
 GET         /private/admin/cdsi                       controllers.Administration.cdsi()
-GET         /private/admin/cdsi/update/:deviceId      controllers.Administration.editCdsi(deviceId: String)
+GET         /private/admin/cdsi/update/:deviceId      controllers.Administration.editCdsi(deviceId: Long)
 POST        /private/admin/cdsi/update/:primaryKey    controllers.Administration.updateCdsi(primaryKey: Long)
 
 # Power Quality Monitoring

@@ -50,16 +50,13 @@ Copyright 2013 Anthony Christe
             <td>@opqDevice.getDeviceId</td>
             <td>@opqDevice.getDescription</td>
             <td>
-              @if(opqDevice.getParticipatingInCdsi) {
+              @if(opqDevice.getSharingData) {
                 Yes
               } else {
                 No
               }
             </td>
-            <td>@opqDevice.getCity</td>
-            <td>@opqDevice.getZip</td>
-            <td>@opqDevice.getStreetName</td>
-            <td>@opqDevice.getStreetNumber</td>
+
             <td>
               <a href="@routes.Administration.editCdsi(opqDevice.getDeviceId)" class="btn btn-warning pull-right">
                 Update
