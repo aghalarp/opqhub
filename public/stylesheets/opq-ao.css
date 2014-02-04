@@ -5,6 +5,7 @@
 /* Image in Hero Unit */
 .hero-unit {
     background-image: url('../images/smartgrid.png');
+    background-size: cover;
 }
 
 /* Update colors in hero unit */
