@@ -103,37 +103,6 @@ public class WebSockets extends Controller {
     alert.save();
     opqDevice.getAlerts().add(alert);
     opqDevice.save();
-
-
-    /*// TODO: Make sure device id actually exists so we don't screw up the DB
-
-
-    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", alertParts[DEVICE_ID]).findUnique();
-    Alert.AlertType alertType;
-
-    switch (alertParts[ALERT_TYPE]) {
-      case "D":
-        alertType = Alert.AlertType.DEVICE;
-        break;
-      case "F":
-        alertType = Alert.AlertType.FREQUENCY;
-        break;
-      case "V":
-        alertType = Alert.AlertType.VOLTAGE;
-        break;
-      default:
-        alertType = null;
-        Logger.error("Unknown alert type " + alertParts[ALERT_TYPE]);
-    }
-
-    Long alertDuration = Long.parseLong(alertParts[DURATION]);
-    Long timestamp = Long.parseLong(alertParts[TIMESTAMP]);
-    Double alertValue = Double.parseDouble(alertParts[ALERT_VALUE]);
-
-    Alert alert = new Alert(opqDevice, alertType, timestamp, alertDuration, alertValue);
-    alert.save();
-    opqDevice.getAlerts().add(alert);
-    opqDevice.save();*/
   }
 
   /**

@@ -30,12 +30,11 @@ import views.html.admin.adminalert;
 import views.html.admin.admincdsi;
 import views.html.admin.admindevice;
 import views.html.admin.adminuser;
-import views.html.admin.updatecdsi;
+import views.html.admin.updatedatashare;
 import views.html.error;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static play.data.Form.form;
 
@@ -230,7 +229,7 @@ public class Administration extends Controller {
    * @return The rendered view for CDSI administration.
    */
   @Security.Authenticated(Secured.class)
-  public static Result cdsi() {
+  public static Result dataSharing() {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     List<OpqDevice> opqDevices = person.getDevices();
 
@@ -243,7 +242,7 @@ public class Administration extends Controller {
    * @return Redirect to cdsi administration.
    */
   @Security.Authenticated(Secured.class)
-  public static Result editCdsi(Long deviceId) {
+  public static Result editDataSharing(Long deviceId) {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     List<OpqDevice> opqDevices = person.getDevices();
     OpqDevice opqDevice = null;
@@ -262,37 +261,19 @@ public class Administration extends Controller {
 
     opqDeviceForm = form(OpqDevice.class).fill(opqDevice);
 
-    return ok(updatecdsi.render(opqDeviceForm));
+    return ok(updatedatashare.render(opqDeviceForm));
   }
 
   @Security.Authenticated(Secured.class)
-  public static Result updateCdsi(Long primaryKey) {
+  public static Result updateDataSharing(Long primaryKey) {
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
 
     if(opqDeviceForm.hasErrors()) {
-      return ok(error.render("Problem updating CDSI", opqDeviceForm.errors().toString()));
+      return ok(error.render("Problem updating data share", opqDeviceForm.errors().toString()));
     }
 
     opqDeviceForm.get().update(primaryKey);
-    flash("updated", "CDSI updated");
-    return redirect(routes.Administration.cdsi());
-  }
-
-
-
-  private static String getGeocodedString(Map<String, String> data) {
-    StringBuilder stringBuilder = new StringBuilder();
-
-    String state = (data.containsKey("state")) ? data.get("state") : "";
-    String city = (data.containsKey("city")) ? data.get("city") : "";
-    String postalCode = (data.containsKey("zip")) ? data.get("zip") : "";
-    String streetNumber = (data.containsKey("streetNumber")) ? data.get("streetNumber") : "";
-    String streetName = (data.containsKey("streetName")) ? data.get("streetName") : "";
-
-    String searchUrl = "http://nominatim.openstreetmap.org/search";
-    String queryString = String.format("?state=%s&city=%s&postalcode=%s&street=%s+%s&format=json&email=achriste@hawaii.edu",
-                                       state, city, postalCode, streetNumber, streetName);
-
-    return String.format("%s%s", searchUrl, queryString);
+    flash("updated", "Data sharing updated");
+    return redirect(routes.Administration.dataSharing());
   }
 }

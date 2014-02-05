@@ -23,9 +23,8 @@ Copyright 2013 Anthony Christe
     FieldConstructor(twitterBootstrapInput.render)
   }
 
-@admin("CDSI Administration",
-  "This page also allows you to manage your participation in the" +
-      " <a href=\"#\">Community Data Sharing Initiative</a> .") {
+@admin("Data Sharing",
+  "This page allows you to configure whether or not you want to anonymously share your power quality data.") {
 
   <div class="span9">
     <table class="table table-striped">
@@ -37,11 +36,7 @@ Copyright 2013 Anthony Christe
       <thead>
         <th>Device Id</th>
         <th>Description</th>
-        <th>CDSI</th>
-        <th>City</th>
-        <th>Zip</th>
-        <th>Street Name</th>
-        <th>Street Number</th>
+        <th>Data Sharing</th>
         <th><!-- Left blank for update button --></th>
       </thead>
       <tbody>
@@ -58,7 +53,7 @@ Copyright 2013 Anthony Christe
             </td>
 
             <td>
-              <a href="@routes.Administration.editCdsi(opqDevice.getDeviceId)" class="btn btn-warning pull-right">
+              <a href="@routes.Administration.editDataSharing(opqDevice.getDeviceId)" class="btn btn-warning pull-right">
                 Update
               </a>
             </td>

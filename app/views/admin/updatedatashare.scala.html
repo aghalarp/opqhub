@@ -23,27 +23,25 @@ Copyright 2013 Anthony Christe
     FieldConstructor(twitterBootstrapInput.render)
   }
 
-@admin("CDSI Administration",
-  "This page also allows you to manage your participation in the" +
-      " <a href=\"#\">Community Data Sharing Initiative</a> .") {
+@admin("Data Sharing",
+  "To share your data anonymously, select the check box under 'Data Sharing'. " +
+  "Select the grid square at a zoom level that contains your OPQ device and in which " +
+  "you feel comfortable") {
 
   <div class="span9">
     <table class="table table-condensed well well-small">
       <thead>
         <tr>
           <th>Device Id</th>
-          <th>CDSI</th>
-          <th>City</th>
-          <th>Zip</th>
-          <th>Street Name</th>
-          <th>Street #</th>
-          <th></th>
+          <th>Description</th>
+          <th>Data Sharing</th>
+          <th>Selected Grid Square</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         @form(
-          routes.Administration.updateCdsi(Long.parseLong(opqDeviceForm("primaryKey").value)),
+          routes.Administration.updateDataSharing(Long.parseLong(opqDeviceForm("primaryKey").value)),
           'id -> "updateCdsiForm",
           'class -> "form-inline"
         ) {
@@ -58,40 +56,17 @@ Copyright 2013 Anthony Christe
               'class -> "input-medium", 'readonly -> "readonly")
             </td>
 
-            @* Participation in CDSI *@
+            <td>
+            @inputText(opqDeviceForm("description"), '_showConstraints -> false, '_label -> "",
+              'class -> "input-medium", 'readonly -> "readonly")
+            </td>
+
+            @* Sharing Data *@
             <td>
               @checkbox(opqDeviceForm("sharingData"), '_showConstraints -> false, '_label -> "")
               <input type="hidden" name="sharingData" value="false" />
             </td>
 
-            @* City *@
-            <td>
-            @inputText(opqDeviceForm("city"), '_id -> "city", '_showConstraints -> false, '_label -> "",
-              'class -> "input-small")
-            </td>
-
-            @* Zip *@
-            <td>
-            @inputText(opqDeviceForm("zip"), '_id -> "zip", '_showConstraints -> false, '_label -> "",
-              'class -> "input-mini")
-            </td>
-
-            @* Street Name *@
-            <td>
-            @inputText(opqDeviceForm("streetName"), '_id -> "streetName", '_showConstraints -> false, '_label -> "",
-              'class -> "input-small")
-            </td>
-
-            @* Street Number *@
-            <td>
-            @inputText(opqDeviceForm("streetNumber"), '_id -> "streetNumber", '_showConstraints -> false, '_label -> "",
-              'class -> "input-mini")
-            </td>
-
-            @* Update/Cancel *@
-            <td>
-              <input type="button" id="previewBtn" class="btn btn-info pull-right" value="Preview">
-            </td>
             <td>
               <input type="button" id="saveBtn" class="btn btn-warning pull-right" value="Save">
             </td>
@@ -105,21 +80,12 @@ Copyright 2013 Anthony Christe
   Start of cdsi map
   *@
   <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
-  <script src="@routes.Assets.at("javascripts/opq-maps.js")" type="text/javascript"></script>
-  <div id="cdsi-map" class="span9"></div>
+  <script src="@routes.Assets.at("javascripts/grid-map.js")" type="text/javascript"></script>
+  <div id="data-sharing-map" class="span9"></div>
   <script type="text/javascript">
     /* Make sure the leaflet CSS is loaded */
     addDynamicCss ( '  @routes.Assets.at("stylesheets/leaflet.css") ');
-    initMap("cdsi-map", "state", "city", "zip", "streetName", "streetNumber", "latitude", "longitude");
-
-    $("#previewBtn" ).on("click", function(){
-      previewMap();
-    });
-
-    $("#saveBtn" ).on("click", function() {
-      var data = getMapInfo();
-      updateLatLong(data);
-      $("#updateCdsiForm").submit();
-    });
+    var g = grid;
+    grid.initMap("data-sharing-map", g.island.OAHU.latLng, g.island.OAHU.defaultZoom);
   </script>
 }

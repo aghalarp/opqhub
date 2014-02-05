@@ -65,12 +65,12 @@
     height: 680px;
 }
 
-#cdsi-map {
-    height: 400px;
+#wizard-map {
+    height: 500px;
 }
 
-#wizard-map {
-    height: 300px;
+#data-sharing-map {
+    height: 600px;
 }
 
 #map-controls {

@@ -27,20 +27,10 @@ Copyright 2013 Anthony Christe
   <div class="row">
     <input type="hidden" name="latitude" id="latitude" value=''>
     <input type="hidden" name="longitude" id="longitude" value=''>
-    <div class="span4">
-      @inputText(opqDeviceForm("city"), '_label -> "Device City", 'placeholder -> "Kailua-Kona", 'id -> "deviceCity", 'class -> "input-medium")
-      @inputText(opqDeviceForm("zip"), '_label -> "Device Zip", 'placeholder -> "96739", 'id -> "deviceZip", 'class -> "input-medium")
-      @inputText(opqDeviceForm("streetName"), '_label -> "Device Street Name", 'placeholder -> "Palani Rd",
-        'id -> "deviceStreetName", 'class -> "input-medium")
-      @inputText(opqDeviceForm("streetNumber"), '_label -> "Device Street Number", 'placeholder -> "111",
-        'id -> "deviceStreetNumber", 'class -> "input-medium")
-      @checkbox(opqDeviceForm("sharingData"), '_label -> "Participate in CDSI", 'id -> "participateInCdsi")
-      <input type="hidden" name="sharingData" value="false" />
-      <input type="button" id="previewLocation" value="Preview Location" class="btn btn-info pull-right" />
-    </div>
-    <div class="span5">
-      <div id="wizard-map"></div>
-    </div>
+
+
+      <div class="span9" id="wizard-map"></div>
+
     <div class="span3">
       <div class="well well-small">
         <p class="bold">Community Data Sharing Initiative</p>
@@ -69,28 +59,13 @@ Copyright 2013 Anthony Christe
       </div>
     </div>
   </div>
-@*
-Start of cdsi map
-*@
+
+@* Device Map *@
 <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
-<script src="@routes.Assets.at("javascripts/opq-maps.js")" type="text/javascript"></script>
-<div id="cdsi-map" class="span9"></div>
+<script src="@routes.Assets.at("javascripts/grid-map.js")" type="text/javascript"></script>
+
 <script type="text/javascript">
-  /* Make sure the leaflet CSS is loaded */
   addDynamicCss ( '  @routes.Assets.at("stylesheets/leaflet.css") ');
-  var i = 0;
-  $("#opq-wizard" ).on("changed", function(e) {
-    i++;
-    if(i === 5) {
-    initMap("wizard-map", "deviceState", "deviceCity", "deviceZip", "deviceStreetName", "deviceStreetNumber", "latitude", "longitude");
-    }
-    });
-
-
-
-
-  $("#previewLocation" ).on("click", function(){
-     previewMap();
-  });
-
+  var g = grid;
+  g.initMap("wizard-map", g.island.OAHU.latLng, g.island.OAHU.defaultZoom);
 </script>
