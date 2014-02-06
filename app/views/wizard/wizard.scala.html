@@ -34,7 +34,9 @@ Copyright 2013 Anthony Christe
 
       $(document).ready(function() {
       $('#opq-wizard').on('finished', function(e, data) {
-      document.wizardForm.submit();
+        //var data = getMapInfo();
+        //updateLatLong(data);
+        document.wizardForm.submit();
       });
       });
 
@@ -69,7 +71,7 @@ Copyright 2013 Anthony Christe
             </div>
           </div>
           <div class="step-content">
-          @form(routes.Wizard.save(), 'class -> "form-horizontal", 'name -> "wizardForm") {
+          @form(routes.Wizard.save(), 'class -> "form-horizontal", 'name -> "wizardForm", '_id -> "wizardForm") {
             <div class="step-pane active" id="step1">
             @wizard_user_info(personForm)
             </div>

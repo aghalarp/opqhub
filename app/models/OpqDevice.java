@@ -48,7 +48,7 @@ public class OpqDevice extends Model {
    * The device id as a 64-bit integer.
    */
   @Constraints.Required
-  private String deviceId;
+  private Long deviceId;
 
   /**
    * Short description of the device. I.e. basement, office, etc.
@@ -56,47 +56,21 @@ public class OpqDevice extends Model {
   @Constraints.Required
   private String description;
 
-
-  /**
-   * State that the device is located in (not optional).
-   */
-  @Constraints.Required
-  private String state;
-
-  /**
-   * City that the device is located in (optional).
-   */
-  private String city;
-
-  /**
-   * Zip code that device is located in (optional).
-   */
-  private String zip;
-
-  /**
-   * Street name that the device is located at (optional).
-   */
-  private String streetName;
-
-  /**
-   * Street number that the device is located at (optional).
-   */
-  private String streetNumber;
-
-  /**
-   * Longitude that this device is located at.
-   */
-  private Double longitude;
-
-  /**
-   * Latitude that this device is located at.
-   */
-  private Double latitude;
-
   /**
    * Determines if device is participating in CDSI.
    */
-  private Boolean participatingInCdsi;
+  private Boolean sharingData;
+
+  private String gridId;
+
+  /**
+   * The following latitude and longitudes can be used to make up the bounding box of the grid square that this
+   * device resides in.
+   */
+  private Double northEastLatitude;
+  private Double northEastLongitude;
+  private Double southWestLatitude;
+  private Double southWestLongitude;
 
   /**
    * Person that this device is associated with.
@@ -135,12 +109,10 @@ public class OpqDevice extends Model {
    *
    * @param deviceId    Id of the device as 16 hex digits.
    * @param description Short description of the device.
-   * @param state       State that device is located in.
    */
-  public OpqDevice(String deviceId, String description, String state) {
+  public OpqDevice(Long deviceId, String description) {
     this.setDeviceId(deviceId);
     this.setDescription(description);
-    this.setState(state);
   }
 
   /**
@@ -175,8 +147,8 @@ public class OpqDevice extends Model {
    *
    * @return The device id (unique 64-bit int).
    */
-  public String getDeviceId() {
-    return deviceId;
+  public Long getDeviceId() {
+    return this.deviceId;
   }
 
   /**
@@ -184,7 +156,7 @@ public class OpqDevice extends Model {
    *
    * @param deviceId A unique 64-bit represented as a String.
    */
-  public void setDeviceId(String deviceId) {
+  public void setDeviceId(Long deviceId) {
     this.deviceId = deviceId;
   }
 
@@ -206,148 +178,39 @@ public class OpqDevice extends Model {
     this.description = description;
   }
 
-  /**
-   * Gets the state that this device resides in.
-   *
-   * @return State this this device resides in.
-   */
-  public String getState() {
-    return state;
-  }
-
-  /**
-   * Sets the state that this device resides in.
-   *
-   * @param state State this this device resides in.
-   */
-  public void setState(String state) {
-    this.state = state;
-  }
-
-  /**
-   * Gets the city that this device resides in.
-   *
-   * @return The city that this device resides in.
-   */
-  public String getCity() {
-    return city;
-  }
-
-  /**
-   * Sets the city that this device resides in.
-   *
-   * @param city City that this device resides in.
-   */
-  public void setCity(String city) {
-    this.city = city;
-  }
-
-  /**
-   * Gets the zip that this device resides in.
-   *
-   * @return Zip that this device resides in.
-   */
-  public String getZip() {
-    return zip;
-  }
-
-  /**
-   * Sets the zip that this device resides in.
-   *
-   * @param zip Zip that this device resides in.
-   */
-  public void setZip(String zip) {
-    this.zip = zip;
-  }
-
-  /**
-   * Gets the street name that this device resides on.
-   *
-   * @return Street name that this device resides on.
-   */
-  public String getStreetName() {
-    return streetName;
-  }
-
-  /**
-   * Sets the street name that this device resides on.
-   *
-   * @param streetName Street name that this device resides on.
-   */
-  public void setStreetName(String streetName) {
-    this.streetName = streetName;
-  }
-
-  /**
-   * Gets the street number that this device resides on.
-   *
-   * @return Street number that this device resides on.
-   */
-  public String getStreetNumber() {
-    return streetNumber;
-  }
-
-  /**
-   * Sets the street number that this device resides on.
-   *
-   * @param streetNumber Street number that this device resides on.
-   */
-  public void setStreetNumber(String streetNumber) {
-    this.streetNumber = streetNumber;
-  }
-
-  /**
-   * Gets the longitude that this device resides at.
-   *
-   * @return Longitude that this device resides at.
-   */
-  public Double getLongitude() {
-    return longitude;
-  }
-
-  /**
-   * Sets the longitude that this device resides at.
-   *
-   * @param longitude Longitude that this device resides at.
-   */
-  public void setLongitude(Double longitude) {
-    this.longitude = longitude;
-  }
-
-  /**
-   * Gets the latitude that this device resides at.
-   *
-   * @return Latitude that this device resides at.
-   */
-  public Double getLatitude() {
-    return latitude;
-  }
-
-  /**
-   * Sets the latitude that this device resides at.
-   *
-   * @param latitude The latitude that this device resides at.
-   */
-  public void setLatitude(Double latitude) {
-    this.latitude = latitude;
-  }
 
   /**
    * Gets whether or not this device is participating in CDSI.
    *
    * @return Participating in CDSI.
    */
-  public Boolean getParticipatingInCdsi() {
-    return this.participatingInCdsi;
+  public Boolean getSharingData() {
+    return this.sharingData;
+  }
+
+  /**
+   * Returns the gridId.
+   * @return The gridId.
+   */
+  public String getGridId() {
+    return gridId;
+  }
+
+  /**
+   * Sets the gridId.
+   * @param gridId The gridId.
+   */
+  public void setGridId(String gridId) {
+    this.gridId = gridId;
   }
 
   /**
    * Set whether or not this device is participating in CDSI.
    *
-   * @param participatingInCdsi Participating in CDSI.
+   * @param sharingData Participating in CDSI.
    */
-  public void setParticipatingInCdsi(Boolean participatingInCdsi) {
-    this.participatingInCdsi = participatingInCdsi;
+  public void setSharingData(Boolean sharingData) {
+    this.sharingData = sharingData;
   }
 
   /**
@@ -420,5 +283,38 @@ public class OpqDevice extends Model {
    */
   public void setAlerts(List<Alert> alerts) {
     this.alerts = alerts;
+  }
+
+
+  public Double getNorthEastLatitude() {
+    return northEastLatitude;
+  }
+
+  public void setNorthEastLatitude(Double northEastLatitude) {
+    this.northEastLatitude = northEastLatitude;
+  }
+
+  public Double getNorthEastLongitude() {
+    return northEastLongitude;
+  }
+
+  public void setNorthEastLongitude(Double northEastLongitude) {
+    this.northEastLongitude = northEastLongitude;
+  }
+
+  public Double getSouthWestLatitude() {
+    return southWestLatitude;
+  }
+
+  public void setSouthWestLatitude(Double southWestLatitude) {
+    this.southWestLatitude = southWestLatitude;
+  }
+
+  public Double getSouthWestLongitude() {
+    return southWestLongitude;
+  }
+
+  public void setSouthWestLongitude(Double southWestLongitude) {
+    this.southWestLongitude = southWestLongitude;
   }
 }

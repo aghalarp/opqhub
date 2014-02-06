@@ -11,7 +11,7 @@ create table alert (
   alert_duration            bigint,
   device_primary_key        bigint,
   external_event_primary_key bigint,
-  constraint ck_alert_alert_type check (alert_type in (0,1,2)),
+  constraint ck_alert_alert_type check (alert_type in (0,1,2,3)),
   constraint pk_alert primary key (primary_key))
 ;
 
@@ -53,16 +53,14 @@ create table measurement (
 
 create table opq_device (
   primary_key               bigint auto_increment not null,
-  device_id                 varchar(255),
+  device_id                 bigint,
   description               varchar(255),
-  state                     varchar(255),
-  city                      varchar(255),
-  zip                       varchar(255),
-  street_name               varchar(255),
-  street_number             varchar(255),
-  longitude                 double,
-  latitude                  double,
-  participating_in_cdsi     tinyint(1) default 0,
+  sharing_data              tinyint(1) default 0,
+  grid_id                   varchar(255),
+  north_east_latitude       double,
+  north_east_longitude      double,
+  south_west_latitude       double,
+  south_west_longitude      double,
   person_primary_key        bigint,
   constraint pk_opq_device primary key (primary_key))
 ;

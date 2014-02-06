@@ -103,9 +103,9 @@ Copyright 2013 Anthony Christe
       </div>
 
         <!-- Start of Leaflet -->
+
       <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
       <div id="public-map" class="span9"></div>
-
       <script type="text/javascript">
         // Make sure the correct css file is included
         addDynamicCss("@routes.Assets.at("stylesheets/leaflet.css")");
@@ -159,6 +159,7 @@ Copyright 2013 Anthony Christe
         ]);
         }
 
+        @*
         // Display devices
         @for(device <- devices) {
           L.marker([@device.getLatitude(), @device.getLongitude()], {icon: deviceMarker}).addTo(map)
@@ -167,17 +168,19 @@ Copyright 2013 Anthony Christe
 
         // Display alerts
         @for(alert <- alerts) {
-          @if(alert.getAlertType().equals(models.Alert.AlertType.FREQUENCY)) {
-            L.marker([@alert.getDevice.getLatitude, @alert.getDevice.getLongitude], {icon: frequencyMarker}).addTo(map)
-            .bindPopup(alertTemplate('@alert.getAlertType', '@utils.DateUtils.toDateTime(alert.getTimestamp)', @alert.getAlertDuration + ' ms',
-            @alert.getAlertValue + 'Hz', @alert.getDevice.getLatitude, @alert.getDevice.getLongitude));
+          @if(alert.getDevice != null) {
+            @if(alert.getAlertType().equals(models.Alert.AlertType.FREQUENCY)) {
+              L.marker([@alert.getDevice.getLatitude, @alert.getDevice.getLongitude], {icon: frequencyMarker}).addTo(map)
+              .bindPopup(alertTemplate('@alert.getAlertType', '@utils.DateUtils.toDateTime(alert.getTimestamp)', @alert.getAlertDuration + ' ms',
+              @alert.getAlertValue + 'Hz', @alert.getDevice.getLatitude, @alert.getDevice.getLongitude));
+            }
+            @if(alert.getAlertType().equals(models.Alert.AlertType.VOLTAGE)) {
+              L.marker([@alert.getDevice.getLatitude, @alert.getDevice.getLongitude], {icon: voltageMarker}).addTo(map)
+              .bindPopup(alertTemplate('@alert.getAlertType', '@utils.DateUtils.toDateTime(alert.getTimestamp)', @alert.getAlertDuration + ' ms',
+              @alert.getAlertValue + ' V', @alert.getDevice.getLatitude, @alert.getDevice.getLongitude));
+            }
           }
-          @if(alert.getAlertType().equals(models.Alert.AlertType.VOLTAGE)) {
-            L.marker([@alert.getDevice.getLatitude, @alert.getDevice.getLongitude], {icon: voltageMarker}).addTo(map)
-            .bindPopup(alertTemplate('@alert.getAlertType', '@utils.DateUtils.toDateTime(alert.getTimestamp)', @alert.getAlertDuration + ' ms',
-            @alert.getAlertValue + ' V', @alert.getDevice.getLatitude, @alert.getDevice.getLongitude));
-      }
-      }
+      }   *@
       </script>
 
     </div>

@@ -30,6 +30,7 @@ import views.html.admin.adminalert;
 import views.html.admin.admincdsi;
 import views.html.admin.admindevice;
 import views.html.admin.adminuser;
+import views.html.admin.updatedatashare;
 import views.html.error;
 
 import java.util.ArrayList;
@@ -121,7 +122,7 @@ public class Administration extends Controller {
    * @return Redirect to device administration.
    */
   @Security.Authenticated(Secured.class)
-  public static Result updateDevice(String deviceId) {
+  public static Result updateDevice(Long deviceId) {
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
 
@@ -143,7 +144,7 @@ public class Administration extends Controller {
    * @return Redirect back to devices page.
    */
   @Security.Authenticated(Secured.class)
-  public static Result deleteDevice(String deviceId) {
+  public static Result deleteDevice(Long deviceId) {
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
     opqDevice.delete();
     opqDevice.save();
@@ -166,11 +167,11 @@ public class Administration extends Controller {
 
     // For each device, store the device id
     for (OpqDevice opqDevice : devices) {
-      deviceIds.add(opqDevice.getDeviceId());
+      deviceIds.add(Long.toString(opqDevice.getDeviceId()));
       // For each alert notification per device, create a form with data from that alert notification.
       for (AlertNotification alertNotification : opqDevice.getAlertNotifications()) {
         alertNotificationForm = form(AlertNotification.class).fill(alertNotification);
-        alertNotificationForm.data().put("deviceId", opqDevice.getDeviceId());
+        alertNotificationForm.data().put("deviceId", Long.toString(opqDevice.getDeviceId()));
         alertNotificationForms.add(alertNotificationForm);
       }
     }
@@ -228,16 +229,11 @@ public class Administration extends Controller {
    * @return The rendered view for CDSI administration.
    */
   @Security.Authenticated(Secured.class)
-  public static Result cdsi() {
+  public static Result dataSharing() {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
-    List<Form<OpqDevice>> opqDeviceForms = new ArrayList<>();
+    List<OpqDevice> opqDevices = person.getDevices();
 
-    // For each device, fill a form with that device's values
-    for (OpqDevice opqDevice : person.getDevices()) {
-      opqDeviceForms.add(form(OpqDevice.class).fill(opqDevice));
-    }
-
-    return ok(admincdsi.render(opqDeviceForms));
+    return ok(admincdsi.render(opqDevices));
   }
 
   /**
@@ -246,16 +242,38 @@ public class Administration extends Controller {
    * @return Redirect to cdsi administration.
    */
   @Security.Authenticated(Secured.class)
-  public static Result updateCdsi(String deviceId) {
-    Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
-    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
+  public static Result editDataSharing(Long deviceId) {
+    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    List<OpqDevice> opqDevices = person.getDevices();
+    OpqDevice opqDevice = null;
+    Form<OpqDevice> opqDeviceForm;
 
-    if (opqDeviceForm.hasErrors()) {
-      return ok(error.render("Problem updating CDSI information", opqDeviceForm.errors().toString()));
+    for(OpqDevice device : opqDevices) {
+      if(device.getDeviceId().equals(deviceId)) {
+        opqDevice = device;
+        break;
+      }
     }
 
-    opqDeviceForm.get().update(opqDevice.getPrimaryKey());
-    flash("updated", "Updated CDSI Participation");
-    return redirect(routes.Administration.cdsi());
+    if(opqDevice == null) {
+      return ok(error.render("Unknown device", ""));
+    }
+
+    opqDeviceForm = form(OpqDevice.class).fill(opqDevice);
+
+    return ok(updatedatashare.render(opqDeviceForm));
+  }
+
+  @Security.Authenticated(Secured.class)
+  public static Result updateDataSharing(Long primaryKey) {
+    Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
+
+    if(opqDeviceForm.hasErrors()) {
+      return ok(error.render("Problem updating data share", opqDeviceForm.errors().toString()));
+    }
+
+    opqDeviceForm.get().update(primaryKey);
+    flash("updated", "Data sharing updated");
+    return redirect(routes.Administration.dataSharing());
   }
 }

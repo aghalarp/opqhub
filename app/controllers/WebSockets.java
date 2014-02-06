@@ -21,46 +21,17 @@ package controllers;
 
 import models.Alert;
 import models.OpqDevice;
-import play.Logger;
+import org.openpowerquality.protocol.OpqPacket;
 import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.WebSocket;
 
-import java.util.Arrays;
 
 /**
  * Provides methods for handling packets sent to this server from a WebSockets client.
  */
 public class WebSockets extends Controller {
-  /**
-   * Location of device id field in alert packet.
-   */
-  public static final int DEVICE_ID = 0;
 
-  /**
-   * Location of packet type in web socket packet.
-   */
-  public static final int PACKET_TYPE = 1;
-
-  /**
-   * Location of alert type in alert packet.
-   */
-  public static final int ALERT_TYPE = 2;
-
-  /**
-   * Location of timestamp in alert packet.
-   */
-  public static final int TIMESTAMP = 3;
-
-  /**
-   * Location of duration in alert packet.
-   */
-  public static final int DURATION = 4;
-
-  /**
-   * Location of alert value in alert packet.
-   */
-  public static final int ALERT_VALUE = 5;
 
   /**
    * Create a WebSocket object who can receive connections, receive packets, and break connections.
@@ -70,11 +41,12 @@ public class WebSockets extends Controller {
   public static WebSocket<String> handleSocket() {
     return new WebSocket<String>() {
       @Override
-      public void onReady(In<String> in, Out<String> out) {
+      public void onReady(In<String> in, final Out<String> out) {
+
         in.onMessage(new F.Callback<String>() {
           @Override
           public void invoke(String s) throws Throwable {
-            handlePacket(s);
+            handlePacket(new OpqPacket(s));
           }
         });
 
@@ -91,18 +63,18 @@ public class WebSockets extends Controller {
   /**
    * Determines the type of packet that was received from the WebSocket, and calls the correct sub-handler.
    *
-   * @param packet The packet received from the WebSocket object.
+   * @param opqPacket The packet received from the WebSocket object.
    */
-  private static void handlePacket(String packet) {
-    switch (packet.split(",")[PACKET_TYPE]) {
-      case "A":
-        handleAlert(packet);
+  private static void handlePacket(OpqPacket opqPacket) {
+    switch(opqPacket.getType()) {
+      case ALERT_FREQUENCY:
+      case ALERT_VOLTAGE:
+      case ALERT_DEVICE:
+        handleAlert(opqPacket);
         break;
-      case "M":
-        handleMeasurement(packet);
+      case MEASUREMENT:
+        handleMeasurement(opqPacket);
         break;
-      default:
-        System.out.println("Unknown packet type");
     }
   }
 
@@ -113,32 +85,21 @@ public class WebSockets extends Controller {
    *
    * @param packet Alert packet from device.
    */
-  private static void handleAlert(String packet) {
-    String[] alertParts = packet.split(",");
+  private static void handleAlert(OpqPacket opqPacket) {
+    Long deviceId = opqPacket.getDeviceId();
+    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
 
-    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", alertParts[DEVICE_ID]).findUnique();
-    Alert.AlertType alertType;
-
-    switch (alertParts[ALERT_TYPE]) {
-      case "D":
-        alertType = Alert.AlertType.DEVICE;
-        break;
-      case "F":
-        alertType = Alert.AlertType.FREQUENCY;
-        break;
-      case "V":
-        alertType = Alert.AlertType.VOLTAGE;
-        break;
-      default:
-        alertType = null;
-        Logger.error("Unknown alert type " + alertParts[ALERT_TYPE]);
+    if(opqDevice == null) {
+      System.out.println("Device is null");
     }
 
-    Long alertDuration = Long.parseLong(alertParts[DURATION]);
-    Long timestamp = Long.parseLong(alertParts[TIMESTAMP]);
-    Double alertValue = Double.parseDouble(alertParts[ALERT_VALUE]);
+    Alert alert = new Alert(
+        opqDevice,
+        opqPacket.getType(),
+        opqPacket.getTimestamp(),
+        opqPacket.getAlertDuration(),
+        opqPacket.getAlertValue());
 
-    Alert alert = new Alert(opqDevice, alertType, timestamp, alertDuration, alertValue);
     alert.save();
     opqDevice.getAlerts().add(alert);
     opqDevice.save();
@@ -151,10 +112,10 @@ public class WebSockets extends Controller {
    *
    * @param packet Measurement packet from device.
    */
-  private static void handleMeasurement(String packet) {
-    String[] data = packet.split(",");
+  private static void handleMeasurement(OpqPacket opqPacket) {
+    /*String[] data = packet.split(",");
     System.out.println("Received measurement...");
     System.out.println(Arrays.toString(data));
-    // TODO: Add to database.
+    // TODO: Add to database.*/
   }
 }

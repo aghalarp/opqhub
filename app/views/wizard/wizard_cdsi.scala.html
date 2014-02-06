@@ -25,20 +25,12 @@ Copyright 2013 Anthony Christe
   }
 
   <div class="row">
-    <div class="span9">
-      @inputText(opqDeviceForm("city"), '_label -> "Device City", 'placeholder -> "Kailua-Kona", 'id -> "deviceCity")
-      @inputText(opqDeviceForm("zip"), '_label -> "Device Zip", 'placeholder -> "96739", 'id -> "deviceZip")
-      @inputText(opqDeviceForm("streetName"), '_label -> "Device Street Name", 'placeholder -> "Palani Rd",
-        'id -> "deviceStreetName")
-      @inputText(opqDeviceForm("streetNumber"), '_label -> "Device Street Number", 'placeholder -> "111",
-        'id -> "deviceStreetNumber")
-      @inputText(opqDeviceForm("latitude"), '_label -> "Device Latitude", 'placeholder -> "19.6406",
-        'id -> "deviceLatitude")
-      @inputText(opqDeviceForm("longitude"), '_label -> "Device Longitude", 'placeholder -> "-155.9956",
-        'id -> "deviceLongitude")
-    <hr />
-      @checkbox(opqDeviceForm("participatingInCdsi"), '_label -> "Participate in CDSI", 'id -> "participateInCdsi")
-    </div>
+    <input type="hidden" name="latitude" id="latitude" value=''>
+    <input type="hidden" name="longitude" id="longitude" value=''>
+
+
+      <div class="span9" id="wizard-map"></div>
+
     <div class="span3">
       <div class="well well-small">
         <p class="bold">Community Data Sharing Initiative</p>
@@ -67,3 +59,13 @@ Copyright 2013 Anthony Christe
       </div>
     </div>
   </div>
+
+@* Device Map *@
+<script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/grid-map.js")" type="text/javascript"></script>
+
+<script type="text/javascript">
+  addDynamicCss ( '  @routes.Assets.at("stylesheets/leaflet.css") ');
+  var g = grid;
+  g.initMap("wizard-map", g.island.OAHU.latLng, g.island.OAHU.defaultZoom);
+</script>

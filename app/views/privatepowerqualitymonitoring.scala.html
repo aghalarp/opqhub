@@ -118,15 +118,15 @@ Copyright 2013 Anthony Christe
             <tr>
               <td>@alert.getDevice.getDeviceId</td>
               <td>@alert.getDevice.getDescription</td>
-              <td>@alert.getAlertType</td>
+              <td>@alert.getAlertType.getName</td>
               <td>@utils.DateUtils.toDateTime(alert.getTimestamp)</td>
               <td>@alert.getAlertDuration</td>
-              <td>
+             <td>
                 @alert.getAlertValue
-                @if(alert.getAlertType.equals(Alert.AlertType.FREQUENCY)) {
+                @if(alert.getAlertType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_FREQUENCY)) {
                   Hz
                 }
-                @if(alert.getAlertType.equals(Alert.AlertType.VOLTAGE)) {
+                @if(alert.getAlertType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_VOLTAGE)) {
                   Volts
                 }
               </td>
