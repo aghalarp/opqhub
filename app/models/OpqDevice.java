@@ -64,6 +64,15 @@ public class OpqDevice extends Model {
   private String gridId;
 
   /**
+   * The following latitude and longitudes can be used to make up the bounding box of the grid square that this
+   * device resides in.
+   */
+  private Double northEastLatitude;
+  private Double northEastLongitude;
+  private Double southWestLatitude;
+  private Double southWestLongitude;
+
+  /**
    * Person that this device is associated with.
    * <p/>
    * Each device is associated with one and only one person.
@@ -274,5 +283,38 @@ public class OpqDevice extends Model {
    */
   public void setAlerts(List<Alert> alerts) {
     this.alerts = alerts;
+  }
+
+
+  public Double getNorthEastLatitude() {
+    return northEastLatitude;
+  }
+
+  public void setNorthEastLatitude(Double northEastLatitude) {
+    this.northEastLatitude = northEastLatitude;
+  }
+
+  public Double getNorthEastLongitude() {
+    return northEastLongitude;
+  }
+
+  public void setNorthEastLongitude(Double northEastLongitude) {
+    this.northEastLongitude = northEastLongitude;
+  }
+
+  public Double getSouthWestLatitude() {
+    return southWestLatitude;
+  }
+
+  public void setSouthWestLatitude(Double southWestLatitude) {
+    this.southWestLatitude = southWestLatitude;
+  }
+
+  public Double getSouthWestLongitude() {
+    return southWestLongitude;
+  }
+
+  public void setSouthWestLongitude(Double southWestLongitude) {
+    this.southWestLongitude = southWestLongitude;
   }
 }
