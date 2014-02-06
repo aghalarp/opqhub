@@ -27,7 +27,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import views.html.admin.adminalert;
-import views.html.admin.admincdsi;
+import views.html.admin.admindatashare;
 import views.html.admin.admindevice;
 import views.html.admin.adminuser;
 import views.html.admin.updatedatashare;
@@ -233,7 +233,7 @@ public class Administration extends Controller {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     List<OpqDevice> opqDevices = person.getDevices();
 
-    return ok(admincdsi.render(opqDevices));
+    return ok(admindatashare.render(opqDevices));
   }
 
   /**
