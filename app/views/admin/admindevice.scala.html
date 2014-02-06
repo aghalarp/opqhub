@@ -42,7 +42,6 @@ Copyright 2013 Anthony Christe
           <tr>
             <th>Device Id</th>
             <th>Description</th>
-            <th>State</th>
             <th></th>
           </tr>
         </thead>
@@ -54,13 +53,6 @@ Copyright 2013 Anthony Christe
                 'class -> "input-medium")</td>
               <td>@inputText(deviceForm("description"), '_showConstraints -> false, '_label -> "",
                 'class -> "input-small")</td>
-              <td>@select(
-                deviceForm("state"),
-                options = options(utils.FormUtils.LIST_OF_STATES),
-                '_label -> "",
-                '_showConstraints -> false,
-                'id -> "deviceState",
-                'class -> "input-medium")</td>
               <td>
                 <input type="submit" class="btn btn-warning pull-right" value="Update">
               </td>
@@ -84,16 +76,6 @@ Copyright 2013 Anthony Christe
                 '_showConstraints -> false,
                 'class -> "input-small",
                 'id -> "deviceDescription")
-              </td>
-              <td>
-              @select(
-                opqDeviceForm("state"),
-                options = options(utils.FormUtils.LIST_OF_STATES),
-                '_label -> "",
-                '_showConstraints -> false,
-                '_default -> "--- Select State ---",
-                'id -> "deviceState",
-                'class -> "input-medium")
               </td>
               <td>
                 <input type="submit" value="Add Device" class="btn btn-primary pull-right" />

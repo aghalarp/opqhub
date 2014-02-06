@@ -61,6 +61,8 @@ public class OpqDevice extends Model {
    */
   private Boolean sharingData;
 
+  private String gridId;
+
   /**
    * Person that this device is associated with.
    * <p/>
@@ -175,6 +177,22 @@ public class OpqDevice extends Model {
    */
   public Boolean getSharingData() {
     return this.sharingData;
+  }
+
+  /**
+   * Returns the gridId.
+   * @return The gridId.
+   */
+  public String getGridId() {
+    return gridId;
+  }
+
+  /**
+   * Sets the gridId.
+   * @param gridId The gridId.
+   */
+  public void setGridId(String gridId) {
+    this.gridId = gridId;
   }
 
   /**

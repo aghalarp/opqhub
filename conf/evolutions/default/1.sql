@@ -56,6 +56,7 @@ create table opq_device (
   device_id                 bigint,
   description               varchar(255),
   sharing_data              tinyint(1) default 0,
+  grid_id                   varchar(255),
   person_primary_key        bigint,
   constraint pk_opq_device primary key (primary_key))
 ;

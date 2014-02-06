@@ -35,7 +35,7 @@ Copyright 2013 Anthony Christe
           <th>Device Id</th>
           <th>Description</th>
           <th>Data Sharing</th>
-          <th>Selected Grid Square</th>
+          <th>Grid Id</th>
           <th></th>
         </tr>
       </thead>
@@ -45,10 +45,6 @@ Copyright 2013 Anthony Christe
           'id -> "updateCdsiForm",
           'class -> "form-inline"
         ) {
-          <input type="hidden" name="state" id="state" value="@opqDeviceForm("state").value">
-          <input type="hidden" name="description" id="description" value='@opqDeviceForm("description").value'>
-          <input type="hidden" name="latitude" id="latitude" value='@opqDeviceForm("latitude").value'>
-          <input type="hidden" name="longitude" id="longitude" value='@opqDeviceForm("longitude").value'>
           <tr>
             @* Device Id *@
             <td>
