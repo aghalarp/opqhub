@@ -33,11 +33,9 @@ Copyright 2013 Anthony Christe
       $('#opq-wizard').wizard();
 
       $(document).ready(function() {
-      $('#opq-wizard').on('finished', function(e, data) {
-        //var data = getMapInfo();
-        //updateLatLong(data);
-        document.wizardForm.submit();
-      });
+        $('#opq-wizard').on('finished', function(e, data) {
+          document.wizardForm.submit();
+        });
       });
 
     </script>
@@ -62,7 +60,7 @@ Copyright 2013 Anthony Christe
               <li data-target="#step5"><span class="badge">5</span>
                 Notifications<span class="chevron"></span></li>
               <li data-target="#step6"><span class="badge">6</span>
-                CDSI<span class="chevron"></span></li>
+                Data Sharing<span class="chevron"></span></li>
             </ul>
             <div class="actions">
               <button type="button" class="btn btn-mini btn-prev"> <i class="icon-arrow-left"></i>Prev</button>
@@ -88,7 +86,7 @@ Copyright 2013 Anthony Christe
             @wizard_alert_notifications(alertNotificationForm)
             </div>
             <div class="step-pane" id="step6">
-            @wizard_cdsi(opqDeviceForm)
+            @wizard_data_sharing(opqDeviceForm)
             </div>
           }
           </div>
