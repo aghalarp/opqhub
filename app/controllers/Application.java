@@ -75,7 +75,7 @@ public class Application extends Controller {
     else {
       session().clear();
       session("email", loginForm.get().email);
-      return redirect(routes.PowerQualityMonitoring.privateMonitor());
+      return redirect(routes.PowerQualityMonitoring.privateAlertsMonitor());
     }
   }
 

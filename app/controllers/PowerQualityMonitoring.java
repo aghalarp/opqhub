@@ -27,6 +27,8 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -52,7 +54,7 @@ public class PowerQualityMonitoring extends Controller {
    * @return Rendered view of power quality events for current user.
    */
   @Security.Authenticated(Secured.class)
-  public static Result privateMonitor() {
+  public static Result privateAlertsMonitor() {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     List<Alert> alerts = new ArrayList<>();
 
@@ -63,6 +65,18 @@ public class PowerQualityMonitoring extends Controller {
       }
     }
 
-    return ok(views.html.privatepowerqualitymonitoring.render(alerts));
+    Collections.sort(alerts, new Comparator<Alert>() {
+      @Override
+      public int compare(Alert o1, Alert o2) {
+        return o2.getTimestamp().compareTo(o1.getTimestamp());
+      }
+    });
+
+    return ok(views.html.privatealerts.render(alerts));
+  }
+
+  @Security.Authenticated(Secured.class)
+  public static Result privateMeasurementsMonitor() {
+    return TODO;
   }
 }
