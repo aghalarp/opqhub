@@ -75,7 +75,7 @@ public class Measurement extends Model implements Timestampable {
    * @param voltage   Voltage of measurement (in Volts).
    * @param frequency Frequency of measurement (in Hertz).
    */
-  public Measurement(Long timestamp, Double voltage, Double frequency) {
+  public Measurement(Long timestamp, Double frequency, Double voltage) {
     this.setTimestamp(timestamp);
     this.setVoltage(voltage);
     this.setFrequency(frequency);

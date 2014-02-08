@@ -20,6 +20,7 @@
 package controllers;
 
 import models.Alert;
+import models.Measurement;
 import models.OpqDevice;
 import org.openpowerquality.protocol.OpqPacket;
 import play.libs.F;
@@ -83,7 +84,7 @@ public class WebSockets extends Controller {
    * <p/>
    * Once a valid alert is received, add it to the database.
    *
-   * @param packet Alert packet from device.
+   * @param opqPacket Alert packet from device.
    */
   private static void handleAlert(OpqPacket opqPacket) {
     Long deviceId = opqPacket.getDeviceId();
@@ -91,6 +92,7 @@ public class WebSockets extends Controller {
 
     if(opqDevice == null) {
       System.out.println("Device is null");
+      return;
     }
 
     Alert alert = new Alert(
@@ -100,6 +102,7 @@ public class WebSockets extends Controller {
         opqPacket.getAlertDuration(),
         opqPacket.getAlertValue());
 
+    alert.setDevice(opqDevice);
     alert.save();
     opqDevice.getAlerts().add(alert);
     opqDevice.save();
@@ -110,12 +113,27 @@ public class WebSockets extends Controller {
    * <p/>
    * When a valid measurement is received, that measurement is added to the database.
    *
-   * @param packet Measurement packet from device.
+   * @param opqPacket Measurement packet from device.
    */
   private static void handleMeasurement(OpqPacket opqPacket) {
-    /*String[] data = packet.split(",");
-    System.out.println("Received measurement...");
-    System.out.println(Arrays.toString(data));
-    // TODO: Add to database.*/
+    Long deviceId = opqPacket.getDeviceId();
+    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
+
+
+    if(opqDevice == null) {
+      System.out.println("Device is null");
+      return;
+    }
+
+    Measurement measurement = new Measurement(
+        opqPacket.getTimestamp(),
+        opqPacket.getFrequency(),
+        opqPacket.getVoltage()
+    );
+
+    measurement.setDevice(opqDevice);
+    measurement.save();
+    opqDevice.getMeasurements().add(measurement);
+    opqDevice.save();
   }
 }

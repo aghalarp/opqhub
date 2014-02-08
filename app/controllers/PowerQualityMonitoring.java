@@ -20,12 +20,14 @@
 package controllers;
 
 import models.Alert;
+import models.Measurement;
 import models.OpqDevice;
 import models.Person;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.TimestampComparator;
+import views.html.privatemeasurements;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,6 +73,17 @@ public class PowerQualityMonitoring extends Controller {
 
   @Security.Authenticated(Secured.class)
   public static Result privateMeasurementsMonitor() {
-    return TODO;
+    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    List<Measurement> measurements = new ArrayList<>();
+
+    // Search for all devices connected to current user, then for each device find its measurements
+    for (OpqDevice device : person.getDevices()) {
+      for (Measurement measurement : device.getMeasurements()) {
+        measurements.add(measurement);
+      }
+    }
+
+    Collections.sort(measurements, new TimestampComparator());
+    return ok(privatemeasurements.render(measurements));
   }
 }
