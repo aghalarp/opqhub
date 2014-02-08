@@ -25,10 +25,10 @@ import models.Person;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.TimestampComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -65,13 +65,7 @@ public class PowerQualityMonitoring extends Controller {
       }
     }
 
-    Collections.sort(alerts, new Comparator<Alert>() {
-      @Override
-      public int compare(Alert o1, Alert o2) {
-        return o2.getTimestamp().compareTo(o1.getTimestamp());
-      }
-    });
-
+    Collections.sort(alerts, new TimestampComparator());
     return ok(views.html.privatealerts.render(alerts));
   }
 
