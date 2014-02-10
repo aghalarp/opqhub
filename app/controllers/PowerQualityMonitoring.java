@@ -27,7 +27,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.TimestampComparator;
-import views.html.privatemeasurements;
+import views.html.privatemonitoring.privatemeasurements;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,7 +68,7 @@ public class PowerQualityMonitoring extends Controller {
     }
 
     Collections.sort(alerts, new TimestampComparator());
-    return ok(views.html.privatealerts.render(alerts));
+    return ok(views.html.privatemonitoring.privatealerts.render(alerts));
   }
 
   @Security.Authenticated(Secured.class)
