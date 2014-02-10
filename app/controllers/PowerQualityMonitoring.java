@@ -20,13 +20,17 @@
 package controllers;
 
 import models.Alert;
+import models.Measurement;
 import models.OpqDevice;
 import models.Person;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.TimestampComparator;
+import views.html.privatemonitoring.privatemeasurements;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -52,7 +56,7 @@ public class PowerQualityMonitoring extends Controller {
    * @return Rendered view of power quality events for current user.
    */
   @Security.Authenticated(Secured.class)
-  public static Result privateMonitor() {
+  public static Result privateAlertsMonitor() {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     List<Alert> alerts = new ArrayList<>();
 
@@ -63,6 +67,23 @@ public class PowerQualityMonitoring extends Controller {
       }
     }
 
-    return ok(views.html.privatepowerqualitymonitoring.render(alerts));
+    Collections.sort(alerts, new TimestampComparator());
+    return ok(views.html.privatemonitoring.privatealerts.render(alerts));
+  }
+
+  @Security.Authenticated(Secured.class)
+  public static Result privateMeasurementsMonitor() {
+    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    List<Measurement> measurements = new ArrayList<>();
+
+    // Search for all devices connected to current user, then for each device find its measurements
+    for (OpqDevice device : person.getDevices()) {
+      for (Measurement measurement : device.getMeasurements()) {
+        measurements.add(measurement);
+      }
+    }
+
+    Collections.sort(measurements, new TimestampComparator());
+    return ok(privatemeasurements.render(measurements));
   }
 }

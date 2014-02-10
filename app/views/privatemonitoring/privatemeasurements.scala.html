@@ -1,0 +1,53 @@
+@*
+This file is part of opq-ao.
+
+opa-ao is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+opa-ao is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
+
+Copyright 2013 Anthony Christe
+*@
+
+@(measurements: List[Measurement])
+
+@import helper._
+  @implicitFieldConstructor = @{
+    FieldConstructor(twitterBootstrapInput.render)
+  }
+
+@privatepowerqualitymonitoring("Private Measurements",
+  "This page allows you to manage and create power quality events.") {
+    <div class="span9">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>Device Id</th>
+            <th>Description</th>
+            <th>Timestamp</th>
+            <th>Frequency (Hz)</th>
+            <th>Voltage (V)</th>
+          </tr>
+        </thead>
+        <tbody>
+        @for(measurement <- measurements) {
+          <tr>
+            <td>@measurement.getDevice.getDeviceId</td>
+            <td>@measurement.getDevice.getDescription</td>
+            <td>@utils.DateUtils.toDateTime(measurement.getTimestamp)</td>
+            <td>@measurement.getFrequency</td>
+            <td>@measurement.getVoltage</td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    </div>
+}
