@@ -1,5 +1,6 @@
 package utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -12,6 +13,8 @@ public class DateUtils {
    * @return Human formated string of timestamp.
    */
   public static final String toDateTime(Long millisecondsSinceEpoch) {
-    return new Date(millisecondsSinceEpoch).toString();
+    Date dateStr = new Date(millisecondsSinceEpoch);
+
+    return new SimpleDateFormat("MM-dd-YY HH:mm:ss.S z").format(dateStr);
   }
 }
