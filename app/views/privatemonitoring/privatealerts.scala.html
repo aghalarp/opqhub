@@ -36,7 +36,7 @@ Copyright 2013 Anthony Christe
               <th>Timestamp</th>
               <th>Duration (ms)</th>
               <th>Alert Value</th>
-              <th>External Event</th>
+              <th>Details</th>
             </tr>
           </thead>
           <tbody>
@@ -57,7 +57,7 @@ Copyright 2013 Anthony Christe
                 }
               </td>
               <td>
-                Event
+                <a href="@routes.PowerQualityMonitoring.alertDetails(alert.getPrimaryKey)" class="btn btn-primary">Details</a>
               </td>
             </tr>
           }

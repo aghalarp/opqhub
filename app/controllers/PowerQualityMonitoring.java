@@ -20,13 +20,16 @@
 package controllers;
 
 import models.Alert;
+import models.ExternalEvent;
 import models.Measurement;
 import models.OpqDevice;
 import models.Person;
+import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.TimestampComparator;
+import views.html.error;
 import views.html.privatemonitoring.privatemeasurements;
 
 import java.util.ArrayList;
@@ -69,6 +72,42 @@ public class PowerQualityMonitoring extends Controller {
 
     Collections.sort(alerts, new TimestampComparator());
     return ok(views.html.privatemonitoring.privatealerts.render(alerts));
+  }
+
+  @Security.Authenticated(Secured.class)
+  public static Result alertDetails(Long alertId) {
+    Alert alert = Alert.find().where().eq("primaryKey", alertId).findUnique();
+    ExternalEvent externalEvent = alert.getExternalEvent();
+    Form<ExternalEvent> externalEventForm;
+
+    if(externalEvent == null) {
+      externalEventForm = Form.form(ExternalEvent.class);
+    }
+    else {
+      externalEventForm = Form.form(ExternalEvent.class).fill(externalEvent);
+    }
+
+    return ok(views.html.privatemonitoring.alertdetails.render(alert, externalEventForm));
+  }
+
+  @Security.Authenticated(Secured.class)
+  public static Result updateAlertDetails(Long alertId) {
+    Alert alert = Alert.find().where().eq("primaryKey", alertId).findUnique();
+    Form<ExternalEvent> externalEventForm = Form.form(ExternalEvent.class).bindFromRequest();
+
+    if (externalEventForm.hasErrors()) {
+      return ok(error.render("Problem updating alert", externalEventForm.errors().toString()));
+    }
+
+    ExternalEvent externalEvent = externalEventForm.get();
+    externalEvent.getAlerts().add(alert);
+    alert.setExternalEvent(externalEvent);
+    externalEvent.save();
+    alert.save();
+
+    flash("updated", "External Event Updated");
+
+    return redirect(routes.PowerQualityMonitoring.alertDetails(alertId));
   }
 
   @Security.Authenticated(Secured.class)

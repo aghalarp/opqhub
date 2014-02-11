@@ -37,8 +37,6 @@ create table external_event (
   primary_key               bigint auto_increment not null,
   event_type                varchar(255),
   event_description         varchar(255),
-  timestamp                 bigint,
-  duration                  bigint,
   constraint pk_external_event primary key (primary_key))
 ;
 
