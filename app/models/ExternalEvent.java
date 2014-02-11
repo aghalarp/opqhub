@@ -45,7 +45,6 @@ public class ExternalEvent extends Model {
   @Id
   private Long primaryKey;
 
-  // TODO: Should this be contrained to an enum?
   /**
    * The type of event that caused a power alert. I.e. weather, man-made, etc...
    */
@@ -61,18 +60,6 @@ public class ExternalEvent extends Model {
   private String eventDescription;
 
   /**
-   * Timestamp of external event as milliseconds since the epoch.
-   */
-  @Constraints.Required
-  private Long timestamp;
-
-  /**
-   * Duration of the external event in milliseconds since the epoch.
-   */
-  @Constraints.Required
-  private Long duration;
-
-  /**
    * Each external event may be mapped to multiple alerts.
    * <p/>
    * For instance, if a tropical storm comes through, that storm may cause many alerts in a small geographical area.
@@ -85,14 +72,10 @@ public class ExternalEvent extends Model {
    *
    * @param eventType        The type of the event, weather, man-made, etc.
    * @param eventDescription The description of the event.
-   * @param timestamp        Timestamp of the event in milliseconds since the epoch.
-   * @param duration         Duration of the event in milliseconds since the epoch.
    */
-  public ExternalEvent(String eventType, String eventDescription, Long timestamp, Long duration) {
+  public ExternalEvent(String eventType, String eventDescription) {
     this.setEventType(eventType);
     this.setEventDescription(eventDescription);
-    this.setTimestamp(timestamp);
-    this.setDuration(duration);
   }
 
   /**
@@ -156,42 +139,6 @@ public class ExternalEvent extends Model {
    */
   public void setEventDescription(String eventDescription) {
     this.eventDescription = eventDescription;
-  }
-
-  /**
-   * Gets the timestamp of the event in milliseconds since the epoch.
-   *
-   * @return Timestamp in milliseconds since the epoch.
-   */
-  public Long getTimestamp() {
-    return timestamp;
-  }
-
-  /**
-   * Sets the timestamp of the event.
-   *
-   * @param timestamp The number of milliseconds since the epoch.
-   */
-  public void setTimestamp(Long timestamp) {
-    this.timestamp = timestamp;
-  }
-
-  /**
-   * Get the duration of the external event in milliseconds.
-   *
-   * @return Duration of the event in milliseconds.
-   */
-  public Long getDuration() {
-    return duration;
-  }
-
-  /**
-   * Set the duration of the event.
-   *
-   * @param duration Duration of event (in milliseconds).
-   */
-  public void setDuration(Long duration) {
-    this.duration = duration;
   }
 
   /**

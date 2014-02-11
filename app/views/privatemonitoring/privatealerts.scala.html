@@ -36,6 +36,8 @@ Copyright 2013 Anthony Christe
               <th>Timestamp</th>
               <th>Duration (ms)</th>
               <th>Alert Value</th>
+              <th>External Event</th>
+              <th>Details</th>
             </tr>
           </thead>
           <tbody>
@@ -54,6 +56,14 @@ Copyright 2013 Anthony Christe
                 @if(alert.getAlertType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_VOLTAGE)) {
                   Volts
                 }
+              </td>
+              <td>
+                @if(alert.getExternalEvent != null) {
+                  @alert.getExternalEvent.getEventType
+                }
+              </td>
+              <td>
+                <a href="@routes.PowerQualityMonitoring.alertDetails(alert.getPrimaryKey)" class="btn btn-primary">Details</a>
               </td>
             </tr>
           }
