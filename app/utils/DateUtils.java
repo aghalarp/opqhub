@@ -15,6 +15,6 @@ public class DateUtils {
   public static final String toDateTime(Long millisecondsSinceEpoch) {
     Date dateStr = new Date(millisecondsSinceEpoch);
 
-    return new SimpleDateFormat("MM-dd-YY HH:mm:ss.S z").format(dateStr);
+    return new SimpleDateFormat("HH:mm:ss.SSS [dd MMM YYYY]").format(dateStr);
   }
 }
