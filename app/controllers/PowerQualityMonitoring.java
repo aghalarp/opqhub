@@ -112,18 +112,12 @@ public class PowerQualityMonitoring extends Controller {
 
   @Security.Authenticated(Secured.class)
   public static Result privateMeasurementsMonitor() {
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
-    List<Measurement> measurements = new ArrayList<>();
+    // Get the first available device
+    OpqDevice device = OpqDevice.find().where().eq("person.email", session("email")).findList().get(0);
 
-    // Search for all devices connected to current user, then for each device find its measurements
-    for (OpqDevice device : person.getDevices()) {
-      for (Measurement measurement : device.getMeasurements()) {
-        measurements.add(measurement);
-      }
-    }
+    // TODO: Investigate what happens when a device is not returned
 
-    Collections.sort(measurements, new TimestampComparator());
-    return ok(privatemeasurements.render(measurements));
+    return redirect(routes.PowerQualityMonitoring.privateMeasurementsMonitorByPage(device.getDeviceId(), 0));
   }
 
   @Security.Authenticated(Secured.class)
@@ -136,6 +130,6 @@ public class PowerQualityMonitoring extends Controller {
         .getPage(p)
         .getList();
 
-    return ok(privatemeasurements.render(measurements));
+    return ok(privatemeasurements.render(measurements, deviceId, p));
   }
 }
