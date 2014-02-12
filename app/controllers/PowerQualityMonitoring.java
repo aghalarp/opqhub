@@ -125,4 +125,17 @@ public class PowerQualityMonitoring extends Controller {
     Collections.sort(measurements, new TimestampComparator());
     return ok(privatemeasurements.render(measurements));
   }
+
+  @Security.Authenticated(Secured.class)
+  public static Result privateMeasurementsMonitorByPage(Long deviceId, Integer p) {
+    OpqDevice device = OpqDevice.find().byId(deviceId);
+    List<Measurement> measurements = Measurement.find().where()
+        .eq("device.deviceId", deviceId)
+        .order("timestamp desc")
+        .findPagingList(10)
+        .getPage(p)
+        .getList();
+
+    return ok(privatemeasurements.render(measurements));
+  }
 }
