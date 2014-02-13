@@ -19,7 +19,8 @@ Copyright 2013 Anthony Christe
 @(
     measurements: List[Measurement],
     deviceId: Long,
-    page: Integer
+    page: Integer,
+    pages: Integer
     )
 
 @import helper._
@@ -62,7 +63,7 @@ Copyright 2013 Anthony Christe
       @if(page > 0) {
         <a href="@routes.PowerQualityMonitoring.privateMeasurementsMonitorByPage(deviceId, page - 1)" class="btn btn-primary"><- Prev.</a>
       }
-      [@page]
+      [@(page + 1)/@(pages + 1)]
       <a href="@routes.PowerQualityMonitoring.privateMeasurementsMonitorByPage(deviceId, page + 1)" class="btn btn-primary"> Next. -></a>
     </div>
   </div>

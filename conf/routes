@@ -53,7 +53,7 @@ GET     /private/monitor/alerts                        controllers.PowerQualityM
 GET     /private/monitor/alerts/:alertId               controllers.PowerQualityMonitoring.alertDetails(alertId: Long)
 POST    /private/monitor/alerts/:alertId               controllers.PowerQualityMonitoring.updateAlertDetails(alertId: Long)
 GET     /private/monitor/measurements                  controllers.PowerQualityMonitoring.privateMeasurementsMonitor()
-GET     /private/monitor/measurements/:deviceId        controllers.PowerQualityMonitoring.privateMeasurementsMonitorByPage(deviceId: Long, p: Integer ?= 0)
+GET     /private/monitor/measurements/:deviceId        controllers.PowerQualityMonitoring.privateMeasurementsMonitorByPage(deviceId: Long, p: Integer ?= 0, a: Long ?= 0)
 GET     /public/monitor                                controllers.PowerQualityMonitoring.publicMonitor()
 
 # Handling WebSockets

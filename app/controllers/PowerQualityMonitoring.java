@@ -117,18 +117,22 @@ public class PowerQualityMonitoring extends Controller {
 
     // TODO: Investigate what happens when a device is not returned
 
-    return redirect(routes.PowerQualityMonitoring.privateMeasurementsMonitorByPage(device.getDeviceId(), 0));
+    return redirect(routes.PowerQualityMonitoring.privateMeasurementsMonitorByPage(device.getDeviceId(), 0, 0L));
   }
 
   @Security.Authenticated(Secured.class)
-  public static Result privateMeasurementsMonitorByPage(Long deviceId, Integer page) {
+  public static Result privateMeasurementsMonitorByPage(Long deviceId, Integer page, Long afterTimestamp) {
+    Integer pages;
+    final Integer ROWS_PER_PAGE = 10;
     List<Measurement> measurements = Measurement.find().where()
         .eq("device.deviceId", deviceId)
         .order("timestamp desc")
-        .findPagingList(10)
+        .findPagingList(ROWS_PER_PAGE)
         .getPage(page)
         .getList();
 
-    return ok(privatemeasurements.render(measurements, deviceId, page));
+    pages = Measurement.find().where().eq("device.deviceId", deviceId).findRowCount() / ROWS_PER_PAGE;
+
+    return ok(privatemeasurements.render(measurements, deviceId, page, pages));
   }
 }
