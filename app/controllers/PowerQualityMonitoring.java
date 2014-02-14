@@ -124,8 +124,10 @@ public class PowerQualityMonitoring extends Controller {
   public static Result privateMeasurementsMonitorByPage(Long deviceId, Integer page, Long afterTimestamp) {
     Integer pages;
     final Integer ROWS_PER_PAGE = 10;
+    Long after = (afterTimestamp == null) ? 0 : afterTimestamp;
     List<Measurement> measurements = Measurement.find().where()
         .eq("device.deviceId", deviceId)
+        .gt("timestamp", after)
         .order("timestamp desc")
         .findPagingList(ROWS_PER_PAGE)
         .getPage(page)
