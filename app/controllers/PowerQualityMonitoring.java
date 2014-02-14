@@ -146,7 +146,7 @@ public class PowerQualityMonitoring extends Controller {
         .getPage(page)
         .getList();
 
-    pages = Measurement.find().where().eq("device.deviceId", deviceId).findRowCount() / ROWS_PER_PAGE;
+    pages = Measurement.find().where().eq("device.deviceId", deviceId).gt("timestamp", after).findRowCount() / ROWS_PER_PAGE;
 
     return ok(privatemeasurements.render(measurements, deviceId, page, pages));
   }
