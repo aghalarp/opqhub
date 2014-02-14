@@ -20,46 +20,47 @@
 # ~~~~
 
 # Home page
-GET  /                                              controllers.Application.index()
+GET         /                                                  controllers.Application.index()
 
 # Sign Up
-GET  /public/wizard                                 controllers.Wizard.index()
-POST /public/wizard/save                            controllers.Wizard.save()
+GET         /public/wizard                                     controllers.Wizard.index()
+POST        /public/wizard/save                                controllers.Wizard.save()
 
 # Log in/out
-GET  /public/login                                  controllers.Application.login()
-POST /public/login/authenticate                     controllers.Application.authenticate()
-GET  /private/logout                                controllers.Application.logout()
+GET         /public/login                                      controllers.Application.login()
+POST        /public/login/authenticate                         controllers.Application.authenticate()
+GET         /private/logout                                    controllers.Application.logout()
 
 # Administration
-GET  /private/admin/user                            controllers.Administration.user()
-POST /private/admin/user/update                     controllers.Administration.updateUser()
+GET         /private/admin/user                                controllers.Administration.user()
+POST        /private/admin/user/update                         controllers.Administration.updateUser()
 
-GET  /private/admin/device                          controllers.Administration.device()
-POST /private/admin/device/save                     controllers.Administration.saveDevice()
-POST /private/admin/device/update/:id               controllers.Administration.updateDevice(id: Long)
-GET  /private/admin/device/delete/:id               controllers.Administration.deleteDevice(id: Long)
+GET         /private/admin/device                              controllers.Administration.device()
+POST        /private/admin/device/save                         controllers.Administration.saveDevice()
+POST        /private/admin/device/update/:id                   controllers.Administration.updateDevice(id: Long)
+GET         /private/admin/device/delete/:id                   controllers.Administration.deleteDevice(id: Long)
 
-GET  /private/admin/alert                           controllers.Administration.alert()
-POST /private/admin/alert/save                      controllers.Administration.saveAlert()
-POST /private/admin/alert/update/:id                controllers.Administration.updateAlert(id: String)
+GET         /private/admin/alert                               controllers.Administration.alert()
+POST        /private/admin/alert/save                          controllers.Administration.saveAlert()
+POST        /private/admin/alert/update/:id                    controllers.Administration.updateAlert(id: String)
 
-GET  /private/admin/datashare                       controllers.Administration.dataSharing()
-GET  /private/admin/datashare/update/:deviceId      controllers.Administration.editDataSharing(deviceId: Long)
-POST /private/admin/datashare/update/:primaryKey    controllers.Administration.updateDataSharing(primaryKey: Long)
+GET         /private/admin/datashare                           controllers.Administration.dataSharing()
+GET         /private/admin/datashare/update/:deviceId          controllers.Administration.editDataSharing(deviceId: Long)
+POST        /private/admin/datashare/update/:primaryKey        controllers.Administration.updateDataSharing(primaryKey: Long)
 
 # Alerts
-GET  /private/monitor/alerts                        controllers.PowerQualityMonitoring.privateAlertsMonitor()
-GET  /private/monitor/alerts/:alertId               controllers.PowerQualityMonitoring.alertDetails(alertId: Long)
-POST /private/monitor/alerts/:alertId               controllers.PowerQualityMonitoring.updateAlertDetails(alertId: Long)
+GET         /private/monitor/alerts                            controllers.PowerQualityMonitoring.privateAlertsMonitor()
+GET         /private/monitor/alerts/:alertId                   controllers.PowerQualityMonitoring.alertDetails(alertId: Long)
+POST        /private/monitor/alerts/:alertId                   controllers.PowerQualityMonitoring.updateAlertDetails(alertId: Long)
 
 # Measurements
-GET  /private/monitor/measurements                  controllers.PowerQualityMonitoring.privateMeasurementsMonitor()
-GET  /private/monitor/measurements/:deviceId        controllers.PowerQualityMonitoring.privateMeasurementsMonitorByPage(deviceId: Long, p: Integer ?= 0, after: Long ?= 0)
-GET  /public/monitor                                controllers.PowerQualityMonitoring.publicMonitor()
+GET         /private/monitor/measurements                      controllers.PowerQualityMonitoring.privateMeasurementsMonitor()
+POST        /private/monitor/measurements/filter               controllers.PowerQualityMonitoring.filterMeasurements()
+GET         /private/monitor/measurements/:deviceId            controllers.PowerQualityMonitoring.privateMeasurementsMonitorByPage(deviceId: Long, p: Integer ?= 0, after: Long ?= 0)
+GET         /public/monitor                                    controllers.PowerQualityMonitoring.publicMonitor()
 
 # Handling WebSockets
-GET  /private/ws                                    controllers.WebSockets.handleSocket()
+GET         /private/ws                                        controllers.WebSockets.handleSocket()
 
 # Map static resources from the /public folder to the /assets URL path
-GET  /assets/*file                                  controllers.Assets.at(path="/public", file)
+GET         /assets/*file                                      controllers.Assets.at(path="/public", file)

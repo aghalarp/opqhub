@@ -36,30 +36,21 @@ Copyright 2013 Anthony Christe
   <div class="row span9">
     <div class="well well-small">
       <p>Filter Measurements</p>
-      @*
-      @helper.form(action = routes.PowerQualityMonitoring.filterMeasurements()) {
-        @select(
-          filterForm("timeUnit"),
-          options = options(utils.FormUtils.LIST_OF_STATES),
-          'id -> "timeUnit",
-          '_label -> "Test",
-          '_default -> "All Measurements"
-          )
-      }
-      *@
 
-      <form class="form-inline" action="@deviceId" id="filterForm" method="get">
-        <input type="hidden" id="after" name="after"/>
+      <form class="form-inline" action="@routes.PowerQualityMonitoring.filterMeasurements()" id="filterForm" method="post">
+        <!--<input type="hidden" id="after" name="after"/>-->
+        <input type="hidden" id="deviceId" name="deviceId" value="@deviceId"/>
         <div class="control-group">
           <label class="control-label" for="pastTimeSelect">After past</label>
-          <select id="pastTimeSelect">
+          <select id="pastTimeSelect" name="pastTimeSelect">
           @for(option <- utils.DateUtils.TimeUnit.values()) {
             <option>@option</option>
           }
           </select>
         </div>
         <div class="control-group">
-          <a class="btn btn-warning pull-right" id="filterMeasurements">Filter Results</a>
+          <!--<a class="btn btn-warning" id="filterMeasurements">Filter Results</a>-->
+          <input type="submit" value="Filter"/>
         </div>
       </form>
 

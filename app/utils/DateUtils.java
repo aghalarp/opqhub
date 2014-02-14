@@ -34,6 +34,10 @@ public class DateUtils {
     return timestamp - timeUnit.getMilliseconds();
   }
 
+  public static Long getMillis() {
+    return new Date().getTime();
+  }
+
   /**
    * Converts milliseconds since the epoch into a human readable format.
    * @param millisecondsSinceEpoch Milliseconds since the epoch.

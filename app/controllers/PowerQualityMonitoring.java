@@ -24,10 +24,12 @@ import models.ExternalEvent;
 import models.Measurement;
 import models.OpqDevice;
 import models.Person;
+import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.DateUtils;
 import utils.TimestampComparator;
 import views.html.error;
 import views.html.privatemonitoring.privatemeasurements;
@@ -118,6 +120,17 @@ public class PowerQualityMonitoring extends Controller {
     // TODO: Investigate what happens when a device is not returned
 
     return redirect(routes.PowerQualityMonitoring.privateMeasurementsMonitorByPage(device.getDeviceId(), 0, 0L));
+  }
+
+  @Security.Authenticated(Secured.class)
+  public static Result filterMeasurements() {
+    DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
+    Long deviceId = Long.parseLong(dynamicForm.get("deviceId"));
+    String selectedTimeUnit = dynamicForm.get("pastTimeSelect");
+    System.out.println("PAST " + selectedTimeUnit);
+    Long adjustedTimestamp = utils.DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
+
+    return redirect(routes.PowerQualityMonitoring.privateMeasurementsMonitorByPage(deviceId, 0, adjustedTimestamp));
   }
 
   @Security.Authenticated(Secured.class)
