@@ -127,9 +127,9 @@ public class PowerQualityMonitoring extends Controller {
     DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
     Long deviceId = Long.parseLong(dynamicForm.get("deviceId"));
     String selectedTimeUnit = dynamicForm.get("pastTimeSelect");
-    System.out.println("PAST " + selectedTimeUnit);
-    Long adjustedTimestamp = utils.DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
 
+    Long adjustedTimestamp = utils.DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
+    flash("pastTimeSelect", selectedTimeUnit);
     return redirect(routes.PowerQualityMonitoring.privateMeasurementsMonitorByPage(deviceId, 0, adjustedTimestamp));
   }
 

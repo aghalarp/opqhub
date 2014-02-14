@@ -42,9 +42,15 @@ Copyright 2013 Anthony Christe
         <input type="hidden" id="deviceId" name="deviceId" value="@deviceId"/>
         <div class="control-group">
           <label class="control-label" for="pastTimeSelect">After past</label>
+
           <select id="pastTimeSelect" name="pastTimeSelect">
           @for(option <- utils.DateUtils.TimeUnit.values()) {
-            <option>@option</option>
+            @if(option.toString.equals(flash.get("pastTimeSelect"))) {
+              <option selected>
+            } else {
+              <option>
+            }
+            @option</option>
           }
           </select>
         </div>
