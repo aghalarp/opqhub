@@ -19,15 +19,22 @@
 
 package controllers;
 
+import com.typesafe.plugin.MailerAPI;
+import com.typesafe.plugin.MailerPlugin;
 import models.Alert;
 import models.Measurement;
 import models.OpqDevice;
 import org.openpowerquality.protocol.OpqPacket;
+import play.libs.Akka;
 import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.WebSocket;
 
-import com.typesafe.plugin.*;
+
+import java.util.concurrent.Callable;
+
+import static play.libs.Akka.future;
+
 
 
 /**
@@ -109,11 +116,7 @@ public class WebSockets extends Controller {
     opqDevice.getAlerts().add(alert);
     opqDevice.save();
 
-    MailerAPI mail = play.Play.application().plugin(MailerPlugin.class).email();
-    mail.setSubject("Test Alert");
-    mail.addFrom("Alert <openpowerquality@gmail.com>");
-    mail.addRecipient("anthony@openpowerquality.com");
-    mail.send("This is a test alert");
+    sendAlertEmail(opqPacket, "anthony@openpowerquality.com");
   }
 
   /**
@@ -143,5 +146,22 @@ public class WebSockets extends Controller {
     measurement.save();
     opqDevice.getMeasurements().add(measurement);
     opqDevice.save();
+  }
+
+  private static void sendAlertEmail(final OpqPacket opqPacket, final String to) {
+    future(new Callable<Object>() {
+      @Override
+      public Object call() throws Exception {
+        MailerAPI mail = play.Play.application().plugin(MailerPlugin.class).email();
+        mail.setSubject("OPQ Alert");
+        mail.addFrom("OPQ Alert <openpowerquality@gmail.com>");
+        mail.addRecipient(to);
+        mail.send(String.format("Timestamp: %s\nAlert Type: %s\nAlert Value: %s",
+                                utils.DateUtils.toDateTime(opqPacket.getTimestamp()),
+                                opqPacket.getType().getName(),
+                                opqPacket.getAlertValue()));
+        return null;
+      }
+    });
   }
 }
