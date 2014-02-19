@@ -27,6 +27,8 @@ import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.WebSocket;
 
+import com.typesafe.plugin.*;
+
 
 /**
  * Provides methods for handling packets sent to this server from a WebSockets client.
@@ -106,6 +108,12 @@ public class WebSockets extends Controller {
     alert.save();
     opqDevice.getAlerts().add(alert);
     opqDevice.save();
+
+    MailerAPI mail = play.Play.application().plugin(MailerPlugin.class).email();
+    mail.setSubject("Test Alert");
+    mail.addFrom("Alert <openpowerquality@gmail.com>");
+    mail.addRecipient("anthony@openpowerquality.com");
+    mail.send("This is a test alert");
   }
 
   /**
