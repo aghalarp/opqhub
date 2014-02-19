@@ -116,7 +116,7 @@ public class WebSockets extends Controller {
     opqDevice.getAlerts().add(alert);
     opqDevice.save();
 
-    sendAlertEmail(opqPacket, "anthony@openpowerquality.com");
+    utils.Mailer.sendAlert(opqPacket, "anthony@openpowerquality.com");
   }
 
   /**
@@ -146,22 +146,5 @@ public class WebSockets extends Controller {
     measurement.save();
     opqDevice.getMeasurements().add(measurement);
     opqDevice.save();
-  }
-
-  private static void sendAlertEmail(final OpqPacket opqPacket, final String to) {
-    future(new Callable<Object>() {
-      @Override
-      public Object call() throws Exception {
-        MailerAPI mail = play.Play.application().plugin(MailerPlugin.class).email();
-        mail.setSubject("OPQ Alert");
-        mail.addFrom("OPQ Alert <openpowerquality@gmail.com>");
-        mail.addRecipient(to);
-        mail.send(String.format("Timestamp: %s\nAlert Type: %s\nAlert Value: %s",
-                                utils.DateUtils.toDateTime(opqPacket.getTimestamp()),
-                                opqPacket.getType().getName(),
-                                opqPacket.getAlertValue()));
-        return null;
-      }
-    });
   }
 }

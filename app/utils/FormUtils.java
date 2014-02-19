@@ -99,45 +99,6 @@ public final class FormUtils {
    */
   public static final List<String> LIST_OF_STATES = Arrays.asList(ARRAY_OF_STATES);
 
-  //public static
-
-  /**
-   * List of popular U.S. based wireless carriers and their sms gateways.
-   * <p/>
-   * To use the gateways, simply send an e-mail to the address associated with the wireless carrier and replace the
-   * pound symbol "#" with the users sms number. See: https://en.wikipedia.org/wiki/List_of_SMS_gateways
-   */
-
-  private static final String[][] SMS_CARRIERS = {
-      {"Alltel", "#@sms.alltelwireless.com"},
-      {"AT&T", "#@txt.att.net"},
-      {"Cricket", "#@sms.myscricket.com"},
-      {"Sprint", "#@messaging.sprintpcs.com"},
-      {"Straight Talk", "#@vtext.com"},
-      {"T-Mobile", "#@tmomail.net"},
-      {"TracFone", "#@mmst5.tracfone.com"},
-      {"Verizon", "#@vtext.com"},
-      {"Virgin Mobile", "#@vmobl.com"}
-  };
-
-  /**
-   * Returns the list of popular U.S. carriers without their associated sms e-mail address.
-   *
-   * @return List of popular U.S. sms carriers.
-   */
-  public static String[] getSmsCarriers() {
-    String[] carriers = new String[SMS_CARRIERS.length];
-    for (int i = 0; i < carriers.length; i++) {
-      carriers[i] = SMS_CARRIERS[i][0];
-    }
-    return carriers;
-  }
-
-  /**
-   * List of popular US SMS carriers.
-   */
-  public static final List<String> LIST_OF_SMS_CARRIERS = Arrays.asList(getSmsCarriers());
-
   /**
    * Hashes a password using the SHA-256 algorithm.
    *
