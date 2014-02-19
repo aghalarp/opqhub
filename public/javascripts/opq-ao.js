@@ -13,6 +13,7 @@ function addDynamicJs (location) {
     document.getElementsByTagName("head")[0].appendChild(jsRef);
 }
 
+
 // It would be nice to eventually use the following code, but having multiple levels of menus on some pages
 // makes this difficult.
 /*

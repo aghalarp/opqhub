@@ -48,11 +48,17 @@ GET         /private/admin/datashare                           controllers.Admin
 GET         /private/admin/datashare/update/:deviceId          controllers.Administration.editDataSharing(deviceId: Long)
 POST        /private/admin/datashare/update/:primaryKey        controllers.Administration.updateDataSharing(primaryKey: Long)
 
-# Power Quality Monitoring
+# Alerts
 GET         /private/monitor/alerts                            controllers.PowerQualityMonitoring.privateAlertsMonitor()
 GET         /private/monitor/alerts/:alertId                   controllers.PowerQualityMonitoring.alertDetails(alertId: Long)
 POST        /private/monitor/alerts/:alertId                   controllers.PowerQualityMonitoring.updateAlertDetails(alertId: Long)
-GET         /private/monitor/measurements                      controllers.PowerQualityMonitoring.privateMeasurementsMonitor()
+
+# Measurements
+GET         /private/monitor/measurements                      controllers.Measurements.measurements()
+POST        /private/monitor/measurements/filter               controllers.Measurements.filterMeasurements()
+GET         /private/monitor/measurements/:deviceId            controllers.Measurements.measurementsByPage(deviceId: Long, p: Integer ?= 0, after: Long ?= 0)
+
+# Public Monitoring
 GET         /public/monitor                                    controllers.PowerQualityMonitoring.publicMonitor()
 
 # Handling WebSockets

@@ -99,6 +99,8 @@ public final class FormUtils {
    */
   public static final List<String> LIST_OF_STATES = Arrays.asList(ARRAY_OF_STATES);
 
+  //public static
+
   /**
    * List of popular U.S. based wireless carriers and their sms gateways.
    * <p/>

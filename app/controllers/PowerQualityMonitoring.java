@@ -21,7 +21,6 @@ package controllers;
 
 import models.Alert;
 import models.ExternalEvent;
-import models.Measurement;
 import models.OpqDevice;
 import models.Person;
 import play.data.Form;
@@ -30,7 +29,6 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.TimestampComparator;
 import views.html.error;
-import views.html.privatemonitoring.privatemeasurements;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -108,21 +106,5 @@ public class PowerQualityMonitoring extends Controller {
     flash("updated", "External Event Updated");
 
     return redirect(routes.PowerQualityMonitoring.alertDetails(alertId));
-  }
-
-  @Security.Authenticated(Secured.class)
-  public static Result privateMeasurementsMonitor() {
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
-    List<Measurement> measurements = new ArrayList<>();
-
-    // Search for all devices connected to current user, then for each device find its measurements
-    for (OpqDevice device : person.getDevices()) {
-      for (Measurement measurement : device.getMeasurements()) {
-        measurements.add(measurement);
-      }
-    }
-
-    Collections.sort(measurements, new TimestampComparator());
-    return ok(privatemeasurements.render(measurements));
   }
 }
