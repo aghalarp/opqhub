@@ -23,13 +23,14 @@ create table alert_notification (
   alert_via_email           tinyint(1) default 0,
   notification_email        varchar(255),
   alert_via_sms             tinyint(1) default 0,
-  sms_carrier               varchar(255),
+  sms_carrier               integer,
   sms_number                varchar(255),
   min_acceptable_voltage    double,
   max_acceptable_voltage    double,
   min_acceptable_frequency  double,
   max_acceptable_frequency  double,
   device_primary_key        bigint,
+  constraint ck_alert_notification_sms_carrier check (sms_carrier in (0,1,2,3,4,5,6,7,8,9,10)),
   constraint pk_alert_notification primary key (primary_key))
 ;
 

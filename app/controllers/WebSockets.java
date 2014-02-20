@@ -19,13 +19,22 @@
 
 package controllers;
 
+import com.typesafe.plugin.MailerAPI;
+import com.typesafe.plugin.MailerPlugin;
 import models.Alert;
 import models.Measurement;
 import models.OpqDevice;
 import org.openpowerquality.protocol.OpqPacket;
+import play.libs.Akka;
 import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.WebSocket;
+
+
+import java.util.concurrent.Callable;
+
+import static play.libs.Akka.future;
+
 
 
 /**
@@ -106,6 +115,8 @@ public class WebSockets extends Controller {
     alert.save();
     opqDevice.getAlerts().add(alert);
     opqDevice.save();
+
+    utils.Mailer.sendAlert(opqPacket, "anthony@openpowerquality.com");
   }
 
   /**
