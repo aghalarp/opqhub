@@ -20,6 +20,7 @@
 package models;
 
 import play.db.ebean.Model;
+import utils.Sms;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -77,7 +78,7 @@ public class AlertNotification extends Model {
    * Carrier that user wants alerts sent to. This currently only works for a couple of major carriers in the United
    * States.
    */
-  private String smsCarrier;
+  private Sms.SmsCarrier smsCarrier;
 
   /**
    * Number of user's SMS device.
@@ -103,7 +104,7 @@ public class AlertNotification extends Model {
   private Double minAcceptableFrequency;
 
   /**
-   * The maximum frequency (in Hertz) that should not trigger an alert. Any value greate than this maximum should
+   * The maximum frequency (in Hertz) that should not trigger an alert. Any value greater than this maximum should
    * trigger an alert.
    */
   private Double maxAcceptableFrequency;
@@ -123,12 +124,13 @@ public class AlertNotification extends Model {
    * @param minAcceptableVoltage       Min voltage that will not trigger an alert.
    * @param maxAcceptableVoltage       Max voltage that will not trigger an alert.
    */
-  public AlertNotification(Boolean voltageAlertNotification, Boolean frequencyAlertNotification,
-                           Boolean alertViaEmail, Boolean alertViaSms, String smsCarrier, String smsNumber,
+  public AlertNotification(Boolean voltageAlertNotification, Boolean frequencyAlertNotification, Boolean deviceAlertNotification,
+                           Boolean alertViaEmail, Boolean alertViaSms, Sms.SmsCarrier smsCarrier, String smsNumber,
                            String notificationEmail, Double minAcceptableFrequency, Double maxAcceptableFrequency,
                            Double minAcceptableVoltage, Double maxAcceptableVoltage) {
     this.setVoltageAlertNotification(voltageAlertNotification);
     this.setFrequencyAlertNotification(frequencyAlertNotification);
+    this.setDeviceAlertNotification(deviceAlertNotification);
     this.setAlertViaEmail(alertViaEmail);
     this.setAlertViaSms(alertViaSms);
     this.setSmsCarrier(smsCarrier);
@@ -288,7 +290,7 @@ public class AlertNotification extends Model {
    *
    * @return The sms carrier name associated with this alert notification.
    */
-  public String getSmsCarrier() {
+  public Sms.SmsCarrier getSmsCarrier() {
     return smsCarrier;
   }
 
@@ -298,7 +300,7 @@ public class AlertNotification extends Model {
    * @param smsCarrier The name of the SMS carrier associated with this notification. See utils/FormUtils.java for an a
    *                   list of currently available carriers.
    */
-  public void setSmsCarrier(String smsCarrier) {
+  public void setSmsCarrier(Sms.SmsCarrier smsCarrier) {
     this.smsCarrier = smsCarrier;
   }
 

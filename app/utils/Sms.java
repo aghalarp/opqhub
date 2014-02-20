@@ -35,16 +35,33 @@ public class Sms {
       this.emailGateway = emailGateway;
     }
 
-    public String formatEmail(final String smsNumber) {
-      return String.format("%s@%s", smsNumber, this.emailGateway);
+    public final String getName() {
+      return this.name;
     }
 
-    public static List<String> listOfCarriers() {
-      List<String> carrierList = new ArrayList<>();
-      for(SmsCarrier smsCarrier : SmsCarrier.values()) {
-        carrierList.add(smsCarrier.name);
-      }
-      return carrierList;
+    public final String getEmailGateway() {
+      return this.emailGateway;
     }
+  }
+
+  public static List<String> listOfCarriers() {
+    List<String> carrierList = new ArrayList<>();
+    for(SmsCarrier smsCarrier : SmsCarrier.values()) {
+      carrierList.add(smsCarrier.getName());
+    }
+    return carrierList;
+  }
+
+  public static SmsCarrier getCarrierByName(String name) {
+    for(SmsCarrier smsCarrier : SmsCarrier.values()) {
+      if(smsCarrier.getName().equals(name)) {
+        return smsCarrier;
+      }
+    }
+    return null;
+  }
+
+  public static String formatSmsEmailAddress(String smsNumber, SmsCarrier smsCarrier) {
+    return String.format("%s@%s", smsNumber, smsCarrier.getEmailGateway());
   }
 }

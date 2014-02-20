@@ -35,7 +35,7 @@ Copyright 2013 Anthony Christe
       <input type="hidden" name="alertViaSms" value="false" />
       @select(
         alertNotificationForm("smsCarrier"),
-        options = options(utils.Sms.SmsCarrier.listOfCarriers),
+        options = options(utils.Sms.listOfCarriers),
         '_label -> "SMS Carrier",
         'id -> "smsCarrier")
       @inputText(alertNotificationForm("smsNumber"), '_label -> "SMS Number", 'placeholder -> "808-555-5555",

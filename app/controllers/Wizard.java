@@ -29,6 +29,7 @@ import play.mvc.Result;
 import views.html.error;
 import views.html.wizard.wizard;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +47,9 @@ public class Wizard extends Controller {
   public static Result index() {
     Form<Person> personForm = form(Person.class);
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class);
-    Form<AlertNotification> alertNotificationForm = form(AlertNotification.class);
+    AlertNotification alertNotification = new AlertNotification(true, true, true, true, false, null, null, null,
+                                                                59.0, 61.0, 100.0, 120.0);
+    Form<AlertNotification> alertNotificationForm = form(AlertNotification.class).fill(alertNotification);
 
     return ok(wizard.render(personForm, opqDeviceForm, alertNotificationForm));
   }
