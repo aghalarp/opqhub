@@ -8,16 +8,15 @@ import java.util.Date;
  */
 public class DateUtils {
   /**
-   * Number of miliseconds in certain time frames
+   * Number of milliseconds in certain time frames
    */
   public enum TimeUnit {
-    Second  (1000L),
     Minute  (60000L),
-    Hour    (36000000L),
-    Day     (8640000000L),
-    Week    (604800000000L),
-    Month   (263000000000L),
-    Year    (31560000000000L);
+    Hour    (3600000L),
+    Day     (86400000L),
+    Week    (604800000L),
+    Month   (2592000000L),
+    Year    (31536000000L);
 
     final private Long milliseconds;
 

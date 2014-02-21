@@ -21,12 +21,15 @@ package controllers;
 
 import models.Alert;
 import models.ExternalEvent;
+import models.Measurement;
 import models.OpqDevice;
 import models.Person;
+import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.DateUtils;
 import utils.TimestampComparator;
 import views.html.error;
 
@@ -69,7 +72,33 @@ public class PowerQualityMonitoring extends Controller {
     }
 
     Collections.sort(alerts, new TimestampComparator());
-    return ok(views.html.privatemonitoring.privatealerts.render(alerts));
+    return ok(views.html.privatemonitoring.privatealerts.render(alerts, 0, 0));
+  }
+
+  public static Result filterAlerts() {
+    DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
+    String selectedTimeUnit = dynamicForm.get("pastTimeSelect");
+
+    Long adjustedTimestamp = utils.DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
+    flash("pastTimeSelect", selectedTimeUnit);
+    return redirect(routes.PowerQualityMonitoring.alertsByPage(0, adjustedTimestamp));
+  }
+
+  public static Result alertsByPage(Integer page, Long afterTimestamp) {
+    Integer pages;
+    final Integer ROWS_PER_PAGE = 10;
+    Long after = (afterTimestamp == null) ? 0 : afterTimestamp;
+    List<Alert> alerts = Alert.find().where()
+        .eq("device.person.email", session("email"))
+        .gt("timestamp", after)
+        .order("timestamp desc")
+        .findPagingList(ROWS_PER_PAGE)
+        .getPage(page)
+        .getList();
+
+    pages = Alert.find().where().eq("device.person.email", session("email")).gt("timestamp", after).findRowCount() / ROWS_PER_PAGE;
+
+    return ok(views.html.privatemonitoring.privatealerts.render(alerts, page, pages));
   }
 
   @Security.Authenticated(Secured.class)
