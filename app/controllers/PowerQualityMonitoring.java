@@ -72,6 +72,24 @@ public class PowerQualityMonitoring extends Controller {
     return ok(views.html.privatemonitoring.privatealerts.render(alerts));
   }
 
+  public static Result filterAlerts() {
+    return TODO;
+  }
+
+  public static Result alertsByPage(Integer page, Long afterTimestamp) {
+    Integer pages;
+    final Integer ROWS_PER_PAGE = 10;
+    List<Alert> alerts = Alert.find().where()
+        .eq("device.person.email", session("email"))
+        .gt("timestamp", afterTimestamp)
+        .order("timestamp desc")
+        .findPagingList(ROWS_PER_PAGE)
+        .getPage(page)
+        .getList();
+
+    return ok(views.html.privatemonitoring.privatealerts.render(alerts));
+  }
+
   @Security.Authenticated(Secured.class)
   public static Result alertDetails(Long alertId) {
     Alert alert = Alert.find().where().eq("primaryKey", alertId).findUnique();

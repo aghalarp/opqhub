@@ -16,58 +16,85 @@ along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 
 Copyright 2013 Anthony Christe
 *@
-
 @(alerts: List[Alert])
 
-  @import helper._
+@import helper._
   @implicitFieldConstructor = @{
     FieldConstructor(twitterBootstrapInput.render)
   }
 
 @privatepowerqualitymonitoring("Private Power Quality Monitoring - Private Alerts",
   "This page allows you to manage and create power quality events.") {
-      <div class="span9">
-        <table class="table table-striped table-bordered">
-          <thead>
-            <tr>
-              <th>Device Id</th>
-              <th>Description</th>
-              <th>Alert Type</th>
-              <th>Timestamp</th>
-              <th>Duration (ms)</th>
-              <th>Alert Value</th>
-              <th>External Event</th>
-              <th>Details</th>
-            </tr>
-          </thead>
-          <tbody>
-          @for(alert <- alerts) {
-            <tr>
-              <td>@alert.getDevice.getDeviceId</td>
-              <td>@alert.getDevice.getDescription</td>
-              <td>@alert.getAlertType.getName</td>
-              <td>@utils.DateUtils.toDateTime(alert.getTimestamp)</td>
-              <td>@alert.getAlertDuration</td>
-             <td>
-                @alert.getAlertValue
-                @if(alert.getAlertType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_FREQUENCY)) {
-                  Hz
-                }
-                @if(alert.getAlertType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_VOLTAGE)) {
-                  Volts
-                }
-              </td>
-              <td>
-                @if(alert.getExternalEvent != null) {
-                  @alert.getExternalEvent.getEventType
-                }
-              </td>
-              <td>
-                <a href="@routes.PowerQualityMonitoring.alertDetails(alert.getPrimaryKey)" class="btn btn-primary">Details</a>
-              </td>
-            </tr>
+
+  <div class="row span9">
+    <div class="well well-small">
+      <p>Filter Events</p>
+      <form class="form-inline" action="@routes.Measurements.filterMeasurements()" id="filterForm" method="post">
+        @*<input type="hidden" id="deviceId" name="deviceId" value="@deviceId"/>*@
+        <div class="control-group">
+          <label class="control-label" for="pastTimeSelect">After past</label>
+
+          <select id="pastTimeSelect" name="pastTimeSelect">
+          @for(option <- utils.DateUtils.TimeUnit.values()) {
+            @if(option.toString.equals(flash.get("pastTimeSelect"))) {
+              <option selected>
+              } else {
+              <option>
+              }
+            @option</option>
           }
-          </tbody>
-        </table>
-      </div>
-  }
+          </select>
+        </div>
+        <div class="control-group">
+          <input type="submit" class="btn btn-info" value="Filter"/>
+        </div>
+      </form>
+
+    </div>
+    <div>
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>Device Id</th>
+            <th>Description</th>
+            <th>Alert Type</th>
+            <th>Timestamp</th>
+            <th>Duration (ms)</th>
+            <th>Alert Value</th>
+            <th>External Event</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+        @for(alert <- alerts) {
+          <tr>
+            <td>@alert.getDevice.getDeviceId</td>
+            <td>@alert.getDevice.getDescription</td>
+            <td>@alert.getAlertType.getName</td>
+            <td>@utils.DateUtils.toDateTime(alert.getTimestamp)</td>
+            <td>@alert.getAlertDuration</td>
+            <td>
+              @alert.getAlertValue
+              @if(alert.getAlertType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_FREQUENCY)) {
+                Hz
+              }
+              @if(alert.getAlertType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_VOLTAGE)) {
+                Volts
+              }
+            </td>
+            <td>
+            @if(alert.getExternalEvent != null) {
+              @alert.getExternalEvent.getEventType
+            }
+            </td>
+            <td>
+              <a href="@routes.PowerQualityMonitoring.alertDetails(alert.getPrimaryKey)" class="btn btn-primary">Details</a>
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+}
