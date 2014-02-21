@@ -22,13 +22,16 @@ package controllers;
 import com.typesafe.plugin.MailerAPI;
 import com.typesafe.plugin.MailerPlugin;
 import models.Alert;
+import models.AlertNotification;
 import models.Measurement;
 import models.OpqDevice;
+import models.Person;
 import org.openpowerquality.protocol.OpqPacket;
 import play.libs.Akka;
 import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.WebSocket;
+import utils.Mailer;
 
 
 import java.util.concurrent.Callable;
@@ -116,6 +119,35 @@ public class WebSockets extends Controller {
     opqDevice.getAlerts().add(alert);
     opqDevice.save();
 
+    // Determine whether or not to notify user based on their alert preferences
+    AlertNotification alertNotification = opqDevice.getAlertNotifications().get(0);
+    switch(opqPacket.getType()) {
+      case ALERT_FREQUENCY:
+        if(alertNotification.getFrequencyAlertNotification() &&
+           (opqPacket.getAlertValue() < alertNotification.getMinAcceptableFrequency() ||
+            opqPacket.getAlertValue() > alertNotification.getMaxAcceptableFrequency())) {
+            if(alertNotification.getAlertViaEmail()) {
+              utils.Mailer.sendAlert(opqPacket, alertNotification.getNotificationEmail());
+            }
+            if(alertNotification.getAlertViaSms()) {
+              utils.Mailer.sendAlert(opqPacket, utils.Sms.formatSmsEmailAddress(alertNotification.getSmsNumber(), alertNotification.getSmsCarrier()));
+            }
+        }
+        break;
+      case ALERT_VOLTAGE:
+        if(alertNotification.getVoltageAlertNotification() &&
+           (opqPacket.getAlertValue() < alertNotification.getMinAcceptableVoltage() ||
+            opqPacket.getAlertValue() > alertNotification.getMaxAcceptableVoltage())) {
+          if(alertNotification.getAlertViaEmail()) {
+            utils.Mailer.sendAlert(opqPacket, alertNotification.getNotificationEmail());
+          }
+          if(alertNotification.getAlertViaSms()) {
+            utils.Mailer.sendAlert(opqPacket, utils.Sms.formatSmsEmailAddress(alertNotification.getSmsNumber(), alertNotification.getSmsCarrier()));
+          }
+        }
+        break;
+      case ALERT_DEVICE: break;
+    }
     utils.Mailer.sendAlert(opqPacket, "anthony@openpowerquality.com");
   }
 
