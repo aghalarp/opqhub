@@ -24,10 +24,12 @@ import models.ExternalEvent;
 import models.Measurement;
 import models.OpqDevice;
 import models.Person;
+import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.DateUtils;
 import utils.TimestampComparator;
 import views.html.error;
 
@@ -74,7 +76,12 @@ public class PowerQualityMonitoring extends Controller {
   }
 
   public static Result filterAlerts() {
-    return TODO;
+    DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
+    String selectedTimeUnit = dynamicForm.get("pastTimeSelect");
+
+    Long adjustedTimestamp = utils.DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
+    flash("pastTimeSelect", selectedTimeUnit);
+    return redirect(routes.PowerQualityMonitoring.alertsByPage(0, adjustedTimestamp));
   }
 
   public static Result alertsByPage(Integer page, Long afterTimestamp) {
