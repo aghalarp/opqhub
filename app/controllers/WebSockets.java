@@ -148,7 +148,6 @@ public class WebSockets extends Controller {
         break;
       case ALERT_DEVICE: break;
     }
-    utils.Mailer.sendAlert(opqPacket, "anthony@openpowerquality.com");
   }
 
   /**
