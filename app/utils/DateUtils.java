@@ -8,7 +8,7 @@ import java.util.Date;
  */
 public class DateUtils {
   /**
-   * Number of miliseconds in certain time frames
+   * Number of milliseconds in certain time frames
    */
   public enum TimeUnit {
     Minute  (60000L),
