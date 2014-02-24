@@ -49,10 +49,10 @@ GET         /private/admin/datashare/update/:deviceId          controllers.Admin
 POST        /private/admin/datashare/update/:primaryKey        controllers.Administration.updateDataSharing(primaryKey: Long)
 
 # Alerts
-GET         /private/monitor/alerts                            controllers.PowerQualityMonitoring.alertsByPage(p: Integer ?= 0, after: Long ?= 0)
-POST        /private/monitor/alerts/filter                     controllers.PowerQualityMonitoring.filterAlerts()
-GET         /private/monitor/alerts/:alertId                   controllers.PowerQualityMonitoring.alertDetails(alertId: Long)
-POST        /private/monitor/alerts/:alertId                   controllers.PowerQualityMonitoring.updateAlertDetails(alertId: Long)
+GET         /private/monitor/alerts                            controllers.Events.eventsByPage(p: Integer ?= 0, after: Long ?= 0)
+POST        /private/monitor/alerts/filter                     controllers.Events.filterEvents()
+GET         /private/monitor/alerts/:alertId                   controllers.Events.eventDetails(alertId: Long)
+POST        /private/monitor/alerts/:alertId                   controllers.Events.updateEventDetails(alertId: Long)
 
 
 # Measurements

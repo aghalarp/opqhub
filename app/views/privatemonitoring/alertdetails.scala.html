@@ -65,7 +65,7 @@ Copyright 2013 Anthony Christe
       @flash.get("updated")
       </p>
     }
-    @form(routes.PowerQualityMonitoring.updateAlertDetails(alert.getPrimaryKey), 'class -> "form-horizontal well well-small", 'name -> "externalEventForm") {
+    @form(routes.Events.updateEventDetails(alert.getPrimaryKey), 'class -> "form-horizontal well well-small", 'name -> "externalEventForm") {
       @inputText(
         externalEventForm("eventType"), '_label -> "Event Type", 'placeholder -> "Tropical Storm Flossie", 'id -> "eventType")
       @textarea(
