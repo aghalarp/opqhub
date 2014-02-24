@@ -20,21 +20,11 @@
 package controllers;
 
 import models.Alert;
-import models.ExternalEvent;
-import models.Measurement;
+
 import models.OpqDevice;
-import models.Person;
-import play.data.DynamicForm;
-import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.mvc.Security;
-import utils.DateUtils;
-import utils.TimestampComparator;
-import views.html.error;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -52,27 +42,6 @@ public class PowerQualityMonitoring extends Controller {
     List<models.OpqDevice> devices = OpqDevice.find().where().eq("participatingInCdsi", true).findList();
     boolean loggedOut = !(session().containsKey("email"));
     return ok(views.html.publicpowerqualitymonitoring.render(alerts, devices, loggedOut));
-  }
-
-  /**
-   * Render a view which contains a list of power quality events for the current logged in user.
-   *
-   * @return Rendered view of power quality events for current user.
-   */
-  @Security.Authenticated(Secured.class)
-  public static Result privateAlertsMonitor() {
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
-    List<Alert> alerts = new ArrayList<>();
-
-    // Search for all devices connected to current user, then for each device find its alerts
-    for (OpqDevice device : person.getDevices()) {
-      for (Alert alert : device.getAlerts()) {
-        alerts.add(alert);
-      }
-    }
-
-    Collections.sort(alerts, new TimestampComparator());
-    return ok(views.html.privatemonitoring.privatealerts.render(alerts, 0, 0));
   }
 
 }
