@@ -2,6 +2,7 @@ package controllers;
 
 import models.Alert;
 import models.ExternalEvent;
+import models.OpqDevice;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
@@ -77,9 +78,44 @@ public class Events extends Controller {
   }
 
   @Security.Authenticated(Secured.class)
-  public static Result nearbyEvents(Long deviceId) {
+  public static Result nearbyEvents() {
+    // Find the first device associated with this person
+    OpqDevice device = OpqDevice.find().where()
+                                .eq("person.email", session("email"))
+                                .findList()
+                                .get(0);
+
+    if(device == null) {
+      return ok(error.render("Could not locate device with id", session("email")));
+    }
+
+    return redirect(routes.Events.nearbyEventsByPage(device.getDeviceId(), 0));
+  }
+
+  @Security.Authenticated(Secured.class)
+  public static Result nearbyEventsByPage(Long deviceId, Integer page) {
+    OpqDevice device = OpqDevice.find().where()
+                                .eq("deviceId", deviceId)
+                                .findUnique();
+
+    if(device == null) {
+      return ok(error.render("Could not locate device with id", deviceId.toString()));
+    }
+
+    // Get the grid square that the device is associated with
+    String gridId = device.getGridId();
+
+    if(gridId == null) {
+      return ok(error.render("Please make sure you've set your preferences to allow data sharing", ""));
+    }
+
+    // Get all alerts from this grid cell sans the current device
+    List<Alert> events = Alert.find().where()
+                              .eq("device.gridId", gridId)
+                              .ne("device.deviceId", deviceId)
+                              .findList();
 
 
-    return TODO;
+    return ok(views.html.privatemonitoring.nearbyevents.render(events, 0, 0));
   }
 }
