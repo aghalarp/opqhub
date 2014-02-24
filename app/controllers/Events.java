@@ -27,7 +27,7 @@ public class Events extends Controller {
     Integer pages;
     final Integer ROWS_PER_PAGE = 10;
     Long after = (afterTimestamp == null) ? 0 : afterTimestamp;
-    List<Alert> alerts = Alert.find().where()
+    List<Alert> events = Alert.find().where()
         .eq("device.person.email", session("email"))
         .gt("timestamp", after)
         .order("timestamp desc")
@@ -37,13 +37,13 @@ public class Events extends Controller {
 
     pages = Alert.find().where().eq("device.person.email", session("email")).gt("timestamp", after).findRowCount() / ROWS_PER_PAGE;
 
-    return ok(views.html.privatemonitoring.privateevents.render(alerts, page, pages));
+    return ok(views.html.privatemonitoring.privateevents.render(events, page, pages));
   }
 
   @Security.Authenticated(Secured.class)
-  public static Result eventDetails(Long alertId) {
-    Alert alert = Alert.find().where().eq("primaryKey", alertId).findUnique();
-    ExternalEvent externalEvent = alert.getExternalEvent();
+  public static Result eventDetails(Long eventId) {
+    Alert event = Alert.find().where().eq("primaryKey", eventId).findUnique();
+    ExternalEvent externalEvent = event.getExternalEvent();
     Form<ExternalEvent> externalEventForm;
 
     if(externalEvent == null) {
@@ -53,26 +53,33 @@ public class Events extends Controller {
       externalEventForm = Form.form(ExternalEvent.class).fill(externalEvent);
     }
 
-    return ok(views.html.privatemonitoring.alertdetails.render(alert, externalEventForm));
+    return ok(views.html.privatemonitoring.alertdetails.render(event, externalEventForm));
   }
 
   @Security.Authenticated(Secured.class)
-  public static Result updateEventDetails(Long alertId) {
-    Alert alert = Alert.find().where().eq("primaryKey", alertId).findUnique();
+  public static Result updateEventDetails(Long eventId) {
+    Alert event = Alert.find().where().eq("primaryKey", eventId).findUnique();
     Form<ExternalEvent> externalEventForm = Form.form(ExternalEvent.class).bindFromRequest();
 
     if (externalEventForm.hasErrors()) {
-      return ok(error.render("Problem updating alert", externalEventForm.errors().toString()));
+      return ok(error.render("Problem updating event", externalEventForm.errors().toString()));
     }
 
     ExternalEvent externalEvent = externalEventForm.get();
-    externalEvent.getAlerts().add(alert);
-    alert.setExternalEvent(externalEvent);
+    externalEvent.getAlerts().add(event);
+    event.setExternalEvent(externalEvent);
     externalEvent.save();
-    alert.save();
+    event.save();
 
     flash("updated", "External Event Updated");
 
-    return redirect(routes.Events.eventDetails(alertId));
+    return redirect(routes.Events.eventDetails(eventId));
+  }
+
+  @Security.Authenticated(Secured.class)
+  public static Result nearbyEvents(Long deviceId) {
+
+
+    return TODO;
   }
 }
