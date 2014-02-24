@@ -37,7 +37,7 @@ public class Events extends Controller {
 
     pages = Alert.find().where().eq("device.person.email", session("email")).gt("timestamp", after).findRowCount() / ROWS_PER_PAGE;
 
-    return ok(views.html.privatemonitoring.privatealerts.render(alerts, page, pages));
+    return ok(views.html.privatemonitoring.privateevents.render(alerts, page, pages));
   }
 
   @Security.Authenticated(Secured.class)
