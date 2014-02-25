@@ -113,27 +113,22 @@ public class Events extends Controller {
     }
 
     // TODO: Get rid of all events that are attached to any of the user's devices
+    double scale = device.getGridScale();
+    int cnt = 0;
 
-    // Get all alerts from this grid cell sans the current device
+    while(scale < 4) {
+      cnt++;
+      scale *= 2;
+    }
 
     List<Alert> events = Alert.find().where()
-                              .eq("device.gridId", gridId)
+                              .startsWith("device.gridId", gridId.substring(0, gridId.length() - cnt))
                               .ne("device.deviceId", deviceId)
+                              .eq("device.sharingData", true)
                               .order("timestamp desc")
                               .findPagingList(PAGE_SIZE)
                               .getPage(page).getList();
 
-
     return ok(views.html.privatemonitoring.nearbyevents.render(events, page, (events.size() / PAGE_SIZE), deviceId));
-  }
-
-  private static ExpressionList<Alert> getNearbyExpressionList(double scale, String gridId, ExpressionList<Alert> expressionList) {
-    if(scale >= 64) {
-      return expressionList;
-    }
-
-    ExpressionList<Alert> tmpExpressionList = Alert.find().where().eq("device.gridId", gridId);
-    expressionList.addAll(tmpExpressionList);
-    return getNearbyExpressionList(scale / 2, gridId.substring(0, gridId.length() - 1), expressionList);
   }
 }
