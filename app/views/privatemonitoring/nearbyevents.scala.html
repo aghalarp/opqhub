@@ -59,7 +59,6 @@ Copyright 2013 Anthony Christe
       <table class="table table-striped table-bordered">
         <thead>
           <tr>
-            <th>Device Id</th>
             <th>Distance</th>
             <th>Event Type</th>
             <th>Timestamp</th>
@@ -71,7 +70,6 @@ Copyright 2013 Anthony Christe
         <tbody>
         @for(event <- events) {
           <tr>
-            <td>@event.getDevice.getDeviceId</td>
             <td>[TODO distance]</td>
             <td>@event.getAlertType.getName</td>
             <td>@utils.DateUtils.toDateTime(event.getTimestamp)</td>
