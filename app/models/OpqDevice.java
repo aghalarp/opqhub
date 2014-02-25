@@ -61,7 +61,25 @@ public class OpqDevice extends Model {
    */
   private Boolean sharingData;
 
+  /**
+   * The id of the grid square associated with this device.
+   */
   private String gridId;
+
+  /**
+   * The length of all sides of a grid square in km.
+   */
+  private Integer gridScale;
+
+  /**
+   * The row within the grid this device is associated.
+   */
+  private Integer gridRow;
+
+  /**
+   * The column within the grid this device is associated.
+   */
+  private Integer gridCol;
 
   /**
    * The following latitude and longitudes can be used to make up the bounding box of the grid square that this
@@ -316,5 +334,38 @@ public class OpqDevice extends Model {
 
   public void setSouthWestLongitude(Double southWestLongitude) {
     this.southWestLongitude = southWestLongitude;
+  }
+
+  /**
+   * The scale of each grid square (length of side in km).
+   */
+  public Integer getGridScale() {
+    return gridScale;
+  }
+
+  public void setGridScale(Integer gridScale) {
+    this.gridScale = gridScale;
+  }
+
+  /**
+   * The row of the grid this device is associated with.
+   */
+  public Integer getGridRow() {
+    return gridRow;
+  }
+
+  public void setGridRow(Integer gridRow) {
+    this.gridRow = gridRow;
+  }
+
+  /**
+   * The column of the grid this device is associated with.
+   */
+  public Integer getGridCol() {
+    return gridCol;
+  }
+
+  public void setGridCol(Integer gridCol) {
+    this.gridCol = gridCol;
   }
 }

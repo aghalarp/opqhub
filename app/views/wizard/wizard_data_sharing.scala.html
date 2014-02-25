@@ -31,6 +31,10 @@ Copyright 2013 Anthony Christe
       <input type="hidden" id="southWestLatitude" name="southWestLatitude" />
       <input type="hidden" id="southWestLongitude" name="southWestLongitude" />
       <input type="hidden" id="gridId" name="gridId" />
+      <input type="hidden" id="gridScale" name="gridScale" />
+      <input type="hidden" id="gridRow" name="gridRow" />
+      <input type="hidden" id="gridCol" name="gridCol" />
+
       @checkbox(opqDeviceForm("sharingData"), '_showConstraints -> false, '_label -> "Data Sharing")
     </div>
   </div>
@@ -66,6 +70,9 @@ Copyright 2013 Anthony Christe
       $('#northEastLongitude').val(feature.properties.boundingBox.getNorthEast().lng);
       $('#southWestLatitude').val(feature.properties.boundingBox.getSouthWest().lat);
       $('#southWestLongitude').val(feature.properties.boundingBox.getSouthWest().lng);
+      $('#gridScale').val(feature.properties.scale);
+      $('#gridRow').val(feature.properties.row);
+      $('#gridCol').val(feature.properties.col);
     });
 
     layer.setStyle({fillColor: 'red'});

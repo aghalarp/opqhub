@@ -49,6 +49,9 @@ Copyright 2013 Anthony Christe
         <input type="hidden" id="northEastLongitude" name="northEastLongitude" />
         <input type="hidden" id="southWestLatitude" name="southWestLatitude" />
         <input type="hidden" id="southWestLongitude" name="southWestLongitude" />
+        <input type="hidden" id="gridScale" name="gridScale" />
+        <input type="hidden" id="gridRow" name="gridRow" />
+        <input type="hidden" id="gridCol" name="gridCol" />
         <tr>
           @* Device Id *@
           <td>
@@ -86,7 +89,9 @@ Copyright 2013 Anthony Christe
   <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
   <script src="@routes.Assets.at("javascripts/grid-map.js")" type="text/javascript"></script>
   <div id="data-sharing-map" class="span9"></div>
+
   <script type="text/javascript">
+
   /* Make sure the leaflet CSS is loaded */
   addDynamicCss ('@routes.Assets.at("stylesheets/leaflet.css")');
 
@@ -97,6 +102,9 @@ Copyright 2013 Anthony Christe
       $('#northEastLongitude').val(feature.properties.boundingBox.getNorthEast().lng);
       $('#southWestLatitude').val(feature.properties.boundingBox.getSouthWest().lat);
       $('#southWestLongitude').val(feature.properties.boundingBox.getSouthWest().lng);
+      $('#gridScale').val(feature.properties.scale);
+      $('#gridRow').val(feature.properties.row);
+      $('#gridCol').val(feature.properties.col);
     });
 
     layer.setStyle({fillColor: 'red'});
