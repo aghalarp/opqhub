@@ -19,7 +19,8 @@ Copyright 2013 Anthony Christe
 @(
     events: List[Alert],
     page: Integer,
-    pages: Integer
+    pages: Integer,
+    deviceId: Long
     )
 
 @import helper._
@@ -28,7 +29,7 @@ Copyright 2013 Anthony Christe
   }
 
 @privatepowerqualitymonitoring("Private Power Quality Monitoring - Nearby Events",
-  "This page allows you to manage and create power quality events.") {
+  "This page shows nearby events.") {
 
   <div class="row span9">
     <div class="well well-small">
@@ -94,10 +95,10 @@ Copyright 2013 Anthony Christe
     </div>
     <div class="pull-right">
       @if(page > 0) {
-        <a href="@routes.Events.eventsByPage(page - 1)" class="btn btn-primary"><- Prev.</a>
+        <a href="@routes.Events.nearbyEventsByPage(deviceId, page - 1)" class="btn btn-primary"><- Prev.</a>
       }
       [@(page + 1)/@(pages + 1)]
-      <a href="@routes.Events.eventsByPage(page + 1)" class="btn btn-primary"> Next. -></a>
+      <a href="@routes.Events.nearbyEventsByPage(deviceId, page + 1)" class="btn btn-primary"> Next. -></a>
     </div>
   </div>
 }

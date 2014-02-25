@@ -94,6 +94,7 @@ public class Events extends Controller {
 
   @Security.Authenticated(Secured.class)
   public static Result nearbyEventsByPage(Long deviceId, Integer page) {
+    final int PAGE_SIZE = 10;
     OpqDevice device = OpqDevice.find().where()
                                 .eq("deviceId", deviceId)
                                 .findUnique();
@@ -109,13 +110,18 @@ public class Events extends Controller {
       return ok(error.render("Please make sure you've set your preferences to allow data sharing", ""));
     }
 
+    // TODO: Get rid of all events that are attached to any of the user's devices
+
     // Get all alerts from this grid cell sans the current device
+
     List<Alert> events = Alert.find().where()
                               .eq("device.gridId", gridId)
                               .ne("device.deviceId", deviceId)
-                              .findList();
+                              .order("timestamp desc")
+                              .findPagingList(PAGE_SIZE)
+                              .getPage(page).getList();
 
 
-    return ok(views.html.privatemonitoring.nearbyevents.render(events, 0, 0));
+    return ok(views.html.privatemonitoring.nearbyevents.render(events, page, (events.size() / PAGE_SIZE), deviceId));
   }
 }
