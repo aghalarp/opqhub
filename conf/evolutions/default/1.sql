@@ -56,7 +56,7 @@ create table opq_device (
   description               varchar(255),
   sharing_data              tinyint(1) default 0,
   grid_id                   varchar(255),
-  grid_scale                integer,
+  grid_scale                double,
   grid_row                  integer,
   grid_col                  integer,
   north_east_latitude       double,

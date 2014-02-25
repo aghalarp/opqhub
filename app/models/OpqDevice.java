@@ -69,7 +69,7 @@ public class OpqDevice extends Model {
   /**
    * The length of all sides of a grid square in km.
    */
-  private Integer gridScale;
+  private Double gridScale;
 
   /**
    * The row within the grid this device is associated.
@@ -339,11 +339,11 @@ public class OpqDevice extends Model {
   /**
    * The scale of each grid square (length of side in km).
    */
-  public Integer getGridScale() {
+  public Double getGridScale() {
     return gridScale;
   }
 
-  public void setGridScale(Integer gridScale) {
+  public void setGridScale(Double gridScale) {
     this.gridScale = gridScale;
   }
 

@@ -1,5 +1,7 @@
 package controllers;
 
+import com.avaje.ebean.Expression;
+import com.avaje.ebean.ExpressionList;
 import models.Alert;
 import models.ExternalEvent;
 import models.OpqDevice;
@@ -123,5 +125,15 @@ public class Events extends Controller {
 
 
     return ok(views.html.privatemonitoring.nearbyevents.render(events, page, (events.size() / PAGE_SIZE), deviceId));
+  }
+
+  private static ExpressionList<Alert> getNearbyExpressionList(double scale, String gridId, ExpressionList<Alert> expressionList) {
+    if(scale >= 64) {
+      return expressionList;
+    }
+
+    ExpressionList<Alert> tmpExpressionList = Alert.find().where().eq("device.gridId", gridId);
+    expressionList.addAll(tmpExpressionList);
+    return getNearbyExpressionList(scale / 2, gridId.substring(0, gridId.length() - 1), expressionList);
   }
 }
