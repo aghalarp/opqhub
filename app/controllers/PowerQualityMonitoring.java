@@ -20,21 +20,11 @@
 package controllers;
 
 import models.Alert;
-import models.ExternalEvent;
-import models.Measurement;
+
 import models.OpqDevice;
-import models.Person;
-import play.data.DynamicForm;
-import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.mvc.Security;
-import utils.DateUtils;
-import utils.TimestampComparator;
-import views.html.error;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -54,86 +44,4 @@ public class PowerQualityMonitoring extends Controller {
     return ok(views.html.publicpowerqualitymonitoring.render(alerts, devices, loggedOut));
   }
 
-  /**
-   * Render a view which contains a list of power quality events for the current logged in user.
-   *
-   * @return Rendered view of power quality events for current user.
-   */
-  @Security.Authenticated(Secured.class)
-  public static Result privateAlertsMonitor() {
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
-    List<Alert> alerts = new ArrayList<>();
-
-    // Search for all devices connected to current user, then for each device find its alerts
-    for (OpqDevice device : person.getDevices()) {
-      for (Alert alert : device.getAlerts()) {
-        alerts.add(alert);
-      }
-    }
-
-    Collections.sort(alerts, new TimestampComparator());
-    return ok(views.html.privatemonitoring.privatealerts.render(alerts, 0, 0));
-  }
-
-  public static Result filterAlerts() {
-    DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
-    String selectedTimeUnit = dynamicForm.get("pastTimeSelect");
-
-    Long adjustedTimestamp = utils.DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
-    flash("pastTimeSelect", selectedTimeUnit);
-    return redirect(routes.PowerQualityMonitoring.alertsByPage(0, adjustedTimestamp));
-  }
-
-  public static Result alertsByPage(Integer page, Long afterTimestamp) {
-    Integer pages;
-    final Integer ROWS_PER_PAGE = 10;
-    Long after = (afterTimestamp == null) ? 0 : afterTimestamp;
-    List<Alert> alerts = Alert.find().where()
-        .eq("device.person.email", session("email"))
-        .gt("timestamp", after)
-        .order("timestamp desc")
-        .findPagingList(ROWS_PER_PAGE)
-        .getPage(page)
-        .getList();
-
-    pages = Alert.find().where().eq("device.person.email", session("email")).gt("timestamp", after).findRowCount() / ROWS_PER_PAGE;
-
-    return ok(views.html.privatemonitoring.privatealerts.render(alerts, page, pages));
-  }
-
-  @Security.Authenticated(Secured.class)
-  public static Result alertDetails(Long alertId) {
-    Alert alert = Alert.find().where().eq("primaryKey", alertId).findUnique();
-    ExternalEvent externalEvent = alert.getExternalEvent();
-    Form<ExternalEvent> externalEventForm;
-
-    if(externalEvent == null) {
-      externalEventForm = Form.form(ExternalEvent.class);
-    }
-    else {
-      externalEventForm = Form.form(ExternalEvent.class).fill(externalEvent);
-    }
-
-    return ok(views.html.privatemonitoring.alertdetails.render(alert, externalEventForm));
-  }
-
-  @Security.Authenticated(Secured.class)
-  public static Result updateAlertDetails(Long alertId) {
-    Alert alert = Alert.find().where().eq("primaryKey", alertId).findUnique();
-    Form<ExternalEvent> externalEventForm = Form.form(ExternalEvent.class).bindFromRequest();
-
-    if (externalEventForm.hasErrors()) {
-      return ok(error.render("Problem updating alert", externalEventForm.errors().toString()));
-    }
-
-    ExternalEvent externalEvent = externalEventForm.get();
-    externalEvent.getAlerts().add(alert);
-    alert.setExternalEvent(externalEvent);
-    externalEvent.save();
-    alert.save();
-
-    flash("updated", "External Event Updated");
-
-    return redirect(routes.PowerQualityMonitoring.alertDetails(alertId));
-  }
 }

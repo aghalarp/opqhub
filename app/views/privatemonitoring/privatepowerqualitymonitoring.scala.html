@@ -35,8 +35,8 @@ Copyright 2013 Anthony Christe
       <!-- Side menu -->
     <div class="span3">
       <ul class="nav  nav-pills nav-stacked">
-        @createMenuItem("Private Alerts", "alerts", routes.PowerQualityMonitoring.alertsByPage())
-        @createMenuItem("Alerts Near Me", "near", routes.PowerQualityMonitoring.alertsByPage())
+        @createMenuItem("Private Events", "private events", routes.Events.eventsByPage())
+        @createMenuItem("Nearby Events", "nearby", routes.Events.nearbyEvents())
         @createMenuItem("Private Measurements", "measurements", routes.Measurements.measurements())
       </ul>
       <div class="well">
