@@ -108,7 +108,7 @@ public class Events extends Controller {
     // Get the grid square that the device is associated with
     String gridId = device.getGridId();
 
-    if(gridId == null) {
+    if(gridId == null || !device.getSharingData()) {
       return ok(error.render("Please make sure you've set your preferences to allow data sharing", ""));
     }
 
