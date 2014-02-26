@@ -54,7 +54,7 @@ create table opq_device (
   primary_key               bigint auto_increment not null,
   device_id                 bigint,
   description               varchar(255),
-  sharing_data              tinyint(1) default 0,
+  sharing_data              tinyint(1) default 0 not null,
   grid_id                   varchar(255),
   grid_scale                double,
   grid_row                  integer,
