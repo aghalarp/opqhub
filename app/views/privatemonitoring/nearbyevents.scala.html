@@ -20,7 +20,8 @@ Copyright 2013 Anthony Christe
     events: List[Alert],
     page: Integer,
     pages: Integer,
-    deviceId: Long
+    deviceId: Long,
+    deviceScale: Double
     )
 
 @import helper._
@@ -70,7 +71,14 @@ Copyright 2013 Anthony Christe
         <tbody>
         @for(event <- events) {
           <tr>
-            <td>[TODO distance]</td>
+            <td>
+              @if(event.getDevice.getGridScale <= deviceScale) {
+                < @deviceScale Km
+              } else {
+                < @event.getDevice.getGridScale Km
+              }
+
+            </td>
             <td>@event.getAlertType.getName</td>
             <td>@utils.DateUtils.toDateTime(event.getTimestamp)</td>
             <td>@event.getAlertDuration</td>

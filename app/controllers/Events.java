@@ -1,7 +1,5 @@
 package controllers;
 
-import com.avaje.ebean.Expression;
-import com.avaje.ebean.ExpressionList;
 import models.Alert;
 import models.ExternalEvent;
 import models.OpqDevice;
@@ -129,6 +127,10 @@ public class Events extends Controller {
                               .findPagingList(PAGE_SIZE)
                               .getPage(page).getList();
 
-    return ok(views.html.privatemonitoring.nearbyevents.render(events, page, (events.size() / PAGE_SIZE), deviceId));
+    return ok(views.html.privatemonitoring.nearbyevents.render(events,
+                                                               page,
+                                                               (events.size() / PAGE_SIZE),
+                                                               deviceId,
+                                                               device.getGridScale()));
   }
 }
