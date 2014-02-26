@@ -19,6 +19,7 @@
 
 package models;
 
+import com.avaje.ebean.validation.NotNull;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
@@ -59,6 +60,7 @@ public class OpqDevice extends Model {
   /**
    * Determines if device is participating in CDSI.
    */
+  @NotNull
   private Boolean sharingData;
 
   /**
