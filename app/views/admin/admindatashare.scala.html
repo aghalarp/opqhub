@@ -37,6 +37,7 @@ Copyright 2013 Anthony Christe
         <th>Device Id</th>
         <th>Description</th>
         <th>Data Sharing</th>
+        <th>Grid Id</th>
         <th><!-- Left blank for update button --></th>
       </thead>
       <tbody>
@@ -51,7 +52,7 @@ Copyright 2013 Anthony Christe
                 No
               }
             </td>
-
+            <td>@opqDevice.getGridId</td>
             <td>
               <a href="@routes.Administration.editDataSharing(opqDevice.getDeviceId)" class="btn btn-warning pull-right">
                 Update
