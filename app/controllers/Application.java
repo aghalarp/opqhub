@@ -20,6 +20,7 @@
 package controllers;
 
 import models.Person;
+import play.Logger;
 import play.data.Form;
 import play.data.validation.Constraints;
 import play.mvc.Controller;
@@ -70,6 +71,7 @@ public class Application extends Controller {
   public static Result authenticate() {
     Form<Login> loginForm = form(Login.class).bindFromRequest();
     if (loginForm.hasErrors()) {
+      Logger.info(String.format("Bad login attempt from %s", loginForm.data().get("email")));
       return badRequest(login.render(loginForm));
     }
     else {
