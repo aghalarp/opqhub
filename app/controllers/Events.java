@@ -1,6 +1,6 @@
 package controllers;
 
-import models.Alert;
+import models.Event;
 import models.ExternalEvent;
 import models.OpqDevice;
 import play.Logger;
@@ -30,7 +30,7 @@ public class Events extends Controller {
     Integer pages;
     final Integer ROWS_PER_PAGE = 10;
     Long after = (afterTimestamp == null) ? 0 : afterTimestamp;
-    List<Alert> events = Alert.find().where()
+    List<Event> events = Event.find().where()
         .eq("device.person.email", session("email"))
         .gt("timestamp", after)
         .order("timestamp desc")
@@ -38,14 +38,14 @@ public class Events extends Controller {
         .getPage(page)
         .getList();
 
-    pages = Alert.find().where().eq("device.person.email", session("email")).gt("timestamp", after).findRowCount() / ROWS_PER_PAGE;
+    pages = Event.find().where().eq("device.person.email", session("email")).gt("timestamp", after).findRowCount() / ROWS_PER_PAGE;
 
     return ok(views.html.privatemonitoring.privateevents.render(events, page, pages));
   }
 
   @Security.Authenticated(Secured.class)
   public static Result eventDetails(Long eventId) {
-    Alert event = Alert.find().where().eq("primaryKey", eventId).findUnique();
+    Event event = Event.find().where().eq("primaryKey", eventId).findUnique();
     ExternalEvent externalEvent = event.getExternalEvent();
     Form<ExternalEvent> externalEventForm;
 
@@ -63,7 +63,7 @@ public class Events extends Controller {
 
   @Security.Authenticated(Secured.class)
   public static Result updateEventDetails(Long eventId) {
-    Alert event = Alert.find().where().eq("primaryKey", eventId).findUnique();
+    Event event = Event.find().where().eq("primaryKey", eventId).findUnique();
     Form<ExternalEvent> externalEventForm = Form.form(ExternalEvent.class).bindFromRequest();
 
     // TODO: Error page for when event is not found
@@ -75,7 +75,7 @@ public class Events extends Controller {
     }
 
     ExternalEvent externalEvent = externalEventForm.get();
-    externalEvent.getAlerts().add(event);
+    externalEvent.getEvents().add(event);
     event.setExternalEvent(externalEvent);
     externalEvent.save();
     event.save();
@@ -129,7 +129,7 @@ public class Events extends Controller {
       scale *= 2;
     }
 
-    List<Alert> events = Alert.find().where()
+    List<Event> events = Event.find().where()
                               .startsWith("device.gridId", gridId.substring(0, gridId.length() - cnt))
                               .ne("device.deviceId", deviceId)
                               .eq("device.sharingData", true)

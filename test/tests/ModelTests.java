@@ -19,7 +19,7 @@
 
 package tests;
 
-import models.Alert;
+import models.Event;
 import models.AlertNotification;
 import models.ExternalEvent;
 import models.Measurement;
@@ -79,19 +79,19 @@ public class ModelTests {
 
     OpqDevice opqDevice = new OpqDevice("1111-1111-1111-111", "description", "Hawaii");
 
-    // Create an alert model object
-    Alert alert = new Alert(opqDevice, Alert.AlertType.FREQUENCY, 1L, 1L, 1.0);
+    // Create an event model object
+    Alert event = new Event(opqDevice, Event.AlertType.FREQUENCY, 1L, 1L, 1.0);
 
-    // Create an alert notification model object
+    // Create an event notification model object
     AlertNotification alertNotification = new AlertNotification(true, true, true, true, "AT&T", "5555555555",
                                                                 "email@email.com", 58.0, 62.0, 158.0, 162.0);
 
     // Create an OpqDevice model object
 
 
-    // Associate external event with alert
-    externalEvent.getAlerts().add(alert);
-    alert.setExternalEvent(externalEvent);
+    // Associate external event with event
+    externalEvent.getEvents().add(event);
+    event.setExternalEvent(externalEvent);
 
     // Associate the person with the device.
     person.getDevices().add(opqDevice);
@@ -101,20 +101,20 @@ public class ModelTests {
     measurement.setDevice(opqDevice);
     opqDevice.getMeasurements().add(measurement);
 
-    // Associate alert notification with device
+    // Associate event notification with device
     alertNotification.setDevice(opqDevice);
     opqDevice.getAlertNotifications().add(alertNotification);
 
-    // Associate alert with device
-    alert.setDevice(opqDevice);
-    opqDevice.getAlerts().add(alert);
+    // Associate event with device
+    event.setDevice(opqDevice);
+    opqDevice.getEvents().add(event);
 
     // Persist everything to the DB
     opqDevice.save();
     person.save();
     measurement.save();
     alertNotification.save();
-    alert.save();
+    event.save();
     externalEvent.save();
 
     // Retrieve all items from the database
@@ -122,15 +122,15 @@ public class ModelTests {
     List<Person> persons = Person.find().all();
     List<Measurement> measurements = Measurement.find().all();
     List<AlertNotification> alertNotifications  = AlertNotification.find().all();
-    List<Alert> alerts = Alert.find().all();
+    List<Event> events = Event.find().all();
     List<ExternalEvent> externalEvents = ExternalEvent.find().all();
 
     // Check that each list contains a single item
     assertEquals("Checking devices size", opqDevices.size(), 1);
     assertEquals("Checking persons size", persons.size(), 1);
     assertEquals("Checking measurements size", measurements.size(), 1);
-    assertEquals("Checking alert notifications size", alertNotifications.size(), 1);
-    assertEquals("Checking alerts size", alerts.size(), 1);
+    assertEquals("Checking event notifications size", alertNotifications.size(), 1);
+    assertEquals("Checking events size", events.size(), 1);
     assertEquals("Checking external events size", externalEvents.size(), 1);
 
     // Check to make sure we've recovered all relationships
@@ -141,10 +141,10 @@ public class ModelTests {
     assertEquals("AlertNotification-OpqDevice", alertNotifications.get(0).getDevice(), opqDevices.get(0));
     assertEquals("OpqDevice-AlertNotification", opqDevices.get(0).getAlertNotifications().get(0),
                  alertNotifications.get(0));
-    assertEquals("Alert-OpqDevice", alerts.get(0).getDevice(), opqDevices.get(0));
-    assertEquals("OpqDevice-Alert", opqDevices.get(0).getAlerts().get(0), alerts.get(0));
-    assertEquals("Alert-OpqDevice", alerts.get(0).getDevice(), opqDevices.get(0));
-    assertEquals("Alert-ExternalEvent", alerts.get(0).getExternalEvent(), externalEvents.get(0));
-    assertEquals("ExternalEvent-Alert", externalEvents.get(0).getAlerts().get(0), alerts.get(0));
+    assertEquals("Event-OpqDevice", events.get(0).getDevice(), opqDevices.get(0));
+    assertEquals("OpqDevice-Event", opqDevices.get(0).getEvents().get(0), events.get(0));
+    assertEquals("Event-OpqDevice", events.get(0).getDevice(), opqDevices.get(0));
+    assertEquals("Event-ExternalEvent", events.get(0).getExternalEvent(), externalEvents.get(0));
+    assertEquals("ExternalEvent-Event", externalEvents.get(0).getEvents().get(0), events.get(0));
   }
 }

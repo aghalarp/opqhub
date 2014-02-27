@@ -109,7 +109,7 @@ public class OpqDevice extends Model {
   private List<Measurement> measurements = new ArrayList<>();
 
   /**
-   * Alert notifications that this device is associated with.
+   * Event notifications that this device is associated with.
    * <p/>
    * Each device can be associated with many alert notifications.
    */
@@ -119,10 +119,10 @@ public class OpqDevice extends Model {
   /**
    * Alerts that this device is associated with.
    * <p/>
-   * Each device can be associated with many alerts.
+   * Each device can be associated with many events.
    */
   @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
-  private List<Alert> alerts = new ArrayList<>();
+  private List<Event> events = new ArrayList<>();
 
   /**
    * Convenience constructor for test package.
@@ -272,7 +272,7 @@ public class OpqDevice extends Model {
   /**
    * Get alert notifications associated with this device.
    *
-   * @return Alert notifications associated with this device.
+   * @return Event notifications associated with this device.
    */
   public List<AlertNotification> getAlertNotifications() {
     return alertNotifications;
@@ -281,28 +281,28 @@ public class OpqDevice extends Model {
   /**
    * Set alert notifications associated with this device.
    *
-   * @param alertNotifications Alert notifications associated with this device.
+   * @param alertNotifications Event notifications associated with this device.
    */
   public void setAlertNotifications(List<AlertNotification> alertNotifications) {
     this.alertNotifications = alertNotifications;
   }
 
   /**
-   * Get alerts associated with this device.
+   * Get events associated with this device.
    *
    * @return Alerts associated with this device.
    */
-  public List<Alert> getAlerts() {
-    return alerts;
+  public List<Event> getEvents() {
+    return events;
   }
 
   /**
-   * Set alerts associated with this device.
+   * Set events associated with this device.
    *
-   * @param alerts Alerts associated with this device.
+   * @param events Alerts associated with this device.
    */
-  public void setAlerts(List<Alert> alerts) {
-    this.alerts = alerts;
+  public void setEvents(List<Event> events) {
+    this.events = events;
   }
 
 

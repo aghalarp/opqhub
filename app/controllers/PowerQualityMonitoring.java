@@ -19,7 +19,7 @@
 
 package controllers;
 
-import models.Alert;
+import models.Event;
 
 import models.OpqDevice;
 import play.mvc.Controller;
@@ -38,10 +38,10 @@ public class PowerQualityMonitoring extends Controller {
    * @return Rendered view of publics devices and public alerts.
    */
   public static Result publicMonitor() {
-    List<models.Alert> alerts = Alert.find().all();
+    List<Event> events = Event.find().all();
     List<models.OpqDevice> devices = OpqDevice.find().where().eq("sharingData", true).findList();
     boolean loggedOut = !(session().containsKey("email"));
-    return ok(views.html.publicpowerqualitymonitoring.render(alerts, devices, loggedOut));
+    return ok(views.html.publicpowerqualitymonitoring.render(events, devices, loggedOut));
   }
 
 }

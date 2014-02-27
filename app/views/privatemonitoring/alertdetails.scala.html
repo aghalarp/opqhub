@@ -17,7 +17,7 @@ along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 Copyright 2013 Anthony Christe
 *@
 
-@(alert: Alert, externalEventForm: Form[ExternalEvent])
+@(event: Event, externalEventForm: Form[ExternalEvent])
 
 @import helper._
   @implicitFieldConstructor = @{
@@ -32,25 +32,25 @@ Copyright 2013 Anthony Christe
         <tr>
           <th>Device Id</th>
           <th>Description</th>
-          <th>Alert Type</th>
+          <th>Event Type</th>
           <th>Timestamp</th>
           <th>Duration (ms)</th>
-          <th>Alert Value</th>
+          <th>Event Value</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>@alert.getDevice.getDeviceId</td>
-          <td>@alert.getDevice.getDescription</td>
-          <td>@alert.getEventType.getName</td>
-          <td>@utils.DateUtils.toDateTime(alert.getTimestamp)</td>
-          <td>@alert.getEventDuration</td>
+          <td>@event.getDevice.getDeviceId</td>
+          <td>@event.getDevice.getDescription</td>
+          <td>@event.getEventType.getName</td>
+          <td>@utils.DateUtils.toDateTime(event.getTimestamp)</td>
+          <td>@event.getEventDuration</td>
           <td>
-            @alert.getEventValue
-            @if(alert.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_FREQUENCY)) {
+            @event.getEventValue
+            @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_FREQUENCY)) {
               Hz
             }
-            @if(alert.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_VOLTAGE)) {
+            @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_VOLTAGE)) {
               Volts
             }
           </td>
@@ -65,7 +65,7 @@ Copyright 2013 Anthony Christe
       @flash.get("updated")
       </p>
     }
-    @form(routes.Events.updateEventDetails(alert.getPrimaryKey), 'class -> "form-horizontal well well-small", 'name -> "externalEventForm") {
+    @form(routes.Events.updateEventDetails(event.getPrimaryKey), 'class -> "form-horizontal well well-small", 'name -> "externalEventForm") {
       @inputText(
         externalEventForm("eventType"), '_label -> "Event Type", 'placeholder -> "Tropical Storm Flossie", 'id -> "eventType")
       @textarea(

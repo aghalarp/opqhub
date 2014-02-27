@@ -19,7 +19,7 @@
 
 package controllers;
 
-import models.Alert;
+import models.Event;
 import models.AlertNotification;
 import models.Measurement;
 import models.OpqDevice;
@@ -89,7 +89,7 @@ public class WebSockets extends Controller {
    * <p/>
    * Once a valid alert is received, add it to the database.
    *
-   * @param opqPacket Alert packet from device.
+   * @param opqPacket Event packet from device.
    */
   private static void handleAlert(OpqPacket opqPacket) {
     Long deviceId = opqPacket.getDeviceId();
@@ -100,16 +100,16 @@ public class WebSockets extends Controller {
       return;
     }
 
-    Alert alert = new Alert(
+    Event event = new Event(
         opqDevice,
         opqPacket.getType(),
         opqPacket.getTimestamp(),
         opqPacket.getAlertDuration(),
         opqPacket.getAlertValue());
 
-    alert.setDevice(opqDevice);
-    alert.save();
-    opqDevice.getAlerts().add(alert);
+    event.setDevice(opqDevice);
+    event.save();
+    opqDevice.getEvents().add(event);
     opqDevice.save();
 
     // Determine whether or not to notify user based on their alert preferences

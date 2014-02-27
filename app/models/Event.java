@@ -29,13 +29,13 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 /**
- * This contains methods for viewing and modifying the persistent Alert object.
+ * This contains methods for viewing and modifying the persistent Event object.
  * <p/>
  * Alerts are triggered when power quality is not up to snuff. They indicate that either the voltage or frequency are
  * off the status-quo, or that an error has occurred with the user's opq-device.
  */
 @Entity
-public class Alert extends Model {
+public class Event extends Model {
   /**
    * Primary Key.
    */
@@ -80,7 +80,7 @@ public class Alert extends Model {
    * @param timestamp     Timestamp for when alert happened representing number of milliseconds since epoch.
    * @param eventDuration Number of milliseconds that evebt occurred for.
    */
-  public Alert(OpqDevice device, OpqPacket.PacketType eventType, Long timestamp, Long eventDuration, Double eventValue) {
+  public Event(OpqDevice device, OpqPacket.PacketType eventType, Long timestamp, Long eventDuration, Double eventValue) {
     this.setDevice(device);
     this.setEventType(eventType);
     this.setEventValue(eventValue);
@@ -93,8 +93,8 @@ public class Alert extends Model {
    *
    * @return A new finder for persisted alerts.
    */
-  public static Finder<Long, Alert> find() {
-    return new Finder<>(Long.class, Alert.class);
+  public static Finder<Long, Event> find() {
+    return new Finder<>(Long.class, Event.class);
   }
 
   /**

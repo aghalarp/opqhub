@@ -17,7 +17,7 @@ along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 Copyright 2013 Anthony Christe
 *@
 
-@(alerts: List[models.Alert], devices: List[models.OpqDevice], loggedOut: Boolean)
+@(events: List[models.Event], devices: List[models.OpqDevice], loggedOut: Boolean)
 
   @main("Public Power Quality Monitoring", menu("Public Power Quality Monitoring", loggedOut)) {
     <div class="row">
@@ -150,10 +150,10 @@ Copyright 2013 Anthony Christe
 
         function alertTemplate(eventType, timestamp, duration, eventValue, latitude, longitude) {
         return makeTable([
-        "Alert Type", eventType,
+        "Event Type", eventType,
         "Date", timestamp,
         "Duration", duration,
-        "Alert Value", eventValue,
+        "Event Value", eventValue,
         "Latitude", latitude,
         "Longitude", longitude
         ]);
@@ -166,18 +166,18 @@ Copyright 2013 Anthony Christe
           .bindPopup(deviceTemplate("@device.getDeviceId", @device.getLatitude, @device.getLongitude));
         }
 
-        // Display alerts
-        @for(alert <- alerts) {
-          @if(alert.getDevice != null) {
-            @if(alert.getEventType().equals(models.Alert.AlertType.FREQUENCY)) {
-              L.marker([@alert.getDevice.getLatitude, @alert.getDevice.getLongitude], {icon: frequencyMarker}).addTo(map)
-              .bindPopup(alertTemplate('@alert.getEventType', '@utils.DateUtils.toDateTime(alert.getTimestamp)', @alert.getEventDuration + ' ms',
-              @alert.getEventValue + 'Hz', @alert.getDevice.getLatitude, @alert.getDevice.getLongitude));
+        // Display events
+        @for(event <- events) {
+          @if(event.getDevice != null) {
+            @if(event.getEventType().equals(models.Event.AlertType.FREQUENCY)) {
+              L.marker([@event.getDevice.getLatitude, @event.getDevice.getLongitude], {icon: frequencyMarker}).addTo(map)
+              .bindPopup(alertTemplate('@event.getEventType', '@utils.DateUtils.toDateTime(event.getTimestamp)', @event.getEventDuration + ' ms',
+              @event.getEventValue + 'Hz', @event.getDevice.getLatitude, @event.getDevice.getLongitude));
             }
-            @if(alert.getEventType().equals(models.Alert.AlertType.VOLTAGE)) {
-              L.marker([@alert.getDevice.getLatitude, @alert.getDevice.getLongitude], {icon: voltageMarker}).addTo(map)
-              .bindPopup(alertTemplate('@alert.getEventType', '@utils.DateUtils.toDateTime(alert.getTimestamp)', @alert.getEventDuration + ' ms',
-              @alert.getEventValue + ' V', @alert.getDevice.getLatitude, @alert.getDevice.getLongitude));
+            @if(event.getEventType().equals(models.Event.AlertType.VOLTAGE)) {
+              L.marker([@event.getDevice.getLatitude, @event.getDevice.getLongitude], {icon: voltageMarker}).addTo(map)
+              .bindPopup(alertTemplate('@event.getEventType', '@utils.DateUtils.toDateTime(event.getTimestamp)', @event.getEventDuration + ' ms',
+              @event.getEventValue + ' V', @event.getDevice.getLatitude, @event.getDevice.getLongitude));
             }
           }
       }   *@

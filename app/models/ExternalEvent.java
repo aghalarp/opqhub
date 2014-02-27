@@ -60,12 +60,12 @@ public class ExternalEvent extends Model {
   private String eventDescription;
 
   /**
-   * Each external event may be mapped to multiple alerts.
+   * Each external event may be mapped to multiple events.
    * <p/>
-   * For instance, if a tropical storm comes through, that storm may cause many alerts in a small geographical area.
+   * For instance, if a tropical storm comes through, that storm may cause many events in a small geographical area.
    */
   @OneToMany(mappedBy = "externalEvent", cascade = CascadeType.ALL)
-  private List<Alert> alerts = new ArrayList<>();
+  private List<Event> events = new ArrayList<>();
 
   /**
    * Convenience constructor for creating an external event.
@@ -142,20 +142,20 @@ public class ExternalEvent extends Model {
   }
 
   /**
-   * Get alerts associated with an event.
+   * Get events associated with an event.
    *
    * @return Alerts associated with this event.
    */
-  public List<Alert> getAlerts() {
-    return alerts;
+  public List<Event> getEvents() {
+    return events;
   }
 
   /**
-   * Set alerts associated with this event.
+   * Set events associated with this event.
    *
-   * @param alerts Alerts associated with this event.
+   * @param events Alerts associated with this event.
    */
-  public void setAlerts(List<Alert> alerts) {
-    this.alerts = alerts;
+  public void setEvents(List<Event> events) {
+    this.events = events;
   }
 }
