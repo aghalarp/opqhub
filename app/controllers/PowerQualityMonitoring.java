@@ -39,7 +39,7 @@ public class PowerQualityMonitoring extends Controller {
    */
   public static Result publicMonitor() {
     List<models.Alert> alerts = Alert.find().all();
-    List<models.OpqDevice> devices = OpqDevice.find().where().eq("participatingInCdsi", true).findList();
+    List<models.OpqDevice> devices = OpqDevice.find().where().eq("sharingData", true).findList();
     boolean loggedOut = !(session().containsKey("email"));
     return ok(views.html.publicpowerqualitymonitoring.render(alerts, devices, loggedOut));
   }
