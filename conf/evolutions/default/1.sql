@@ -5,13 +5,13 @@
 
 create table alert (
   primary_key               bigint auto_increment not null,
-  alert_type                integer,
-  alert_value               double,
+  event_type                integer,
+  event_value               double,
   timestamp                 bigint,
-  alert_duration            bigint,
+  event_duration            bigint,
   device_primary_key        bigint,
   external_event_primary_key bigint,
-  constraint ck_alert_alert_type check (alert_type in (0,1,2,3)),
+  constraint ck_alert_event_type check (event_type in (0,1,2,3)),
   constraint pk_alert primary key (primary_key))
 ;
 

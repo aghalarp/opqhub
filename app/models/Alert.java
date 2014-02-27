@@ -46,12 +46,12 @@ public class Alert extends Model implements Timestampable {
    * The type of alert as given by the AlertType Enum.
    */
   @Required
-  private OpqPacket.PacketType alertType;
+  private OpqPacket.PacketType eventType;
   /**
    * The value of the alert in either Hertz or Volts depending on the alert type.
    */
   @Required
-  private Double alertValue;
+  private Double eventValue;
   /**
    * Time alert occurred as milliseconds since the epoch.
    */
@@ -61,7 +61,7 @@ public class Alert extends Model implements Timestampable {
    * The amount of time the alert lasted in milliseconds.
    */
   @Required
-  private Long alertDuration;
+  private Long eventDuration;
   /**
    * Many alerts can be associated with a single device.
    */
@@ -74,19 +74,19 @@ public class Alert extends Model implements Timestampable {
   private ExternalEvent externalEvent;
 
   /**
-   * Convenience method for creating an alert during testing.
+   * Convenience method for creating an event during testing.
    *
-   * @param alertType     The alert type.
-   * @param alertValue    The alert value (either in Hertz or Volts depending on the type).
+   * @param eventType     The event type.
+   * @param eventValue    The event value (either in Hertz or Volts depending on the type).
    * @param timestamp     Timestamp for when alert happened representing number of milliseconds since epoch.
-   * @param alertDuration Number of milliseconds that alert occurred for.
+   * @param eventDuration Number of milliseconds that evebt occurred for.
    */
-  public Alert(OpqDevice device, OpqPacket.PacketType alertType, Long timestamp, Long alertDuration, Double alertValue) {
+  public Alert(OpqDevice device, OpqPacket.PacketType eventType, Long timestamp, Long eventDuration, Double eventValue) {
     this.setDevice(device);
-    this.setAlertType(alertType);
-    this.setAlertValue(alertValue);
+    this.setEventType(eventType);
+    this.setEventValue(eventValue);
     this.setTimestamp(timestamp);
-    this.setAlertDuration(alertDuration);
+    this.setEventDuration(eventDuration);
   }
 
   /**
@@ -121,8 +121,8 @@ public class Alert extends Model implements Timestampable {
    *
    * @return The alert type.
    */
-  public OpqPacket.PacketType getAlertType() {
-    return alertType;
+  public OpqPacket.PacketType getEventType() {
+    return eventType;
   }
 
   /**
@@ -130,10 +130,10 @@ public class Alert extends Model implements Timestampable {
    * <p/>
    * The alert type should be a member of the AlertType Enum.
    *
-   * @param alertType The alert type.
+   * @param eventType The alert type.
    */
-  public void setAlertType(OpqPacket.PacketType alertType) {
-    this.alertType = alertType;
+  public void setEventType(OpqPacket.PacketType eventType) {
+    this.eventType = eventType;
   }
 
   /**
@@ -141,17 +141,17 @@ public class Alert extends Model implements Timestampable {
    *
    * @return The alert value in hertz or volts.
    */
-  public Double getAlertValue() {
-    return alertValue;
+  public Double getEventValue() {
+    return eventValue;
   }
 
   /**
    * Set the alert value in either hertz or volts depending on the alert type.
    *
-   * @param alertValue Value of the alert in either hertz or volts depending on the alert type.
+   * @param eventValue Value of the alert in either hertz or volts depending on the alert type.
    */
-  public void setAlertValue(Double alertValue) {
-    this.alertValue = alertValue;
+  public void setEventValue(Double eventValue) {
+    this.eventValue = eventValue;
   }
 
   /**
@@ -177,17 +177,17 @@ public class Alert extends Model implements Timestampable {
    *
    * @return The duration of an alert represented in milliseconds.
    */
-  public Long getAlertDuration() {
-    return alertDuration;
+  public Long getEventDuration() {
+    return eventDuration;
   }
 
   /**
    * Set the duration of an alert.
    *
-   * @param alertDuration Duration of an alert represented in milliseconds.
+   * @param eventDuration Duration of an alert represented in milliseconds.
    */
-  public void setAlertDuration(Long alertDuration) {
-    this.alertDuration = alertDuration;
+  public void setEventDuration(Long eventDuration) {
+    this.eventDuration = eventDuration;
   }
 
   /**
