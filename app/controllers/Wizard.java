@@ -22,6 +22,7 @@ package controllers;
 import models.AlertNotification;
 import models.OpqDevice;
 import models.Person;
+import play.Logger;
 import play.data.Form;
 import play.data.validation.ValidationError;
 import play.mvc.Controller;
@@ -63,6 +64,7 @@ public class Wizard extends Controller {
     // Get person information
     Form<Person> personForm = form(Person.class).bindFromRequest();
     if (personForm.hasErrors()) {
+      Logger.debug(String.format("Wizard person form errors %s", personForm.errors().toString()));
       return makeError("Person form validation errors", personForm.errors());
     }
     Person person = personForm.get();
@@ -70,6 +72,7 @@ public class Wizard extends Controller {
     // Get device information
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
     if (opqDeviceForm.hasErrors()) {
+      Logger.debug(String.format("Wizard device form errors %s", opqDeviceForm.errors().toString()));
       return makeError("Error parsing OPQ Device info", opqDeviceForm.errors());
     }
     OpqDevice opqDevice = opqDeviceForm.get();
@@ -77,6 +80,7 @@ public class Wizard extends Controller {
     // Get alert notification information
     Form<AlertNotification> alertNotificationForm = form(AlertNotification.class).bindFromRequest();
     if (alertNotificationForm.hasErrors()) {
+      Logger.debug(String.format("Wizard alert notification form errors %s", alertNotificationForm.errors().toString()));
       return makeError("Error parsing alert info", alertNotificationForm.errors());
     }
     AlertNotification alertNotification = alertNotificationForm.get();
@@ -92,6 +96,7 @@ public class Wizard extends Controller {
     opqDevice.save();
     alertNotification.save();
 
+    Logger.info(String.format("Successful creation of device [%s] and user [%s] through wizard",                              opqDevice.getDeviceId(), person.getEmail()));
     return redirect(routes.Application.index());
   }
 
