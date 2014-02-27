@@ -21,7 +21,6 @@ package models;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
-import utils.Timestampable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -34,7 +33,7 @@ import javax.persistence.ManyToOne;
  * Measures are made by an opq device and contain a voltage, frequency measurement from a single point in time.
  */
 @Entity
-public class Measurement extends Model implements Timestampable {
+public class Measurement extends Model {
   /**
    * The primary key.
    */

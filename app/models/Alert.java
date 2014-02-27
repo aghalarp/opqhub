@@ -22,7 +22,6 @@ package models;
 import org.openpowerquality.protocol.OpqPacket;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
-import utils.Timestampable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -36,7 +35,7 @@ import javax.persistence.ManyToOne;
  * off the status-quo, or that an error has occurred with the user's opq-device.
  */
 @Entity
-public class Alert extends Model implements Timestampable {
+public class Alert extends Model {
   /**
    * Primary Key.
    */
