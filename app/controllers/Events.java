@@ -3,6 +3,7 @@ package controllers;
 import models.Alert;
 import models.ExternalEvent;
 import models.OpqDevice;
+import play.Logger;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
@@ -14,7 +15,7 @@ import views.html.error;
 import java.util.List;
 
 public class Events extends Controller {
-
+  @Security.Authenticated(Secured.class)
   public static Result filterEvents() {
     DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
     String selectedTimeUnit = dynamicForm.get("pastTimeSelect");
@@ -24,6 +25,7 @@ public class Events extends Controller {
     return redirect(routes.Events.eventsByPage(0, adjustedTimestamp));
   }
 
+  @Security.Authenticated(Secured.class)
   public static Result eventsByPage(Integer page, Long afterTimestamp) {
     Integer pages;
     final Integer ROWS_PER_PAGE = 10;
@@ -47,6 +49,8 @@ public class Events extends Controller {
     ExternalEvent externalEvent = event.getExternalEvent();
     Form<ExternalEvent> externalEventForm;
 
+    // TODO: Error page for when event is not found
+
     if(externalEvent == null) {
       externalEventForm = Form.form(ExternalEvent.class);
     }
@@ -62,7 +66,11 @@ public class Events extends Controller {
     Alert event = Alert.find().where().eq("primaryKey", eventId).findUnique();
     Form<ExternalEvent> externalEventForm = Form.form(ExternalEvent.class).bindFromRequest();
 
+    // TODO: Error page for when event is not found
+
     if (externalEventForm.hasErrors()) {
+      Logger.debug(String.format("Could not update event [%s] details due to %s", event.getPrimaryKey(),
+                                 externalEventForm.errors().toString()));
       return ok(error.render("Problem updating event", externalEventForm.errors().toString()));
     }
 
@@ -73,7 +81,7 @@ public class Events extends Controller {
     event.save();
 
     flash("updated", "External Event Updated");
-
+    Logger.debug(String.format("Event [%s] details updated", event.getPrimaryKey()));
     return redirect(routes.Events.eventDetails(eventId));
   }
 
@@ -86,6 +94,7 @@ public class Events extends Controller {
                                 .get(0);
 
     if(device == null) {
+      Logger.warn(String.format("Could not locate device associated with [%s] for nearby events", session("email")));
       return ok(error.render("Could not locate device with id", session("email")));
     }
 
@@ -100,6 +109,7 @@ public class Events extends Controller {
                                 .findUnique();
 
     if(device == null) {
+      Logger.warn(String.format("Could not locate device associated with [%s] for nearby events", session("email")));
       return ok(error.render("Could not locate device with id", deviceId.toString()));
     }
 

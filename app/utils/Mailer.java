@@ -4,6 +4,7 @@ package utils;
 import com.typesafe.plugin.MailerAPI;
 import com.typesafe.plugin.MailerPlugin;
 import org.openpowerquality.protocol.OpqPacket;
+import play.Logger;
 
 import java.util.concurrent.Callable;
 
@@ -15,6 +16,7 @@ public class Mailer {
     future(new Callable<Object>() {
       @Override
       public Object call() throws Exception {
+        Logger.info(String.format("mailer -> %s", to));
         MailerAPI mail = play.Play.application().plugin(MailerPlugin.class).email();
         mail.setSubject("OPQ Alert");
         mail.addFrom("OPQ Alert <openpowerquality@gmail.com>");

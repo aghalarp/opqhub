@@ -19,25 +19,15 @@
 
 package controllers;
 
-import com.typesafe.plugin.MailerAPI;
-import com.typesafe.plugin.MailerPlugin;
 import models.Alert;
 import models.AlertNotification;
 import models.Measurement;
 import models.OpqDevice;
-import models.Person;
 import org.openpowerquality.protocol.OpqPacket;
-import play.libs.Akka;
+import play.Logger;
 import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.WebSocket;
-import utils.Mailer;
-
-
-import java.util.concurrent.Callable;
-
-import static play.libs.Akka.future;
-
 
 
 /**
@@ -55,18 +45,21 @@ public class WebSockets extends Controller {
     return new WebSocket<String>() {
       @Override
       public void onReady(In<String> in, final Out<String> out) {
+        Logger.info("Websocket ready");
 
         in.onMessage(new F.Callback<String>() {
           @Override
           public void invoke(String s) throws Throwable {
-            handlePacket(new OpqPacket(s));
+            OpqPacket opqPacket = new OpqPacket(s);
+            Logger.info(String.format("Received %s from %s", opqPacket.getType(), opqPacket.getDeviceId()));
+            handlePacket(opqPacket);
           }
         });
 
         in.onClose(new F.Callback0() {
           @Override
           public void invoke() throws Throwable {
-
+            Logger.info("Websocket disconnected");
           }
         });
       }
@@ -103,7 +96,7 @@ public class WebSockets extends Controller {
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
 
     if(opqDevice == null) {
-      System.out.println("Device is null");
+      Logger.warn("handleAlert opq device is null");
       return;
     }
 
@@ -161,9 +154,8 @@ public class WebSockets extends Controller {
     Long deviceId = opqPacket.getDeviceId();
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
 
-
     if(opqDevice == null) {
-      System.out.println("Device is null");
+      Logger.warn("handleMeasurement opq device is null");
       return;
     }
 
