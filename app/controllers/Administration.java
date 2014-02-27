@@ -22,6 +22,7 @@ package controllers;
 import models.AlertNotification;
 import models.OpqDevice;
 import models.Person;
+import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -66,8 +67,11 @@ public class Administration extends Controller {
     Form<Person> personForm = form(Person.class).bindFromRequest();
 
     if (personForm.hasErrors()) {
+      Logger.debug(String.format("%s user information NOT updated due to errors %s", person.getPrimaryKey(), personForm.errors().toString()));
       return ok(error.render("Problem updating person", personForm.errors().toString()));
     }
+
+    Logger.debug(String.format("%s user information updated", person.getPrimaryKey()));
 
     personForm.get().update(person.getPrimaryKey());
     return redirect(routes.Administration.user());
@@ -102,6 +106,7 @@ public class Administration extends Controller {
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
 
     if (opqDeviceForm.hasErrors()) {
+      Logger.debug(String.format("New device not saved due to errors %s", opqDeviceForm.errors().toString()));
       return ok(error.render("Problem saving new device", opqDeviceForm.errors().toString()));
     }
 
@@ -111,6 +116,8 @@ public class Administration extends Controller {
     opqDevice.setPerson(person);
     opqDevice.save();
     person.save();
+
+    Logger.debug(String.format("New device [%s] saved", opqDevice.getSharingData()));
 
     flash("added", "Device added");
     return redirect(routes.Administration.device());
@@ -127,10 +134,12 @@ public class Administration extends Controller {
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
 
     if (opqDeviceForm.hasErrors()) {
+      Logger.debug(String.format("device not updated due to %s", opqDeviceForm.errors().toString()));
       return ok(error.render("Problem updating device", opqDeviceForm.errors().toString()));
     }
 
     opqDeviceForm.get().update(opqDevice.getPrimaryKey());
+    Logger.debug(String.format("device [%s] updated", opqDevice.getDeviceId()));
     flash("updated", "Device updated");
     return redirect(routes.Administration.device());
   }
@@ -148,6 +157,8 @@ public class Administration extends Controller {
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
     opqDevice.delete();
     opqDevice.save();
+
+    Logger.debug(String.format("Device [%s] deleted", opqDevice.getDeviceId()));
 
     return redirect(routes.Administration.device());
   }
@@ -189,6 +200,7 @@ public class Administration extends Controller {
     Form<AlertNotification> alertNotificationForm = form(AlertNotification.class).bindFromRequest();
 
     if (alertNotificationForm.hasErrors()) {
+      Logger.debug(String.format("Could not save alert due to %s", alertNotificationForm.errors().toString()));
       return ok(error.render("Problem creating new alert notification", alertNotificationForm.errors().toString()));
     }
 
@@ -202,6 +214,7 @@ public class Administration extends Controller {
     opqDevice.save();
     alertNotification.save();
     flash("added", "Added new device alert");
+    Logger.debug(String.format("Added device [%s] alert", opqDevice.getDeviceId()));
     return redirect(routes.Administration.alert());
   }
 
@@ -215,11 +228,13 @@ public class Administration extends Controller {
     Form<AlertNotification> alertNotificationForm = form(AlertNotification.class).bindFromRequest();
 
     if (alertNotificationForm.hasErrors()) {
+      Logger.debug(String.format("Could not update alert notification %s", alertNotificationForm.errors().toString()));
       return ok(error.render("Problem updating alert notifications", alertNotificationForm.errors().toString()));
     }
 
     alertNotificationForm.get().update(Long.parseLong(id));
     flash("updated", "Updated device alert");
+    Logger.debug(String.format("Alert notification updated"));
     return redirect(routes.Administration.alert());
   }
 
@@ -256,11 +271,12 @@ public class Administration extends Controller {
     }
 
     if(opqDevice == null) {
+      Logger.error(String.format("Unknown device [%s] when trying to edit data sharing", session("email")));
       return ok(error.render("Unknown device", ""));
     }
 
     opqDeviceForm = form(OpqDevice.class).fill(opqDevice);
-
+    Logger.debug(String.format("Data sharing updated for [%s]", opqDevice.getDeviceId()));
     return ok(updatedatashare.render(opqDeviceForm));
   }
 
@@ -269,11 +285,13 @@ public class Administration extends Controller {
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
 
     if(opqDeviceForm.hasErrors()) {
+      Logger.debug(String.format("Could not update data sharing due to %s", opqDeviceForm.errors().toString()));
       return ok(error.render("Problem updating data share", opqDeviceForm.errors().toString()));
     }
 
     opqDeviceForm.get().update(primaryKey);
     flash("updated", "Data sharing updated");
+    Logger.debug(String.format("Data sharing updated for [%s]", opqDeviceForm.data().get("email")));
     return redirect(routes.Administration.dataSharing());
   }
 }
