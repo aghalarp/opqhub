@@ -3,6 +3,7 @@ package controllers;
 import models.Alert;
 import models.ExternalEvent;
 import models.OpqDevice;
+import play.Logger;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
@@ -68,6 +69,8 @@ public class Events extends Controller {
     // TODO: Error page for when event is not found
 
     if (externalEventForm.hasErrors()) {
+      Logger.debug(String.format("Could not update event [%s] details due to %s", event.getPrimaryKey(),
+                                 externalEventForm.errors().toString()));
       return ok(error.render("Problem updating event", externalEventForm.errors().toString()));
     }
 
@@ -78,7 +81,7 @@ public class Events extends Controller {
     event.save();
 
     flash("updated", "External Event Updated");
-
+    Logger.debug(String.format("Event [%s] details updated", event.getPrimaryKey()));
     return redirect(routes.Events.eventDetails(eventId));
   }
 
@@ -91,6 +94,7 @@ public class Events extends Controller {
                                 .get(0);
 
     if(device == null) {
+      Logger.warn(String.format("Could not locate device associated with [%s] for nearby events", session("email")));
       return ok(error.render("Could not locate device with id", session("email")));
     }
 
@@ -105,6 +109,7 @@ public class Events extends Controller {
                                 .findUnique();
 
     if(device == null) {
+      Logger.warn(String.format("Could not locate device associated with [%s] for nearby events", session("email")));
       return ok(error.render("Could not locate device with id", deviceId.toString()));
     }
 
