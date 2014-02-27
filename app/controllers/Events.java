@@ -48,6 +48,8 @@ public class Events extends Controller {
     ExternalEvent externalEvent = event.getExternalEvent();
     Form<ExternalEvent> externalEventForm;
 
+    // TODO: Error page for when event is not found
+
     if(externalEvent == null) {
       externalEventForm = Form.form(ExternalEvent.class);
     }
@@ -62,6 +64,8 @@ public class Events extends Controller {
   public static Result updateEventDetails(Long eventId) {
     Alert event = Alert.find().where().eq("primaryKey", eventId).findUnique();
     Form<ExternalEvent> externalEventForm = Form.form(ExternalEvent.class).bindFromRequest();
+
+    // TODO: Error page for when event is not found
 
     if (externalEventForm.hasErrors()) {
       return ok(error.render("Problem updating event", externalEventForm.errors().toString()));
