@@ -14,7 +14,7 @@ import views.html.error;
 import java.util.List;
 
 public class Events extends Controller {
-
+  @Security.Authenticated(Secured.class)
   public static Result filterEvents() {
     DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
     String selectedTimeUnit = dynamicForm.get("pastTimeSelect");
@@ -24,6 +24,7 @@ public class Events extends Controller {
     return redirect(routes.Events.eventsByPage(0, adjustedTimestamp));
   }
 
+  @Security.Authenticated(Secured.class)
   public static Result eventsByPage(Integer page, Long afterTimestamp) {
     Integer pages;
     final Integer ROWS_PER_PAGE = 10;
