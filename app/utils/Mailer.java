@@ -21,7 +21,7 @@ public class Mailer {
         mail.setSubject("OPQ Alert");
         mail.addFrom("OPQ Alert <openpowerquality@gmail.com>");
         mail.addRecipient(to);
-        mail.send(String.format("Timestamp: %s\nAlert Type: %s\nAlert Value: %s",
+        mail.send(String.format("Timestamp: %s\nEvent Type: %s\nEvent Value: %s",
                                 utils.DateUtils.toDateTime(opqPacket.getTimestamp()),
                                 opqPacket.getType().getName(),
                                 opqPacket.getAlertValue()));

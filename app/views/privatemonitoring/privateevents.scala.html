@@ -17,7 +17,7 @@ along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 Copyright 2013 Anthony Christe
 *@
 @(
-    alerts: List[Alert],
+    events: List[Event],
     page: Integer,
     pages: Integer
     )
@@ -60,38 +60,38 @@ Copyright 2013 Anthony Christe
           <tr>
             <th>Device Id</th>
             <th>Description</th>
-            <th>Alert Type</th>
+            <th>Event Type</th>
             <th>Timestamp</th>
             <th>Duration (ms)</th>
-            <th>Alert Value</th>
-            <th>External Event</th>
+            <th>Event Value</th>
+            <th>External Cause</th>
             <th>Details</th>
           </tr>
         </thead>
         <tbody>
-        @for(alert <- alerts) {
+        @for(event <- events) {
           <tr>
-            <td>@alert.getDevice.getDeviceId</td>
-            <td>@alert.getDevice.getDescription</td>
-            <td>@alert.getAlertType.getName</td>
-            <td>@utils.DateUtils.toDateTime(alert.getTimestamp)</td>
-            <td>@alert.getAlertDuration</td>
+            <td>@event.getDevice.getDeviceId</td>
+            <td>@event.getDevice.getDescription</td>
+            <td>@event.getEventType.getName</td>
+            <td>@utils.DateUtils.toDateTime(event.getTimestamp)</td>
+            <td>@event.getEventDuration</td>
             <td>
-              @alert.getAlertValue
-              @if(alert.getAlertType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_FREQUENCY)) {
+              @event.getEventValue
+              @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_FREQUENCY)) {
                 Hz
               }
-              @if(alert.getAlertType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_VOLTAGE)) {
+              @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_VOLTAGE)) {
                 Volts
               }
             </td>
             <td>
-            @if(alert.getExternalEvent != null) {
-              @alert.getExternalEvent.getEventType
+            @if(event.getExternalCause != null) {
+              @event.getExternalCause.getCauseType
             }
             </td>
             <td>
-              <a href="@routes.Events.eventDetails(alert.getPrimaryKey)" class="btn btn-primary">Details</a>
+              <a href="@routes.Events.eventDetails(event.getPrimaryKey)" class="btn btn-primary">Details</a>
             </td>
           </tr>
         }

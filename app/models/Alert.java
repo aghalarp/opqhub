@@ -19,10 +19,8 @@
 
 package models;
 
-import org.openpowerquality.protocol.OpqPacket;
-import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
-import utils.Timestampable;
+import utils.Sms;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -30,69 +28,132 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 /**
- * This contains methods for viewing and modifying the persistent Alert object.
+ * Contains methods for viewing managing persistent AlertNotifications.
  * <p/>
- * Alerts are triggered when power quality is not up to snuff. They indicate that either the voltage or frequency are
- * off the status-quo, or that an error has occurred with the user's opq-device.
+ * AlertNotifications are created by the user to determine what their OPQ device views as power quality alerts. They can
+ * also be configured so that SMS messages or emails are generated when an alert is triggered.
  */
 @Entity
-public class Alert extends Model implements Timestampable {
+public class Alert extends Model {
   /**
-   * Primary Key.
+   * Primary key.
    */
   @Id
   private Long primaryKey;
+
+  // TODO: Figure out which fields need to be required
   /**
-   * The type of alert as given by the AlertType Enum.
+   * If true, then voltage should be monitored using min/max values below.
    */
-  @Required
-  private OpqPacket.PacketType alertType;
-  /**
-   * The value of the alert in either Hertz or Volts depending on the alert type.
-   */
-  @Required
-  private Double alertValue;
-  /**
-   * Time alert occurred as milliseconds since the epoch.
-   */
-  @Required
-  private Long timestamp;
-  /**
-   * The amount of time the alert lasted in milliseconds.
-   */
-  @Required
-  private Long alertDuration;
-  /**
-   * Many alerts can be associated with a single device.
-   */
-  @ManyToOne(cascade = CascadeType.ALL)
-  private OpqDevice device;
-  /**
-   * Many alerts can be associated with an external event.
-   */
-  @ManyToOne(cascade = CascadeType.ALL)
-  private ExternalEvent externalEvent;
+  private Boolean voltageAlertNotification;
 
   /**
-   * Convenience method for creating an alert during testing.
-   *
-   * @param alertType     The alert type.
-   * @param alertValue    The alert value (either in Hertz or Volts depending on the type).
-   * @param timestamp     Timestamp for when alert happened representing number of milliseconds since epoch.
-   * @param alertDuration Number of milliseconds that alert occurred for.
+   * If true, then frequency should be monitored using min/max values below.
    */
-  public Alert(OpqDevice device, OpqPacket.PacketType alertType, Long timestamp, Long alertDuration, Double alertValue) {
-    this.setDevice(device);
-    this.setAlertType(alertType);
-    this.setAlertValue(alertValue);
-    this.setTimestamp(timestamp);
-    this.setAlertDuration(alertDuration);
+  private Boolean frequencyAlertNotification;
+
+  /**
+   * If true, then alerts will be triggered on device malfunctions
+   */
+  private Boolean deviceAlertNotification;
+
+  // TODO: Implement sending of e-mail on alert.
+  /**
+   * If true, alerts should trigger an e-mail message.
+   */
+  private Boolean alertViaEmail;
+
+  /**
+   * E-mail address that alert e-mails should be sent to.
+   */
+  private String notificationEmail;
+
+  // TODO: Implement sending of SMS on alert.
+  /**
+   * If true, alerts should trigger an SMS message.
+   */
+  private Boolean alertViaSms;
+
+  /**
+   * Carrier that user wants alerts sent to. This currently only works for a couple of major carriers in the United
+   * States.
+   */
+  private Sms.SmsCarrier smsCarrier;
+
+  /**
+   * Number of user's SMS device.
+   */
+  private String smsNumber;
+
+  /**
+   * The minimum voltages (in Volts) that should not trigger alert. Any value less than this minimum should trigger an
+   * alert.
+   */
+  private Double minAcceptableVoltage;
+
+  /**
+   * Maximum voltage (in Volts) that should not trigger alert. Any value greater than this maximum should trigger an
+   * alert.
+   */
+  private Double maxAcceptableVoltage;
+
+  /**
+   * The minimum frequency (in Hertz) that should not trigger an alert. Any value less than this minimum should trigger
+   * an alert.
+   */
+  private Double minAcceptableFrequency;
+
+  /**
+   * The maximum frequency (in Hertz) that should not trigger an alert. Any value greater than this maximum should
+   * trigger an alert.
+   */
+  private Double maxAcceptableFrequency;
+
+  /**
+   * Convenience method for test package.
+   *
+   * @param voltageAlertNotification   Should bad voltages trigger an alert.
+   * @param frequencyAlertNotification Should bad frequencies trigger an alert.
+   * @param alertViaEmail              Should users be e-mailed on alerts.
+   * @param alertViaSms                Should users be texted on alerts.
+   * @param smsCarrier                 Carrier of users text service.
+   * @param smsNumber                  Users sms number.
+   * @param notificationEmail          Users notification email.
+   * @param minAcceptableFrequency     Min frequency that will not trigger alert.
+   * @param maxAcceptableFrequency     Max frequency that will not trigger alert.
+   * @param minAcceptableVoltage       Min voltage that will not trigger an alert.
+   * @param maxAcceptableVoltage       Max voltage that will not trigger an alert.
+   */
+  public Alert(Boolean voltageAlertNotification, Boolean frequencyAlertNotification, Boolean deviceAlertNotification,
+               Boolean alertViaEmail, Boolean alertViaSms, Sms.SmsCarrier smsCarrier, String smsNumber,
+               String notificationEmail, Double minAcceptableFrequency, Double maxAcceptableFrequency,
+               Double minAcceptableVoltage, Double maxAcceptableVoltage) {
+    this.setVoltageAlertNotification(voltageAlertNotification);
+    this.setFrequencyAlertNotification(frequencyAlertNotification);
+    this.setDeviceAlertNotification(deviceAlertNotification);
+    this.setAlertViaEmail(alertViaEmail);
+    this.setAlertViaSms(alertViaSms);
+    this.setSmsCarrier(smsCarrier);
+    this.setSmsNumber(smsNumber);
+    this.setNotificationEmail(notificationEmail);
+    this.setMinAcceptableFrequency(minAcceptableFrequency);
+    this.setMaxAcceptableFrequency(maxAcceptableFrequency);
+    this.setMinAcceptableVoltage(minAcceptableVoltage);
+    this.setMaxAcceptableVoltage(maxAcceptableVoltage);
   }
 
   /**
-   * Create a new finder for persisted alerts.
+   * Many alert notifications may be set up for a single device.
+   */
+  @ManyToOne(cascade = CascadeType.ALL)
+  private OpqDevice device;
+
+  // TODO: Add in constructor
+
+  /**
+   * Create a finder for finding persisted AlertNotifications.
    *
-   * @return A new finder for persisted alerts.
+   * @return A new finder for finding persisted AlertNotifications.
    */
   public static Finder<Long, Alert> find() {
     return new Finder<>(Long.class, Alert.class);
@@ -117,113 +178,238 @@ public class Alert extends Model implements Timestampable {
   }
 
   /**
-   * Get alert type.
+   * Tests whether or not alerts should be triggered on device malfunctions.
    *
-   * @return The alert type.
+   * @return Whether or not alerts should be triggered on device malfunctions.
    */
-  public OpqPacket.PacketType getAlertType() {
-    return alertType;
+  public Boolean getDeviceAlertNotification() {
+    return this.deviceAlertNotification;
   }
 
   /**
-   * Set alert type.
-   * <p/>
-   * The alert type should be a member of the AlertType Enum.
+   * Set whether or not alerts should be triggered on device malfunctions.
    *
-   * @param alertType The alert type.
+   * @param deviceAlertNotification True to trigger, false otherwise.
    */
-  public void setAlertType(OpqPacket.PacketType alertType) {
-    this.alertType = alertType;
+  public void setDeviceAlertNotification(Boolean deviceAlertNotification) {
+    this.deviceAlertNotification = deviceAlertNotification;
   }
 
   /**
-   * Get the alert value in hertz or volts depending on the alert type.
+   * Tests whether or not alerts should be triggered for abnormal voltages.
    *
-   * @return The alert value in hertz or volts.
+   * @return Should voltage alerts be triggered.
    */
-  public Double getAlertValue() {
-    return alertValue;
+  public Boolean getVoltageAlertNotification() {
+    return voltageAlertNotification;
   }
 
   /**
-   * Set the alert value in either hertz or volts depending on the alert type.
+   * Set whether or not alerts should be triggered for abnormal voltage readings.
    *
-   * @param alertValue Value of the alert in either hertz or volts depending on the alert type.
+   * @param voltageAlertNotification True to trigger, false otherwise.
    */
-  public void setAlertValue(Double alertValue) {
-    this.alertValue = alertValue;
+  public void setVoltageAlertNotification(Boolean voltageAlertNotification) {
+    this.voltageAlertNotification = voltageAlertNotification;
   }
 
   /**
-   * Get the timestamp of an alert represented as the number of milliseconds since the epoch.
+   * Tests whether or not alerts should be triggered for abnormal frequency readings.
    *
-   * @return The time an alert occured in milliseconds since the epoch.
+   * @return Should frequency alerts be triggered.
    */
-  public Long getTimestamp() {
-    return timestamp;
+  public Boolean getFrequencyAlertNotification() {
+    return frequencyAlertNotification;
   }
 
   /**
-   * Set the timestamp of an alert.
+   * Set whether or not alerts should be triggered for abnormal frequency readings.
    *
-   * @param timestamp Timestamp of an alert represented as number of milliseconds since the epoch.
+   * @param frequencyAlertNotification True to trigger, false otherwise.
    */
-  public void setTimestamp(Long timestamp) {
-    this.timestamp = timestamp;
+  public void setFrequencyAlertNotification(Boolean frequencyAlertNotification) {
+    this.frequencyAlertNotification = frequencyAlertNotification;
   }
 
   /**
-   * Get the duration of an alert.
+   * Tests whether alerts should trigger an e-mail notification.
    *
-   * @return The duration of an alert represented in milliseconds.
+   * @return Whether alerts should trigger an e-mail notification.
    */
-  public Long getAlertDuration() {
-    return alertDuration;
+  public Boolean getAlertViaEmail() {
+    return alertViaEmail;
   }
 
   /**
-   * Set the duration of an alert.
+   * Set whether or not users should be notified by e-mail on alerts.
    *
-   * @param alertDuration Duration of an alert represented in milliseconds.
+   * @param alertViaEmail If true alerts will trigger e-mails, false otherwise.
    */
-  public void setAlertDuration(Long alertDuration) {
-    this.alertDuration = alertDuration;
+  public void setAlertViaEmail(Boolean alertViaEmail) {
+    this.alertViaEmail = alertViaEmail;
   }
 
   /**
-   * Get the device associated with this alert.
+   * Get e-mail address for e-mail notifications.
    *
-   * @return Device associated with this alert.
+   * @return The e-mail address associated with this alert notification.
+   */
+  public String getNotificationEmail() {
+    return notificationEmail;
+  }
+
+  /**
+   * Sets the e-mail address associated with this alert notification.
+   *
+   * @param notificationEmail E-mail address associated with this alert notification.
+   */
+  public void setNotificationEmail(String notificationEmail) {
+    this.notificationEmail = notificationEmail;
+  }
+
+  /**
+   * Tests whether or not this alert notification should trigger an sms notification.
+   *
+   * @return if true, then sms notifications will be sent, false otherwise.
+   */
+  public Boolean getAlertViaSms() {
+    return alertViaSms;
+  }
+
+  /**
+   * Sets whether or not this alert notification should trigger an sms notification.
+   *
+   * @param alertViaSms True to trigger an sms notification, false otherwise.
+   */
+  public void setAlertViaSms(Boolean alertViaSms) {
+    this.alertViaSms = alertViaSms;
+  }
+
+  /**
+   * Gets the sms carrier name associated with this alert notification.
+   *
+   * @return The sms carrier name associated with this alert notification.
+   */
+  public Sms.SmsCarrier getSmsCarrier() {
+    return smsCarrier;
+  }
+
+  /**
+   * Sets the sms carrier associated with this alert notification.
+   *
+   * @param smsCarrier The name of the SMS carrier associated with this notification. See utils/FormUtils.java for an a
+   *                   list of currently available carriers.
+   */
+  public void setSmsCarrier(Sms.SmsCarrier smsCarrier) {
+    this.smsCarrier = smsCarrier;
+  }
+
+  /**
+   * Gets the sms number associated with this alert notification.
+   *
+   * @return The sms number associated with this alert notification.
+   */
+  public String getSmsNumber() {
+    return smsNumber;
+  }
+
+  /**
+   * Sets the sms number associated with this alert notification.
+   *
+   * @param smsNumber The sms number associated with this alert notification. The format of the number should be
+   *                  ########## as a string.
+   */
+  public void setSmsNumber(String smsNumber) {
+    this.smsNumber = smsNumber;
+  }
+
+  /**
+   * Gets the minimum voltage that will not trigger an alert.
+   *
+   * @return The minimum voltage in volts.
+   */
+  public Double getMinAcceptableVoltage() {
+    return minAcceptableVoltage;
+  }
+
+  /**
+   * Sets the minimum voltage that will not cause an alert.
+   *
+   * @param minAcceptableVoltage Minimum voltage (in volts).
+   */
+  public void setMinAcceptableVoltage(Double minAcceptableVoltage) {
+    this.minAcceptableVoltage = minAcceptableVoltage;
+  }
+
+  /**
+   * Gets maximum voltage that will not trigger an alert.
+   *
+   * @return Maximum voltage (in volts).
+   */
+  public Double getMaxAcceptableVoltage() {
+    return maxAcceptableVoltage;
+  }
+
+  /**
+   * Sets maximum voltage that will not cause an alert.
+   *
+   * @param maxAcceptableVoltage Maximum voltage (in volts).
+   */
+  public void setMaxAcceptableVoltage(Double maxAcceptableVoltage) {
+    this.maxAcceptableVoltage = maxAcceptableVoltage;
+  }
+
+  /**
+   * Gets minimum frequency that will not cause an alert.
+   *
+   * @return Minimum frequency (in Hertz).
+   */
+  public Double getMinAcceptableFrequency() {
+    return minAcceptableFrequency;
+  }
+
+  /**
+   * Sets minimum frequency that should not cause an alert.
+   *
+   * @param minAcceptableFrequency Minimum frequency (in Hertz).
+   */
+  public void setMinAcceptableFrequency(Double minAcceptableFrequency) {
+    this.minAcceptableFrequency = minAcceptableFrequency;
+  }
+
+  /**
+   * Gets maximum frequency that will not cause an alert.
+   *
+   * @return Maximum frequency (in Hertz).
+   */
+  public Double getMaxAcceptableFrequency() {
+    return maxAcceptableFrequency;
+  }
+
+  /**
+   * Sets the maximum frequency that should not cause an alert.
+   *
+   * @param maxAcceptableFrequency Maximum frequency (in Hertz).
+   */
+  public void setMaxAcceptableFrequency(Double maxAcceptableFrequency) {
+    this.maxAcceptableFrequency = maxAcceptableFrequency;
+  }
+
+  /**
+   * Gets device associated with this alert notification.
+   *
+   * @return Device associated with this alert notification.
    */
   public OpqDevice getDevice() {
     return device;
   }
 
   /**
-   * Set the device associated with this alert.
+   * Sets the device associated with this alert notification.
    *
-   * @param device The device associated with this alert.
+   * @param device Device associated with this alert notification.
    */
   public void setDevice(OpqDevice device) {
     this.device = device;
   }
-
-  /**
-   * Get the external event associated with this alert (if one exists).
-   *
-   * @return External event associated with this alert.
-   */
-  public ExternalEvent getExternalEvent() {
-    return externalEvent;
-  }
-
-  /**
-   * Set the external event associated with this alert.
-   *
-   * @param externalEvent External event associated with this alert.
-   */
-  public void setExternalEvent(ExternalEvent externalEvent) {
-    this.externalEvent = externalEvent;
-  }
-
 }

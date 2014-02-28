@@ -1,7 +1,7 @@
 package controllers;
 
-import models.Alert;
-import models.ExternalEvent;
+import models.Event;
+import models.ExternalCause;
 import models.OpqDevice;
 import play.Logger;
 import play.data.DynamicForm;
@@ -30,7 +30,7 @@ public class Events extends Controller {
     Integer pages;
     final Integer ROWS_PER_PAGE = 10;
     Long after = (afterTimestamp == null) ? 0 : afterTimestamp;
-    List<Alert> events = Alert.find().where()
+    List<Event> events = Event.find().where()
         .eq("device.person.email", session("email"))
         .gt("timestamp", after)
         .order("timestamp desc")
@@ -38,24 +38,24 @@ public class Events extends Controller {
         .getPage(page)
         .getList();
 
-    pages = Alert.find().where().eq("device.person.email", session("email")).gt("timestamp", after).findRowCount() / ROWS_PER_PAGE;
+    pages = Event.find().where().eq("device.person.email", session("email")).gt("timestamp", after).findRowCount() / ROWS_PER_PAGE;
 
     return ok(views.html.privatemonitoring.privateevents.render(events, page, pages));
   }
 
   @Security.Authenticated(Secured.class)
   public static Result eventDetails(Long eventId) {
-    Alert event = Alert.find().where().eq("primaryKey", eventId).findUnique();
-    ExternalEvent externalEvent = event.getExternalEvent();
-    Form<ExternalEvent> externalEventForm;
+    Event event = Event.find().where().eq("primaryKey", eventId).findUnique();
+    ExternalCause externalCause = event.getExternalCause();
+    Form<ExternalCause> externalEventForm;
 
     // TODO: Error page for when event is not found
 
-    if(externalEvent == null) {
-      externalEventForm = Form.form(ExternalEvent.class);
+    if(externalCause == null) {
+      externalEventForm = Form.form(ExternalCause.class);
     }
     else {
-      externalEventForm = Form.form(ExternalEvent.class).fill(externalEvent);
+      externalEventForm = Form.form(ExternalCause.class).fill(externalCause);
     }
 
     return ok(views.html.privatemonitoring.alertdetails.render(event, externalEventForm));
@@ -63,8 +63,8 @@ public class Events extends Controller {
 
   @Security.Authenticated(Secured.class)
   public static Result updateEventDetails(Long eventId) {
-    Alert event = Alert.find().where().eq("primaryKey", eventId).findUnique();
-    Form<ExternalEvent> externalEventForm = Form.form(ExternalEvent.class).bindFromRequest();
+    Event event = Event.find().where().eq("primaryKey", eventId).findUnique();
+    Form<ExternalCause> externalEventForm = Form.form(ExternalCause.class).bindFromRequest();
 
     // TODO: Error page for when event is not found
 
@@ -74,13 +74,13 @@ public class Events extends Controller {
       return ok(error.render("Problem updating event", externalEventForm.errors().toString()));
     }
 
-    ExternalEvent externalEvent = externalEventForm.get();
-    externalEvent.getAlerts().add(event);
-    event.setExternalEvent(externalEvent);
-    externalEvent.save();
+    ExternalCause externalCause = externalEventForm.get();
+    externalCause.getEvents().add(event);
+    event.setExternalCause(externalCause);
+    externalCause.save();
     event.save();
 
-    flash("updated", "External Event Updated");
+    flash("updated", "External Cause Updated");
     Logger.debug(String.format("Event [%s] details updated", event.getPrimaryKey()));
     return redirect(routes.Events.eventDetails(eventId));
   }
@@ -129,7 +129,7 @@ public class Events extends Controller {
       scale *= 2;
     }
 
-    List<Alert> events = Alert.find().where()
+    List<Event> events = Event.find().where()
                               .startsWith("device.gridId", gridId.substring(0, gridId.length() - cnt))
                               .ne("device.deviceId", deviceId)
                               .eq("device.sharingData", true)

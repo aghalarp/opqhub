@@ -17,7 +17,7 @@ along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 Copyright 2013 Anthony Christe
 *@
 @(
-    events: List[Alert],
+    events: List[Event],
     page: Integer,
     pages: Integer,
     deviceId: Long,
@@ -79,21 +79,21 @@ Copyright 2013 Anthony Christe
               }
 
             </td>
-            <td>@event.getAlertType.getName</td>
+            <td>@event.getEventType.getName</td>
             <td>@utils.DateUtils.toDateTime(event.getTimestamp)</td>
-            <td>@event.getAlertDuration</td>
+            <td>@event.getEventDuration</td>
             <td>
-              @event.getAlertValue
-              @if(event.getAlertType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_FREQUENCY)) {
+              @event.getEventValue
+              @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_FREQUENCY)) {
                 Hz
               }
-              @if(event.getAlertType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_VOLTAGE)) {
+              @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_VOLTAGE)) {
                 Volts
               }
             </td>
             <td>
-            @if(event.getExternalEvent != null) {
-              @event.getExternalEvent.getEventType
+            @if(event.getExternalCause != null) {
+              @event.getExternalCause.getCauseType
             }
             </td>
           </tr>

@@ -19,8 +19,8 @@
 
 package controllers;
 
+import models.Event;
 import models.Alert;
-import models.AlertNotification;
 import models.Measurement;
 import models.OpqDevice;
 import org.openpowerquality.protocol.OpqPacket;
@@ -89,7 +89,7 @@ public class WebSockets extends Controller {
    * <p/>
    * Once a valid alert is received, add it to the database.
    *
-   * @param opqPacket Alert packet from device.
+   * @param opqPacket Event packet from device.
    */
   private static void handleAlert(OpqPacket opqPacket) {
     Long deviceId = opqPacket.getDeviceId();
@@ -100,42 +100,42 @@ public class WebSockets extends Controller {
       return;
     }
 
-    Alert alert = new Alert(
+    Event event = new Event(
         opqDevice,
         opqPacket.getType(),
         opqPacket.getTimestamp(),
         opqPacket.getAlertDuration(),
         opqPacket.getAlertValue());
 
-    alert.setDevice(opqDevice);
-    alert.save();
-    opqDevice.getAlerts().add(alert);
+    event.setDevice(opqDevice);
+    event.save();
+    opqDevice.getEvents().add(event);
     opqDevice.save();
 
     // Determine whether or not to notify user based on their alert preferences
-    AlertNotification alertNotification = opqDevice.getAlertNotifications().get(0);
+    Alert alert = opqDevice.getAlerts().get(0);
     switch(opqPacket.getType()) {
       case ALERT_FREQUENCY:
-        if(alertNotification.getFrequencyAlertNotification() &&
-           (opqPacket.getAlertValue() < alertNotification.getMinAcceptableFrequency() ||
-            opqPacket.getAlertValue() > alertNotification.getMaxAcceptableFrequency())) {
-            if(alertNotification.getAlertViaEmail()) {
-              utils.Mailer.sendAlert(opqPacket, alertNotification.getNotificationEmail());
+        if(alert.getFrequencyAlertNotification() &&
+           (opqPacket.getAlertValue() < alert.getMinAcceptableFrequency() ||
+            opqPacket.getAlertValue() > alert.getMaxAcceptableFrequency())) {
+            if(alert.getAlertViaEmail()) {
+              utils.Mailer.sendAlert(opqPacket, alert.getNotificationEmail());
             }
-            if(alertNotification.getAlertViaSms()) {
-              utils.Mailer.sendAlert(opqPacket, utils.Sms.formatSmsEmailAddress(alertNotification.getSmsNumber(), alertNotification.getSmsCarrier()));
+            if(alert.getAlertViaSms()) {
+              utils.Mailer.sendAlert(opqPacket, utils.Sms.formatSmsEmailAddress(alert.getSmsNumber(), alert.getSmsCarrier()));
             }
         }
         break;
       case ALERT_VOLTAGE:
-        if(alertNotification.getVoltageAlertNotification() &&
-           (opqPacket.getAlertValue() < alertNotification.getMinAcceptableVoltage() ||
-            opqPacket.getAlertValue() > alertNotification.getMaxAcceptableVoltage())) {
-          if(alertNotification.getAlertViaEmail()) {
-            utils.Mailer.sendAlert(opqPacket, alertNotification.getNotificationEmail());
+        if(alert.getVoltageAlertNotification() &&
+           (opqPacket.getAlertValue() < alert.getMinAcceptableVoltage() ||
+            opqPacket.getAlertValue() > alert.getMaxAcceptableVoltage())) {
+          if(alert.getAlertViaEmail()) {
+            utils.Mailer.sendAlert(opqPacket, alert.getNotificationEmail());
           }
-          if(alertNotification.getAlertViaSms()) {
-            utils.Mailer.sendAlert(opqPacket, utils.Sms.formatSmsEmailAddress(alertNotification.getSmsNumber(), alertNotification.getSmsCarrier()));
+          if(alert.getAlertViaSms()) {
+            utils.Mailer.sendAlert(opqPacket, utils.Sms.formatSmsEmailAddress(alert.getSmsNumber(), alert.getSmsCarrier()));
           }
         }
         break;

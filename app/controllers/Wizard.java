@@ -19,7 +19,7 @@
 
 package controllers;
 
-import models.AlertNotification;
+import models.Alert;
 import models.OpqDevice;
 import models.Person;
 import play.Logger;
@@ -30,7 +30,6 @@ import play.mvc.Result;
 import views.html.error;
 import views.html.wizard.wizard;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,9 +47,9 @@ public class Wizard extends Controller {
   public static Result index() {
     Form<Person> personForm = form(Person.class);
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class);
-    AlertNotification alertNotification = new AlertNotification(true, true, true, true, false, null, null, null,
+    Alert alert = new Alert(true, true, true, true, false, null, null, null,
                                                                 59.0, 61.0, 100.0, 120.0);
-    Form<AlertNotification> alertNotificationForm = form(AlertNotification.class).fill(alertNotification);
+    Form<Alert> alertNotificationForm = form(Alert.class).fill(alert);
 
     return ok(wizard.render(personForm, opqDeviceForm, alertNotificationForm));
   }
@@ -78,23 +77,23 @@ public class Wizard extends Controller {
     OpqDevice opqDevice = opqDeviceForm.get();
 
     // Get alert notification information
-    Form<AlertNotification> alertNotificationForm = form(AlertNotification.class).bindFromRequest();
+    Form<Alert> alertNotificationForm = form(Alert.class).bindFromRequest();
     if (alertNotificationForm.hasErrors()) {
       Logger.debug(String.format("Wizard alert notification form errors %s", alertNotificationForm.errors().toString()));
       return makeError("Error parsing alert info", alertNotificationForm.errors());
     }
-    AlertNotification alertNotification = alertNotificationForm.get();
+    Alert alert = alertNotificationForm.get();
 
     // Now that we have all the data, it should be possible to complete all the relationships.
     person.getDevices().add(opqDevice);
     opqDevice.setPerson(person);
-    alertNotification.setDevice(opqDevice);
-    opqDevice.getAlertNotifications().add(alertNotification);
+    alert.setDevice(opqDevice);
+    opqDevice.getAlerts().add(alert);
 
     // Persist everything to the DB
     person.save();
     opqDevice.save();
-    alertNotification.save();
+    alert.save();
 
     Logger.info(String.format("Successful creation of device [%s] and user [%s] through wizard",                              opqDevice.getDeviceId(), person.getEmail()));
     return redirect(routes.Application.index());
