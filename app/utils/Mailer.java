@@ -24,7 +24,7 @@ public class Mailer {
         mail.send(String.format("Timestamp: %s\nEvent Type: %s\nEvent Value: %s",
                                 utils.DateUtils.toDateTime(opqPacket.getTimestamp()),
                                 opqPacket.getType().getName(),
-                                opqPacket.getAlertValue()));
+                                opqPacket.getEventValue()));
         return null;
       }
     });

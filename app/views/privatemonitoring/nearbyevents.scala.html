@@ -84,10 +84,10 @@ Copyright 2013 Anthony Christe
             <td>@event.getEventDuration</td>
             <td>
               @event.getEventValue
-              @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_FREQUENCY)) {
+              @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.EVENT_FREQUENCY)) {
                 Hz
               }
-              @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.ALERT_VOLTAGE)) {
+              @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.EVENT_VOLTAGE)) {
                 Volts
               }
             </td>

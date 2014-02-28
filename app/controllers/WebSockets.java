@@ -73,9 +73,9 @@ public class WebSockets extends Controller {
    */
   private static void handlePacket(OpqPacket opqPacket) {
     switch(opqPacket.getType()) {
-      case ALERT_FREQUENCY:
-      case ALERT_VOLTAGE:
-      case ALERT_DEVICE:
+      case EVENT_FREQUENCY:
+      case EVENT_VOLTAGE:
+      case EVENT_DEVICE:
         handleAlert(opqPacket);
         break;
       case MEASUREMENT:
@@ -104,8 +104,8 @@ public class WebSockets extends Controller {
         opqDevice,
         opqPacket.getType(),
         opqPacket.getTimestamp(),
-        opqPacket.getAlertDuration(),
-        opqPacket.getAlertValue());
+        opqPacket.getEventDuration(),
+        opqPacket.getEventValue());
 
     event.setDevice(opqDevice);
     event.save();
@@ -115,10 +115,10 @@ public class WebSockets extends Controller {
     // Determine whether or not to notify user based on their alert preferences
     Alert alert = opqDevice.getAlerts().get(0);
     switch(opqPacket.getType()) {
-      case ALERT_FREQUENCY:
+      case EVENT_FREQUENCY:
         if(alert.getFrequencyAlertNotification() &&
-           (opqPacket.getAlertValue() < alert.getMinAcceptableFrequency() ||
-            opqPacket.getAlertValue() > alert.getMaxAcceptableFrequency())) {
+           (opqPacket.getEventValue() < alert.getMinAcceptableFrequency() ||
+            opqPacket.getEventValue() > alert.getMaxAcceptableFrequency())) {
             if(alert.getAlertViaEmail()) {
               utils.Mailer.sendAlert(opqPacket, alert.getNotificationEmail());
             }
@@ -127,10 +127,10 @@ public class WebSockets extends Controller {
             }
         }
         break;
-      case ALERT_VOLTAGE:
+      case EVENT_VOLTAGE:
         if(alert.getVoltageAlertNotification() &&
-           (opqPacket.getAlertValue() < alert.getMinAcceptableVoltage() ||
-            opqPacket.getAlertValue() > alert.getMaxAcceptableVoltage())) {
+           (opqPacket.getEventValue() < alert.getMinAcceptableVoltage() ||
+            opqPacket.getEventValue() > alert.getMaxAcceptableVoltage())) {
           if(alert.getAlertViaEmail()) {
             utils.Mailer.sendAlert(opqPacket, alert.getNotificationEmail());
           }
@@ -139,7 +139,7 @@ public class WebSockets extends Controller {
           }
         }
         break;
-      case ALERT_DEVICE: break;
+      case EVENT_DEVICE: break;
     }
   }
 
