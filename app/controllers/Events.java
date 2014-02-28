@@ -58,7 +58,7 @@ public class Events extends Controller {
       externalEventForm = Form.form(ExternalCause.class).fill(externalCause);
     }
 
-    return ok(views.html.privatemonitoring.alertdetails.render(event, externalEventForm));
+    return ok(views.html.privatemonitoring.eventdetails.render(event, externalEventForm));
   }
 
   @Security.Authenticated(Secured.class)
