@@ -32,9 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This contains methods relating to the persistent external event object.
+ * This contains methods relating to the persistent external cause object.
  * <p/>
- * External events can be created by users in order to "tag" power events as being caused by some outside event. Maybe a
+ * External causes can be created by users in order to "tag" power events as being caused by some outside event. Maybe a
  * storm came through, a tree hit the power lines, or somebody ran into a telephone pole.
  */
 @Entity
@@ -46,21 +46,21 @@ public class ExternalCause extends Model {
   private Long primaryKey;
 
   /**
-   * The type of event that caused a power alert. I.e. weather, man-made, etc...
+   * What caused a power alert. I.e. weather, man-made, etc...
    */
   @Constraints.Required
   private String causeType;
 
   /**
-   * A more detailed description of the external event.
+   * A more detailed description of the external cause.
    * <p/>
-   * I.e., if the event type was weather, the description might be "Tropical Storm Flossie".
+   * I.e., if the cause was weather, the description might be "Tropical Storm Flossie".
    */
   @Constraints.Required
   private String causeDescription;
 
   /**
-   * Each external event may be mapped to multiple events.
+   * Each external cause may be mapped to multiple events.
    * <p/>
    * For instance, if a tropical storm comes through, that storm may cause many events in a small geographical area.
    */
@@ -68,10 +68,10 @@ public class ExternalCause extends Model {
   private List<Event> events = new ArrayList<>();
 
   /**
-   * Convenience constructor for creating an external event.
+   * Convenience constructor for creating an external cause.
    *
-   * @param eventType        The type of the event, weather, man-made, etc.
-   * @param causeDescription The description of the event.
+   * @param eventType        The type of the cause, weather, man-made, etc.
+   * @param causeDescription The description of the cause.
    */
   public ExternalCause(String eventType, String causeDescription) {
     this.setCauseType(eventType);
@@ -79,7 +79,7 @@ public class ExternalCause extends Model {
   }
 
   /**
-   * Creates a finder for filtering specific events from DB.
+   * Creates a finder for filtering specific causes from DB.
    *
    * @return A new finder for ExternalEvents.
    */
@@ -106,54 +106,54 @@ public class ExternalCause extends Model {
   }
 
   /**
-   * Gets the event type.
+   * Gets the cause type.
    *
-   * @return The event type.
+   * @return The cause type.
    */
   public String getCauseType() {
     return causeType;
   }
 
   /**
-   * Sets the event type.
+   * Sets the cause type.
    *
-   * @param causeType The event type.
+   * @param causeType The cause type.
    */
   public void setCauseType(String causeType) {
     this.causeType = causeType;
   }
 
   /**
-   * Gets the event description.
+   * Gets the cause description.
    *
-   * @return The event description.
+   * @return The cause description.
    */
   public String getCauseDescription() {
     return causeDescription;
   }
 
   /**
-   * Sets the event description.
+   * Sets the cause description.
    *
-   * @param causeDescription The event description.
+   * @param causeDescription The cause description.
    */
   public void setCauseDescription(String causeDescription) {
     this.causeDescription = causeDescription;
   }
 
   /**
-   * Get events associated with an event.
+   * Get events associated with this cause.
    *
-   * @return Alerts associated with this event.
+   * @return Alerts associated with this cause.
    */
   public List<Event> getEvents() {
     return events;
   }
 
   /**
-   * Set events associated with this event.
+   * Set events associated with this cause.
    *
-   * @param events Alerts associated with this event.
+   * @param events Events associated with this cause.
    */
   public void setEvents(List<Event> events) {
     this.events = events;
