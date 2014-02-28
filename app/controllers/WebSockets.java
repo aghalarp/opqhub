@@ -20,7 +20,7 @@
 package controllers;
 
 import models.Event;
-import models.AlertNotification;
+import models.Alert;
 import models.Measurement;
 import models.OpqDevice;
 import org.openpowerquality.protocol.OpqPacket;
@@ -113,29 +113,29 @@ public class WebSockets extends Controller {
     opqDevice.save();
 
     // Determine whether or not to notify user based on their alert preferences
-    AlertNotification alertNotification = opqDevice.getAlertNotifications().get(0);
+    Alert alert = opqDevice.getAlerts().get(0);
     switch(opqPacket.getType()) {
       case ALERT_FREQUENCY:
-        if(alertNotification.getFrequencyAlertNotification() &&
-           (opqPacket.getAlertValue() < alertNotification.getMinAcceptableFrequency() ||
-            opqPacket.getAlertValue() > alertNotification.getMaxAcceptableFrequency())) {
-            if(alertNotification.getAlertViaEmail()) {
-              utils.Mailer.sendAlert(opqPacket, alertNotification.getNotificationEmail());
+        if(alert.getFrequencyAlertNotification() &&
+           (opqPacket.getAlertValue() < alert.getMinAcceptableFrequency() ||
+            opqPacket.getAlertValue() > alert.getMaxAcceptableFrequency())) {
+            if(alert.getAlertViaEmail()) {
+              utils.Mailer.sendAlert(opqPacket, alert.getNotificationEmail());
             }
-            if(alertNotification.getAlertViaSms()) {
-              utils.Mailer.sendAlert(opqPacket, utils.Sms.formatSmsEmailAddress(alertNotification.getSmsNumber(), alertNotification.getSmsCarrier()));
+            if(alert.getAlertViaSms()) {
+              utils.Mailer.sendAlert(opqPacket, utils.Sms.formatSmsEmailAddress(alert.getSmsNumber(), alert.getSmsCarrier()));
             }
         }
         break;
       case ALERT_VOLTAGE:
-        if(alertNotification.getVoltageAlertNotification() &&
-           (opqPacket.getAlertValue() < alertNotification.getMinAcceptableVoltage() ||
-            opqPacket.getAlertValue() > alertNotification.getMaxAcceptableVoltage())) {
-          if(alertNotification.getAlertViaEmail()) {
-            utils.Mailer.sendAlert(opqPacket, alertNotification.getNotificationEmail());
+        if(alert.getVoltageAlertNotification() &&
+           (opqPacket.getAlertValue() < alert.getMinAcceptableVoltage() ||
+            opqPacket.getAlertValue() > alert.getMaxAcceptableVoltage())) {
+          if(alert.getAlertViaEmail()) {
+            utils.Mailer.sendAlert(opqPacket, alert.getNotificationEmail());
           }
-          if(alertNotification.getAlertViaSms()) {
-            utils.Mailer.sendAlert(opqPacket, utils.Sms.formatSmsEmailAddress(alertNotification.getSmsNumber(), alertNotification.getSmsCarrier()));
+          if(alert.getAlertViaSms()) {
+            utils.Mailer.sendAlert(opqPacket, utils.Sms.formatSmsEmailAddress(alert.getSmsNumber(), alert.getSmsCarrier()));
           }
         }
         break;

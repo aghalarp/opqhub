@@ -19,7 +19,7 @@
 
 package controllers;
 
-import models.AlertNotification;
+import models.Alert;
 import models.OpqDevice;
 import models.Person;
 import play.Logger;
@@ -172,22 +172,22 @@ public class Administration extends Controller {
   public static Result alert() {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     List<OpqDevice> devices = person.getDevices();
-    List<Form<AlertNotification>> alertNotificationForms = new ArrayList<>();
-    Form<AlertNotification> alertNotificationForm;
+    List<Form<Alert>> alertNotificationForms = new ArrayList<>();
+    Form<Alert> alertNotificationForm;
     List<String> deviceIds = new ArrayList<>();
 
     // For each device, store the device id
     for (OpqDevice opqDevice : devices) {
       deviceIds.add(Long.toString(opqDevice.getDeviceId()));
       // For each alert notification per device, create a form with data from that alert notification.
-      for (AlertNotification alertNotification : opqDevice.getAlertNotifications()) {
-        alertNotificationForm = form(AlertNotification.class).fill(alertNotification);
+      for (Alert alert : opqDevice.getAlerts()) {
+        alertNotificationForm = form(Alert.class).fill(alert);
         alertNotificationForm.data().put("deviceId", Long.toString(opqDevice.getDeviceId()));
         alertNotificationForms.add(alertNotificationForm);
       }
     }
 
-    alertNotificationForm = form(AlertNotification.class);
+    alertNotificationForm = form(Alert.class);
     return ok(adminalert.render(alertNotificationForm, alertNotificationForms, deviceIds));
   }
 
@@ -197,22 +197,22 @@ public class Administration extends Controller {
    */
   @Security.Authenticated(Secured.class)
   public static Result saveAlert() {
-    Form<AlertNotification> alertNotificationForm = form(AlertNotification.class).bindFromRequest();
+    Form<Alert> alertNotificationForm = form(Alert.class).bindFromRequest();
 
     if (alertNotificationForm.hasErrors()) {
       Logger.debug(String.format("Could not save alert due to %s", alertNotificationForm.errors().toString()));
       return ok(error.render("Problem creating new alert notification", alertNotificationForm.errors().toString()));
     }
 
-    AlertNotification alertNotification = alertNotificationForm.get();
+    Alert alert = alertNotificationForm.get();
     OpqDevice opqDevice =
         OpqDevice.find().where().eq("deviceId", alertNotificationForm.data().get("deviceId")).findUnique();
 
-    opqDevice.getAlertNotifications().add(alertNotification);
-    alertNotification.setDevice(opqDevice);
+    opqDevice.getAlerts().add(alert);
+    alert.setDevice(opqDevice);
 
     opqDevice.save();
-    alertNotification.save();
+    alert.save();
     flash("added", "Added new device alert");
     Logger.debug(String.format("Added device [%s] alert", opqDevice.getDeviceId()));
     return redirect(routes.Administration.alert());
@@ -225,7 +225,7 @@ public class Administration extends Controller {
    */
   @Security.Authenticated(Secured.class)
   public static Result updateAlert(String id) {
-    Form<AlertNotification> alertNotificationForm = form(AlertNotification.class).bindFromRequest();
+    Form<Alert> alertNotificationForm = form(Alert.class).bindFromRequest();
 
     if (alertNotificationForm.hasErrors()) {
       Logger.debug(String.format("Could not update alert notification %s", alertNotificationForm.errors().toString()));

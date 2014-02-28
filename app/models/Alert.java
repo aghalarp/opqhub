@@ -34,7 +34,7 @@ import javax.persistence.ManyToOne;
  * also be configured so that SMS messages or emails are generated when an alert is triggered.
  */
 @Entity
-public class AlertNotification extends Model {
+public class Alert extends Model {
   /**
    * Primary key.
    */
@@ -124,10 +124,10 @@ public class AlertNotification extends Model {
    * @param minAcceptableVoltage       Min voltage that will not trigger an alert.
    * @param maxAcceptableVoltage       Max voltage that will not trigger an alert.
    */
-  public AlertNotification(Boolean voltageAlertNotification, Boolean frequencyAlertNotification, Boolean deviceAlertNotification,
-                           Boolean alertViaEmail, Boolean alertViaSms, Sms.SmsCarrier smsCarrier, String smsNumber,
-                           String notificationEmail, Double minAcceptableFrequency, Double maxAcceptableFrequency,
-                           Double minAcceptableVoltage, Double maxAcceptableVoltage) {
+  public Alert(Boolean voltageAlertNotification, Boolean frequencyAlertNotification, Boolean deviceAlertNotification,
+               Boolean alertViaEmail, Boolean alertViaSms, Sms.SmsCarrier smsCarrier, String smsNumber,
+               String notificationEmail, Double minAcceptableFrequency, Double maxAcceptableFrequency,
+               Double minAcceptableVoltage, Double maxAcceptableVoltage) {
     this.setVoltageAlertNotification(voltageAlertNotification);
     this.setFrequencyAlertNotification(frequencyAlertNotification);
     this.setDeviceAlertNotification(deviceAlertNotification);
@@ -155,8 +155,8 @@ public class AlertNotification extends Model {
    *
    * @return A new finder for finding persisted AlertNotifications.
    */
-  public static Finder<Long, AlertNotification> find() {
-    return new Finder<>(Long.class, AlertNotification.class);
+  public static Finder<Long, Alert> find() {
+    return new Finder<>(Long.class, Alert.class);
   }
 
   /**

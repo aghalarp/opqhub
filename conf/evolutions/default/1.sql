@@ -3,7 +3,7 @@
 
 # --- !Ups
 
-create table alert_notification (
+create table alert (
   primary_key               bigint auto_increment not null,
   voltage_alert_notification tinyint(1) default 0,
   frequency_alert_notification tinyint(1) default 0,
@@ -18,8 +18,8 @@ create table alert_notification (
   min_acceptable_frequency  double,
   max_acceptable_frequency  double,
   device_primary_key        bigint,
-  constraint ck_alert_notification_sms_carrier check (sms_carrier in (0,1,2,3,4,5,6,7,8,9,10)),
-  constraint pk_alert_notification primary key (primary_key))
+  constraint ck_alert_sms_carrier check (sms_carrier in (0,1,2,3,4,5,6,7,8,9,10)),
+  constraint pk_alert primary key (primary_key))
 ;
 
 create table event (
@@ -83,8 +83,8 @@ create table person (
   constraint pk_person primary key (primary_key))
 ;
 
-alter table alert_notification add constraint fk_alert_notification_device_1 foreign key (device_primary_key) references opq_device (primary_key) on delete restrict on update restrict;
-create index ix_alert_notification_device_1 on alert_notification (device_primary_key);
+alter table alert add constraint fk_alert_device_1 foreign key (device_primary_key) references opq_device (primary_key) on delete restrict on update restrict;
+create index ix_alert_device_1 on alert (device_primary_key);
 alter table event add constraint fk_event_device_2 foreign key (device_primary_key) references opq_device (primary_key) on delete restrict on update restrict;
 create index ix_event_device_2 on event (device_primary_key);
 alter table event add constraint fk_event_externalCause_3 foreign key (external_cause_primary_key) references external_cause (primary_key) on delete restrict on update restrict;
@@ -100,7 +100,7 @@ create index ix_opq_device_person_5 on opq_device (person_primary_key);
 
 SET FOREIGN_KEY_CHECKS=0;
 
-drop table alert_notification;
+drop table alert;
 
 drop table event;
 

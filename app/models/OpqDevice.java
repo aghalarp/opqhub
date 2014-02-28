@@ -114,7 +114,7 @@ public class OpqDevice extends Model {
    * Each device can be associated with many alert notifications.
    */
   @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
-  private List<AlertNotification> alertNotifications = new ArrayList<>();
+  private List<Alert> alerts = new ArrayList<>();
 
   /**
    * Alerts that this device is associated with.
@@ -274,17 +274,17 @@ public class OpqDevice extends Model {
    *
    * @return Event notifications associated with this device.
    */
-  public List<AlertNotification> getAlertNotifications() {
-    return alertNotifications;
+  public List<Alert> getAlerts() {
+    return alerts;
   }
 
   /**
    * Set alert notifications associated with this device.
    *
-   * @param alertNotifications Event notifications associated with this device.
+   * @param alerts Event notifications associated with this device.
    */
-  public void setAlertNotifications(List<AlertNotification> alertNotifications) {
-    this.alertNotifications = alertNotifications;
+  public void setAlerts(List<Alert> alerts) {
+    this.alerts = alerts;
   }
 
   /**
