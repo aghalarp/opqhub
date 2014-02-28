@@ -70,7 +70,7 @@ public class Event extends Model {
    * Many alerts can be associated with an external event.
    */
   @ManyToOne(cascade = CascadeType.ALL)
-  private ExternalEvent externalEvent;
+  private ExternalCause externalCause;
 
   /**
    * Convenience method for creating an event during testing.
@@ -212,17 +212,17 @@ public class Event extends Model {
    *
    * @return External event associated with this alert.
    */
-  public ExternalEvent getExternalEvent() {
-    return externalEvent;
+  public ExternalCause getExternalCause() {
+    return externalCause;
   }
 
   /**
    * Set the external event associated with this alert.
    *
-   * @param externalEvent External event associated with this alert.
+   * @param externalCause External event associated with this alert.
    */
-  public void setExternalEvent(ExternalEvent externalEvent) {
-    this.externalEvent = externalEvent;
+  public void setExternalCause(ExternalCause externalCause) {
+    this.externalCause = externalCause;
   }
 
 }

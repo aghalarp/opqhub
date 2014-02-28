@@ -17,7 +17,7 @@ along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 Copyright 2013 Anthony Christe
 *@
 
-@(event: Event, externalEventForm: Form[ExternalEvent])
+@(event: Event, externalEventForm: Form[ExternalCause])
 
 @import helper._
   @implicitFieldConstructor = @{
@@ -59,21 +59,21 @@ Copyright 2013 Anthony Christe
     </table>
   </div>
   <div class="span9">
-    <p><b>External Event</b></p>
+    <p><b>External Cause</b></p>
     @if(flash.contains("updated")) {
       <p class="success">
       @flash.get("updated")
       </p>
     }
-    @form(routes.Events.updateEventDetails(event.getPrimaryKey), 'class -> "form-horizontal well well-small", 'name -> "externalEventForm") {
+    @form(routes.Events.updateEventDetails(event.getPrimaryKey), 'class -> "form-horizontal well well-small", 'name -> "externalCauseForm") {
       @inputText(
-        externalEventForm("eventType"), '_label -> "Event Type", 'placeholder -> "Tropical Storm Flossie", 'id -> "eventType")
+        externalEventForm("causeType"), '_label -> "Event Type", 'placeholder -> "Tropical Storm Flossie", 'id -> "causeType")
       @textarea(
-        externalEventForm("eventDescription"), '_label -> "Event Description", 'placeholder -> "Tropical Storm Flossie",
-        'id -> "eventDescription")
+        externalEventForm("causeDescription"), '_label -> "Event Description", 'placeholder -> "Tropical Storm Flossie",
+        'id -> "causeDescription")
       <div class="control-group">
         <div class="controls">
-          <input type="submit" class="btn btn-primary" value="Update External Event" />
+          <input type="submit" class="btn btn-primary" value="Update External Cause" />
         </div>
       </div>
     }

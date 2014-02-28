@@ -64,7 +64,7 @@ Copyright 2013 Anthony Christe
             <th>Timestamp</th>
             <th>Duration (ms)</th>
             <th>Event Value</th>
-            <th>External Event</th>
+            <th>External Cause</th>
             <th>Details</th>
           </tr>
         </thead>
@@ -86,8 +86,8 @@ Copyright 2013 Anthony Christe
               }
             </td>
             <td>
-            @if(event.getExternalEvent != null) {
-              @event.getExternalEvent.getEventType
+            @if(event.getExternalCause != null) {
+              @event.getExternalCause.getCauseType
             }
             </td>
             <td>

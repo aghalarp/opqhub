@@ -21,7 +21,7 @@ package tests;
 
 import models.Event;
 import models.AlertNotification;
-import models.ExternalEvent;
+import models.ExternalCause;
 import models.Measurement;
 import models.OpqDevice;
 import models.Person;
@@ -75,7 +75,7 @@ public class ModelTests {
     Measurement measurement = new Measurement(1L, 120.0, 60.0);
 
     // Create an external event model object
-    ExternalEvent externalEvent = new ExternalEvent("Weather", "Flossie", 1L, 2L);
+    ExternalCause externalCause = new ExternalCause("Weather", "Flossie", 1L, 2L);
 
     OpqDevice opqDevice = new OpqDevice("1111-1111-1111-111", "description", "Hawaii");
 
@@ -90,8 +90,8 @@ public class ModelTests {
 
 
     // Associate external event with event
-    externalEvent.getEvents().add(event);
-    event.setExternalEvent(externalEvent);
+    externalCause.getEvents().add(event);
+    event.setExternalEvent(externalCause);
 
     // Associate the person with the device.
     person.getDevices().add(opqDevice);
@@ -115,7 +115,7 @@ public class ModelTests {
     measurement.save();
     alertNotification.save();
     event.save();
-    externalEvent.save();
+    externalCause.save();
 
     // Retrieve all items from the database
     List<OpqDevice> opqDevices = OpqDevice.find().all();
@@ -123,7 +123,7 @@ public class ModelTests {
     List<Measurement> measurements = Measurement.find().all();
     List<AlertNotification> alertNotifications  = AlertNotification.find().all();
     List<Event> events = Event.find().all();
-    List<ExternalEvent> externalEvents = ExternalEvent.find().all();
+    List<ExternalCause> externalCauses = ExternalCause.find().all();
 
     // Check that each list contains a single item
     assertEquals("Checking devices size", opqDevices.size(), 1);
@@ -131,7 +131,7 @@ public class ModelTests {
     assertEquals("Checking measurements size", measurements.size(), 1);
     assertEquals("Checking event notifications size", alertNotifications.size(), 1);
     assertEquals("Checking events size", events.size(), 1);
-    assertEquals("Checking external events size", externalEvents.size(), 1);
+    assertEquals("Checking external events size", externalCauses.size(), 1);
 
     // Check to make sure we've recovered all relationships
     assertEquals("Person-OpqDevice", persons.get(0).getDevices().get(0), opqDevices.get(0));
@@ -144,7 +144,7 @@ public class ModelTests {
     assertEquals("Event-OpqDevice", events.get(0).getDevice(), opqDevices.get(0));
     assertEquals("OpqDevice-Event", opqDevices.get(0).getEvents().get(0), events.get(0));
     assertEquals("Event-OpqDevice", events.get(0).getDevice(), opqDevices.get(0));
-    assertEquals("Event-ExternalEvent", events.get(0).getExternalEvent(), externalEvents.get(0));
-    assertEquals("ExternalEvent-Event", externalEvents.get(0).getEvents().get(0), events.get(0));
+    assertEquals("Event-ExternalCause", events.get(0).getExternalCause(), externalCauses.get(0));
+    assertEquals("ExternalCause-Event", externalCauses.get(0).getEvents().get(0), events.get(0));
   }
 }

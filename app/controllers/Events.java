@@ -1,7 +1,7 @@
 package controllers;
 
 import models.Event;
-import models.ExternalEvent;
+import models.ExternalCause;
 import models.OpqDevice;
 import play.Logger;
 import play.data.DynamicForm;
@@ -46,16 +46,16 @@ public class Events extends Controller {
   @Security.Authenticated(Secured.class)
   public static Result eventDetails(Long eventId) {
     Event event = Event.find().where().eq("primaryKey", eventId).findUnique();
-    ExternalEvent externalEvent = event.getExternalEvent();
-    Form<ExternalEvent> externalEventForm;
+    ExternalCause externalCause = event.getExternalCause();
+    Form<ExternalCause> externalEventForm;
 
     // TODO: Error page for when event is not found
 
-    if(externalEvent == null) {
-      externalEventForm = Form.form(ExternalEvent.class);
+    if(externalCause == null) {
+      externalEventForm = Form.form(ExternalCause.class);
     }
     else {
-      externalEventForm = Form.form(ExternalEvent.class).fill(externalEvent);
+      externalEventForm = Form.form(ExternalCause.class).fill(externalCause);
     }
 
     return ok(views.html.privatemonitoring.alertdetails.render(event, externalEventForm));
@@ -64,7 +64,7 @@ public class Events extends Controller {
   @Security.Authenticated(Secured.class)
   public static Result updateEventDetails(Long eventId) {
     Event event = Event.find().where().eq("primaryKey", eventId).findUnique();
-    Form<ExternalEvent> externalEventForm = Form.form(ExternalEvent.class).bindFromRequest();
+    Form<ExternalCause> externalEventForm = Form.form(ExternalCause.class).bindFromRequest();
 
     // TODO: Error page for when event is not found
 
@@ -74,13 +74,13 @@ public class Events extends Controller {
       return ok(error.render("Problem updating event", externalEventForm.errors().toString()));
     }
 
-    ExternalEvent externalEvent = externalEventForm.get();
-    externalEvent.getEvents().add(event);
-    event.setExternalEvent(externalEvent);
-    externalEvent.save();
+    ExternalCause externalCause = externalEventForm.get();
+    externalCause.getEvents().add(event);
+    event.setExternalCause(externalCause);
+    externalCause.save();
     event.save();
 
-    flash("updated", "External Event Updated");
+    flash("updated", "External Cause Updated");
     Logger.debug(String.format("Event [%s] details updated", event.getPrimaryKey()));
     return redirect(routes.Events.eventDetails(eventId));
   }

@@ -38,7 +38,7 @@ import java.util.List;
  * storm came through, a tree hit the power lines, or somebody ran into a telephone pole.
  */
 @Entity
-public class ExternalEvent extends Model {
+public class ExternalCause extends Model {
   /**
    * The primary key.
    */
@@ -49,7 +49,7 @@ public class ExternalEvent extends Model {
    * The type of event that caused a power alert. I.e. weather, man-made, etc...
    */
   @Constraints.Required
-  private String eventType;
+  private String causeType;
 
   /**
    * A more detailed description of the external event.
@@ -57,25 +57,25 @@ public class ExternalEvent extends Model {
    * I.e., if the event type was weather, the description might be "Tropical Storm Flossie".
    */
   @Constraints.Required
-  private String eventDescription;
+  private String causeDescription;
 
   /**
    * Each external event may be mapped to multiple events.
    * <p/>
    * For instance, if a tropical storm comes through, that storm may cause many events in a small geographical area.
    */
-  @OneToMany(mappedBy = "externalEvent", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "externalCause", cascade = CascadeType.ALL)
   private List<Event> events = new ArrayList<>();
 
   /**
    * Convenience constructor for creating an external event.
    *
    * @param eventType        The type of the event, weather, man-made, etc.
-   * @param eventDescription The description of the event.
+   * @param causeDescription The description of the event.
    */
-  public ExternalEvent(String eventType, String eventDescription) {
-    this.setEventType(eventType);
-    this.setEventDescription(eventDescription);
+  public ExternalCause(String eventType, String causeDescription) {
+    this.setCauseType(eventType);
+    this.setCauseDescription(causeDescription);
   }
 
   /**
@@ -83,8 +83,8 @@ public class ExternalEvent extends Model {
    *
    * @return A new finder for ExternalEvents.
    */
-  public static Finder<Long, ExternalEvent> find() {
-    return new Finder<>(Long.class, ExternalEvent.class);
+  public static Finder<Long, ExternalCause> find() {
+    return new Finder<>(Long.class, ExternalCause.class);
   }
 
   /**
@@ -110,17 +110,17 @@ public class ExternalEvent extends Model {
    *
    * @return The event type.
    */
-  public String getEventType() {
-    return eventType;
+  public String getCauseType() {
+    return causeType;
   }
 
   /**
    * Sets the event type.
    *
-   * @param eventType The event type.
+   * @param causeType The event type.
    */
-  public void setEventType(String eventType) {
-    this.eventType = eventType;
+  public void setCauseType(String causeType) {
+    this.causeType = causeType;
   }
 
   /**
@@ -128,17 +128,17 @@ public class ExternalEvent extends Model {
    *
    * @return The event description.
    */
-  public String getEventDescription() {
-    return eventDescription;
+  public String getCauseDescription() {
+    return causeDescription;
   }
 
   /**
    * Sets the event description.
    *
-   * @param eventDescription The event description.
+   * @param causeDescription The event description.
    */
-  public void setEventDescription(String eventDescription) {
-    this.eventDescription = eventDescription;
+  public void setCauseDescription(String causeDescription) {
+    this.causeDescription = causeDescription;
   }
 
   /**
