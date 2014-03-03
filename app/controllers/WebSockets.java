@@ -113,6 +113,10 @@ public class WebSockets extends Controller {
     opqDevice.save();
 
     // Determine whether or not to notify user based on their alert preferences
+    if(opqDevice.getAlerts().size() == 0) {
+      return;
+    }
+
     Alert alert = opqDevice.getAlerts().get(0);
     switch(opqPacket.getType()) {
       case EVENT_FREQUENCY:
