@@ -52,6 +52,7 @@ public class Measurements extends Controller {
 
     Long adjustedTimestamp = utils.DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
     session("pastTimeSelectMeasurements", selectedTimeUnit);
+    session("measurementsAfterAmount", adjustedTimestamp.toString());
     return redirect(routes.Measurements.measurementsByPage(deviceId, 0, adjustedTimestamp));
   }
 
