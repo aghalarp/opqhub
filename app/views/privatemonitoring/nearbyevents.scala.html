@@ -35,13 +35,14 @@ Copyright 2013 Anthony Christe
   <div class="row span9">
     <div class="well well-small">
       <p>Filter Events</p>
-      <form class="form-inline" action="@routes.Events.filterEvents()" id="filterForm" method="post">
+      <form class="form-inline" action="@routes.Events.filterNearbyEvents()" id="filterForm" method="post">
+        <input type="hidden" id="deviceId" name="deviceId" value="@deviceId" />
         <div class="control-group">
           <label class="control-label" for="pastTimeSelect">After past</label>
 
           <select id="pastTimeSelect" name="pastTimeSelect">
           @for(option <- utils.DateUtils.TimeUnit.values()) {
-            @if(option.toString.equals(flash.get("pastTimeSelect"))) {
+            @if(option.toString.equals(session.get("pastTimeSelectNearby"))) {
               <option selected>
               } else {
               <option>
@@ -102,11 +103,19 @@ Copyright 2013 Anthony Christe
       </table>
     </div>
     <div class="pull-right">
+    @defining(
+      if(session.get("nearbyEventsAfterAmount") == null) {
+        0L
+      } else {
+        Long.parseLong(session.get("nearbyEventsAfterAmount"))
+      }
+    ) { afterTimestamp =>
       @if(page > 0) {
-        <a href="@routes.Events.nearbyEventsByPage(deviceId, page - 1)" class="btn btn-primary"><- Prev.</a>
+        <a href="@routes.Events.nearbyEventsByPage(deviceId, page - 1, afterTimestamp)" class="btn btn-primary"><- Prev.</a>
       }
       [@(page + 1)/@(pages + 1)]
-      <a href="@routes.Events.nearbyEventsByPage(deviceId, page + 1)" class="btn btn-primary"> Next. -></a>
+    <a href="@routes.Events.nearbyEventsByPage(deviceId, page + 1, afterTimestamp)" class="btn btn-primary"> Next. -></a>
+    }
     </div>
   </div>
 }

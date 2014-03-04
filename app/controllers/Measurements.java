@@ -51,7 +51,8 @@ public class Measurements extends Controller {
     String selectedTimeUnit = dynamicForm.get("pastTimeSelect");
 
     Long adjustedTimestamp = utils.DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
-    flash("pastTimeSelect", selectedTimeUnit);
+    session("pastTimeSelectMeasurements", selectedTimeUnit);
+    session("measurementsAfterAmount", adjustedTimestamp.toString());
     return redirect(routes.Measurements.measurementsByPage(deviceId, 0, adjustedTimestamp));
   }
 

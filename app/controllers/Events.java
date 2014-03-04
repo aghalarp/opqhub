@@ -21,7 +21,8 @@ public class Events extends Controller {
     String selectedTimeUnit = dynamicForm.get("pastTimeSelect");
 
     Long adjustedTimestamp = utils.DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
-    flash("pastTimeSelect", selectedTimeUnit);
+    session("pastTimeSelectEvents", selectedTimeUnit);
+    session("eventsAfterAmount", adjustedTimestamp.toString());
     return redirect(routes.Events.eventsByPage(0, adjustedTimestamp));
   }
 
@@ -86,6 +87,18 @@ public class Events extends Controller {
   }
 
   @Security.Authenticated(Secured.class)
+  public static Result filterNearbyEvents() {
+    DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
+    String selectedTimeUnit = dynamicForm.get("pastTimeSelect");
+    Long deviceId = Long.parseLong(dynamicForm.get("deviceId"));
+
+    Long adjustedTimestamp = utils.DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
+    session("pastTimeSelectNearby", selectedTimeUnit);
+    session("nearbyEventsAfterAmount", adjustedTimestamp.toString());
+    return redirect(routes.Events.nearbyEventsByPage(deviceId, 0, adjustedTimestamp));
+  }
+
+  @Security.Authenticated(Secured.class)
   public static Result nearbyEvents() {
     // Find the first device associated with this person
     OpqDevice device = OpqDevice.find().where()
@@ -98,11 +111,11 @@ public class Events extends Controller {
       return ok(error.render("Could not locate device with id", session("email")));
     }
 
-    return redirect(routes.Events.nearbyEventsByPage(device.getDeviceId(), 0));
+    return redirect(routes.Events.nearbyEventsByPage(device.getDeviceId(), 0, 0L));
   }
 
   @Security.Authenticated(Secured.class)
-  public static Result nearbyEventsByPage(Long deviceId, Integer page) {
+  public static Result nearbyEventsByPage(Long deviceId, Integer page, Long afterTimestamp) {
     final int PAGE_SIZE = 10;
     OpqDevice device = OpqDevice.find().where()
                                 .eq("deviceId", deviceId)
@@ -129,10 +142,12 @@ public class Events extends Controller {
       scale *= 2;
     }
 
+    Long after = (afterTimestamp == null) ? 0 : afterTimestamp;
     List<Event> events = Event.find().where()
                               .startsWith("device.gridId", gridId.substring(0, gridId.length() - cnt))
                               .ne("device.deviceId", deviceId)
                               .eq("device.sharingData", true)
+                              .gt("timestamp", after)
                               .order("timestamp desc")
                               .findPagingList(PAGE_SIZE)
                               .getPage(page).getList();
