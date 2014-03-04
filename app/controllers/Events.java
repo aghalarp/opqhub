@@ -21,7 +21,7 @@ public class Events extends Controller {
     String selectedTimeUnit = dynamicForm.get("pastTimeSelect");
 
     Long adjustedTimestamp = utils.DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
-    flash("pastTimeSelect", selectedTimeUnit);
+    session("pastTimeSelectEvents", selectedTimeUnit);
     return redirect(routes.Events.eventsByPage(0, adjustedTimestamp));
   }
 

@@ -39,7 +39,7 @@ Copyright 2013 Anthony Christe
 
           <select id="pastTimeSelect" name="pastTimeSelect">
           @for(option <- utils.DateUtils.TimeUnit.values()) {
-            @if(option.toString.equals(flash.get("pastTimeSelect"))) {
+            @if(option.toString.equals(session.get("pastTimeSelectEvents"))) {
               <option selected>
               } else {
               <option>
