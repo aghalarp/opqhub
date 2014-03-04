@@ -86,6 +86,17 @@ public class Events extends Controller {
   }
 
   @Security.Authenticated(Secured.class)
+  public static Result filterNearbyEvents() {
+    DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
+    String selectedTimeUnit = dynamicForm.get("pastTimeSelect");
+    Long deviceId = Long.parseLong(dynamicForm.get("deviceId"));
+
+    Long adjustedTimestamp = utils.DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
+    session("pastTimeSelectNearby", selectedTimeUnit);
+    return redirect(routes.Events.nearbyEventsByPage(deviceId, 0, adjustedTimestamp));
+  }
+
+  @Security.Authenticated(Secured.class)
   public static Result nearbyEvents() {
     // Find the first device associated with this person
     OpqDevice device = OpqDevice.find().where()

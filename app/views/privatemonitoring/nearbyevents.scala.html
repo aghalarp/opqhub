@@ -35,7 +35,8 @@ Copyright 2013 Anthony Christe
   <div class="row span9">
     <div class="well well-small">
       <p>Filter Events</p>
-      <form class="form-inline" action="@routes.Events.filterEvents()" id="filterForm" method="post">
+      <form class="form-inline" action="@routes.Events.filterNearbyEvents()" id="filterForm" method="post">
+        <input type="hidden" id="deviceId" name="deviceId" value="@deviceId" />
         <div class="control-group">
           <label class="control-label" for="pastTimeSelect">After past</label>
 

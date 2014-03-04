@@ -51,6 +51,7 @@ POST        /private/admin/datashare/update/:primaryKey        controllers.Admin
 # Events
 GET         /private/monitor/events                            controllers.Events.eventsByPage(p: Integer ?= 0, after: Long ?= 0)
 GET         /private/monitor/events/nearby                     controllers.Events.nearbyEvents()
+POST        /private/monitor/events/nearby/filter              controllers.Events.filterNearbyEvents()
 GET         /private/monitor/events/nearby/:deviceId           controllers.Events.nearbyEventsByPage(deviceId: Long, page: Integer ?= 0, after: Long ?= 0)
 POST        /private/monitor/events/filter                     controllers.Events.filterEvents()
 GET         /private/monitor/events/:eventId                   controllers.Events.eventDetails(eventId: Long)
