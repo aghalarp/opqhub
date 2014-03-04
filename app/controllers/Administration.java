@@ -170,7 +170,7 @@ public class Administration extends Controller {
    */
   @Security.Authenticated(Secured.class)
   public static Result alert() {
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    /*Person person = Person.find().where().eq("email", session("email")).findUnique();
     List<OpqDevice> devices = person.getDevices();
     List<Form<Alert>> alertNotificationForms = new ArrayList<>();
     Form<Alert> alertNotificationForm;
@@ -188,7 +188,11 @@ public class Administration extends Controller {
     }
 
     alertNotificationForm = form(Alert.class);
-    return ok(adminalert.render(alertNotificationForm, alertNotificationForms, deviceIds));
+    return ok(adminalert.render(alertNotificationForm, alertNotificationForms, deviceIds));*/
+    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    List<OpqDevice> devices = person.getDevices();
+
+    return ok(adminalert.render(devices));
   }
 
   /**
