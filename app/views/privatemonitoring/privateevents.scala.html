@@ -99,11 +99,19 @@ Copyright 2013 Anthony Christe
       </table>
     </div>
     <div class="pull-right">
-      @if(page > 0) {
-        <a href="@routes.Events.eventsByPage(page - 1)" class="btn btn-primary"><- Prev.</a>
+      @defining(
+        if(session.get("eventsAfterAmount") == null) {
+          0L
+        } else {
+          Long.parseLong(session.get("eventsAfterAmount"))
+        }
+      ) { afterTimestamp =>
+        @if(page > 0) {
+          <a href="@routes.Events.eventsByPage(page - 1, afterTimestamp)" class="btn btn-primary"><- Prev.</a>
+        }
+        [@(page + 1)/@(pages + 1)]
+      <a href="@routes.Events.eventsByPage(page + 1, afterTimestamp)" class="btn btn-primary"> Next. -></a>
       }
-      [@(page + 1)/@(pages + 1)]
-      <a href="@routes.Events.eventsByPage(page + 1)" class="btn btn-primary"> Next. -></a>
     </div>
   </div>
 }

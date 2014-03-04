@@ -22,6 +22,7 @@ public class Events extends Controller {
 
     Long adjustedTimestamp = utils.DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
     session("pastTimeSelectEvents", selectedTimeUnit);
+    session("eventsAfterAmount", adjustedTimestamp.toString());
     return redirect(routes.Events.eventsByPage(0, adjustedTimestamp));
   }
 
