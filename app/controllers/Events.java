@@ -94,6 +94,7 @@ public class Events extends Controller {
 
     Long adjustedTimestamp = utils.DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
     session("pastTimeSelectNearby", selectedTimeUnit);
+    session("nearbyEventsAfterAmount", adjustedTimestamp.toString());
     return redirect(routes.Events.nearbyEventsByPage(deviceId, 0, adjustedTimestamp));
   }
 
