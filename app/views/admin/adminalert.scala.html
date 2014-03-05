@@ -35,7 +35,7 @@ Copyright 2013 Anthony Christe
 @admin("Alert Administration",
   "This page allows you to manage and create power quality events.") {
   <div class="span9">
-    <table class="table well well-small">
+    <table class="table table-striped">
       @if(flash.contains("updated")) {
         <p class="success">
         @flash.get("updated")
@@ -49,10 +49,12 @@ Copyright 2013 Anthony Christe
       <thead>
         <tr>
           <th>Device Id</th>
-          <th>Receiving Frequency Alerts</th>
-          <th>Receiving Voltage Alerts</th>
-          <th>Receiving Device Alerts</th>
-          <th></th>
+          <th>Frequency Alerts</th>
+          <th>Voltage Alerts</th>
+          <th>Device Alerts</th>
+          <th>Alert Via Email</th>
+          <th>Alert Vis Sms</th>
+          <th><!-- Left blank for update button --></th>
         </tr>
       </thead>
       <tbody>
@@ -63,12 +65,16 @@ Copyright 2013 Anthony Christe
                <td>No</td>
                <td>No</td>
                <td>No</td>
+               <td>No</td>
+               <td>No</td>
              } else {
                <td>@booleanToHuman(device.getAlerts.get(0).getFrequencyAlertNotification)</td>
                <td>@booleanToHuman(device.getAlerts.get(0).getVoltageAlertNotification)</td>
                <td>@booleanToHuman(device.getAlerts.get(0).getDeviceAlertNotification)</td>
+               <td>@booleanToHuman(device.getAlerts.get(0).getAlertViaEmail)</td>
+               <td>@booleanToHuman(device.getAlerts.get(0).getAlertViaSms)</td>
              }
-             <td><input type="submit" class="btn btn-warning" value="Update"></td>
+             <td><a href="#" class="btn btn-warning">Update</a></td>
            </tr>
          }
       </tbody>
