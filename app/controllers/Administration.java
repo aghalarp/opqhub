@@ -31,6 +31,7 @@ import views.html.admin.adminalert;
 import views.html.admin.admindatashare;
 import views.html.admin.admindevice;
 import views.html.admin.adminuser;
+import views.html.admin.alertdetails;
 import views.html.admin.updatedatashare;
 import views.html.error;
 
@@ -193,6 +194,38 @@ public class Administration extends Controller {
     List<OpqDevice> devices = person.getDevices();
 
     return ok(adminalert.render(devices));
+  }
+
+  @Security.Authenticated(Secured.class)
+  public static Result alertDetails(Long deviceId) {
+    /*Person person = Person.find().where().eq("email", session("email")).findUnique();
+    List<OpqDevice> devices = person.getDevices();
+    List<Form<Alert>> alertNotificationForms = new ArrayList<>();
+    Form<Alert> alertNotificationForm;
+    List<String> deviceIds = new ArrayList<>();
+
+    // For each device, store the device id
+    for (OpqDevice opqDevice : devices) {
+      deviceIds.add(Long.toString(opqDevice.getDeviceId()));
+      // For each alert notification per device, create a form with data from that alert notification.
+      for (Alert alert : opqDevice.getAlerts()) {
+        alertNotificationForm = form(Alert.class).fill(alert);
+        alertNotificationForm.data().put("deviceId", Long.toString(opqDevice.getDeviceId()));
+        alertNotificationForms.add(alertNotificationForm);
+      }
+    }
+
+    alertNotificationForm = form(Alert.class);
+    return ok(adminalert.render(alertNotificationForm, alertNotificationForms, deviceIds));*/
+    Alert alert = Alert.find().where().eq("device.deviceId", deviceId).findList().get(0);
+    Form<Alert> alertForm = form(Alert.class);
+
+    if(alert != null) {
+      alertForm = form(Alert.class).fill(alert);
+    }
+
+
+    return ok(alertdetails.render(alertForm));
   }
 
   /**

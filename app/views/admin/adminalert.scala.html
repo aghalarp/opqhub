@@ -74,7 +74,7 @@ Copyright 2013 Anthony Christe
                <td>@booleanToHuman(device.getAlerts.get(0).getAlertViaEmail)</td>
                <td>@booleanToHuman(device.getAlerts.get(0).getAlertViaSms)</td>
              }
-             <td><a href="#" class="btn btn-warning">Update</a></td>
+             <td><a href="@routes.Administration.alertDetails(device.getDeviceId)" class="btn btn-warning">Update</a></td>
            </tr>
          }
       </tbody>
