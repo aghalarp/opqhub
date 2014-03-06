@@ -31,6 +31,7 @@ import views.html.admin.adminalert;
 import views.html.admin.admindatashare;
 import views.html.admin.admindevice;
 import views.html.admin.adminuser;
+import views.html.admin.alertdetails;
 import views.html.admin.updatedatashare;
 import views.html.error;
 
@@ -172,23 +173,22 @@ public class Administration extends Controller {
   public static Result alert() {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     List<OpqDevice> devices = person.getDevices();
-    List<Form<Alert>> alertNotificationForms = new ArrayList<>();
-    Form<Alert> alertNotificationForm;
-    List<String> deviceIds = new ArrayList<>();
 
-    // For each device, store the device id
-    for (OpqDevice opqDevice : devices) {
-      deviceIds.add(Long.toString(opqDevice.getDeviceId()));
-      // For each alert notification per device, create a form with data from that alert notification.
-      for (Alert alert : opqDevice.getAlerts()) {
-        alertNotificationForm = form(Alert.class).fill(alert);
-        alertNotificationForm.data().put("deviceId", Long.toString(opqDevice.getDeviceId()));
-        alertNotificationForms.add(alertNotificationForm);
-      }
+    return ok(adminalert.render(devices));
+  }
+
+  @Security.Authenticated(Secured.class)
+  public static Result alertDetails(Long deviceId) {
+    // Get alerts associated with this device
+    List<Alert> alerts = Alert.find().where().eq("device.deviceId", deviceId).findList();
+
+    Form<Alert> alertForm = form(Alert.class);
+
+    if(alerts.size() > 0) {
+      alertForm = form(Alert.class).fill(alerts.get(0));
     }
 
-    alertNotificationForm = form(Alert.class);
-    return ok(adminalert.render(alertNotificationForm, alertNotificationForms, deviceIds));
+    return ok(alertdetails.render(alertForm, deviceId));
   }
 
   /**
@@ -218,23 +218,35 @@ public class Administration extends Controller {
     return redirect(routes.Administration.alert());
   }
 
-  /**
-   * Updates an alert notification.
-   * @param id The primary key of the alert notifiation.
-   * @return Redirect to alert administration.
-   */
   @Security.Authenticated(Secured.class)
-  public static Result updateAlert(String id) {
-    Form<Alert> alertNotificationForm = form(Alert.class).bindFromRequest();
+  public static Result updateAlert(Long deviceId) {
+    Form<Alert> alertForm = form(Alert.class).bindFromRequest();
+    List<Alert> alerts = Alert.find().where().eq("device.deviceId", deviceId).findList();
 
-    if (alertNotificationForm.hasErrors()) {
-      Logger.debug(String.format("Could not update alert notification %s", alertNotificationForm.errors().toString()));
-      return ok(error.render("Problem updating alert notifications", alertNotificationForm.errors().toString()));
+    if (alertForm.hasErrors()) {
+      Logger.debug(String.format("Could not update alert notification %s", alertForm.errors().toString()));
+      return ok(error.render("Problem updating alert notifications", alertForm.errors().toString()));
     }
 
-    alertNotificationForm.get().update(Long.parseLong(id));
-    flash("updated", "Updated device alert");
-    Logger.debug(String.format("Alert notification updated"));
+    // Updating the alert
+    if(alerts.size() > 0) {
+      alertForm.get().update(alerts.get(0).getPrimaryKey());
+      flash("updated", "Updated  alert");
+      Logger.debug(String.format("Updated device alert"));
+      return redirect(routes.Administration.alert());
+    }
+
+    // Saving a new alert
+    Alert alert = alertForm.get();
+    OpqDevice opqDevice =
+        OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
+
+    opqDevice.getAlerts().add(alert);
+    alert.setDevice(opqDevice);
+
+    opqDevice.save();
+    alert.save();
+
     return redirect(routes.Administration.alert());
   }
 

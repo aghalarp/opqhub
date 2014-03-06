@@ -42,7 +42,8 @@ GET         /private/admin/device/delete/:id                   controllers.Admin
 
 GET         /private/admin/alert                               controllers.Administration.alert()
 POST        /private/admin/alert/save                          controllers.Administration.saveAlert()
-POST        /private/admin/alert/update/:id                    controllers.Administration.updateAlert(id: String)
+GET         /private/admin/alert/:deviceId                     controllers.Administration.alertDetails(deviceId: Long)
+POST        /private/admin/alert/:deviceId/update              controllers.Administration.updateAlert(deviceId: Long)
 
 GET         /private/admin/datashare                           controllers.Administration.dataSharing()
 GET         /private/admin/datashare/update/:deviceId          controllers.Administration.editDataSharing(deviceId: Long)

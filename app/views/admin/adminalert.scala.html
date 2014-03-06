@@ -17,103 +17,61 @@ along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 Copyright 2013 Anthony Christe
 *@
 
-@(alertNotificationForm: Form[Alert],
-    alertNotificationForms: List[Form[Alert]],
-    deviceIds: List[String])
+@(devices: List[OpqDevice])
 
 @import helper._
   @implicitFieldConstructor = @{
     FieldConstructor(twitterBootstrapInput.render)
   }
 
+@booleanToHuman(b: Boolean) = {
+  @if(b) {
+    Yes
+  } else {
+    No
+  }
+}
+
 @admin("Alert Administration",
   "This page allows you to manage and create power quality events.") {
   <div class="span9">
-
-    <table class="table well well-small">
+    <table class="table table-striped">
       @if(flash.contains("updated")) {
         <p class="success">
         @flash.get("updated")
         </p>
       }
-      @if(flash.contains("added")) {
-        <p class="success">
-        @flash.get("added")
-        </p>
-      }
       <thead>
         <tr>
           <th>Device Id</th>
-          <th>Voltage Alert</th>
-          <th>Min. Voltage</th>
-          <th>Max. Voltage</th>
-          <th>Frequency Alert</th>
-          <th>Min. Frequency</th>
-          <th>Max. Frequency</th>
-          <th>Device Alert</th>
-          <th></th>
+          <th>Frequency Alerts</th>
+          <th>Voltage Alerts</th>
+          <th>Device Alerts</th>
+          <th>Alert Via Email</th>
+          <th>Alert Vis Sms</th>
+          <th><!-- Left blank for update button --></th>
         </tr>
       </thead>
       <tbody>
-
-        @for(alertForm <- alertNotificationForms) {
-          @form(routes.Administration.updateAlert(alertForm("primaryKey").value), 'class -> "form-inline") {
-            <tr>
-              <td>@inputText(alertForm("deviceId"), '_showConstraints -> false, '_label -> "", 'class -> "",
-                'readonly -> "readonly")</td>
-              <td>
-                @checkbox(alertForm("voltageAlertNotification"), '_showConstraints -> false, '_label -> "")
-                <input type="hidden" name="voltageAlertNotification" value="false" />
-              </td>
-              <td>@inputText(alertForm("minAcceptableVoltage"), '_showConstraints -> false, '_label -> "",
-                'class -> "input-mini")</td>
-              <td>@inputText(alertForm("maxAcceptableVoltage"), '_showConstraints -> false, '_label -> "",
-                'class -> "input-mini")</td>
-              <td>
-                @checkbox(alertForm("frequencyAlertNotification"), '_showConstraints -> false, '_label -> "")
-                <input type="hidden" name="frequencyAlertNotification" value="false" />
-              </td>
-              <td>@inputText(alertForm("minAcceptableFrequency"), '_showConstraints -> false, '_label -> "",
-                'class -> "input-mini")</td>
-              <td>@inputText(alertForm("maxAcceptableFrequency"), '_showConstraints -> false, '_label -> "",
-                'class -> "input-mini")</td>
-              <td>
-                @checkbox(alertForm("deviceAlertNotification"), '_showConstraints -> false, '_label -> "")
-                <input type="hidden" name="deviceAlertNotification" value="false" />
-              </td>
-              <td><input type="submit" class="btn btn-warning pull-right" value="Update"></td>
-            </tr>
-          }
-        }
-        @form(routes.Administration.saveAlert(), 'class -> "form-inline") {
-          <tr>
-            <td>
-            @select(
-              alertNotificationForm("deviceId"),
-              options = options(deviceIds),
-              '_label -> "",
-              'class -> "",
-              '_default -> "--- Select Device ---",
-              'id -> "deviceId")
-            </td>
-            <td>@checkbox(alertNotificationForm("voltageAlertNotification"), '_showConstraints -> false,
-              '_label -> "")</td>
-            <td>@inputText(alertNotificationForm("minAcceptableVoltage"), '_showConstraints -> false,
-              'placeholder -> "117.0", '_label -> "", 'class -> "input-mini")</td>
-            <td>@inputText(alertNotificationForm("maxAcceptableVoltage"), '_showConstraints -> false,
-              'placeholder -> "123.0", '_label -> "", 'class -> "input-mini")</td>
-            <td>@checkbox(alertNotificationForm("frequencyAlertNotification"), '_showConstraints -> false,
-              '_label -> "")</td>
-            <td>@inputText(alertNotificationForm("minAcceptableFrequency"), '_showConstraints -> false,
-              'placeholder -> "57.0", '_label -> "", 'class -> "input-mini")</td>
-            <td>@inputText(alertNotificationForm("maxAcceptableFrequency"), '_showConstraints -> false,
-              'placeholder -> "63.0", '_label -> "", 'class -> "input-mini")</td>
-            <td>@checkbox(alertNotificationForm("deviceAlertNotification"), '_showConstraints -> false,
-              '_label -> "")</td>
-            <td><input type="submit" class="btn btn-primary pull-right" value="Add Alert"></td>
-          </tr>
-        }
-
+         @for(device <- devices) {
+           <tr>
+             <td>@device.getDeviceId</td>
+             @if(device.getAlerts.size == 0) {
+               <td>No</td>
+               <td>No</td>
+               <td>No</td>
+               <td>No</td>
+               <td>No</td>
+             } else {
+               <td>@booleanToHuman(device.getAlerts.get(0).getFrequencyAlertNotification)</td>
+               <td>@booleanToHuman(device.getAlerts.get(0).getVoltageAlertNotification)</td>
+               <td>@booleanToHuman(device.getAlerts.get(0).getDeviceAlertNotification)</td>
+               <td>@booleanToHuman(device.getAlerts.get(0).getAlertViaEmail)</td>
+               <td>@booleanToHuman(device.getAlerts.get(0).getAlertViaSms)</td>
+             }
+             <td><a href="@routes.Administration.alertDetails(device.getDeviceId)" class="btn btn-warning">Update</a></td>
+           </tr>
+         }
       </tbody>
     </table>
   </div>
