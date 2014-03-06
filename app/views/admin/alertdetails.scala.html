@@ -17,7 +17,8 @@ along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 Copyright 2013 Anthony Christe
 *@
 
-@(alertForm: Form[Alert])
+@(alertForm: Form[Alert],
+  deviceId: Long)
 
 @import helper._
   @implicitFieldConstructor = @{
@@ -27,9 +28,10 @@ Copyright 2013 Anthony Christe
 @admin("Alert Administration",
   "This page allows you to manage and create power quality events.") {
   <div class="span9 well well-small">
-    @form(routes.Administration.saveAlert(), 'class -> "form-horizontal") {
+    @form(routes.Administration.updateAlert(deviceId), 'class -> "form-horizontal") {
       @checkbox(alertForm("alertViaEmail"), '_showConstraints -> false,
         '_label -> "Receive Alerts Via E-mail")
+      <input type="hidden" name="alertViaEmail" id="alertViaEmail" value="false" />
 
       @inputText(alertForm("notificationEmail"), '_showConstraints -> false,
         'placeholder -> "john.doe@email.com", '_label -> "Alert E-mail Address", 'class -> "")
@@ -38,6 +40,7 @@ Copyright 2013 Anthony Christe
 
       @checkbox(alertForm("alertViaSms"), '_showConstraints -> false,
         '_label -> "Receive Alerts Via Sms")
+      <input type="hidden" name="alertViaSms" id="alertViaSms" value="false" />
 
       @select(
         alertForm("smsCarrier"),
@@ -52,6 +55,7 @@ Copyright 2013 Anthony Christe
 
       @checkbox(alertForm("frequencyAlertNotification"), '_showConstraints -> false,
         '_label -> "Receive Frequency Alerts")
+      <input type="hidden" name="frequencyAlertNotification" id="frequencyAlertNotification" value="false" />
 
       @inputText(alertForm("minAcceptableFrequency"), '_showConstraints -> false,
         'placeholder -> "59.0", '_label -> "Min. Acceptable Frequency (Hz)", 'class -> "")
@@ -63,6 +67,7 @@ Copyright 2013 Anthony Christe
 
       @checkbox(alertForm("voltageAlertNotification"), '_showConstraints -> false,
         '_label -> "Receive Voltage Alerts")
+      <input type="hidden" name="voltageAlertNotification" id="voltageAlertNotification" value="false" />
 
       @inputText(alertForm("minAcceptableVoltage"), '_showConstraints -> false,
         'placeholder -> "100.0", '_label -> "Min. Acceptable Voltage (v)", 'class -> "")
@@ -74,6 +79,7 @@ Copyright 2013 Anthony Christe
 
       @checkbox(alertForm("deviceAlertNotification"), '_showConstraints -> false,
         '_label -> "Receive Device Alerts")
+      <input type="hidden" name="deviceAlertNotification" id="deviceAlertNotification" value="false" />
 
       <hr />
 
