@@ -19,7 +19,6 @@
 
 package models;
 
-import com.avaje.ebean.validation.Email;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
@@ -57,7 +56,6 @@ public class Person extends Model {
    * E-mail address.
    */
   @Required
-  @Email
   private String email;
 
   /**
