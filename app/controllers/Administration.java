@@ -171,25 +171,6 @@ public class Administration extends Controller {
    */
   @Security.Authenticated(Secured.class)
   public static Result alert() {
-    /*Person person = Person.find().where().eq("email", session("email")).findUnique();
-    List<OpqDevice> devices = person.getDevices();
-    List<Form<Alert>> alertNotificationForms = new ArrayList<>();
-    Form<Alert> alertNotificationForm;
-    List<String> deviceIds = new ArrayList<>();
-
-    // For each device, store the device id
-    for (OpqDevice opqDevice : devices) {
-      deviceIds.add(Long.toString(opqDevice.getDeviceId()));
-      // For each alert notification per device, create a form with data from that alert notification.
-      for (Alert alert : opqDevice.getAlerts()) {
-        alertNotificationForm = form(Alert.class).fill(alert);
-        alertNotificationForm.data().put("deviceId", Long.toString(opqDevice.getDeviceId()));
-        alertNotificationForms.add(alertNotificationForm);
-      }
-    }
-
-    alertNotificationForm = form(Alert.class);
-    return ok(adminalert.render(alertNotificationForm, alertNotificationForms, deviceIds));*/
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     List<OpqDevice> devices = person.getDevices();
 
