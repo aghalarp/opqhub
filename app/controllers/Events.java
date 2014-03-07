@@ -20,7 +20,7 @@ public class Events extends Controller {
     DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
     String selectedTimeUnit = dynamicForm.get("pastTimeSelect");
 
-    Long adjustedTimestamp = utils.DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
+    Long adjustedTimestamp = DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
     session("pastTimeSelectEvents", selectedTimeUnit);
     session("eventsAfterAmount", adjustedTimestamp.toString());
     return redirect(routes.Events.eventsByPage(0, adjustedTimestamp));
@@ -92,7 +92,7 @@ public class Events extends Controller {
     String selectedTimeUnit = dynamicForm.get("pastTimeSelect");
     Long deviceId = Long.parseLong(dynamicForm.get("deviceId"));
 
-    Long adjustedTimestamp = utils.DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
+    Long adjustedTimestamp = DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
     session("pastTimeSelectNearby", selectedTimeUnit);
     session("nearbyEventsAfterAmount", adjustedTimestamp.toString());
     return redirect(routes.Events.nearbyEventsByPage(deviceId, 0, adjustedTimestamp));

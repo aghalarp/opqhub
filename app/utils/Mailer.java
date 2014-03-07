@@ -1,8 +1,10 @@
 package utils;
 
 
-import com.typesafe.plugin.MailerAPI;
-import com.typesafe.plugin.MailerPlugin;
+import org.openpowerquality.protocol.OpqPacket;
+
+//import com.typesafe.plugin.MailerAPI;
+//import com.typesafe.plugin.MailerPlugin;
 import org.openpowerquality.protocol.OpqPacket;
 import play.Logger;
 
@@ -13,7 +15,7 @@ import static play.libs.Akka.future;
 public class Mailer {
 
   public static void sendAlert(final OpqPacket opqPacket, final String to) {
-    future(new Callable<Object>() {
+  /*  future(new Callable<Object>() {
       @Override
       public Object call() throws Exception {
         Logger.info(String.format("mailer -> %s", to));
@@ -27,6 +29,6 @@ public class Mailer {
                                 opqPacket.getEventValue()));
         return null;
       }
-    });
+    });*/
   }
 }
