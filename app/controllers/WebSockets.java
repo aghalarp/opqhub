@@ -184,7 +184,6 @@ public class WebSockets extends Controller {
 
   private static void handlePing(OpqPacket opqPacket, WebSocket.Out<String> out) {
     deviceIdToOut.put(opqPacket.getDeviceId(), out);
-    out.write(opqPacket.getBase64Encoding());
   }
 
   private static void handleDisconnect(WebSocket.Out<String> out) {
