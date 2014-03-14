@@ -19,6 +19,7 @@
 
 package controllers;
 
+import controllers.routes;
 import models.Event;
 import models.Alert;
 import models.Measurement;
@@ -27,6 +28,7 @@ import org.openpowerquality.protocol.OpqPacket;
 import play.Logger;
 import play.libs.F;
 import play.mvc.Controller;
+import play.mvc.Result;
 import play.mvc.WebSocket;
 
 import java.util.HashMap;
@@ -68,6 +70,13 @@ public class WebSockets extends Controller {
         });
       }
     };
+  }
+
+  public static Result sendToDevice(Long deviceId, String message) {
+    if(deviceIdToOut.containsKey(deviceId)) {
+      deviceIdToOut.get(deviceId).write(message);
+    }
+    return redirect(routes.Application.index());
   }
 
   /**
