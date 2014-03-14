@@ -29,12 +29,15 @@ import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.WebSocket;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Provides methods for handling packets sent to this server from a WebSockets client.
  */
 public class WebSockets extends Controller {
-
+  private static Map<Long, WebSocket.Out<String>> deviceIdToOut = new HashMap<>();
 
   /**
    * Create a WebSocket object who can receive connections, receive packets, and break connections.
@@ -52,13 +55,14 @@ public class WebSockets extends Controller {
           public void invoke(String s) throws Throwable {
             OpqPacket opqPacket = new OpqPacket(s);
             Logger.info(String.format("Received %s from %s", opqPacket.getType(), opqPacket.getDeviceId()));
-            handlePacket(opqPacket);
+            handlePacket(opqPacket, out);
           }
         });
 
         in.onClose(new F.Callback0() {
           @Override
           public void invoke() throws Throwable {
+            handleDisconnect(out);
             Logger.info("Websocket disconnected");
           }
         });
@@ -71,7 +75,7 @@ public class WebSockets extends Controller {
    *
    * @param opqPacket The packet received from the WebSocket object.
    */
-  private static void handlePacket(OpqPacket opqPacket) {
+  private static void handlePacket(OpqPacket opqPacket, final WebSocket.Out<String> out) {
     switch(opqPacket.getType()) {
       case EVENT_FREQUENCY:
       case EVENT_VOLTAGE:
@@ -80,6 +84,9 @@ public class WebSockets extends Controller {
         break;
       case MEASUREMENT:
         handleMeasurement(opqPacket);
+        break;
+      case PING:
+        handlePing(opqPacket, out);
         break;
     }
   }
@@ -173,5 +180,18 @@ public class WebSockets extends Controller {
     measurement.save();
     opqDevice.getMeasurements().add(measurement);
     opqDevice.save();
+  }
+
+  private static void handlePing(OpqPacket opqPacket, WebSocket.Out<String> out) {
+    deviceIdToOut.put(opqPacket.getDeviceId(), out);
+    out.write(opqPacket.getBase64Encoding());
+  }
+
+  private static void handleDisconnect(WebSocket.Out<String> out) {
+    for(Long l : deviceIdToOut.keySet()) {
+      if(deviceIdToOut.get(l).equals(out)) {
+        deviceIdToOut.remove(l);
+      }
+    }
   }
 }
