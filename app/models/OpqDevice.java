@@ -57,7 +57,7 @@ public class OpqDevice extends Model {
   private String description;
 
   /**
-   * Determines if device is participating in CDSI.
+   * Determines if device is participating in sharing data.
    */
   private Boolean sharingData;
 
@@ -198,9 +198,9 @@ public class OpqDevice extends Model {
 
 
   /**
-   * Gets whether or not this device is participating in CDSI.
+   * Gets whether or not this device is participating in sharing data.
    *
-   * @return Participating in CDSI.
+   * @return Participating in sharing data.
    */
   public Boolean getSharingData() {
     return this.sharingData;
@@ -223,9 +223,9 @@ public class OpqDevice extends Model {
   }
 
   /**
-   * Set whether or not this device is participating in CDSI.
+   * Set whether or not this device is participating in sharing data.
    *
-   * @param sharingData Participating in CDSI.
+   * @param sharingData Participating in sharing data.
    */
   public void setSharingData(Boolean sharingData) {
     this.sharingData = sharingData;

@@ -78,7 +78,7 @@ public class Event extends Model {
    * @param eventType     The event type.
    * @param eventValue    The event value (either in Hertz or Volts depending on the type).
    * @param timestamp     Timestamp for when alert happened representing number of milliseconds since epoch.
-   * @param eventDuration Number of milliseconds that evebt occurred for.
+   * @param eventDuration Number of milliseconds that event occurred for.
    */
   public Event(OpqDevice device, OpqPacket.PacketType eventType, Long timestamp, Long eventDuration, Double eventValue) {
     this.setDevice(device);
@@ -156,7 +156,7 @@ public class Event extends Model {
   /**
    * Get the timestamp of an alert represented as the number of milliseconds since the epoch.
    *
-   * @return The time an alert occured in milliseconds since the epoch.
+   * @return The time an alert occurred in milliseconds since the epoch.
    */
   public Long getTimestamp() {
     return timestamp;
