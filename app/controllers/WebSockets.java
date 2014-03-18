@@ -39,7 +39,7 @@ import java.util.Map;
  * Provides methods for handling packets sent to this server from a WebSockets client.
  */
 public class WebSockets extends Controller {
-  private static Map<Long, WebSocket.Out<String>> deviceIdToOut = new HashMap<>();
+  private static final Map<Long, WebSocket.Out<String>> deviceIdToOut = new HashMap<>();
 
   /**
    * Create a WebSocket object who can receive connections, receive packets, and break connections.
