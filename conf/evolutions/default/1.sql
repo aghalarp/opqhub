@@ -30,7 +30,7 @@ create table event (
   event_duration            bigint,
   device_primary_key        bigint,
   external_cause_primary_key bigint,
-  constraint ck_event_event_type check (event_type in (0,1,2,3)),
+  constraint ck_event_event_type check (event_type in (0,1,2,3,4)),
   constraint pk_event primary key (primary_key))
 ;
 
