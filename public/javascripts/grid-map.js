@@ -22,6 +22,10 @@ var grid = (function() {
   var map;
   var gridLayer;
   var onGridClickCallback;
+  var singleSelectionMode;
+  var invariantColorizationMode;
+  var coloredLayers = [];
+  var oldLayer;
 
   /**
    * Defines starting and stopping points (lat, lng) that bound the grid creation algorithms.
@@ -359,6 +363,27 @@ var grid = (function() {
     gridLayer = L.geoJson(polys, {
       onEachFeature: onEachFeature
     }).addTo(map);
+
+    if(coloredLayers.length > 0) {
+      for(var l in coloredLayers) {
+        console.log(l);
+        l.setStyle({fillColor: "yellow"});
+      }
+    }
+
+  }
+
+  function colorLayer(layer, color) {
+    if(invariantColorizationMode) {
+      coloredLayers.push(layer);
+    }
+    if(singleSelectionMode) {
+      if(oldLayer) {
+        oldLayer.setStyle({fillColor: "#0033FF"})
+      }
+      oldLayer = layer;
+    }
+    layer.setStyle({fillColor: color})
   }
 
   /**
@@ -404,10 +429,6 @@ var grid = (function() {
     updateGrid(getDistanceByZoom(zoom));
   }
 
-  /*function onGridClick(feature) {
-    lastClickedGridId = feature.properties.id;
-    console.log(feature.properties.id);
-  }*/
 
   return {
     /**
@@ -471,7 +492,16 @@ var grid = (function() {
       onGridClickCallback = callback;
     },
 
+    setSingleSelectionMode: function(singleSelect) {
+      singleSelectionMode = singleSelect;
+    },
+
+    setInvariantColorizationMode: function(invariantColorization) {
+      invariantColorizationMode = invariantColorization;
+    },
+
     addDebugPoint: addDebugPoint,
+    colorLayer: colorLayer,
     invalidateSize: invalidateSize
   };
 })();

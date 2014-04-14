@@ -107,10 +107,11 @@ Copyright 2013 Anthony Christe
       $('#gridCol').val(feature.properties.col);
     });
 
-    layer.setStyle({fillColor: 'red'});
+    g.colorLayer(layer, "red");
   }
 
   var g = grid ;
+  g.setSingleSelectionMode(true);
   g.setOnGridClickCallback ( onGridClick ) ;
   grid.initMap ( "data-sharing-map", g.island.OAHU.latLng, g.island.OAHU.defaultZoom ) ;
   </script>
