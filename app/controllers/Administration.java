@@ -19,6 +19,7 @@
 
 package controllers;
 
+import controllers.routes;
 import models.Alert;
 import models.OpqDevice;
 import models.Person;
@@ -75,7 +76,7 @@ public class Administration extends Controller {
     Logger.debug(String.format("%s user information updated", person.getPrimaryKey()));
 
     personForm.get().update(person.getPrimaryKey());
-    return redirect(routes.Administration.user());
+    return redirect(controllers.routes.Administration.user());
   }
 
   /**
@@ -251,9 +252,9 @@ public class Administration extends Controller {
   }
 
   /**
-   * Render the view for CDSI administration.
+   * Render the view for data sharing administration.
    *
-   * @return The rendered view for CDSI administration.
+   * @return The rendered view for data sharing administration.
    */
   @Security.Authenticated(Secured.class)
   public static Result dataSharing() {
@@ -264,9 +265,9 @@ public class Administration extends Controller {
   }
 
   /**
-   * Update CDSI information connected to an opq device.
+   * Update data sharing information connected to an opq device.
    * @param deviceId The device id.
-   * @return Redirect to cdsi administration.
+   * @return Redirect to data sharing administration.
    */
   @Security.Authenticated(Secured.class)
   public static Result editDataSharing(Long deviceId) {

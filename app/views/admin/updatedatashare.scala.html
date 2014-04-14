@@ -84,7 +84,7 @@ Copyright 2013 Anthony Christe
     </table>
   </div>
   @*
-  Start of cdsi map
+  Start of data sharing map
   *@
   <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
   <script src="@routes.Assets.at("javascripts/grid-map.js")" type="text/javascript"></script>
@@ -107,10 +107,11 @@ Copyright 2013 Anthony Christe
       $('#gridCol').val(feature.properties.col);
     });
 
-    layer.setStyle({fillColor: 'red'});
+    g.colorLayer(layer, "red");
   }
 
   var g = grid ;
+  g.setSingleSelectionMode(true);
   g.setOnGridClickCallback ( onGridClick ) ;
   grid.initMap ( "data-sharing-map", g.island.OAHU.latLng, g.island.OAHU.defaultZoom ) ;
   </script>

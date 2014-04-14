@@ -33,9 +33,9 @@ import java.util.List;
 public class PowerQualityMonitoring extends Controller {
 
   /**
-   * Render a public "google-maps" style map with devices and alerts from users who are participating in the CDSI.
+   * Render a public "google-maps" style map with devices and alerts from users who are participating in data sharing.
    *
-   * @return Rendered view of publics devices and public alerts.
+   * @return Rendered view of publics' devices and public alerts.
    */
   public static Result publicMonitor() {
     List<Event> events = Event.find().all();

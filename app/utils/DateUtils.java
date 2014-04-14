@@ -40,9 +40,9 @@ public class DateUtils {
   /**
    * Converts milliseconds since the epoch into a human readable format.
    * @param millisecondsSinceEpoch Milliseconds since the epoch.
-   * @return Human formated string of timestamp.
+   * @return Human formatted string of timestamp.
    */
-  public static final String toDateTime(Long millisecondsSinceEpoch) {
+  public static String toDateTime(Long millisecondsSinceEpoch) {
     Date dateStr = new Date(millisecondsSinceEpoch);
 
     return new SimpleDateFormat("HH:mm:ss.SSS [dd MMM YYYY]").format(dateStr);
