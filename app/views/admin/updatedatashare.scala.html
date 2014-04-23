@@ -107,12 +107,12 @@ Copyright 2013 Anthony Christe
       $('#gridCol').val(feature.properties.col);
     });
 
-    g.colorLayer(layer, "red");
+    g.colorSquare(feature.properties.id, "red");
   }
 
   var g = grid ;
-  g.setSingleSelectionMode(true);
-  g.setOnGridClickCallback ( onGridClick ) ;
+  g.config.singleSelectionMode = true;
+  g.callbacks.onGridClick = onGridClick;
   grid.initMap ( "data-sharing-map", g.island.OAHU.latLng, g.island.OAHU.defaultZoom ) ;
   </script>
 }

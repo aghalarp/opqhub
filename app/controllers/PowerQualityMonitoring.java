@@ -41,7 +41,7 @@ public class PowerQualityMonitoring extends Controller {
     List<Event> events = Event.find().all();
     List<models.OpqDevice> devices = OpqDevice.find().where().eq("sharingData", true).findList();
     boolean loggedOut = !(session().containsKey("email"));
-    return ok(views.html.publicpowerqualitymonitoring.render(events, devices, loggedOut));
+    return ok(views.html.publicmonitoring.publicpowerqualitymonitoring.render(events, devices, loggedOut));
   }
 
 }
