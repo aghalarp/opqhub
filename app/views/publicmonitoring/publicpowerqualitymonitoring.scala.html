@@ -53,10 +53,12 @@ Copyright 2013 Anthony Christe
              var affectedSquares = data["affectedSquares"];
              for(var i = 0; i < affectedSquares.length; i++) {
                for(k in affectedSquares[i]) {
+                 var o = affectedSquares[i][k];
                  g.colorSquare(k, "red");
-                 g.addPopupContent(k, "Affected Devices: " + affectedSquares[i][k].numAffectedDevices + "<br />" +
-                                      "Frequency Events: " + affectedSquares[i][k].numFrequencyEvents + "<br />" +
-                                      "Voltage Events: " + affectedSquares[i][k].numVoltageEvents);
+                 g.addPopupContent(k, "Total Devices: " + o.totalDevices + "<br />" +
+                                      "Affected Devices: " + o.numAffectedDevices + "<br />" +
+                                      "Frequency Events: " + o.numFrequencyEvents + "<br />" +
+                                      "Voltage Events: " + o.numVoltageEvents);
                }
              }
            }

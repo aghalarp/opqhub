@@ -66,14 +66,18 @@ public class PowerQualityMonitoring extends Controller {
     List<OpqDevice> devices = new LinkedList<>();
     Set<String> squaresWithEvents = new HashSet<>();
     Map<String, Set<Event>> squareToEvents = new HashMap<>();
+    Map<String, Integer> gridIdToNumDevices = new HashMap<>();
     int idLength = 0;
     List<JsonNode> affectSquaresJson = new LinkedList<>();
+    List<OpqDevice> tmpDevices;
 
     // Find devices
     while(it.hasNext()) {
       String partialId = it.next().asText();
       idLength = partialId.length();
-      devices.addAll(OpqDevice.find().where().startsWith("gridId", partialId).findList());
+      tmpDevices = OpqDevice.find().where().startsWith("gridId", partialId).findList();
+      gridIdToNumDevices.put(partialId, tmpDevices.size());
+      devices.addAll(tmpDevices);
     }
 
 
@@ -94,7 +98,7 @@ public class PowerQualityMonitoring extends Controller {
     int totalDevices = devices.size();
 
     for(String k : squareToEvents.keySet()) {
-      affectSquaresJson.add(formatGridPopup(k, squareToEvents.get(k)));
+      affectSquaresJson.add(formatGridPopup(k, squareToEvents.get(k), gridIdToNumDevices));
     }
 
     // Respond with list of affected grid-squares
@@ -104,7 +108,7 @@ public class PowerQualityMonitoring extends Controller {
     return ok(result);
   }
 
-  private static JsonNode formatGridPopup(String gridId, Set<Event> events) {
+  private static JsonNode formatGridPopup(String gridId, Set<Event> events, Map<String, Integer> gridIdToDevices) {
     Set<OpqDevice> devices = new HashSet<>();
     int numAffectedDevices = 0;
     int numFrequencyEvents = 0;
@@ -120,8 +124,12 @@ public class PowerQualityMonitoring extends Controller {
       }
     }
     numAffectedDevices = devices.size();
-    JsonNode result = Json.parse(String.format("{\"%s\":{\"numAffectedDevices\":%d, \"numFrequencyEvents\":%d, \"numVoltageEvents\":%d}}",
-                                               gridId, numAffectedDevices, numFrequencyEvents, numVoltageEvents));
+    JsonNode result = Json.parse(String.format("{\"%s\":" +
+                                               "{\"totalDevices\":%d," +
+                                               "\"numAffectedDevices\":%d," +
+                                               "\"numFrequencyEvents\":%d," +
+                                               "\"numVoltageEvents\":%d}}",
+                                               gridId, gridIdToDevices.get(gridId), numAffectedDevices, numFrequencyEvents, numVoltageEvents));
     return result;
 
   }
