@@ -81,10 +81,13 @@ public class PowerQualityMonitoring extends Controller {
     }
 
 
+    int totalAffectedDevices = 0;
+
     String shortGridId;
     //Find events associated with devices
     for(OpqDevice device : devices) {
       if(device.getEvents().size() > 0) {
+        totalAffectedDevices++;
         shortGridId = device.getGridId().substring(0, idLength);
         if(!squareToEvents.containsKey(shortGridId)) {
             squareToEvents.put(shortGridId, new HashSet<Event>());
@@ -96,6 +99,19 @@ public class PowerQualityMonitoring extends Controller {
 
     // Calculate global metrics
     int totalDevices = devices.size();
+    int totalFrequencyEvents = 0;
+    int totalVoltageEvents = 0;
+
+    for(String s : squareToEvents.keySet()) {
+      for(Event event : squareToEvents.get(s)) {
+        if(event.getEventType().equals(OpqPacket.PacketType.EVENT_FREQUENCY)) {
+          totalFrequencyEvents++;
+        }
+        else if(event.getEventType().equals(OpqPacket.PacketType.EVENT_VOLTAGE)) {
+          totalVoltageEvents++;
+        }
+      }
+    }
 
     for(String k : squareToEvents.keySet()) {
       affectSquaresJson.add(formatGridPopup(k, squareToEvents.get(k), gridIdToNumDevices));
@@ -104,6 +120,14 @@ public class PowerQualityMonitoring extends Controller {
     // Respond with list of affected grid-squares
     ObjectNode result = Json.newObject();
     result.put("affectedSquares", Json.toJson(affectSquaresJson));
+    result.put("globalState", Json.parse(String.format("{\"totalDevices\": %d," +
+                                                       "\"totalAffectedDevices\": %d," +
+                                                       "\"totalFrequencyEvents\": %d," +
+                                                       "\"totalVoltageEvents\": %d}",
+                                                       totalDevices,
+                                                       totalAffectedDevices,
+                                                       totalFrequencyEvents,
+                                                       totalVoltageEvents)));
 
     return ok(result);
   }

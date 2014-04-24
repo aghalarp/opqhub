@@ -22,6 +22,26 @@ Copyright 2013 Anthony Christe
   <div class="row">
     @* Start of public map *@
     <div id="public-map" class="span12"></div>
+    <div id="overlay" style="position:absolute; top:85px; right:100px; padding-left: 10px; padding-top:10px; background-color:white; opacity:0.5; width:300px; height:100px; z-index: 100">
+      <table border="0">
+        <tr>
+          <td><b>Total Devices:</b></td>
+          <td><div id="totalDevices"></div></td>
+        </tr>
+        <tr>
+          <td><b>Total Affected Devices:</b></td>
+          <td><div id="totalAffectedDevices"></div></td>
+        </tr>
+        <tr>
+          <td><b>Total Frequency Events:</b></td>
+          <td><div id="totalFrequencyEvents"></div></td>
+        </tr>
+        <tr>
+          <td><b>Total Voltage Events:</b></td>
+          <td><div id="totalVoltageEvents"></div></td>
+        </tr>
+      </table>
+    </div>
     <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("javascripts/grid-map.js")" type="text/javascript"></script>
 
@@ -61,6 +81,12 @@ Copyright 2013 Anthony Christe
                                       "Voltage Events: " + o.numVoltageEvents);
                }
              }
+
+             var globalState = data["globalState"];
+             $("#totalDevices").text(globalState["totalDevices"]);
+             $("#totalAffectedDevices").text(globalState["totalAffectedDevices"]);
+             $("#totalFrequencyEvents").text(globalState["totalFrequencyEvents"]);
+             $("#totalVoltageEvents").text(globalState["totalVoltageEvents"]);
            }
         });
 
