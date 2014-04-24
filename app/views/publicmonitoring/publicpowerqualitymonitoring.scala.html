@@ -19,30 +19,51 @@ Copyright 2013 Anthony Christe
 @(events: List[models.Event], devices: List[models.OpqDevice], loggedOut: Boolean)
 
 @main("Public Power Quality Monitoring", menu("Public Power Quality Monitoring", loggedOut)) {
-    <div class="row">
-        @* Start of public map *@
-        <div id="public-map" class="span12"></div>
-        <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.at("javascripts/grid-map.js")" type="text/javascript"></script>
+  <div class="row">
+    @* Start of public map *@
+    <div id="public-map" class="span12"></div>
+    <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/grid-map.js")" type="text/javascript"></script>
+
+    <script type="text/javascript">
+      /* Make sure the leaflet CSS is loaded */
+      addDynamicCss ('@routes.Assets.at("stylesheets/leaflet.css")');
+
+      function onGridClick(feature, layer) {
+
+      }
+
+      function colorSquares(squares) {
+        for(var i = 0; i < squares.length; i++) {
+          g.colorSquare(squares[i], "red");
+        }
+      }
+
+      function onMapChange() {
+        var visibleIds = g.getVisibleIds();
+        var visibleIdsJson = JSON.stringify({visibleIds: visibleIds});
+
+        $.ajax({
+           type: "POST",
+           url: "/public/alerts",
+           processData: false,
+           contentType: 'application/json',
+           data: visibleIdsJson,
+           success: function(data, status, whoKnowsWhat) {
+             var eventSquares = data["squaresWithEvents"];
+             //console.log(eventSquares);
+             colorSquares(eventSquares);
+           }
+        });
 
 
-        <script type="text/javascript">
-            /* Make sure the leaflet CSS is loaded */
-            addDynamicCss ( ' @routes.Assets.at("stylesheets/leaflet.css") ');
+      }
 
-            function onGridClick ( feature, layer ) {
-
-            }
-
-            function onMapChange() {
-
-            }
-
-            var g = grid ;
-            g.config.singleSelectionMode = true ;
-            g.callbacks.onGridClick = onGridClick ;
-            g.callbacks.onMapChange = onMapChange;
-            grid.initMap ( "public-map", g.island.OAHU.latLng, g.island.OAHU.defaultZoom ) ;
-        </script>
-    </div>
+      var g = grid;
+      g.config.singleSelectionMode = false;
+      g.callbacks.onGridClick = onGridClick;
+      g.callbacks.onMapChange = onMapChange;
+      g.initMap ("public-map", g.island.OAHU.latLng, g.island.OAHU.defaultZoom);
+    </script>
+  </div>
 }
