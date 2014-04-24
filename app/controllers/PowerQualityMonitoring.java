@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.Alert;
+import org.openpowerquality.protocol.OpqPacket;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
@@ -30,6 +31,7 @@ import play.mvc.Result;
 
 import models.Event;
 import models.OpqDevice;
+import scala.util.parsing.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -63,7 +65,9 @@ public class PowerQualityMonitoring extends Controller {
     Iterator<JsonNode> it = json.findValue("visibleIds").elements();
     List<OpqDevice> devices = new LinkedList<>();
     Set<String> squaresWithEvents = new HashSet<>();
+    Map<String, Set<Event>> squareToEvents = new HashMap<>();
     int idLength = 0;
+    List<JsonNode> affectSquaresJson = new LinkedList<>();
 
     // Find devices
     while(it.hasNext()) {
@@ -72,18 +76,54 @@ public class PowerQualityMonitoring extends Controller {
       devices.addAll(OpqDevice.find().where().startsWith("gridId", partialId).findList());
     }
 
+
+    String shortGridId;
     //Find events associated with devices
     for(OpqDevice device : devices) {
       if(device.getEvents().size() > 0) {
+        shortGridId = device.getGridId().substring(0, idLength);
+        if(!squareToEvents.containsKey(shortGridId)) {
+            squareToEvents.put(shortGridId, new HashSet<Event>());
+        }
+        squareToEvents.get(shortGridId).addAll(device.getEvents());
         squaresWithEvents.add(device.getGridId().substring(0, idLength));
       }
     }
 
+    // Calculate global metrics
+    int totalDevices = devices.size();
+
+    for(String k : squareToEvents.keySet()) {
+      affectSquaresJson.add(formatGridPopup(k, squareToEvents.get(k)));
+    }
+
     // Respond with list of affected grid-squares
     ObjectNode result = Json.newObject();
-    result.put("squaresWithEvents", Json.toJson(squaresWithEvents));
+    result.put("affectedSquares", Json.toJson(affectSquaresJson));
 
     return ok(result);
+  }
+
+  private static JsonNode formatGridPopup(String gridId, Set<Event> events) {
+    Set<OpqDevice> devices = new HashSet<>();
+    int numAffectedDevices = 0;
+    int numFrequencyEvents = 0;
+    int numVoltageEvents = 0;
+
+    for(Event event : events) {
+      devices.add(event.getDevice());
+      if(event.getEventType().equals(OpqPacket.PacketType.EVENT_FREQUENCY)) {
+        numFrequencyEvents++;
+      }
+      else if(event.getEventType().equals(OpqPacket.PacketType.EVENT_VOLTAGE)) {
+        numVoltageEvents++;
+      }
+    }
+    numAffectedDevices = devices.size();
+    JsonNode result = Json.parse(String.format("{\"%s\":{\"numAffectedDevices\":%d, \"numFrequencyEvents\":%d, \"numVoltageEvents\":%d}}",
+                                               gridId, numAffectedDevices, numFrequencyEvents, numVoltageEvents));
+    return result;
+
   }
 
 }

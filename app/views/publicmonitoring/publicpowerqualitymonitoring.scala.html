@@ -50,9 +50,15 @@ Copyright 2013 Anthony Christe
            contentType: 'application/json',
            data: visibleIdsJson,
            success: function(data, status, whoKnowsWhat) {
-             var eventSquares = data["squaresWithEvents"];
-             //console.log(eventSquares);
-             colorSquares(eventSquares);
+             var affectedSquares = data["affectedSquares"];
+             for(var i = 0; i < affectedSquares.length; i++) {
+               for(k in affectedSquares[i]) {
+                 g.colorSquare(k, "red");
+                 g.addPopupContent(k, "Affected Devices: " + affectedSquares[i][k].numAffectedDevices + "<br />" +
+                                      "Frequency Events: " + affectedSquares[i][k].numFrequencyEvents + "<br />" +
+                                      "Voltage Events: " + affectedSquares[i][k].numVoltageEvents);
+               }
+             }
            }
         });
 
