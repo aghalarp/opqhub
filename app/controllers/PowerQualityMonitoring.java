@@ -69,40 +69,34 @@ public class PowerQualityMonitoring extends Controller {
   @BodyParser.Of(BodyParser.Json.class)
   public static Result alertsFromIds() {
     JsonNode json = request().body().asJson();
-    Iterator<JsonNode> it = json.findValue("visibleIds").elements();
     List<OpqDevice> devices = new LinkedList<>();
-    Set<String> squaresWithEvents = new HashSet<>();
     Map<String, Set<Event>> squareToEvents = new HashMap<>();
     Map<String, Integer> gridIdToNumDevices = new HashMap<>();
     int idLength = 0;
     List<JsonNode> affectSquaresJson = new LinkedList<>();
-    List<OpqDevice> tmpDevices;
-
-    getDevicesFromIds(json);
 
     // Find devices
-    while(it.hasNext()) {
-      String partialId = it.next().asText();
-      idLength = partialId.length();
-      tmpDevices = OpqDevice.find().where().startsWith("gridId", partialId).findList();
-      gridIdToNumDevices.put(partialId, tmpDevices.size());
-      devices.addAll(tmpDevices);
+    idLength = getDevicesFromIds(json, devices);
+    String shortId;
+    for(OpqDevice device : devices) {
+      shortId = device.getGridId().substring(0, idLength);
+      if(!gridIdToNumDevices.containsKey(shortId)) {
+        gridIdToNumDevices.put(shortId, 0);
+      }
+      gridIdToNumDevices.put(shortId, gridIdToNumDevices.get(shortId) + 1);
     }
-
 
     int totalAffectedDevices = 0;
 
-    String shortGridId;
     //Find events associated with devices
     for(OpqDevice device : devices) {
       if(device.getEvents().size() > 0) {
         totalAffectedDevices++;
-        shortGridId = device.getGridId().substring(0, idLength);
-        if(!squareToEvents.containsKey(shortGridId)) {
-            squareToEvents.put(shortGridId, new HashSet<Event>());
+        shortId = device.getGridId().substring(0, idLength);
+        if(!squareToEvents.containsKey(shortId)) {
+            squareToEvents.put(shortId, new HashSet<Event>());
         }
-        squareToEvents.get(shortGridId).addAll(device.getEvents());
-        squaresWithEvents.add(device.getGridId().substring(0, idLength));
+        squareToEvents.get(shortId).addAll(device.getEvents());
       }
     }
 
@@ -141,13 +135,15 @@ public class PowerQualityMonitoring extends Controller {
     return ok(result);
   }
 
-  private static List<OpqDevice> getDevicesFromIds(JsonNode jsonNode) {
+  private static int getDevicesFromIds(JsonNode jsonNode, List<OpqDevice> devices) {
     List<String> partialIds = new LinkedList<>();
     List<String> whereClauses = new LinkedList<>();
     Query<OpqDevice> opqDeviceQuery;
+    int idLength = 0;
 
     for(JsonNode n : jsonNode.findValue("visibleIds")) {
       partialIds.add(n.asText());
+      idLength = n.asText().length();
       whereClauses.add("gridId like ?");
     }
 
@@ -161,7 +157,9 @@ public class PowerQualityMonitoring extends Controller {
       opqDeviceQuery.setParameter(i++, s + "%");
     }
 
-    return opqDeviceQuery.findList();
+    devices.addAll(opqDeviceQuery.findList());
+
+    return idLength;
   }
 
 
