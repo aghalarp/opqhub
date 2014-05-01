@@ -19,10 +19,17 @@
 
 package controllers;
 
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.Expr;
+import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.Alert;
+import org.apache.commons.lang3.StringUtils;
 import org.openpowerquality.protocol.OpqPacket;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -70,6 +77,8 @@ public class PowerQualityMonitoring extends Controller {
     int idLength = 0;
     List<JsonNode> affectSquaresJson = new LinkedList<>();
     List<OpqDevice> tmpDevices;
+
+    getDevicesFromIds(json);
 
     // Find devices
     while(it.hasNext()) {
@@ -131,6 +140,31 @@ public class PowerQualityMonitoring extends Controller {
 
     return ok(result);
   }
+
+  private static List<OpqDevice> getDevicesFromIds(JsonNode jsonNode) {
+    List<String> partialIds = new LinkedList<>();
+    List<String> whereClauses = new LinkedList<>();
+    Query<OpqDevice> opqDeviceQuery;
+
+    for(JsonNode n : jsonNode.findValue("visibleIds")) {
+      partialIds.add(n.asText());
+      whereClauses.add("gridId like ?");
+    }
+
+    String combinedWhere = StringUtils.join(whereClauses, " or ");
+    String qq = "find OpqDevice where " + combinedWhere;
+
+    opqDeviceQuery = Ebean.createQuery(OpqDevice.class, qq);
+
+    int i = 1;
+    for(String s : partialIds) {
+      opqDeviceQuery.setParameter(i++, s + "%");
+    }
+
+    return opqDeviceQuery.findList();
+  }
+
+
 
   private static JsonNode formatGridPopup(String gridId, Set<Event> events, Map<String, Integer> gridIdToDevices) {
     Set<OpqDevice> devices = new HashSet<>();
