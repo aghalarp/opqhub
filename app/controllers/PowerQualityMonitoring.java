@@ -39,6 +39,7 @@ import play.mvc.Result;
 import models.Event;
 import models.OpqDevice;
 import scala.util.parsing.json.JSONObject;
+import utils.GridSquare;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -70,59 +71,76 @@ public class PowerQualityMonitoring extends Controller {
   public static Result alertsFromIds() {
     JsonNode json = request().body().asJson();
     List<OpqDevice> devices = new LinkedList<>();
-    Map<String, Set<Event>> squareToEvents = new HashMap<>();
-    Map<String, Integer> gridIdToNumDevices = new HashMap<>();
     int idLength = 0;
-    List<JsonNode> affectSquaresJson = new LinkedList<>();
+    List<JsonNode> affectedSquaresJson = new LinkedList<>();
 
-    // Find devices
+
+
+    // Find all visible devices
     idLength = getDevicesFromIds(json, devices);
+
+    Map<String, GridSquare> localMetrics = new HashMap<>();
+    GridSquare tmpGridSquare;
+
     String shortId;
     for(OpqDevice device : devices) {
       shortId = device.getGridId().substring(0, idLength);
-      if(!gridIdToNumDevices.containsKey(shortId)) {
-        gridIdToNumDevices.put(shortId, 0);
+
+      if(!localMetrics.containsKey(shortId)) {
+        localMetrics.put(shortId, new GridSquare());
       }
-      gridIdToNumDevices.put(shortId, gridIdToNumDevices.get(shortId) + 1);
-    }
 
-    int totalAffectedDevices = 0;
+      tmpGridSquare = localMetrics.get(shortId);
 
-    //Find events associated with devices
-    for(OpqDevice device : devices) {
+      tmpGridSquare.numDevices++;
+
+     for(Event event : device.getEvents()) {
+       switch(event.getEventType()) {
+         case EVENT_FREQUENCY: tmpGridSquare.numFrequencyEvents++; break;
+         case EVENT_VOLTAGE: tmpGridSquare.numVoltageEvents++; break;
+       }
+     }
+
+      // Calculate total affected devices
       if(device.getEvents().size() > 0) {
-        totalAffectedDevices++;
-        shortId = device.getGridId().substring(0, idLength);
-        if(!squareToEvents.containsKey(shortId)) {
-            squareToEvents.put(shortId, new HashSet<Event>());
-        }
-        squareToEvents.get(shortId).addAll(device.getEvents());
+        tmpGridSquare.numAffectedDevices++;
       }
+
     }
 
     // Calculate global metrics
-    int totalDevices = devices.size();
+    int totalAffectedDevices = 0;
+    int totalDevices = 0;
     int totalFrequencyEvents = 0;
     int totalVoltageEvents = 0;
 
-    for(String s : squareToEvents.keySet()) {
-      for(Event event : squareToEvents.get(s)) {
-        if(event.getEventType().equals(OpqPacket.PacketType.EVENT_FREQUENCY)) {
-          totalFrequencyEvents++;
-        }
-        else if(event.getEventType().equals(OpqPacket.PacketType.EVENT_VOLTAGE)) {
-          totalVoltageEvents++;
-        }
-      }
+    for(String k : localMetrics.keySet()) {
+      tmpGridSquare = localMetrics.get(k);
+      totalAffectedDevices += tmpGridSquare.numAffectedDevices;
+      totalDevices += tmpGridSquare.numDevices;
+      totalFrequencyEvents += tmpGridSquare.numFrequencyEvents;
+      totalVoltageEvents += tmpGridSquare.numVoltageEvents;
     }
 
-    for(String k : squareToEvents.keySet()) {
-      affectSquaresJson.add(formatGridPopup(k, squareToEvents.get(k), gridIdToNumDevices));
+
+    for(String k : localMetrics.keySet()) {
+      tmpGridSquare = localMetrics.get(k);
+      affectedSquaresJson.add(Json.parse(String.format("{\"%s\":" +
+                                                     "{\"totalDevices\":%d," +
+                                                     "\"numAffectedDevices\":%d," +
+                                                     "\"numFrequencyEvents\":%d," +
+                                                     "\"numVoltageEvents\":%d}}",
+                                                     k,
+                                                     tmpGridSquare.numDevices,
+                                                     tmpGridSquare.numAffectedDevices,
+                                                     tmpGridSquare.numFrequencyEvents,
+                                                     tmpGridSquare.numVoltageEvents
+                                                    )));
     }
 
     // Respond with list of affected grid-squares
     ObjectNode result = Json.newObject();
-    result.put("affectedSquares", Json.toJson(affectSquaresJson));
+    result.put("affectedSquares", Json.toJson(affectedSquaresJson));
     result.put("globalState", Json.parse(String.format("{\"totalDevices\": %d," +
                                                        "\"totalAffectedDevices\": %d," +
                                                        "\"totalFrequencyEvents\": %d," +
@@ -160,34 +178,6 @@ public class PowerQualityMonitoring extends Controller {
     devices.addAll(opqDeviceQuery.findList());
 
     return idLength;
-  }
-
-
-
-  private static JsonNode formatGridPopup(String gridId, Set<Event> events, Map<String, Integer> gridIdToDevices) {
-    Set<OpqDevice> devices = new HashSet<>();
-    int numAffectedDevices = 0;
-    int numFrequencyEvents = 0;
-    int numVoltageEvents = 0;
-
-    for(Event event : events) {
-      devices.add(event.getDevice());
-      if(event.getEventType().equals(OpqPacket.PacketType.EVENT_FREQUENCY)) {
-        numFrequencyEvents++;
-      }
-      else if(event.getEventType().equals(OpqPacket.PacketType.EVENT_VOLTAGE)) {
-        numVoltageEvents++;
-      }
-    }
-    numAffectedDevices = devices.size();
-    JsonNode result = Json.parse(String.format("{\"%s\":" +
-                                               "{\"totalDevices\":%d," +
-                                               "\"numAffectedDevices\":%d," +
-                                               "\"numFrequencyEvents\":%d," +
-                                               "\"numVoltageEvents\":%d}}",
-                                               gridId, gridIdToDevices.get(gridId), numAffectedDevices, numFrequencyEvents, numVoltageEvents));
-    return result;
-
   }
 
 }
