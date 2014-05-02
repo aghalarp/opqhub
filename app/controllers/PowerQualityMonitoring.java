@@ -56,19 +56,14 @@ public class PowerQualityMonitoring extends Controller {
 
   @BodyParser.Of(BodyParser.Json.class)
   public static Result alertsFromIds() {
-    JsonNode json = request().body().asJson();
     List<OpqDevice> devices = new LinkedList<>();
-    int idLength = 0;
+    int idLength = getDevicesFromIds(request().body().asJson(), devices);
+
     List<JsonNode> affectedSquaresJson = new LinkedList<>();
-
-
-    // Find all visible devices
-    idLength = getDevicesFromIds(json, devices);
-
     Map<String, GridSquare> localMetrics = new HashMap<>();
     GridSquare tmpGridSquare;
-
     String shortId;
+
     for (OpqDevice device : devices) {
       shortId = device.getGridId().substring(0, idLength);
 
@@ -111,11 +106,9 @@ public class PowerQualityMonitoring extends Controller {
       totalDevices += tmpGridSquare.numDevices;
       totalFrequencyEvents += tmpGridSquare.numFrequencyEvents;
       totalVoltageEvents += tmpGridSquare.numVoltageEvents;
-    }
-
-
-    for (String k : localMetrics.keySet()) {
-      affectedSquaresJson.add(formatLocalMetrics(localMetrics.get(k)));
+      if(tmpGridSquare.numAffectedDevices > 0) {
+        affectedSquaresJson.add(formatLocalMetrics(tmpGridSquare));
+      }
     }
 
     // Respond with list of affected grid-squares
