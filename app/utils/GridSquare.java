@@ -1,5 +1,8 @@
 package utils;
 
+/**
+ * Utility class used for mapping a gridId -> set a metrics about that grid square.
+ */
 public class GridSquare {
   public String gridId;
   public int numDevices = 0;
