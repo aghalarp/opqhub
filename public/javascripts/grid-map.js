@@ -19,43 +19,26 @@
 
 var grid = (function() {
   "use strict";
+  /* ------------------------- Private API -------------------------*/
+  /**
+   * The div containing the map.
+   */
   var map;
+
+  /**
+   * The layer which contains the set of polygon grids.
+   */
   var gridLayer;
-  var onGridClickCallback;
-  var singleSelectionMode;
-  var invariantColorizationMode;
+
+  /**
+   * List of grid-squares that are colored before a pan so that they can be recolored after a pan.
+   * @type {Array}
+   */
   var coloredLayers = [];
-  var oldLayer;
 
-  /**
-   * Defines starting and stopping points (lat, lng) that bound the grid creation algorithms.
-   * Currently, the bounding box created by the two points contain the entire Hawaiian island chain.
-   * The points would need to be customized to work over other regions of interest. The startPoint should be the
-   * NW point of the bounding box, and the endpoint should be the SE point of the bounding box.
-   * @type {{startPoint: latLng, endPoint: latLng}}
-   */
-  var config = {
-    startPoint: L.latLng(22.534353, -161.004639),
-    endPoint: L.latLng(16.719592, -151.853027),
-    maxZoom: 18,
-    minZoom: 5
-  };
+  var popupContent = [];
 
-  /**
-   * Draws a small circle on the map which can be used in debugging.
-   * @param latLng - The latitude and longitude to place the point.
-   * @param color - The color of the point.
-   */
-  function addDebugPoint(latLng, color) {
-    color = color || 'red';
-    var debugPoint = L.circle(latLng, 500, {color: color}).addTo(map);
-  }
-
-  function invalidateSize() {
-    if(map) {
-      map.invalidateSize();
-    }
-  }
+  var visibleIds = [];
 
   /**
    * Converts degrees to radians.
@@ -78,7 +61,8 @@ var grid = (function() {
   /**
    * Convenience bearings for getNextLatLng method. These values can be passed into the method
    * as the bearing parameter.
-   * @type {{NORTH: number, NORTH_EAST: number, EAST: number, SOUTH_EAST: number, SOUTH: number, SOUTH_WEST: number, WEST: number, NORTH_WEST: number}}
+   * @type {{NORTH: number, NORTH_EAST: number, EAST: number, SOUTH_EAST: number, SOUTH: number, SOUTH_WEST: number,
+   * WEST: number, NORTH_WEST: number}}
    */
   var bearing = {
     NORTH: 0,
@@ -125,6 +109,7 @@ var grid = (function() {
     var newLng = lng + Math.atan2(Math.sin(bear) * Math.sin(ad) * Math.cos(lat),
       Math.cos(ad) - Math.sin(lat) * Math.sin(newLat));
     return L.latLng(degs(newLat), degs(newLng));
+
   }
 
   /**
@@ -283,7 +268,7 @@ var grid = (function() {
 
     var row = gridPoints[r][c].r;
     var col = gridPoints[r][c].c;
-    var id = getGridSquareId(row, col, distance);
+    var id = getGridSquareId(row, col, distance, "");
 
     var feature = {
       type: "Feature",
@@ -336,24 +321,37 @@ var grid = (function() {
     return polys;
   }
 
-  /**
-   * Redraw the grid.
-   * @param distance - The length of the side of each square in the grid.
-   */
-  function updateGrid(distance) {
+  function redrawMap() {
+    var distance = getDistanceByZoom(map.getZoom());
+
     if (map.hasLayer(gridLayer)) {
       map.removeLayer(gridLayer);
+      while(visibleIds.length > 0) {
+        visibleIds.pop();
+      };
     }
 
     function onEachFeature(feature, layer) {
       if (feature.properties && feature.properties.popupContent) {
-        layer.bindPopup(feature.properties.popupContent);
+        for(var i = 0; i < popupContent.length; i++) {
+          if(popupContent[i].gridId === feature.properties.id) {
+            layer.bindPopup(popupContent[i].content);
+          }
+        }
       }
 
-      if(onGridClickCallback) {
+      if(callbacks.onGridClick) {
         layer.on({
-          click: function() {onGridClickCallback(feature, layer)}
+          click: function() {callbacks.onGridClick(feature, layer);}
         });
+      }
+
+      visibleIds.push(feature.properties.id);
+
+      for(var j = 0; j < coloredLayers.length; j++) {
+        if(feature.properties.id === coloredLayers[j].id) {
+          layer.setStyle({fillColor: coloredLayers[j].color});
+        }
       }
     }
 
@@ -363,28 +361,21 @@ var grid = (function() {
     gridLayer = L.geoJson(polys, {
       onEachFeature: onEachFeature
     }).addTo(map);
-
-    if(coloredLayers.length > 0) {
-      for(var l in coloredLayers) {
-        console.log(l);
-        l.setStyle({fillColor: "yellow"});
-      }
-    }
-
   }
 
-  function colorLayer(layer, color) {
-    if(invariantColorizationMode) {
-      coloredLayers.push(layer);
+  /**
+   * Redraw the grid.
+   * @param distance - The length of the side of each square in the grid.
+   */
+  function onMapChange() {
+    redrawMap();
+
+    if(callbacks.onMapChange) {
+      callbacks.onMapChange();
     }
-    if(singleSelectionMode) {
-      if(oldLayer) {
-        oldLayer.setStyle({fillColor: "#0033FF"})
-      }
-      oldLayer = layer;
-    }
-    layer.setStyle({fillColor: color})
   }
+
+
 
   /**
    * Return the distance between points in the grid based on the zoom level of the map.
@@ -421,88 +412,149 @@ var grid = (function() {
     }
   }
 
+  /* ------------------------- Public API -------------------------*/
+
   /**
-   * Get the current zoom level and update the grid.
+   * Defines starting and stopping points (lat, lng) that bound the grid creation algorithms.
+   * Currently, the bounding box created by the two points contain the entire Hawaiian island chain.
+   * The points would need to be customized to work over other regions of interest. The startPoint should be the
+   * NW point of the bounding box, and the endpoint should be the SE point of the bounding box.
+   *
+   * Our default values are provides below, but any of these can be overridden since they're presented in the public
+   * API.
+   *
+   * @type {{startPoint: latLng, endPoint: latLng}}
    */
-  function onMapChange() {
-    var zoom = map.getZoom();
-    updateGrid(getDistanceByZoom(zoom));
+  var config = {
+    startPoint: L.latLng(22.534353, -161.004639),
+    endPoint: L.latLng(16.719592, -151.853027),
+    maxZoom: 18,
+    minZoom: 5,
+    singleSelectionMode: false
+  };
+
+  /**
+   * List of public callbacks that users can implement.
+   */
+  var callbacks = {
+    onGridClick: null,
+    onMapChange: null
+  };
+
+
+  /**
+   * Create a map with a grid layer.
+   * @param div The div to create the map on.
+   * @param center The center of the map view.
+   * @param zoom The zoom level of the map.
+   */
+  function initMap(div, center, zoom) {
+    var osmUrl = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+    var osmAttrib = "Map data © OpenStreetMap contributors";
+    var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
+    map = L.map(div, {maxZoom: config.maxZoom, minZoom: config.minZoom});
+    map.addLayer(osm);
+
+    map.setView(center, zoom);
+    onMapChange();
+
+    map.on("zoomend", onMapChange);
+    map.on("dragend", onMapChange);
   }
 
+  /**
+   * Color a grid square by its given id.
+   * @param id Id of the grid-square to color.
+   * @param color The color to color the grid-square (in english (red) or hex (#FF0000)).
+   */
+  function colorSquareById(id, color) {
+    if(config.singleSelectionMode) {
+      coloredLayers = [];
+    }
+    coloredLayers.push({id: id, color: color});
+    redrawMap();
+  }
+
+  /**
+   * Clear the styling of all layers.
+   */
+  function clearColoredLayers() {
+    coloredLayers = [];
+    redrawMap();
+  }
+
+  function addPopupContent(gridId, content) {
+    popupContent.push({gridId: gridId, content: content});
+  }
+
+  /**
+   *  Returns a list of the visible ids currently in the bounding box of the browser.
+   */
+  function getVisibleIds() {
+    return visibleIds;
+  }
+
+  /**
+   * Draws a small circle on the map which can be used in debugging.
+   * @param latLng - The latitude and longitude to place the point.
+   * @param color - The color of the point.
+   */
+  function addDebugPoint(latLng, color) {
+    color = color || "red";
+    var debugPoint = L.circle(latLng, 500, {color: color}).addTo(map);
+  }
+
+  /**
+   * If the map is drawn and the page it is drawn on is dynamically updated, the map may be displayed incorrectly.
+   * This method invalidates the map and forces a redraw.
+   */
+  function invalidateSize() {
+    if(map) {
+      map.invalidateSize();
+    }
+  }
+
+  /**
+   * Convienience object allowing us to center the map over any of the following Hawaiian islands.
+   */
+  var island = {
+    BIG_ISLAND: {
+      latLng: L.latLng(19.609926, -155.484009),
+      defaultZoom: 9
+    },
+    KAUAI: {
+      latLng: L.latLng(22.057244, -159.506378),
+      defaultZoom: 11
+    },
+    LANAI: {
+      latLng: L.latLng(20.829093, -156.919785),
+      defaultZoom: 12
+    },
+    MAUI: {
+      latLng: L.latLng(20.786128, -156.305237),
+      defaultZoom: 10
+    },
+    MOLOKAI: {
+      latLng: L.latLng(21.121454, -156.996689),
+      defaultZoom: 11
+    },
+    OAHU: {
+      latLng: L.latLng(21.466700, -157.983300),
+      defaultZoom: 10
+    }
+  };
 
   return {
-    /**
-     * Create a map with a grid layer.
-     * @param div The div to create the map on.
-     * @param center The center of the map view.
-     * @param zoom The zoom level of the map.
-     */
-    initMap: function(div, center, zoom) {
-      var osmUrl = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-      var osmAttrib = "Map data © OpenStreetMap contributors";
-      var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
-      map = L.map(div, {maxZoom: config.maxZoom, minZoom: config.minZoom});
-      map.addLayer(osm);
-
-      map.setView(center, zoom);
-      updateGrid(getDistanceByZoom(zoom));
-
-      /*gridLayer.on("click", function(e) {
-        console.log("clicked on grid layer");
-        onGridClick(e.layer.feature);
-      });*/
-
-      map.on("zoomend", onMapChange);
-      map.on("dragend", onMapChange);
-
-
-    },
-
-    /**
-     * Convienience object allowing us to center the map over any of the following Hawaiian islands.
-     */
-    island: {
-      BIG_ISLAND: {
-        latLng: L.latLng(19.609926, -155.484009),
-        defaultZoom: 9
-      },
-      KAUAI: {
-        latLng: L.latLng(22.057244, -159.506378),
-        defaultZoom: 11
-      },
-      LANAI: {
-        latLng: L.latLng(20.829093, -156.919785),
-        defaultZoom: 12
-      },
-      MAUI: {
-        latLng: L.latLng(20.786128, -156.305237),
-        defaultZoom: 10
-      },
-      MOLOKAI: {
-        latLng: L.latLng(21.121454, -156.996689),
-        defaultZoom: 11
-      },
-      OAHU: {
-        latLng: L.latLng(21.466700, -157.983300),
-        defaultZoom: 10
-      }
-    },
-
-    setOnGridClickCallback: function(callback) {
-      onGridClickCallback = callback;
-    },
-
-    setSingleSelectionMode: function(singleSelect) {
-      singleSelectionMode = singleSelect;
-    },
-
-    setInvariantColorizationMode: function(invariantColorization) {
-      invariantColorizationMode = invariantColorization;
-    },
-
+    config: config,
+    callbacks: callbacks,
+    initMap: initMap,
+    colorSquare: colorSquareById,
+    addPopupContent: addPopupContent,
+    clearColoredLayers: clearColoredLayers,
+    getVisibleIds: getVisibleIds,
     addDebugPoint: addDebugPoint,
-    colorLayer: colorLayer,
-    invalidateSize: invalidateSize
+    invalidateSize: invalidateSize,
+    island: island
   };
 })();
 

@@ -1,0 +1,103 @@
+@*
+This file is part of opq-ao.
+
+opa-ao is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+opa-ao is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
+
+Copyright 2013 Anthony Christe
+*@
+@(events: List[models.Event], devices: List[models.OpqDevice], loggedOut: Boolean)
+
+@main("Public Power Quality Monitoring", menu("Public Power Quality Monitoring", loggedOut)) {
+  <div class="row">
+    @* Start of public map *@
+    <div id="public-map" class="span12"></div>
+    <div id="overlay" style="position:absolute; top:85px; right:100px; padding-left: 10px; padding-top:10px; background-color:white; opacity:0.5; width:300px; height:100px; z-index: 100">
+      <table border="0">
+        <tr>
+          <td><b>Total Devices:</b></td>
+          <td><div id="totalDevices"></div></td>
+        </tr>
+        <tr>
+          <td><b>Total Affected Devices:</b></td>
+          <td><div id="totalAffectedDevices"></div></td>
+        </tr>
+        <tr>
+          <td><b>Total Frequency Events:</b></td>
+          <td><div id="totalFrequencyEvents"></div></td>
+        </tr>
+        <tr>
+          <td><b>Total Voltage Events:</b></td>
+          <td><div id="totalVoltageEvents"></div></td>
+        </tr>
+      </table>
+    </div>
+    <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/grid-map.js")" type="text/javascript"></script>
+
+    <script type="text/javascript">
+      /* Make sure the leaflet CSS is loaded */
+      addDynamicCss ('@routes.Assets.at("stylesheets/leaflet.css")');
+
+      function onGridClick(feature, layer) {
+
+      }
+
+      function colorSquares(squares) {
+        for(var i = 0; i < squares.length; i++) {
+          g.colorSquare(squares[i], "red");
+        }
+      }
+
+      function onMapChange() {
+        var visibleIds = g.getVisibleIds();
+        var visibleIdsJson = JSON.stringify({visibleIds: visibleIds});
+
+        $.ajax({
+           type: "POST",
+           url: "/public/alerts",
+           processData: false,
+           contentType: 'application/json',
+           data: visibleIdsJson,
+           success: function(data, status, whoKnowsWhat) {
+             var affectedSquares = data["affectedSquares"];
+             for(var i = 0; i < affectedSquares.length; i++) {
+               for(k in affectedSquares[i]) {
+                 var o = affectedSquares[i][k];
+                 g.colorSquare(k, "red");
+                 g.addPopupContent(k, "Total Devices: " + o.totalDevices + "<br />" +
+                                      "Affected Devices: " + o.numAffectedDevices + "<br />" +
+                                      "Frequency Events: " + o.numFrequencyEvents + "<br />" +
+                                      "Voltage Events: " + o.numVoltageEvents);
+               }
+             }
+
+             var globalState = data["globalState"];
+             $("#totalDevices").text(globalState["totalDevices"]);
+             $("#totalAffectedDevices").text(globalState["totalAffectedDevices"]);
+             $("#totalFrequencyEvents").text(globalState["totalFrequencyEvents"]);
+             $("#totalVoltageEvents").text(globalState["totalVoltageEvents"]);
+           }
+        });
+
+
+      }
+
+      var g = grid;
+      g.config.singleSelectionMode = false;
+      g.callbacks.onGridClick = onGridClick;
+      g.callbacks.onMapChange = onMapChange;
+      g.initMap ("public-map", g.island.OAHU.latLng, g.island.OAHU.defaultZoom);
+    </script>
+  </div>
+}

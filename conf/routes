@@ -66,6 +66,7 @@ GET         /private/monitor/measurements/:deviceId            controllers.Measu
 
 # Public Monitoring
 GET         /public/monitor                                    controllers.PowerQualityMonitoring.publicMonitor()
+POST        /public/alerts                                     controllers.PowerQualityMonitoring.alertsFromIds()
 
 # Handling WebSockets
 GET         /private/ws                                        controllers.WebSockets.handleSocket()
