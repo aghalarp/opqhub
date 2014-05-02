@@ -66,9 +66,19 @@ public class PowerQualityMonitoring extends Controller {
   public static Result alertsFromIds() {
     List<OpqDevice> devices = new LinkedList<>();
     int idLength = getDevicesFromIds(request().body().asJson(), devices);
+    return ok(formatJsonResult(calculateLocalMetrics(devices, idLength)));
+  }
+
+  /**
+   * Calculates local metrics for each grid square.
+   * @param devices Visible devices.
+   * @param idLength Length of ids at current grid scale.
+   * @return Local metrics.
+   */
+  private static Map<String, GridSquare> calculateLocalMetrics(List<OpqDevice> devices, int idLength) {
     Map<String, GridSquare> localMetrics = new HashMap<>();
-    GridSquare tmpGridSquare;
     String shortId;
+    GridSquare tmpGridSquare;
 
     for (OpqDevice device : devices) {
       // We want to use the truncated grid id that corresponds to the current zoom level
@@ -102,8 +112,7 @@ public class PowerQualityMonitoring extends Controller {
         }
       }
     }
-
-    return ok(formatJsonResult(localMetrics));
+    return localMetrics;
   }
 
   /**
