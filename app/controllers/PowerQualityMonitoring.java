@@ -33,6 +33,7 @@ import play.mvc.Result;
 import utils.GridSquare;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -65,8 +66,9 @@ public class PowerQualityMonitoring extends Controller {
   @BodyParser.Of(BodyParser.Json.class)
   public static Result alertsFromIds() {
     List<OpqDevice> devices = new LinkedList<>();
-    int idLength = getDevicesFromIds(request().body().asJson(), devices);
-    return ok(formatJsonResult(calculateLocalMetrics(devices, idLength)));
+    JsonNode json = request().body().asJson();
+    int idLength = getDevicesFromIds(json, devices);
+    return ok(formatJsonResult(calculateLocalMetrics(devices, idLength, json)));
   }
 
   /**
@@ -75,10 +77,12 @@ public class PowerQualityMonitoring extends Controller {
    * @param idLength Length of ids at current grid scale.
    * @return Local metrics.
    */
-  private static Map<String, GridSquare> calculateLocalMetrics(List<OpqDevice> devices, int idLength) {
+  private static Map<String, GridSquare> calculateLocalMetrics(List<OpqDevice> devices, int idLength, JsonNode json) {
     Map<String, GridSquare> localMetrics = new HashMap<>();
     String shortId;
     GridSquare tmpGridSquare;
+    List<Event> events;
+    Long timestamp;
 
     for (OpqDevice device : devices) {
       // We want to use the truncated grid id that corresponds to the current zoom level
@@ -93,13 +97,27 @@ public class PowerQualityMonitoring extends Controller {
       tmpGridSquare.gridId = shortId;
       tmpGridSquare.numDevices++;
 
+      // Get events associated with devices
+      events = device.getEvents();
+      timestamp = json.findValue("after").asLong();
+
+      Iterator<Event> eventIterator = events.iterator();
+      Event tmpEvent;
+
+      while(eventIterator.hasNext()) {
+        tmpEvent = eventIterator.next();
+        if(tmpEvent.getTimestamp() < timestamp) {
+          eventIterator.remove();
+        }
+      }
+
       // Calculate total affected devices
-      if (device.getEvents().size() > 0) {
+      if (events.size() > 0) {
         tmpGridSquare.numAffectedDevices++;
       }
 
       // Calculate number of freq, voltage events
-      for (Event event : device.getEvents()) {
+      for (Event event : events) {
         switch (event.getEventType()) {
           case EVENT_FREQUENCY:
             tmpGridSquare.numFrequencyEvents++;
@@ -139,6 +157,7 @@ public class PowerQualityMonitoring extends Controller {
       idLength = n.asText().length();
       likeClauses.add("gridId like ?");
     }
+
 
     String queryString = "find OpqDevice where " + StringUtils.join(likeClauses, " or ");
 

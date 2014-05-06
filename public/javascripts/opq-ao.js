@@ -25,3 +25,22 @@ function makeActiveClass() {
 
 $(document).ready(makeActiveClass);
 */
+
+function millisecondsFromTimeUnit(timeUnit) {
+  switch(timeUnit) {
+    case "Minute"   : return 60000;
+    case "Hour"     : return 3600000;
+    case "Day"      : return 86400000;
+    case "Week"     : return 604800000;
+    case "Month"    : return 2592000000;
+    case "Year"     : return 31536000000;
+  }
+}
+
+function currentTimeInMillis() {
+  return Date.now();
+}
+
+function getPastDate(timeUnit) {
+  return currentTimeInMillis() - millisecondsFromTimeUnit(timeUnit);
+}
