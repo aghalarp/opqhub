@@ -69,15 +69,15 @@ Copyright 2013 Anthony Christe
       /* Make sure the leaflet CSS is loaded */
       addDynamicCss ('@routes.Assets.at("stylesheets/leaflet.css")');
 
-      function onGridClick(feature, layer) {
-
-      }
-
       function colorSquares(squares) {
         for(var i = 0; i < squares.length; i++) {
           g.colorSquare(squares[i], "red");
         }
       }
+
+      $("#pastTimeSelect").change(function(){
+        onMapChange();
+      });
 
       function onMapChange() {
         var visibleIds = g.getVisibleIds();
@@ -118,7 +118,6 @@ Copyright 2013 Anthony Christe
 
       var g = grid;
       g.config.singleSelectionMode = false;
-      g.callbacks.onGridClick = onGridClick;
       g.callbacks.onMapChange = onMapChange;
       g.initMap ("public-map", g.island.OAHU.latLng, g.island.OAHU.defaultZoom);
     </script>
