@@ -19,49 +19,65 @@ Copyright 2013 Anthony Christe
 @(events: List[models.Event], devices: List[models.OpqDevice], loggedOut: Boolean)
 
 @main("Public Power Quality Monitoring", menu("Public Power Quality Monitoring", loggedOut)) {
-  <div class="row span9">
-    <div class="well well-small">
-      <p>Filter Events</p>
-      <form class="form-inline" action="@routes.Events.filterEvents()" id="filterForm" method="post">
-        <div class="control-group">
-          <label class="control-label" for="pastTimeSelect">After past</label>
-
-          <select id="pastTimeSelect" name="pastTimeSelect">
-          @for(option <- utils.DateUtils.TimeUnit.values()) {
-            @if(option.toString.equals(session.get("pastTimeSelectEvents"))) {
-              <option selected>
-              } else {
-              <option>
-              }
-            @option</option>
-          }
-          </select>
-        </div>
-      </form>
-    </div>
   <div class="row">
-    @* Start of public map *@
-    <div id="public-map" class="span12"></div>
-    <div id="overlay" style="position:absolute; top:85px; right:100px; padding-left: 10px; padding-top:10px; background-color:white; opacity:0.5; width:300px; height:100px; z-index: 100">
-      <table border="0">
-        <tr>
-          <td><b>Total Devices:</b></td>
-          <td><div id="totalDevices"></div></td>
-        </tr>
-        <tr>
-          <td><b>Total Affected Devices:</b></td>
-          <td><div id="totalAffectedDevices"></div></td>
-        </tr>
-        <tr>
-          <td><b>Total Frequency Events:</b></td>
-          <td><div id="totalFrequencyEvents"></div></td>
-        </tr>
-        <tr>
-          <td><b>Total Voltage Events:</b></td>
-          <td><div id="totalVoltageEvents"></div></td>
-        </tr>
-      </table>
-    </div>
+    <div class="row span3">
+      <div class="well well-small">
+        <p>Filter events after past time units</p>
+        <form class="form-inline" action="@routes.Events.filterEvents()" id="filterForm" method="post">
+          <div class="control-group">
+            <label class="control-label" for="pastTimeSelect">After past</label>
+            <select id="pastTimeSelect" name="pastTimeSelect">
+            @for(option <- utils.DateUtils.TimeUnit.values()) {
+              @if(option.toString.equals(session.get("pastTimeSelectEvents"))) {
+                <option selected>
+                } else {
+                <option>
+                }
+              @option</option>
+            }
+            </select>
+          </div>
+          <br />
+          <p>Filter events with custom time range</p>
+          <div class="control-group">
+            <label class="control-label" for="timeRangeAfter">Events after</label>
+            <input type="text" name="timeRangeAfter" id="timeRangeAfter">
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="timeRangeBefore">Events before</label>
+            <input type="text" name="timeRangeBefore" id="timeRangeBefore">
+          </div>
+        </form>
+      </div>
+  </div>
+    <div class="row span9">
+      @* Start of public map *@
+      <div id="public-map" class="span9">
+        <div id="overlay" style="position:absolute; top:20px; right:20px; padding-left: 10px; padding-top:10px; background-color:white; opacity:0.5; width:300px; height:100px; z-index: 100">
+          <table border="0">
+            <tr>
+              <td><b>Total Devices:</b></td>
+              <td><div id="totalDevices"></div></td>
+            </tr>
+            <tr>
+              <td><b>Total Affected Devices:</b></td>
+              <td><div id="totalAffectedDevices"></div></td>
+            </tr>
+            <tr>
+              <td><b>Total Frequency Events:</b></td>
+              <td><div id="totalFrequencyEvents"></div></td>
+            </tr>
+            <tr>
+              <td><b>Total Voltage Events:</b></td>
+              <td><div id="totalVoltageEvents"></div></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+
+  </div>
+
     <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("javascripts/grid-map.js")" type="text/javascript"></script>
 
@@ -75,9 +91,7 @@ Copyright 2013 Anthony Christe
         }
       }
 
-      $("#pastTimeSelect").change(function(){
-        onMapChange();
-      });
+      $("#pastTimeSelect").change(onMapChange);
 
       function onMapChange() {
         var visibleIds = g.getVisibleIds();
