@@ -82,7 +82,8 @@ public class PowerQualityMonitoring extends Controller {
     String shortId;
     GridSquare tmpGridSquare;
     List<Event> events;
-    Long timestamp;
+    Long afterTimestamp;
+    Long beforeTimestamp;
 
     for (OpqDevice device : devices) {
       // We want to use the truncated grid id that corresponds to the current zoom level
@@ -99,16 +100,18 @@ public class PowerQualityMonitoring extends Controller {
 
       // Get events associated with devices
       events = device.getEvents();
-      timestamp = json.findValue("after").asLong();
+      afterTimestamp = json.findValue("after").asLong();
+      beforeTimestamp = json.findValue("before").asLong();
 
       Iterator<Event> eventIterator = events.iterator();
       Event tmpEvent;
 
       while(eventIterator.hasNext()) {
         tmpEvent = eventIterator.next();
-        if(tmpEvent.getTimestamp() < timestamp) {
+        if(tmpEvent.getTimestamp() < afterTimestamp || tmpEvent.getTimestamp() > beforeTimestamp) {
           eventIterator.remove();
         }
+
       }
 
       // Calculate total affected devices
