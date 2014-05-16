@@ -59,6 +59,7 @@ GET         /private/monitor/events/:eventId                   controllers.Event
 POST        /private/monitor/events/:eventId                   controllers.Events.updateEventDetails(eventId: Long)
 
 
+
 # Measurements
 GET         /private/monitor/measurements                      controllers.Measurements.measurements()
 POST        /private/monitor/measurements/filter               controllers.Measurements.filterMeasurements()
@@ -70,7 +71,7 @@ POST        /public/alerts                                     controllers.Power
 
 # Handling WebSockets
 GET         /private/ws                                        controllers.WebSockets.handleSocket()
-GET         /private/ws/:deviceId/:msg                         controllers.WebSockets.sendToDevice(deviceId: Long, msg: String)
+GET         /private/ws/setting/:deviceId/:msg                 controllers.WebSockets.sendToDevice(deviceId: Long, msg: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                      controllers.Assets.at(path="/public", file)

@@ -17,12 +17,14 @@ along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 Copyright 2013 Anthony Christe
 *@
 
-@(event: Event, externalEventForm: Form[ExternalCause])
+@(event: Event, externalEventForm: Form[ExternalCause], rawPowerData: String)
 
 @import helper._
   @implicitFieldConstructor = @{
     FieldConstructor(twitterBootstrapInput.render)
   }
+
+@import play.api.libs.json.Json
 
 @privatepowerqualitymonitoring("Private Power Quality Monitoring - Private Events",
   "This page allows you to manage and create power quality events.") {
@@ -77,5 +79,38 @@ Copyright 2013 Anthony Christe
         </div>
       </div>
     }
+
   </div>
+  <div class="span9" id="plotter" style="height:300px; width:1200px">
+
+
+  </div>
+  <script src="@routes.Assets.at("javascripts/flot/jquery.flot.js")" type="text/javascript"></script>
+  <script type="text/javascript">
+    var t = @Html(Json.obj(
+              "data" -> rawPowerData
+            ).toString());
+    var data = t.data.substring(0, t.data.length - 1);
+    var splitData = data.split(",");
+    var points = [[]];
+    var max = Math.max.apply(null, splitData);
+    var min = Math.min.apply(null, splitData);
+    for(var i = 0; i < splitData.length; i++) {
+        points[0].push([i, splitData[i]]);
+    }
+
+    var plotOptions = {
+      min: min - 20,
+      max: max + 20,
+      yaxis: {
+        tickFormatter: function(val, axis) { return val < axis.max ? val.toFixed(2) : "Voltage";}
+      },
+      xaxis: {
+        tickFormatter: function(val, axis) { return val < axis.max ? val.toFixed(2) : "Samples";}
+      }
+    };
+
+    $.plot($("#plotter"), points, plotOptions);
+
+  </script>
 }

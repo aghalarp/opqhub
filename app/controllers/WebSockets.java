@@ -30,7 +30,9 @@ import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
+import utils.DateUtils;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,7 +57,10 @@ public class WebSockets extends Controller {
         in.onMessage(new F.Callback<String>() {
           @Override
           public void invoke(String s) throws Throwable {
+            //System.out.println("recv: " + s);
             OpqPacket opqPacket = new OpqPacket(s);
+            //opqPacket.reverseBytes();
+            //System.out.println(opqPacket);
             Logger.info(String.format("Received %s from %s", opqPacket.getType(), opqPacket.getDeviceId()));
             handlePacket(opqPacket, out);
           }
@@ -73,8 +78,17 @@ public class WebSockets extends Controller {
   }
 
   public static Result sendToDevice(Long deviceId, String message) {
+    OpqPacket packet = new OpqPacket();
     if(deviceIdToOut.containsKey(deviceId)) {
-      deviceIdToOut.get(deviceId).write(message);
+      packet.setHeader();
+      packet.setType(OpqPacket.PacketType.SETTING);
+      packet.setSequenceNumber(0);
+      packet.setDeviceId(deviceId);
+      packet.setTimestamp(DateUtils.getMillis());
+      packet.setBitfield(0);
+      packet.setPayload(message.getBytes());
+      packet.computeChecksum();
+      deviceIdToOut.get(deviceId).write(packet.getBase64Encoding());
     }
     return redirect(routes.Application.index());
   }
@@ -108,6 +122,7 @@ public class WebSockets extends Controller {
    * @param opqPacket Event packet from device.
    */
   private static void handleAlert(OpqPacket opqPacket) {
+    System.out.println("handleAlert");
     Long deviceId = opqPacket.getDeviceId();
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
 
@@ -116,17 +131,42 @@ public class WebSockets extends Controller {
       return;
     }
 
+    StringBuilder sb = new StringBuilder();
+    for(Double d : opqPacket.getRawPowerData()) {
+      System.out.println(d);
+      sb.append(d);
+      sb.append(",");
+    }
+
+    String rawPowerStr = sb.toString();
+    /*
+    System.out.println("data: " + rawPowerStr);
+
+    System.out.println(opqPacket.getType());
+    System.out.println(opqPacket.getTimestamp());
+    System.out.println(opqPacket.getEventDuration());
+    System.out.println(opqPacket.getEventValue());
+    */
     Event event = new Event(
         opqDevice,
         opqPacket.getType(),
         opqPacket.getTimestamp(),
         opqPacket.getEventDuration(),
-        opqPacket.getEventValue());
+        opqPacket.getEventValue(),
+        rawPowerStr);
+
+    //System.out.println("Event created");
 
     event.setDevice(opqDevice);
+    //System.out.println("setDevice");
     event.save();
+    //System.out.println("event.save");
     opqDevice.getEvents().add(event);
+    //System.out.println("events.add");
     opqDevice.save();
+    //System.out.println("device saved");
+
+    //System.out.println("Made it past saving event info");
 
     // Determine whether or not to notify user based on their alert preferences
     if(opqDevice.getAlerts().size() == 0) {
@@ -173,7 +213,7 @@ public class WebSockets extends Controller {
   private static void handleMeasurement(OpqPacket opqPacket) {
     Long deviceId = opqPacket.getDeviceId();
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
-
+    System.out.println("recv: measurement");
     if(opqDevice == null) {
       Logger.warn("handleMeasurement opq device is null");
       return;
@@ -192,6 +232,7 @@ public class WebSockets extends Controller {
   }
 
   private static void handlePing(OpqPacket opqPacket, WebSocket.Out<String> out) {
+    System.out.println("Received ping!");
     deviceIdToOut.put(opqPacket.getDeviceId(), out);
   }
 

@@ -24,6 +24,7 @@ import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -51,6 +52,13 @@ public class Event extends Model {
    */
   @Required
   private Double eventValue;
+
+  /**
+   * Contains raw power data.
+   */
+  @Column(columnDefinition = "MEDIUMTEXT")
+  private String rawPowerData;
+
   /**
    * Time alert occurred as milliseconds since the epoch.
    */
@@ -80,10 +88,12 @@ public class Event extends Model {
    * @param timestamp     Timestamp for when alert happened representing number of milliseconds since epoch.
    * @param eventDuration Number of milliseconds that event occurred for.
    */
-  public Event(OpqDevice device, OpqPacket.PacketType eventType, Long timestamp, Long eventDuration, Double eventValue) {
+  public Event(OpqDevice device, OpqPacket.PacketType eventType, Long timestamp, Long eventDuration, Double eventValue,
+               String rawPowerData) {
     this.setDevice(device);
     this.setEventType(eventType);
     this.setEventValue(eventValue);
+    this.setRawPowerData(rawPowerData);
     this.setTimestamp(timestamp);
     this.setEventDuration(eventDuration);
   }
@@ -151,6 +161,14 @@ public class Event extends Model {
    */
   public void setEventValue(Double eventValue) {
     this.eventValue = eventValue;
+  }
+
+  public String getRawPowerData() {
+    return this.rawPowerData;
+  }
+
+  public void setRawPowerData(String rawPowerData) {
+    this.rawPowerData = rawPowerData;
   }
 
   /**

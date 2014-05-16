@@ -26,11 +26,12 @@ create table event (
   primary_key               bigint auto_increment not null,
   event_type                integer,
   event_value               double,
+  raw_power_data            MEDIUMTEXT,
   timestamp                 bigint,
   event_duration            bigint,
   device_primary_key        bigint,
   external_cause_primary_key bigint,
-  constraint ck_event_event_type check (event_type in (0,1,2,3,4)),
+  constraint ck_event_event_type check (event_type in (0,1,2,3,4,5,6)),
   constraint pk_event primary key (primary_key))
 ;
 
