@@ -1,5 +1,6 @@
 package controllers;
 
+import controllers.routes;
 import models.Event;
 import models.ExternalCause;
 import models.OpqDevice;
@@ -23,7 +24,7 @@ public class Events extends Controller {
     Long adjustedTimestamp = DateUtils.getMillis() - DateUtils.TimeUnit.valueOf(selectedTimeUnit).getMilliseconds();
     session("pastTimeSelectEvents", selectedTimeUnit);
     session("eventsAfterAmount", adjustedTimestamp.toString());
-    return redirect(routes.Events.eventsByPage(0, adjustedTimestamp));
+    return redirect(controllers.routes.Events.eventsByPage(0, adjustedTimestamp));
   }
 
   @Security.Authenticated(Secured.class)
@@ -47,6 +48,7 @@ public class Events extends Controller {
   @Security.Authenticated(Secured.class)
   public static Result eventDetails(Long eventId) {
     Event event = Event.find().where().eq("primaryKey", eventId).findUnique();
+    String rawPowerData = event.getRawPowerData();
     ExternalCause externalCause = event.getExternalCause();
     Form<ExternalCause> externalEventForm;
 
@@ -59,7 +61,7 @@ public class Events extends Controller {
       externalEventForm = Form.form(ExternalCause.class).fill(externalCause);
     }
 
-    return ok(views.html.privatemonitoring.eventdetails.render(event, externalEventForm));
+    return ok(views.html.privatemonitoring.eventdetails.render(event, externalEventForm, rawPowerData));
   }
 
   @Security.Authenticated(Secured.class)
