@@ -87,6 +87,7 @@ Copyright 2013 Anthony Christe
   </div>
   <script src="@routes.Assets.at("javascripts/flot/jquery.flot.js")" type="text/javascript"></script>
   <script src="@routes.Assets.at("javascripts/flot/jquery.flot.navigate.js")" type="text/javascript"></script>
+  <script src="@routes.Assets.at("javascripts/flot/jquery.flot.axislabels.js")" type="text/javascript"></script>
   <script type="text/javascript">
     var t = @Html(Json.obj(
               "data" -> rawPowerData
@@ -103,18 +104,21 @@ Copyright 2013 Anthony Christe
     var plotOptions = {
       min: min - 20,
       max: max + 20,
-      yaxis: {
-        tickFormatter: function(val, axis) { return val < axis.max ? val.toFixed(2) : "Voltage";}
-      },
-      xaxis: {
-        tickFormatter: function(val, axis) { return val < axis.max ? val.toFixed(2) : "Samples";}
-      },
       zoom: {
         interactive: true
       },
       pan: {
         interactive: true
-      }
+      },
+      acisLabels: {
+        show: true
+      },
+      xaxes: [{
+        axisLabel: "Samples"
+      }],
+      yaxes: [{
+        axisLabel: "Voltage"
+      }]
     };
 
 
