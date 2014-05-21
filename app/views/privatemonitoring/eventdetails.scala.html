@@ -81,14 +81,24 @@ Copyright 2013 Anthony Christe
     }
 
   </div>
-  <div class="span9" id="plotter" style="height:300px; width:1200px">
-
-
+  <div class="row">
+    <div id="itic-plot" class="span9 pull-right" style="width:950px;height:400px">
+    </div>
   </div>
+  <div class="row">
+    <div class="span9 pull-right" id="plotter" style="height:400px; width:950px"></div>
+    </div>
+  </div>
+
+
+
+
   <script src="@routes.Assets.at("javascripts/flot/jquery.flot.js")" type="text/javascript"></script>
   <script src="@routes.Assets.at("javascripts/flot/jquery.flot.navigate.js")" type="text/javascript"></script>
   <script src="@routes.Assets.at("javascripts/flot/jquery.flot.axislabels.js")" type="text/javascript"></script>
+  <script src="@routes.Assets.at("javascripts/itic-plotter.js")" type="text/javascript"></script>
   <script type="text/javascript">
+    var p = iticPlotter;
     var t = @Html(Json.obj(
               "data" -> rawPowerData
             ).toString());
@@ -119,14 +129,44 @@ Copyright 2013 Anthony Christe
       yaxes: [{
         axisLabel: "Voltage"
       }],
-    series: {
-    lines: { show: true },
-    points: { show: false }
-    }
+      series: {
+        lines: { show: true },
+        points: { show: false }
+      }
     };
 
-
     $.plot($("#plotter"), points, plotOptions);
+    p.init("#itic-plot");
 
+    p.addPoint(@event.getEventDuration, p.voltageToPercentNominalVoltage(@event.getEventValue));
+
+
+  $("<div id='tooltip'></div>").css({
+  position: "absolute",
+  display: "none",
+  border: "1px solid #fdd",
+  padding: "2px",
+  "background-color": "#fee",
+  opacity: 0.80
+  }).appendTo("body");
+
+  $("#itic-plot").bind("plothover", function (event, pos, item) {
+  if (item) {
+  var duration = item.datapoint[0].toFixed(2);
+  var percentNominalVoltage = item.datapoint[1].toFixed(2);
+
+  $("#tooltip").html(p.formatTooltip([["Duration (ms)", duration],
+  ["Duration (c)", p.msToC(duration).toFixed(2)],
+  ["% nominal voltage", percentNominalVoltage],
+  ["+/- volts", p.percentNominalVoltageToVoltage(percentNominalVoltage)],
+  ["ITIC Region", item.series.label]]))
+  .css({top: item.pageY+5, left: item.pageX+5})
+  .fadeIn(200);
+  } else {
+  $("#tooltip").hide();
+  }
+  });
+
+    p.update();
   </script>
 }

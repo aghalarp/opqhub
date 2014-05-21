@@ -69,18 +69,21 @@ Copyright 2013 Anthony Christe
         </div>
       </div>
   </div>
+    @*
+    <div class="row span9">
+      <div id="itic-plot" style="width:1000px;height:600px"></div>
+    </div>
+    *@
 
     <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("javascripts/grid-map.js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("javascripts/bootstrap-datetimepicker.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/flot/jquery.flot.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/flot/jquery.flot.axislabels.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/itic-plotter.js")" type="text/javascript"></script>
 
     <script type="text/javascript">
-      /* Set up form drop down */
-      $("#filterBtn" ).click(function() {
-         $("#filter" ).slideDown("slow", function() {
-
-         });
-      });
+      //p = iticPlotter;
 
       /* Set up date-time pickers */
       $(function() {
@@ -106,8 +109,7 @@ Copyright 2013 Anthony Christe
 
 
       $('#afterField').keypress(function(){
-         console.log("after field change");
-         onMapChange();
+         console.log("after field change");         onMapChange();
       });
 
       $('#beforeField').change(function(){
@@ -172,6 +174,9 @@ Copyright 2013 Anthony Christe
       g.config.singleSelectionMode = false;
       g.callbacks.onMapChange = onMapChange;
       g.initMap ("public-map", g.island.OAHU.latLng, g.island.OAHU.defaultZoom);
+
+      // Set up plot
+      //p.init("#itic-plot");
     </script>
   </div>
 }
