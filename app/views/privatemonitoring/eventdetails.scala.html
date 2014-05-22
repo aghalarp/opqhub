@@ -148,31 +148,30 @@ Copyright 2013 Anthony Christe
       p.addPoint(@event.getEventDuration, p.voltageToPercentNominalVoltage(@event.getEventValue));
 
       $("<div id='tooltip'></div>").css({
-      position: "absolute",
-      display: "none",
-      border: "1px solid #fdd",
-      padding: "2px",
-      "background-color": "#fee",
-      opacity: 0.80
+        position: "absolute",
+        display: "none",
+        border: "1px solid #fdd",
+        padding: "2px",
+        "background-color": "#fee",
+        opacity: 0.80
       }).appendTo("body");
 
       $("#itic-plot").bind("plothover", function (event, pos, item) {
-      if (item) {
-      var duration = item.datapoint[0].toFixed(2);
-      var percentNominalVoltage = item.datapoint[1].toFixed(2);
+        if (item) {
+          var duration = item.datapoint[0].toFixed(2);
+          var percentNominalVoltage = item.datapoint[1].toFixed(2);
 
-      $("#tooltip").html(p.formatTooltip([["Duration (ms)", duration],
-      ["Duration (c)", p.msToC(duration).toFixed(2)],
-      ["% nominal voltage", percentNominalVoltage],
-      ["+/- volts", p.percentNominalVoltageToVoltage(percentNominalVoltage)],
-      ["ITIC Region", item.series.label]]))
-      .css({top: item.pageY+5, left: item.pageX+5})
-      .fadeIn(200);
-      } else {
-      $("#tooltip").hide();
-      }
+          $("#tooltip").html(p.formatTooltip([["Duration (ms)", duration],
+                                              ["Duration (c)", p.msToC(duration).toFixed(2)],
+                                              ["% nominal voltage", percentNominalVoltage],
+                                              ["+/- volts", p.percentNominalVoltageToVoltage(percentNominalVoltage)],
+                                              ["ITIC Region", item.series.label]]))
+            .css({top: item.pageY+5, left: item.pageX+5})
+            .fadeIn(200);
+        } else {
+          $("#tooltip").hide();
+        }
       });
-
       p.update();
     }
 
