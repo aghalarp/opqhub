@@ -17,19 +17,22 @@ along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 Copyright 2013 Anthony Christe
 *@
 
+@(notLoggedIn: Boolean)
 
-
-@main("Getting Started with OPQ", menu("Getting Started with OPQ", true)) {
+@main("Getting Started with OPQ", menu("Getting Started with OPQ", notLoggedIn)) {
 
   <div class="container">
     <div class="hero-unit hidden-phone">
       <h1 class="hero-font">Welcome to Open Power Quality</h1>
       <p class="hero-font">To get started, select one of the two options below.</p>
-      <p>
-        <a class="btn btn-large btn-success" href="@routes.Wizard.index()"><span class="btn-label">
-          Set Up Device</span></a>
-        <a class="btn btn-large btn-primary" href="@routes.Application.login()"><span class="btn-label">Login</span></a>
-      </p>
+      @if(notLoggedIn) {
+        <p>
+          <a class="btn btn-large btn-success" href="@routes.Wizard.index()"><span class="btn-label">
+            Set Up Device</span></a>
+          <a class="btn btn-large btn-primary" href="@routes.Application.login()"><span class="btn-label">Login</span></a>
+        </p>
+      }
+
     </div>
     <div class="row main-features">
       <div class="span6">
