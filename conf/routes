@@ -58,6 +58,7 @@ POST        /private/monitor/events/filter                     controllers.Event
 GET         /private/monitor/events/:eventId                   controllers.Events.eventDetails(eventId: Long)
 POST        /private/monitor/events/:eventId                   controllers.Events.updateEventDetails(eventId: Long)
 
+GET         /private/monitor/events/:eventId/raw               controllers.Events.rawPowerData(eventId: Long)
 
 
 # Measurements
