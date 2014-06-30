@@ -127,6 +127,7 @@ public class PowerQualityMonitoring extends Controller {
             break;
           case EVENT_VOLTAGE:
             tmpGridSquare.numVoltageEvents++;
+            tmpGridSquare.addIticPoint(event.getEventDuration(), event.getEventValue());
             break;
           default:
             break;
@@ -224,18 +225,28 @@ public class PowerQualityMonitoring extends Controller {
    * @return Formatted json node from given grid square.
    */
   private static JsonNode formatLocalMetrics(GridSquare gridSquare) {
+    StringBuilder iticPoints = new StringBuilder("[");
+    for(GridSquare.IticPoint iticPoint : gridSquare.iticPoints) {
+      iticPoints.append(iticPoint);
+      iticPoints.append(",");
+    }
+    iticPoints.deleteCharAt(iticPoints.lastIndexOf(","));
+    iticPoints.append("]");
+
+
     return Json.parse(String.format(
         "{\"%s\":" +
         "{\"totalDevices\":%d," +
         "\"numAffectedDevices\":%d," +
         "\"numFrequencyEvents\":%d," +
-        "\"numVoltageEvents\":%d}}",
+        "\"numVoltageEvents\":%d,"+
+        "\"iticPoints\":%s}}",
         gridSquare.gridId,
         gridSquare.numDevices,
         gridSquare.numAffectedDevices,
         gridSquare.numFrequencyEvents,
-        gridSquare.numVoltageEvents
-                                   ));
+        gridSquare.numVoltageEvents,
+        iticPoints.toString()));
   }
 
   /**

@@ -64,6 +64,10 @@ public class Events extends Controller {
     return ok(views.html.privatemonitoring.eventdetails.render(event, externalEventForm, rawPowerData));
   }
 
+  public static Result rawPowerData(Long eventId) {
+    return ok(Event.find().byId(eventId).getRawPowerData());
+  }
+
   @Security.Authenticated(Secured.class)
   public static Result updateEventDetails(Long eventId) {
     Event event = Event.find().where().eq("primaryKey", eventId).findUnique();

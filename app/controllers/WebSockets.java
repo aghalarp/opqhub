@@ -133,7 +133,7 @@ public class WebSockets extends Controller {
 
     StringBuilder sb = new StringBuilder();
     for(Double d : opqPacket.getRawPowerData()) {
-      System.out.println(d);
+      //System.out.println(d);
       sb.append(d);
       sb.append(",");
     }
@@ -154,6 +154,8 @@ public class WebSockets extends Controller {
         opqPacket.getEventDuration(),
         opqPacket.getEventValue(),
         rawPowerStr);
+
+    System.out.println("voltage:" + event.getEventValue());
 
     //System.out.println("Event created");
 
@@ -224,6 +226,8 @@ public class WebSockets extends Controller {
         opqPacket.getFrequency(),
         opqPacket.getVoltage()
     );
+
+    System.out.println("m: " + measurement.getVoltage() + " " + measurement.getFrequency());
 
     measurement.setDevice(opqDevice);
     measurement.save();
