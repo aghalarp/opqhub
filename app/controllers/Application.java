@@ -43,7 +43,7 @@ public class Application extends Controller {
    * @return The rendered view for the homepage.
    */
   public static Result index() {
-    return ok(index.render());
+    return ok(index.render(!session().containsKey("email")));
   }
 
   /**
