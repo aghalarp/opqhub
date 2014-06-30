@@ -94,6 +94,7 @@ Copyright 2013 Anthony Christe
   <div class="row">
     <div class="span9 pull-right" id="plotter" style="height:400px; width:950px">
     </div>
+    <div class="pull-right"><a href="@routes.Events.rawPowerData(event.getPrimaryKey)">Raw Data</a></div>
   </div>
 
 
@@ -109,11 +110,23 @@ Copyright 2013 Anthony Christe
     var data = t.data.substring(0, t.data.length - 1);
     var splitData = data.split(",");
     var points = [[]];
+    var rmsStandard = 169.7;
+
     var max = Math.max.apply(null, splitData);
     var min = Math.min.apply(null, splitData);
     for(var i = 0; i < splitData.length; i++) {
         points[0].push([i, splitData[i]]);
     }
+
+    //var standardLinePositive = [[0, rmsStandard], [points[0].length, rmsStandard]];
+
+    points[0].push(null);
+    points[0].push([0, rmsStandard]);
+    points[0].push([points[0].length - 2, rmsStandard]);
+    points[0].push(null);
+    points[0].push([0, -rmsStandard]);
+    points[0].push([points[0].length - 4, -rmsStandard]);
+    points[0].push(null);
 
     var plotOptions = {
       min: min - 20,
@@ -164,7 +177,7 @@ Copyright 2013 Anthony Christe
           $("#tooltip").html(p.formatTooltip([["Duration (ms)", duration],
                                               ["Duration (c)", p.msToC(duration).toFixed(2)],
                                               ["% nominal voltage", percentNominalVoltage],
-                                              ["+/- volts", p.percentNominalVoltageToVoltage(percentNominalVoltage)],
+                                              ["Volts", p.percentNominalVoltageToVoltage(percentNominalVoltage)],
                                               ["ITIC Region", item.series.label]]))
             .css({top: item.pageY+5, left: item.pageX+5})
             .fadeIn(200);
