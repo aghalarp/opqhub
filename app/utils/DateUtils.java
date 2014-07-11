@@ -33,6 +33,10 @@ public class DateUtils {
     return timestamp - timeUnit.getMilliseconds();
   }
 
+  public static Long getPastTime(Long timestamp, TimeUnit timeUnit, double multiplier) {
+    return (long) (timestamp - (timeUnit.getMilliseconds() * multiplier));
+  }
+
   public static Long getMillis() {
     return new Date().getTime();
   }

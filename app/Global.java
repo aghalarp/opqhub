@@ -32,7 +32,7 @@ public class Global extends GlobalSettings {
     ActorRef actor = Akka.system().actorOf(new Props(jobs.HeartbeatAlertActor.class));
     Akka.system().scheduler().schedule(
         Duration.create(0, TimeUnit.MILLISECONDS),
-        Duration.create(5, TimeUnit.SECONDS),
+        Duration.create(15, TimeUnit.MINUTES),
         actor,
         "hello, world",
         Akka.system().dispatcher(),

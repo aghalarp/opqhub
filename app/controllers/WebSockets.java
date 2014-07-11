@@ -20,6 +20,7 @@
 package controllers;
 
 import controllers.routes;
+import jobs.HeartbeatAlertActor;
 import models.Event;
 import models.Alert;
 import models.Measurement;
@@ -99,6 +100,7 @@ public class WebSockets extends Controller {
    * @param opqPacket The packet received from the WebSocket object.
    */
   private static void handlePacket(OpqPacket opqPacket, final WebSocket.Out<String> out) {
+    HeartbeatAlertActor.update(opqPacket.getDeviceId(), opqPacket.getTimestamp());
     switch(opqPacket.getType()) {
       case EVENT_FREQUENCY:
       case EVENT_VOLTAGE:
