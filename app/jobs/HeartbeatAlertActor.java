@@ -25,7 +25,7 @@ public class HeartbeatAlertActor extends UntypedActor {
 
   public Set<Long> checkHeartbeats() {
     long currentTime = DateUtils.getMillis();
-    long cutoff = DateUtils.getPastTime(currentTime, DateUtils.TimeUnit.Minute, .25);
+    long cutoff = DateUtils.getPastTime(currentTime, DateUtils.TimeUnit.Minute, 15);
     Set<Long> deadDevices = new HashSet<>();
 
     for(Long deviceId : deviceHeartbeats.keySet()) {
