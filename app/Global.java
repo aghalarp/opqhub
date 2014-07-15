@@ -6,7 +6,6 @@ import play.data.format.Formatters;
 import play.libs.Akka;
 import scala.concurrent.duration.Duration;
 import utils.Sms;
-import views.html.helper.input;
 
 import java.text.ParseException;
 import java.util.Locale;
@@ -32,7 +31,7 @@ public class Global extends GlobalSettings {
     ActorRef actor = Akka.system().actorOf(new Props(jobs.HeartbeatAlertActor.class));
     Akka.system().scheduler().schedule(
         Duration.create(0, TimeUnit.MILLISECONDS),
-        Duration.create(15, TimeUnit.MINUTES),
+        Duration.create(10, TimeUnit.MINUTES),
         actor,
         "hello, world",
         Akka.system().dispatcher(),

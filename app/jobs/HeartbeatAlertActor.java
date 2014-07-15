@@ -1,6 +1,7 @@
 package jobs;
 
 import akka.actor.UntypedActor;
+import models.OpqDevice;
 import utils.DateUtils;
 import utils.Mailer;
 
@@ -25,7 +26,7 @@ public class HeartbeatAlertActor extends UntypedActor {
 
   public Set<Long> checkHeartbeats() {
     long currentTime = DateUtils.getMillis();
-    long cutoff = DateUtils.getPastTime(currentTime, DateUtils.TimeUnit.Minute, 15);
+    long cutoff = DateUtils.getPastTime(currentTime, DateUtils.TimeUnit.Minute, 10);
     Set<Long> deadDevices = new HashSet<>();
 
     for(Long deviceId : deviceHeartbeats.keySet()) {
@@ -39,9 +40,13 @@ public class HeartbeatAlertActor extends UntypedActor {
 
   public void handleDeadDevices(Set<Long> deadDevices) {
     for(Long deviceId : deadDevices) {
+      //String email = OpqDevice.find().byId(deviceId).getAlerts().get(0).getNotificationEmail();
+
+      //System.out.println(email);
+
       // Send e-mail/sms alert
       Mailer.sendEmail("anthony.christe@gmail.com", "OPQ Alert", String.format("OPQ device [%d] heartbeat not detected.", deviceId));
-      System.out.println("Send email?");
+      //System.out.println("Send email?");
 
       // Delete device from list
       deviceHeartbeats.remove(deviceId);
