@@ -4,6 +4,7 @@ import play.Application;
 import play.GlobalSettings;
 import play.data.format.Formatters;
 import play.libs.Akka;
+import play.Logger;
 import scala.concurrent.duration.Duration;
 import utils.Sms;
 
@@ -28,6 +29,7 @@ public class Global extends GlobalSettings {
     });
 
     // Start up device health monitoring
+    Logger.debug("Starting akka system for scheduled heartbeat checks");
     ActorRef actor = Akka.system().actorOf(new Props(jobs.HeartbeatAlertActor.class));
     Akka.system().scheduler().schedule(
         Duration.create(0, TimeUnit.MILLISECONDS),

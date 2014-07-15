@@ -79,6 +79,7 @@ public class WebSockets extends Controller {
   }
 
   public static Result sendToDevice(Long deviceId, String message) {
+    Logger.debug("Send to device [%d] %s", deviceId, message);
     OpqPacket packet = new OpqPacket();
     if(deviceIdToOut.containsKey(deviceId)) {
       packet.setHeader();
@@ -124,9 +125,12 @@ public class WebSockets extends Controller {
    * @param opqPacket Event packet from device.
    */
   private static void handleAlert(OpqPacket opqPacket) {
-    System.out.println("handleAlert");
+
     Long deviceId = opqPacket.getDeviceId();
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
+
+    Logger.debug("e[%d, %s, %s, f:%f, v:%f]", opqDevice.getDeviceId(), opqDevice.getDescription(), opqPacket.getType(),
+                 opqPacket.getFrequency(), opqPacket.getVoltage());
 
     if(opqDevice == null) {
       Logger.warn("handleAlert opq device is null");
@@ -157,7 +161,7 @@ public class WebSockets extends Controller {
         opqPacket.getEventValue(),
         rawPowerStr);
 
-    System.out.println("voltage:" + event.getEventValue());
+    //System.out.println("voltage:" + event.getEventValue());
 
     //System.out.println("Event created");
 
@@ -217,7 +221,6 @@ public class WebSockets extends Controller {
   private static void handleMeasurement(OpqPacket opqPacket) {
     Long deviceId = opqPacket.getDeviceId();
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
-    System.out.println("recv: measurement");
     if(opqDevice == null) {
       Logger.warn("handleMeasurement opq device is null");
       return;
@@ -229,7 +232,7 @@ public class WebSockets extends Controller {
         opqPacket.getVoltage()
     );
 
-    System.out.println("m: " + measurement.getVoltage() + " " + measurement.getFrequency());
+    Logger.debug(String.format("m[%d, %s, f:%f, v:%f]", opqDevice.getDeviceId(), opqDevice.getDescription(), opqPacket.getFrequency(), opqPacket.getVoltage()));
 
     measurement.setDevice(opqDevice);
     measurement.save();
@@ -238,13 +241,14 @@ public class WebSockets extends Controller {
   }
 
   private static void handlePing(OpqPacket opqPacket, WebSocket.Out<String> out) {
-    System.out.println("Received ping!");
+    Logger.debug(String.format("p[%d]", opqPacket.getDeviceId()));
     deviceIdToOut.put(opqPacket.getDeviceId(), out);
   }
 
   private static void handleDisconnect(WebSocket.Out<String> out) {
     for(Long l : deviceIdToOut.keySet()) {
       if(deviceIdToOut.get(l).equals(out)) {
+        Logger.debug(String.format("Removing [%d] from id->connection mapping", l));
         deviceIdToOut.remove(l);
       }
     }
