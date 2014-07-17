@@ -129,8 +129,8 @@ public class WebSockets extends Controller {
     Long deviceId = opqPacket.getDeviceId();
     OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
 
-    Logger.debug("e[%d, %s, %s, f:%f, v:%f]", opqDevice.getDeviceId(), opqDevice.getDescription(), opqPacket.getType(),
-                 opqPacket.getFrequency(), opqPacket.getVoltage());
+    Logger.debug(String.format("e[%d, %s, %s, value: %f, d:%d]", opqDevice.getDeviceId(), opqDevice.getDescription(), opqPacket.getType(),
+                 opqPacket.getEventValue(), opqPacket.getEventDuration()));
 
     if(opqDevice == null) {
       Logger.warn("handleAlert opq device is null");
