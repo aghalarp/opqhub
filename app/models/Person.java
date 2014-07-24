@@ -21,11 +21,12 @@ package models;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
+import utils.Sms;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,7 @@ import java.util.List;
  */
 @Entity
 public class Person extends Model {
+  /* ----- Fields ----- */
   /**
    * Primary key.
    */
@@ -76,31 +78,15 @@ public class Person extends Model {
   @Required
   private byte[] passwordSalt;
 
-  /**
-   * State.
-   */
-  @Required
-  private String state;
+  private String alertEmail;
 
-  /**
-   * City.
-   */
-  private String city;
+  private Sms.SmsCarrier smsCarrier;
 
-  /**
-   * Zip code.
-   */
-  private String zip;
+  private String smsNumber;
 
-  /**
-   * Street name.
-   */
-  private String streetName;
-
-  /**
-   * Street number.
-   */
-  private String streetNumber;
+  /* ----- Relationships ----- */
+  @ManyToMany(mappedBy = "persons", cascade = CascadeType.ALL)
+  private List<Key> keys = new ArrayList<>();
 
   /**
    * Convenience constructor for creating Person objects while testing.
@@ -109,32 +95,15 @@ public class Person extends Model {
    * @param lastName     The last name of the person.
    * @param email        The email of the person.
    * @param passwordHash The password hash of the person.
-   * @param state        The state of the person.
-   * @param city         The city of the person.
-   * @param zip          The zip of the person.
-   * @param streetName   The street name that the person lives on.
-   * @param streetNumber The street number that the person lives at.
    */
-  public Person(String firstName, String lastName, String email, byte[] passwordHash, String state, String city,
-                String zip, String streetName, String streetNumber) {
+  public Person(String firstName, String lastName, String email, byte[] passwordHash) {
     this.setFirstName(firstName);
     this.setLastName(lastName);
     this.setEmail(email);
     this.setPasswordHash(passwordHash);
-    this.setState(state);
-    this.setCity(city);
-    this.setZip(zip);
-    this.setStreetName(streetName);
-    this.setStreetNumber(streetNumber);
   }
 
-  /**
-   * Devices that this person is associated with.
-   * <p/>
-   * Each person may be associated with multiple devices.
-   */
-  @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
-  private List<OpqDevice> devices = new ArrayList<>();
+
 
   /**
    * Finder for filtering persisted person entities.
@@ -274,111 +243,35 @@ public class Person extends Model {
     this.passwordSalt = passwordSalt;
   }
 
-  /**
-   * Gets state person resides in.
-   *
-   * @return State person resides in.
-   */
-  public String getState() {
-    return state;
+  public List<Key> getKeys() {
+    return keys;
   }
 
-  /**
-   * Sets state person resides in.
-   *
-   * @param state State person resides in.
-   */
-  public void setState(String state) {
-    this.state = state;
+  public void setKeys(List<Key> keys) {
+    this.keys = keys;
   }
 
-  /**
-   * Gets city person resides in.
-   *
-   * @return City person resides in.
-   */
-  public String getCity() {
-    return city;
+  public String getAlertEmail() {
+    return alertEmail;
   }
 
-  /**
-   * Sets city person resides in.
-   *
-   * @param city City person resides in.
-   */
-  public void setCity(String city) {
-    this.city = city;
+  public void setAlertEmail(String alertEmail) {
+    this.alertEmail = alertEmail;
   }
 
-  /**
-   * Gets zip code person resides in.
-   *
-   * @return Zip code person resides in.
-   */
-  public String getZip() {
-    return zip;
+  public Sms.SmsCarrier getSmsCarrier() {
+    return smsCarrier;
   }
 
-  /**
-   * Sets zip code person resides in.
-   *
-   * @param zip Zip code person resides in.
-   */
-  public void setZip(String zip) {
-    this.zip = zip;
+  public void setSmsCarrier(Sms.SmsCarrier smsCarrier) {
+    this.smsCarrier = smsCarrier;
   }
 
-  /**
-   * Gets street name person resides in.
-   *
-   * @return Street name person resides in.
-   */
-  public String getStreetName() {
-    return streetName;
+  public String getSmsNumber() {
+    return smsNumber;
   }
 
-  /**
-   * Sets street name person resides in.
-   *
-   * @param streetName Street name person resides in.
-   */
-  public void setStreetName(String streetName) {
-    this.streetName = streetName;
-  }
-
-  /**
-   * Gets street number person resides in.
-   *
-   * @return Street number person resides in.
-   */
-  public String getStreetNumber() {
-    return streetNumber;
-  }
-
-  /**
-   * Set street number person resides in.
-   *
-   * @param streetNumber Street number person resides at.
-   */
-  public void setStreetNumber(String streetNumber) {
-    this.streetNumber = streetNumber;
-  }
-
-  /**
-   * Devices associated with this person.
-   *
-   * @return Devices associated with this person.
-   */
-  public List<OpqDevice> getDevices() {
-    return devices;
-  }
-
-  /**
-   * Set devices associated with this person.
-   *
-   * @param devices Devices associated with this person.
-   */
-  public void setDevices(List<OpqDevice> devices) {
-    this.devices = devices;
+  public void setSmsNumber(String smsNumber) {
+    this.smsNumber = smsNumber;
   }
 }

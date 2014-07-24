@@ -37,38 +37,54 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 public class Event extends Model {
+  /* ----- Fields ----- */
   /**
    * Primary Key.
    */
   @Id
   private Long primaryKey;
-  /**
-   * The type of alert as given by the AlertType Enum.
-   */
-  @Required
-  private OpqPacket.PacketType eventType;
-  /**
-   * The value of the alert in either Hertz or Volts depending on the alert type.
-   */
-  @Required
-  private Double eventValue;
-
-  /**
-   * Contains raw power data.
-   */
-  @Column(columnDefinition = "MEDIUMTEXT")
-  private String rawPowerData;
 
   /**
    * Time alert occurred as milliseconds since the epoch.
    */
   @Required
   private Long timestamp;
+
+  /**
+   * The type of alert as given by the AlertType Enum.
+   */
+  @Required
+  private OpqPacket.PacketType eventType;
+
+  /**
+   * The frequency of the event.
+   */
+  @Required
+  private Double frequency;
+
+  /**
+   * The voltage of the event.
+   */
+  @Required
+  private Double voltage;
+
+  /*
+  /**
+   * Contains raw power data.
+   *
+  @Column(columnDefinition = "MEDIUMTEXT")
+  private String rawPowerData;
+  */
+
+
   /**
    * The amount of time the alert lasted in milliseconds.
    */
   @Required
-  private Long eventDuration;
+  private Long duration;
+
+
+  /* ----- Relationships ----- */
   /**
    * Many alerts can be associated with a single device.
    */

@@ -22,12 +22,8 @@ package models;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,6 +34,7 @@ import java.util.List;
  */
 @Entity
 public class OpqDevice extends Model {
+  /* ----- Fields ----- */
   /**
    * The primary key.
    */
@@ -61,66 +58,11 @@ public class OpqDevice extends Model {
    */
   private Boolean sharingData;
 
-  /**
-   * The id of the grid square associated with this device.
-   */
-  private String gridId;
+  private Long lastHeartbeat;
 
-  /**
-   * The length of all sides of a grid square in km.
-   */
-  private Double gridScale;
+  private String lastKnownIp;
 
-  /**
-   * The row within the grid this device is associated.
-   */
-  private Integer gridRow;
-
-  /**
-   * The column within the grid this device is associated.
-   */
-  private Integer gridCol;
-
-  /**
-   * The following latitude and longitudes can be used to make up the bounding box of the grid square that this
-   * device resides in.
-   */
-  private Double northEastLatitude;
-  private Double northEastLongitude;
-  private Double southWestLatitude;
-  private Double southWestLongitude;
-
-  /**
-   * Person that this device is associated with.
-   * <p/>
-   * Each device is associated with one and only one person.
-   */
-  @ManyToOne(cascade = CascadeType.ALL)
-  private Person person;
-
-  /**
-   * Measurements that this device is associated with.
-   * <p/>
-   * Each device can be associated with many measurements.
-   */
-  @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
-  private List<Measurement> measurements = new ArrayList<>();
-
-  /**
-   * Event notifications that this device is associated with.
-   * <p/>
-   * Each device can be associated with many alert notifications.
-   */
-  @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
-  private List<Alert> alerts = new ArrayList<>();
-
-  /**
-   * Alerts that this device is associated with.
-   * <p/>
-   * Each device can be associated with many events.
-   */
-  @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
-  private List<Event> events = new ArrayList<>();
+  /* ----- Relationships ----- */
 
   /**
    * Convenience constructor for test package.
@@ -206,21 +148,6 @@ public class OpqDevice extends Model {
     return this.sharingData;
   }
 
-  /**
-   * Returns the gridId.
-   * @return The gridId.
-   */
-  public String getGridId() {
-    return gridId;
-  }
-
-  /**
-   * Sets the gridId.
-   * @param gridId The gridId.
-   */
-  public void setGridId(String gridId) {
-    this.gridId = gridId;
-  }
 
   /**
    * Set whether or not this device is participating in sharing data.
@@ -231,59 +158,6 @@ public class OpqDevice extends Model {
     this.sharingData = sharingData;
   }
 
-  /**
-   * Get the person associated with this device.
-   *
-   * @return Person associated with this device.
-   */
-  public Person getPerson() {
-    return person;
-  }
-
-  /**
-   * Set the person associated with this device.
-   *
-   * @param person Person associated with this device.
-   */
-  public void setPerson(Person person) {
-    this.person = person;
-  }
-
-  /**
-   * Get measurements associated with this device.
-   *
-   * @return Measurements associated with this device.
-   */
-  public List<Measurement> getMeasurements() {
-    return measurements;
-  }
-
-  /**
-   * Set measurements associated with this device.
-   *
-   * @param measurements Measurements associated with this device.
-   */
-  public void setMeasurements(List<Measurement> measurements) {
-    this.measurements = measurements;
-  }
-
-  /**
-   * Get alert notifications associated with this device.
-   *
-   * @return Event notifications associated with this device.
-   */
-  public List<Alert> getAlerts() {
-    return alerts;
-  }
-
-  /**
-   * Set alert notifications associated with this device.
-   *
-   * @param alerts Event notifications associated with this device.
-   */
-  public void setAlerts(List<Alert> alerts) {
-    this.alerts = alerts;
-  }
 
   /**
    * Get events associated with this device.
@@ -304,68 +178,19 @@ public class OpqDevice extends Model {
   }
 
 
-  public Double getNorthEastLatitude() {
-    return northEastLatitude;
+  public Long getLastHeartbeat() {
+    return lastHeartbeat;
   }
 
-  public void setNorthEastLatitude(Double northEastLatitude) {
-    this.northEastLatitude = northEastLatitude;
+  public void setLastHeartbeat(Long lastHeartbeat) {
+    this.lastHeartbeat = lastHeartbeat;
   }
 
-  public Double getNorthEastLongitude() {
-    return northEastLongitude;
+  public String getLastKnownIp() {
+    return lastKnownIp;
   }
 
-  public void setNorthEastLongitude(Double northEastLongitude) {
-    this.northEastLongitude = northEastLongitude;
-  }
-
-  public Double getSouthWestLatitude() {
-    return southWestLatitude;
-  }
-
-  public void setSouthWestLatitude(Double southWestLatitude) {
-    this.southWestLatitude = southWestLatitude;
-  }
-
-  public Double getSouthWestLongitude() {
-    return southWestLongitude;
-  }
-
-  public void setSouthWestLongitude(Double southWestLongitude) {
-    this.southWestLongitude = southWestLongitude;
-  }
-
-  /**
-   * The scale of each grid square (length of side in km).
-   */
-  public Double getGridScale() {
-    return gridScale;
-  }
-
-  public void setGridScale(Double gridScale) {
-    this.gridScale = gridScale;
-  }
-
-  /**
-   * The row of the grid this device is associated with.
-   */
-  public Integer getGridRow() {
-    return gridRow;
-  }
-
-  public void setGridRow(Integer gridRow) {
-    this.gridRow = gridRow;
-  }
-
-  /**
-   * The column of the grid this device is associated with.
-   */
-  public Integer getGridCol() {
-    return gridCol;
-  }
-
-  public void setGridCol(Integer gridCol) {
-    this.gridCol = gridCol;
+  public void setLastKnownIp(String lastKnownIp) {
+    this.lastKnownIp = lastKnownIp;
   }
 }
