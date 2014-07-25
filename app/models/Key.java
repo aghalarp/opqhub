@@ -14,6 +14,9 @@ public class Key extends Model {
   private Long primaryKey;
 
   @Constraints.Required
+  private Long deviceId;
+
+  @Constraints.Required
   private String key;
 
   /* ----- Relationships ----- */
@@ -64,5 +67,17 @@ public class Key extends Model {
 
   public void setEvents(List<Event> events) {
     this.events = events;
+  }
+
+  public static Finder<Long, Key> find() {
+    return new Finder<>(Long.class, Key.class);
+  }
+
+  public Long getDeviceId() {
+    return deviceId;
+  }
+
+  public void setDeviceId(Long deviceId) {
+    this.deviceId = deviceId;
   }
 }

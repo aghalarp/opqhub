@@ -22,8 +22,12 @@ package models;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.util.List;
 
 /**
@@ -35,45 +39,25 @@ import java.util.List;
 @Entity
 public class OpqDevice extends Model {
   /* ----- Fields ----- */
-  /**
-   * The primary key.
-   */
   @Id
   private Long primaryKey;
 
-  /**
-   * The device id as a 64-bit integer.
-   */
   @Constraints.Required
   private Long deviceId;
 
-  /**
-   * Short description of the device. I.e. basement, office, etc.
-   */
   @Constraints.Required
   private String description;
 
-  /**
-   * Determines if device is participating in sharing data.
-   */
   private Boolean sharingData;
 
   private Long lastHeartbeat;
 
-  private String lastKnownIp;
-
   /* ----- Relationships ----- */
+  @OneToOne
+  private Key key;
 
-  /**
-   * Convenience constructor for test package.
-   *
-   * @param deviceId    Id of the device as 16 hex digits.
-   * @param description Short description of the device.
-   */
-  public OpqDevice(Long deviceId, String description) {
-    this.setDeviceId(deviceId);
-    this.setDescription(description);
-  }
+  @ManyToOne(cascade = CascadeType.ALL)
+  private Location location;
 
   /**
    * Finder for filtering persisted devices.
@@ -84,99 +68,50 @@ public class OpqDevice extends Model {
     return new Finder<>(Long.class, OpqDevice.class);
   }
 
+
   /**
-   * Gets the primary key.
-   *
-   * @return The primary key.
+   * The primary key.
    */
   public Long getPrimaryKey() {
     return primaryKey;
   }
 
-  /**
-   * Sets the primary key.
-   *
-   * @param primaryKey The primary key.
-   */
   public void setPrimaryKey(Long primaryKey) {
     this.primaryKey = primaryKey;
   }
 
   /**
-   * Gets the device id.
-   *
-   * @return The device id (unique 64-bit int).
+   * The device id as a 64-bit integer.
    */
   public Long getDeviceId() {
-    return this.deviceId;
+    return deviceId;
   }
 
-  /**
-   * Sets the device id.
-   *
-   * @param deviceId A unique 64-bit represented as a String.
-   */
   public void setDeviceId(Long deviceId) {
     this.deviceId = deviceId;
   }
 
   /**
-   * Gets the short description of the device.
-   *
-   * @return Short description of device.
+   * Short description of the device. I.e. basement, office, etc.
    */
   public String getDescription() {
     return description;
   }
 
-  /**
-   * Sets the short description of the device.
-   *
-   * @param description Short description of the device.
-   */
   public void setDescription(String description) {
     this.description = description;
   }
 
-
   /**
-   * Gets whether or not this device is participating in sharing data.
-   *
-   * @return Participating in sharing data.
+   * Determines if device is participating in sharing data.
    */
   public Boolean getSharingData() {
-    return this.sharingData;
+    return sharingData;
   }
 
-
-  /**
-   * Set whether or not this device is participating in sharing data.
-   *
-   * @param sharingData Participating in sharing data.
-   */
   public void setSharingData(Boolean sharingData) {
     this.sharingData = sharingData;
   }
-
-
-  /**
-   * Get events associated with this device.
-   *
-   * @return Alerts associated with this device.
-   */
-  public List<Event> getEvents() {
-    return events;
-  }
-
-  /**
-   * Set events associated with this device.
-   *
-   * @param events Alerts associated with this device.
-   */
-  public void setEvents(List<Event> events) {
-    this.events = events;
-  }
-
 
   public Long getLastHeartbeat() {
     return lastHeartbeat;
@@ -186,11 +121,19 @@ public class OpqDevice extends Model {
     this.lastHeartbeat = lastHeartbeat;
   }
 
-  public String getLastKnownIp() {
-    return lastKnownIp;
+  public Key getKey() {
+    return key;
   }
 
-  public void setLastKnownIp(String lastKnownIp) {
-    this.lastKnownIp = lastKnownIp;
+  public void setKey(Key key) {
+    this.key = key;
+  }
+
+  public Location getLocation() {
+    return location;
+  }
+
+  public void setLocation(Location location) {
+    this.location = location;
   }
 }

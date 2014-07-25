@@ -14,13 +14,18 @@ public class EventData extends Model {
   @Id
   private Long primaryKey;
 
-  @Column(columnDefinition = "MEDIUMTEXT")
-  private String waveform;
+  //@Column(columnDefinition = "MEDIUMTEXT")
+  //private String waveform;
+
+  private Double[] waveform;
 
   /* ----- Relationships ----- */
-  @NotNull
   @OneToOne
   private Event event;
+
+  public EventData(Double[] waveform) {
+    this.waveform = waveform;
+  }
 
   public Long getPrimaryKey() {
     return primaryKey;
@@ -30,11 +35,11 @@ public class EventData extends Model {
     this.primaryKey = primaryKey;
   }
 
-  public String getWaveform() {
+  public Double[] getWaveform() {
     return waveform;
   }
 
-  public void setWaveform(String waveform) {
+  public void setWaveform(Double[] waveform) {
     this.waveform = waveform;
   }
 
@@ -44,5 +49,9 @@ public class EventData extends Model {
 
   public void setEvent(Event event) {
     this.event = event;
+  }
+
+  public static Finder<Long, EventData> find() {
+    return new Finder<>(Long.class, EventData.class);
   }
 }
