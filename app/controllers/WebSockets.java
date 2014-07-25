@@ -34,6 +34,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
 import utils.Mailer;
+import utils.Sms;
 
 import java.util.HashMap;
 import java.util.List;
@@ -157,23 +158,11 @@ public class WebSockets extends Controller {
       case EVENT_DEVICE:
       case EVENT_FREQUENCY:
       case EVENT_VOLTAGE:
-        sendAlerts(key, opqPacket);
+        Mailer.sendAlerts(key.getPersons(), String.format("OPQ %s", opqPacket.packetType.getName()),
+                          String.format("Received alert:\n%s", opqPacket));
         break;
       default:
         break;
-    }
-  }
-
-  private static void sendAlerts(Key key, OpqPacket opqPacket) {
-    List<Person> persons = key.getPersons();
-    String alertEmail;
-
-    for(Person person : persons) {
-      alertEmail = person.getAlertEmail();
-      if(alertEmail != null) {
-        Mailer.sendEmail(alertEmail, String.format("OPQ %s", opqPacket.packetType.getName()),
-                         String.format("Received alert:\n%s", opqPacket));
-      }
     }
   }
 

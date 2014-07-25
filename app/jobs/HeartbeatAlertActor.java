@@ -7,6 +7,7 @@ import models.Person;
 import play.Logger;
 import utils.DateUtils;
 import utils.Mailer;
+import utils.Sms;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,18 +47,9 @@ public class HeartbeatAlertActor extends UntypedActor {
   public void handleDeadDevices(Set<Key> deadDevices) {
     Logger.debug(String.format("Removing %d dead devices %s", deadDevices.size(), deadDevices));
     for(Key key : deadDevices) {
-
-      // Send e-mail/sms alert
-      List<Person> persons = key.getPersons();
-      String alertEmail;
-
-      for(Person person : persons) {
-        alertEmail = person.getAlertEmail();
-        if(alertEmail != null) {
-          Mailer.sendEmail(alertEmail, "OPQ Heartbeat Alert", String.format("OPQBox with id=%s not detected.",
-                                                                            key.getDeviceId()));
-        }
-      }
+      Mailer.sendAlerts(key.getPersons(), "OPQ Heartbeat Alert",
+                        String.format("OPQBox with deviceId = %s not detected. The device was either shutoff or " +
+                        "there is a problem with it.", key.getDeviceId()));
 
       // Delete device from list
       deviceHeartbeats.remove(key);

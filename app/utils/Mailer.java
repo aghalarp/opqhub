@@ -1,11 +1,13 @@
 package utils;
 
 
+import models.Person;
 import org.openpowerquality.protocol.OpqPacket;
 
 import org.apache.commons.mail.*;
 import play.Logger;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import static play.libs.Akka.future;
@@ -36,5 +38,25 @@ public class Mailer {
         return null;
       }
     });
+  }
+
+  public static void sendAlerts(List<Person> persons, String subject, String body) {
+    String alertEmail;
+    Sms.SmsCarrier smsCarrier;
+    String smsNumber;
+
+    for(Person person : persons) {
+      alertEmail = person.getAlertEmail();
+      smsCarrier = person.getSmsCarrier();
+      smsNumber = person.getSmsNumber();
+
+      if(alertEmail != null) {
+        Mailer.sendEmail(alertEmail, subject, body);
+      }
+
+      if(smsCarrier != null && smsNumber != null) {
+        Mailer.sendEmail(Sms.formatSmsEmailAddress(smsNumber,smsCarrier), subject, body);
+      }
+    }
   }
 }
