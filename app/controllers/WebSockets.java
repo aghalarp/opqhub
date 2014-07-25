@@ -104,7 +104,7 @@ public class WebSockets extends Controller {
    * @param opqPacket The packet received from the WebSocket object.
    */
   private static void handlePacket(OpqPacket opqPacket, final WebSocket.Out<String> out) {
-    HeartbeatAlertActor.update(opqPacket.deviceId, opqPacket.timestamp);
+
     Map<String, Object> queryMap = new HashMap<>();
     queryMap.put("deviceId", opqPacket.deviceId);
     queryMap.put("key", opqPacket.deviceKey);
@@ -115,8 +115,9 @@ public class WebSockets extends Controller {
       return;
     }
 
-    // Update connection mapping
+    // Update connection mapping and heartbeat monitor
     keyToOut.put(key, out);
+    HeartbeatAlertActor.update(key, opqPacket.timestamp);
 
     // Update the device
     OpqDevice opqDevice = key.getOpqDevice();
