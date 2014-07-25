@@ -17,24 +17,6 @@ public class Mailer {
   private static String pass = play.Play.application().configuration().getString("smtp.pass");
   private static boolean ssl = play.Play.application().configuration().getBoolean("smtp.ssl");
 
-  public static void sendAlert(final OpqPacket opqPacket, final String to) {
-  /*  future(new Callable<Object>() {
-      @Override
-      public Object call() throws Exception {
-        Logger.info(String.format("mailer -> %s", to));
-        MailerAPI mail = play.Play.application().plugin(MailerPlugin.class).email();
-        mail.setSubject("OPQ Alert");
-        mail.addFrom("OPQ Alert <openpowerquality@gmail.com>");
-        mail.addRecipient(to);
-        mail.send(String.format("Timestamp: %s\nEvent Type: %s\nEvent Value: %s",
-                                utils.DateUtils.toDateTime(opqPacket.getTimestamp()),
-                                opqPacket.getType().getName(),
-                                opqPacket.getEventValue()));
-        return null;
-      }
-    });*/
-  }
-
   public static void sendEmail(final String to, final String subject, final String body) {
     future(new Callable<Object>() {
       @Override
