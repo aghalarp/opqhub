@@ -19,8 +19,7 @@ Copyright 2013 Anthony Christe
 
 @(
     personForm: Form[models.Person],
-    opqDeviceForm: Form[models.OpqDevice],
-    alertNotificationForm: Form[models.Alert]
+    opqDeviceForm: Form[models.OpqDevice]
     )
 
   @import helper._
@@ -47,20 +46,14 @@ Copyright 2013 Anthony Christe
             <ul class="steps">
               <li data-target="#step1" class="active">
                 <span class="badge badge-info">1</span>
-                Information
+                User Information
                 <span class="chevron">
                 </span>
               </li>
               <li data-target="#step2"><span class="badge">2</span>
-                Optional Information<span class="chevron"></span></li>
+                Device Information<span class="chevron"></span></li>
               <li data-target="#step3"><span class="badge">3</span>
-                Device<span class="chevron"></span></li>
-              <li data-target="#step4"><span class="badge">4</span>
-                Alerts<span class="chevron"></span></li>
-              <li data-target="#step5"><span class="badge">5</span>
-                Notifications<span class="chevron"></span></li>
-              <li data-target="#step6"><span class="badge">6</span>
-                Data Sharing<span class="chevron"></span></li>
+                Location Information<span class="chevron"></span></li>
             </ul>
             <div class="actions">
               <button type="button" class="btn btn-mini btn-prev"> <i class="icon-arrow-left"></i>Prev</button>
@@ -74,18 +67,9 @@ Copyright 2013 Anthony Christe
             @wizard_user_info(personForm)
             </div>
             <div class="step-pane" id="step2">
-            @wizard_optional_user_info(personForm)
-            </div>
-            <div class="step-pane" id="step3">
             @wizard_opq_device(opqDeviceForm)
             </div>
-            <div class="step-pane" id="step4">
-            @wizard_opq_device_alert(alertNotificationForm)
-            </div>
-            <div class="step-pane" id="step5">
-            @wizard_alert_notifications(alertNotificationForm)
-            </div>
-            <div class="step-pane" id="step6">
+            <div class="step-pane" id="step3">
             @wizard_data_sharing(opqDeviceForm)
             </div>
           }

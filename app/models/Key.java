@@ -5,7 +5,9 @@ import play.db.ebean.Model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Key extends Model {
@@ -20,8 +22,8 @@ public class Key extends Model {
   private String key;
 
   /* ----- Relationships ----- */
-  @ManyToMany(mappedBy = "keys", cascade = CascadeType.ALL)
-  private List<Person> persons = new ArrayList<>();
+  @ManyToMany(cascade = CascadeType.ALL)
+  private Set<Person> persons = new HashSet<>();
 
   @OneToOne
   private OpqDevice opqDevice;
@@ -45,11 +47,11 @@ public class Key extends Model {
     this.key = key;
   }
 
-  public List<Person> getPersons() {
+  public Set<Person> getPersons() {
     return persons;
   }
 
-  public void setPersons(List<Person> persons) {
+  public void setPersons(Set<Person> persons) {
     this.persons = persons;
   }
 

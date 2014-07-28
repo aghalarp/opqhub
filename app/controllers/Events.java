@@ -2,7 +2,6 @@ package controllers;
 
 import controllers.routes;
 import models.Event;
-import models.ExternalCause;
 import models.OpqDevice;
 import play.Logger;
 import play.data.DynamicForm;
@@ -13,6 +12,7 @@ import play.mvc.Security;
 import utils.DateUtils;
 import views.html.error;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Events extends Controller {
@@ -48,48 +48,18 @@ public class Events extends Controller {
   @Security.Authenticated(Secured.class)
   public static Result eventDetails(Long eventId) {
     Event event = Event.find().where().eq("primaryKey", eventId).findUnique();
-    String rawPowerData = event.getRawPowerData();
-    ExternalCause externalCause = event.getExternalCause();
-    Form<ExternalCause> externalEventForm;
+
+    //TODO: Fix this
+    String rawPowerData = "1,2,3,4,5,";
+
 
     // TODO: Error page for when event is not found
 
-    if(externalCause == null) {
-      externalEventForm = Form.form(ExternalCause.class);
-    }
-    else {
-      externalEventForm = Form.form(ExternalCause.class).fill(externalCause);
-    }
-
-    return ok(views.html.privatemonitoring.eventdetails.render(event, externalEventForm, rawPowerData));
+    return ok(views.html.privatemonitoring.eventdetails.render(event, rawPowerData));
   }
 
   public static Result rawPowerData(Long eventId) {
-    return ok(Event.find().byId(eventId).getRawPowerData());
-  }
-
-  @Security.Authenticated(Secured.class)
-  public static Result updateEventDetails(Long eventId) {
-    Event event = Event.find().where().eq("primaryKey", eventId).findUnique();
-    Form<ExternalCause> externalEventForm = Form.form(ExternalCause.class).bindFromRequest();
-
-    // TODO: Error page for when event is not found
-
-    if (externalEventForm.hasErrors()) {
-      Logger.debug(String.format("Could not update event [%s] details due to %s", event.getPrimaryKey(),
-                                 externalEventForm.errors().toString()));
-      return ok(error.render("Problem updating event", externalEventForm.errors().toString()));
-    }
-
-    ExternalCause externalCause = externalEventForm.get();
-    externalCause.getEvents().add(event);
-    event.setExternalCause(externalCause);
-    externalCause.save();
-    event.save();
-
-    flash("updated", "External Cause Updated");
-    Logger.debug(String.format("Event [%s] details updated", event.getPrimaryKey()));
-    return redirect(routes.Events.eventDetails(eventId));
+    return ok(Event.find().byId(eventId).getEventData().getWaveform());
   }
 
   @Security.Authenticated(Secured.class)
@@ -133,14 +103,14 @@ public class Events extends Controller {
     }
 
     // Get the grid square that the device is associated with
-    String gridId = device.getGridId();
+    String gridId = device.getLocation().getGridId();
 
     if(gridId == null || !device.getSharingData()) {
       return ok(error.render("Please make sure you've set your preferences to allow data sharing", ""));
     }
 
     // TODO: Get rid of all events that are attached to any of the user's devices
-    double scale = device.getGridScale();
+    double scale = device.getLocation().getGridScale();
     int cnt = 0;
 
     while(scale < 4) {
@@ -162,6 +132,6 @@ public class Events extends Controller {
                                                                page,
                                                                (events.size() / PAGE_SIZE),
                                                                deviceId,
-                                                               device.getGridScale()));
+                                                               device.getLocation().getGridScale()));
   }
 }

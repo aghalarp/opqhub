@@ -65,38 +65,26 @@ Copyright 2013 Anthony Christe
             <th>Event Type</th>
             <th>Timestamp</th>
             <th>Duration (ms)</th>
-            <th>Event Value</th>
-            <th>External Cause</th>
+            <th>Frequency (Hz)</th>
+            <th>Voltage (V)</th>
           </tr>
         </thead>
         <tbody>
         @for(event <- events) {
           <tr>
             <td>
-              @if(event.getDevice.getGridScale <= deviceScale) {
+              @if(event.getLocation.getGridScale <= deviceScale) {
                 < @deviceScale Km
               } else {
-                < @event.getDevice.getGridScale Km
+                < @event.getLocation.getGridScale Km
               }
 
             </td>
             <td>@event.getEventType.getName</td>
             <td>@utils.DateUtils.toDateTime(event.getTimestamp)</td>
-            <td>@event.getEventDuration</td>
-            <td>
-              @event.getEventValue
-              @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.EVENT_FREQUENCY)) {
-                Hz
-              }
-              @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.EVENT_VOLTAGE)) {
-                Volts
-              }
-            </td>
-            <td>
-            @if(event.getExternalCause != null) {
-              @event.getExternalCause.getCauseType
-            }
-            </td>
+            <td>@event.getDuration</td>
+            <td>@event.getFrequency</td>
+            <td>@event.getVoltage</td>
           </tr>
         }
         </tbody>

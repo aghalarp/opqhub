@@ -28,7 +28,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Contains methods relating to the persisted Person entity.
@@ -86,7 +88,7 @@ public class Person extends Model {
 
   /* ----- Relationships ----- */
   @ManyToMany(mappedBy = "persons", cascade = CascadeType.ALL)
-  private List<Key> keys = new ArrayList<>();
+  private Set<Key> keys = new HashSet<>();
 
   /**
    * Convenience constructor for creating Person objects while testing.
@@ -243,11 +245,11 @@ public class Person extends Model {
     this.passwordSalt = passwordSalt;
   }
 
-  public List<Key> getKeys() {
+  public Set<Key> getKeys() {
     return keys;
   }
 
-  public void setKeys(List<Key> keys) {
+  public void setKeys(Set<Key> keys) {
     this.keys = keys;
   }
 

@@ -8,6 +8,7 @@ import org.apache.commons.mail.*;
 import play.Logger;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import static play.libs.Akka.future;
@@ -40,7 +41,7 @@ public class Mailer {
     });
   }
 
-  public static void sendAlerts(List<Person> persons, String subject, String body) {
+  public static void sendAlerts(Set<Person> persons, String subject, String body) {
     String alertEmail;
     Sms.SmsCarrier smsCarrier;
     String smsNumber;

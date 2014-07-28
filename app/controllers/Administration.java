@@ -19,8 +19,7 @@
 
 package controllers;
 
-import controllers.routes;
-import models.Alert;
+import models.Key;
 import models.OpqDevice;
 import models.Person;
 import play.Logger;
@@ -28,16 +27,16 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import views.html.admin.adminalert;
 import views.html.admin.admindatashare;
 import views.html.admin.admindevice;
 import views.html.admin.adminuser;
-import views.html.admin.alertdetails;
 import views.html.admin.updatedatashare;
 import views.html.error;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import static play.data.Form.form;
 
@@ -88,7 +87,11 @@ public class Administration extends Controller {
   public static Result device() {
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class);
     Person person = Person.find().where().eq("email", session("email")).findUnique();
-    List<OpqDevice> opqDevices = person.getDevices();
+    List<OpqDevice> opqDevices = new LinkedList<>();
+    Set<Key> keys = person.getKeys();
+    for(Key key : keys) {
+      opqDevices.add(key.getOpqDevice());
+    }
     List<Form<OpqDevice>> opqDeviceForms = new ArrayList<>();
 
     // For each device, fill a form with values from that device
@@ -114,8 +117,8 @@ public class Administration extends Controller {
 
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     OpqDevice opqDevice = opqDeviceForm.get();
-    person.getDevices().add(opqDevice);
-    opqDevice.setPerson(person);
+    //person.getDevices().add(opqDevice);
+    //opqDevice.setPerson(person);
     opqDevice.save();
     person.save();
 
@@ -166,92 +169,6 @@ public class Administration extends Controller {
   }
 
   /**
-   * Render the view for alert administration.
-   *
-   * @return The rendered view for alert administration.
-   */
-  @Security.Authenticated(Secured.class)
-  public static Result alert() {
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
-    List<OpqDevice> devices = person.getDevices();
-
-    return ok(adminalert.render(devices));
-  }
-
-  @Security.Authenticated(Secured.class)
-  public static Result alertDetails(Long deviceId) {
-    // Get alerts associated with this device
-    List<Alert> alerts = Alert.find().where().eq("device.deviceId", deviceId).findList();
-
-    Form<Alert> alertForm = form(Alert.class);
-
-    if(alerts.size() > 0) {
-      alertForm = form(Alert.class).fill(alerts.get(0));
-    }
-
-    return ok(alertdetails.render(alertForm, deviceId));
-  }
-
-  /**
-   * Saves a bew alert notification to the DB.
-   * @return Redirect to alert administration.
-   */
-  @Security.Authenticated(Secured.class)
-  public static Result saveAlert() {
-    Form<Alert> alertNotificationForm = form(Alert.class).bindFromRequest();
-
-    if (alertNotificationForm.hasErrors()) {
-      Logger.debug(String.format("Could not save alert due to %s", alertNotificationForm.errors().toString()));
-      return ok(error.render("Problem creating new alert notification", alertNotificationForm.errors().toString()));
-    }
-
-    Alert alert = alertNotificationForm.get();
-    OpqDevice opqDevice =
-        OpqDevice.find().where().eq("deviceId", alertNotificationForm.data().get("deviceId")).findUnique();
-
-    opqDevice.getAlerts().add(alert);
-    alert.setDevice(opqDevice);
-
-    opqDevice.save();
-    alert.save();
-    flash("added", "Added new device alert");
-    Logger.debug(String.format("Added device [%s] alert", opqDevice.getDeviceId()));
-    return redirect(routes.Administration.alert());
-  }
-
-  @Security.Authenticated(Secured.class)
-  public static Result updateAlert(Long deviceId) {
-    Form<Alert> alertForm = form(Alert.class).bindFromRequest();
-    List<Alert> alerts = Alert.find().where().eq("device.deviceId", deviceId).findList();
-
-    if (alertForm.hasErrors()) {
-      Logger.debug(String.format("Could not update alert notification %s", alertForm.errors().toString()));
-      return ok(error.render("Problem updating alert notifications", alertForm.errors().toString()));
-    }
-
-    // Updating the alert
-    if(alerts.size() > 0) {
-      alertForm.get().update(alerts.get(0).getPrimaryKey());
-      flash("updated", "Updated  alert");
-      Logger.debug(String.format("Updated device alert"));
-      return redirect(routes.Administration.alert());
-    }
-
-    // Saving a new alert
-    Alert alert = alertForm.get();
-    OpqDevice opqDevice =
-        OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
-
-    opqDevice.getAlerts().add(alert);
-    alert.setDevice(opqDevice);
-
-    opqDevice.save();
-    alert.save();
-
-    return redirect(routes.Administration.alert());
-  }
-
-  /**
    * Render the view for data sharing administration.
    *
    * @return The rendered view for data sharing administration.
@@ -259,7 +176,11 @@ public class Administration extends Controller {
   @Security.Authenticated(Secured.class)
   public static Result dataSharing() {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
-    List<OpqDevice> opqDevices = person.getDevices();
+    Set<Key> keys = person.getKeys();
+    List<OpqDevice> opqDevices = new LinkedList<>();
+    for(Key key : keys) {
+      opqDevices.add(key.getOpqDevice());
+    }
 
     return ok(admindatashare.render(opqDevices));
   }
@@ -272,7 +193,11 @@ public class Administration extends Controller {
   @Security.Authenticated(Secured.class)
   public static Result editDataSharing(Long deviceId) {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
-    List<OpqDevice> opqDevices = person.getDevices();
+    Set<Key> keys = person.getKeys();
+    List<OpqDevice> opqDevices = new LinkedList<>();
+    for(Key key : keys) {
+      opqDevices.add(key.getOpqDevice());
+    }
     OpqDevice opqDevice = null;
     Form<OpqDevice> opqDeviceForm;
 

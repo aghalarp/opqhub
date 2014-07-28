@@ -19,7 +19,6 @@
 
 package controllers;
 
-import models.Alert;
 import models.OpqDevice;
 import models.Person;
 import play.Logger;
@@ -47,11 +46,8 @@ public class Wizard extends Controller {
   public static Result index() {
     Form<Person> personForm = form(Person.class);
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class);
-    Alert alert = new Alert(true, true, true, true, false, null, null, null,
-                                                                59.0, 61.0, 100.0, 120.0);
-    Form<Alert> alertNotificationForm = form(Alert.class).fill(alert);
 
-    return ok(wizard.render(personForm, opqDeviceForm, alertNotificationForm));
+    return ok(wizard.render(personForm, opqDeviceForm));
   }
 
   /**
@@ -75,25 +71,15 @@ public class Wizard extends Controller {
       return makeError("Error parsing OPQ Device info", opqDeviceForm.errors());
     }
     OpqDevice opqDevice = opqDeviceForm.get();
-
-    // Get alert notification information
-    Form<Alert> alertNotificationForm = form(Alert.class).bindFromRequest();
-    if (alertNotificationForm.hasErrors()) {
-      Logger.debug(String.format("Wizard alert notification form errors %s", alertNotificationForm.errors().toString()));
-      return makeError("Error parsing alert info", alertNotificationForm.errors());
-    }
-    Alert alert = alertNotificationForm.get();
-
+    //TODO: Save with key
     // Now that we have all the data, it should be possible to complete all the relationships.
-    person.getDevices().add(opqDevice);
-    opqDevice.setPerson(person);
-    alert.setDevice(opqDevice);
-    opqDevice.getAlerts().add(alert);
+    //person.getDevices().add(opqDevice);
+   //opqDevice.setPerson(person);
+
 
     // Persist everything to the DB
     person.save();
     opqDevice.save();
-    alert.save();
 
     Logger.info(String.format("Successful creation of device [%s] and user [%s] through wizard",                              opqDevice.getDeviceId(), person.getEmail()));
     return redirect(routes.Application.index());

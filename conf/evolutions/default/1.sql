@@ -3,59 +3,37 @@
 
 # --- !Ups
 
-create table alert (
-  primary_key               bigint auto_increment not null,
-  voltage_alert_notification tinyint(1) default 0,
-  frequency_alert_notification tinyint(1) default 0,
-  device_alert_notification tinyint(1) default 0,
-  alert_via_email           tinyint(1) default 0,
-  notification_email        varchar(255),
-  alert_via_sms             tinyint(1) default 0,
-  sms_carrier               integer,
-  sms_number                varchar(255),
-  min_acceptable_voltage    double,
-  max_acceptable_voltage    double,
-  min_acceptable_frequency  double,
-  max_acceptable_frequency  double,
-  device_primary_key        bigint,
-  constraint ck_alert_sms_carrier check (sms_carrier in (0,1,2,3,4,5,6,7,8,9,10)),
-  constraint pk_alert primary key (primary_key))
-;
-
 create table event (
   primary_key               bigint auto_increment not null,
-  event_type                integer,
-  event_value               double,
-  raw_power_data            MEDIUMTEXT,
   timestamp                 bigint,
-  event_duration            bigint,
-  device_primary_key        bigint,
-  external_cause_primary_key bigint,
-  constraint ck_event_event_type check (event_type in (0,1,2,3,4,5,6)),
+  event_type                integer,
+  frequency                 double,
+  voltage                   double,
+  duration                  bigint,
+  key_primary_key           bigint,
+  location_primary_key      bigint,
+  event_data_primary_key    bigint,
+  constraint ck_event_event_type check (event_type in (0,1,2,3)),
   constraint pk_event primary key (primary_key))
 ;
 
-create table external_cause (
+create table event_data (
   primary_key               bigint auto_increment not null,
-  cause_type                varchar(255),
-  cause_description         varchar(255),
-  constraint pk_external_cause primary key (primary_key))
+  waveform                  MEDIUMTEXT,
+  event_primary_key         bigint,
+  constraint pk_event_data primary key (primary_key))
 ;
 
-create table measurement (
-  primary_key               bigint auto_increment not null,
-  timestamp                 bigint,
-  voltage                   double,
-  frequency                 double,
-  device_primary_key        bigint,
-  constraint pk_measurement primary key (primary_key))
-;
-
-create table opq_device (
+create table key (
   primary_key               bigint auto_increment not null,
   device_id                 bigint,
-  description               varchar(255),
-  sharing_data              tinyint(1) default 0,
+  key                       varchar(255),
+  opq_device_primary_key    bigint,
+  constraint pk_key primary key (primary_key))
+;
+
+create table location (
+  primary_key               bigint auto_increment not null,
   grid_id                   varchar(255),
   grid_scale                double,
   grid_row                  integer,
@@ -63,8 +41,18 @@ create table opq_device (
   north_east_latitude       double,
   north_east_longitude      double,
   south_west_latitude       double,
-  south_west_longitude      double,
-  person_primary_key        bigint,
+  get_south_west_longitude  double,
+  constraint pk_location primary key (primary_key))
+;
+
+create table opq_device (
+  primary_key               bigint auto_increment not null,
+  device_id                 bigint,
+  description               varchar(255),
+  sharing_data              tinyint(1) default 0,
+  last_heartbeat            bigint,
+  key_primary_key           bigint,
+  location_primary_key      bigint,
   constraint pk_opq_device primary key (primary_key))
 ;
 
@@ -76,38 +64,53 @@ create table person (
   password                  varchar(255),
   password_hash             varbinary(255),
   password_salt             varbinary(255),
-  state                     varchar(255),
-  city                      varchar(255),
-  zip                       varchar(255),
-  street_name               varchar(255),
-  street_number             varchar(255),
+  alert_email               varchar(255),
+  sms_carrier               integer,
+  sms_number                varchar(255),
+  constraint ck_person_sms_carrier check (sms_carrier in (0,1,2,3,4,5,6,7,8,9,10)),
   constraint pk_person primary key (primary_key))
 ;
 
-alter table alert add constraint fk_alert_device_1 foreign key (device_primary_key) references opq_device (primary_key) on delete restrict on update restrict;
-create index ix_alert_device_1 on alert (device_primary_key);
-alter table event add constraint fk_event_device_2 foreign key (device_primary_key) references opq_device (primary_key) on delete restrict on update restrict;
-create index ix_event_device_2 on event (device_primary_key);
-alter table event add constraint fk_event_externalCause_3 foreign key (external_cause_primary_key) references external_cause (primary_key) on delete restrict on update restrict;
-create index ix_event_externalCause_3 on event (external_cause_primary_key);
-alter table measurement add constraint fk_measurement_device_4 foreign key (device_primary_key) references opq_device (primary_key) on delete restrict on update restrict;
-create index ix_measurement_device_4 on measurement (device_primary_key);
-alter table opq_device add constraint fk_opq_device_person_5 foreign key (person_primary_key) references person (primary_key) on delete restrict on update restrict;
-create index ix_opq_device_person_5 on opq_device (person_primary_key);
+
+create table key_person (
+  key_primary_key                bigint not null,
+  person_primary_key             bigint not null,
+  constraint pk_key_person primary key (key_primary_key, person_primary_key))
+;
+alter table event add constraint fk_event_key_1 foreign key (key_primary_key) references key (primary_key) on delete restrict on update restrict;
+create index ix_event_key_1 on event (key_primary_key);
+alter table event add constraint fk_event_location_2 foreign key (location_primary_key) references location (primary_key) on delete restrict on update restrict;
+create index ix_event_location_2 on event (location_primary_key);
+alter table event add constraint fk_event_eventData_3 foreign key (event_data_primary_key) references event_data (primary_key) on delete restrict on update restrict;
+create index ix_event_eventData_3 on event (event_data_primary_key);
+alter table event_data add constraint fk_event_data_event_4 foreign key (event_primary_key) references event (primary_key) on delete restrict on update restrict;
+create index ix_event_data_event_4 on event_data (event_primary_key);
+alter table key add constraint fk_key_opqDevice_5 foreign key (opq_device_primary_key) references opq_device (primary_key) on delete restrict on update restrict;
+create index ix_key_opqDevice_5 on key (opq_device_primary_key);
+alter table opq_device add constraint fk_opq_device_key_6 foreign key (key_primary_key) references key (primary_key) on delete restrict on update restrict;
+create index ix_opq_device_key_6 on opq_device (key_primary_key);
+alter table opq_device add constraint fk_opq_device_location_7 foreign key (location_primary_key) references location (primary_key) on delete restrict on update restrict;
+create index ix_opq_device_location_7 on opq_device (location_primary_key);
 
 
+
+alter table key_person add constraint fk_key_person_key_01 foreign key (key_primary_key) references key (primary_key) on delete restrict on update restrict;
+
+alter table key_person add constraint fk_key_person_person_02 foreign key (person_primary_key) references person (primary_key) on delete restrict on update restrict;
 
 # --- !Downs
 
 SET FOREIGN_KEY_CHECKS=0;
 
-drop table alert;
-
 drop table event;
 
-drop table external_cause;
+drop table event_data;
 
-drop table measurement;
+drop table key;
+
+drop table key_person;
+
+drop table location;
 
 drop table opq_device;
 

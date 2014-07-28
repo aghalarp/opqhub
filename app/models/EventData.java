@@ -14,16 +14,16 @@ public class EventData extends Model {
   @Id
   private Long primaryKey;
 
-  //@Column(columnDefinition = "MEDIUMTEXT")
-  //private String waveform;
+  @Column(columnDefinition = "MEDIUMTEXT")
+  private String waveform;
 
-  private Double[] waveform;
+  //private double[] waveform;
 
   /* ----- Relationships ----- */
   @OneToOne
   private Event event;
 
-  public EventData(Double[] waveform) {
+  public EventData(String waveform) {
     this.waveform = waveform;
   }
 
@@ -35,11 +35,11 @@ public class EventData extends Model {
     this.primaryKey = primaryKey;
   }
 
-  public Double[] getWaveform() {
+  public String getWaveform() {
     return waveform;
   }
 
-  public void setWaveform(Double[] waveform) {
+  public void setWaveform(String waveform) {
     this.waveform = waveform;
   }
 

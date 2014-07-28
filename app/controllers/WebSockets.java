@@ -19,6 +19,7 @@
 
 package controllers;
 
+import controllers.routes;
 import jobs.HeartbeatAlertActor;
 import models.Event;
 import models.EventData;
@@ -96,7 +97,7 @@ public class WebSockets extends Controller {
       packet.computeChecksum();
       deviceIdToOut.get(deviceId).write(packet.getBase64Encoding());*/
     }
-    return redirect(routes.Application.index());
+    return redirect(controllers.routes.Application.index());
   }
 
   /**
@@ -143,8 +144,18 @@ public class WebSockets extends Controller {
     location.getEvents().add(event);
     location.update();
 
+    //TODO: This is hacky, fix it
     // Update event data
-    EventData eventData = new EventData(opqPacket.payload);
+    StringBuilder sb = new StringBuilder();
+    for(Double d : opqPacket.payload) {
+      //System.out.println(d);
+      sb.append(d);
+      sb.append(",");
+    }
+
+    String rawPowerStr = sb.toString();
+
+    EventData eventData = new EventData(rawPowerStr);
     eventData.setEvent(event);
     eventData.save();
     event.setEventData(eventData);

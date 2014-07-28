@@ -17,7 +17,7 @@ public class Location extends Model {
 
   private String gridId;
 
-  private Integer gridScale;
+  private Double gridScale;
 
   private Integer gridRow;
 
@@ -61,11 +61,11 @@ public class Location extends Model {
     this.gridId = gridId;
   }
 
-  public Integer getGridScale() {
+  public Double getGridScale() {
     return gridScale;
   }
 
-  public void setGridScale(Integer gridScale) {
+  public void setGridScale(Double gridScale) {
     this.gridScale = gridScale;
   }
 
