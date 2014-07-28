@@ -85,21 +85,18 @@ public class Administration extends Controller {
    */
   @Security.Authenticated(Secured.class)
   public static Result device() {
-    Form<OpqDevice> opqDeviceForm = form(OpqDevice.class);
+    Form<AccessKey> keyForm = form(AccessKey.class);
+    List<Form<AccessKey>> keyForms = new ArrayList<>();
+
     Person person = Person.find().where().eq("email", session("email")).findUnique();
-    List<OpqDevice> opqDevices = new LinkedList<>();
-    Set<AccessKey> accessKeys = person.getAccessKeys();
-    for(AccessKey accessKey : accessKeys) {
-      opqDevices.add(accessKey.getOpqDevice());
-    }
-    List<Form<OpqDevice>> opqDeviceForms = new ArrayList<>();
+    Set<AccessKey> keys = person.getAccessKeys();
 
     // For each device, fill a form with values from that device
-    for (OpqDevice opqDevice : opqDevices) {
-      opqDeviceForms.add(form(OpqDevice.class).fill(opqDevice));
+    for (AccessKey key : keys) {
+      keyForms.add(form(AccessKey.class).fill(key));
     }
 
-    return ok(admindevice.render(opqDeviceForm, opqDeviceForms));
+    return ok(admindevice.render(keyForm, keyForms));
   }
 
   /**
@@ -108,21 +105,34 @@ public class Administration extends Controller {
    */
   @Security.Authenticated(Secured.class)
   public static Result saveDevice() {
-    Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
+    Form<AccessKey> keyForm = form(AccessKey.class).bindFromRequest();
 
-    if (opqDeviceForm.hasErrors()) {
-      Logger.debug(String.format("New device not saved due to errors %s", opqDeviceForm.errors().toString()));
-      return ok(error.render("Problem saving new device", opqDeviceForm.errors().toString()));
+    if (keyForm.hasErrors()) {
+      Logger.debug(String.format("New device not saved due to errors %s", keyForm.errors().toString()));
+      return ok(error.render("Problem saving new device", keyForm.errors().toString()));
     }
 
+    AccessKey key = keyForm.get();
     Person person = Person.find().where().eq("email", session("email")).findUnique();
-    OpqDevice opqDevice = opqDeviceForm.get();
-    //person.getDevices().add(opqDevice);
-    //opqDevice.setPerson(person);
-    opqDevice.save();
-    person.save();
 
-    Logger.debug(String.format("New device [%s] saved", opqDevice.getSharingData()));
+    // If this key already exists, we want to use that key
+    if(AccessKey.keyExists(key)) {
+      key = AccessKey.findKey(key);
+    }
+
+    person.getAccessKeys().add(key);
+    person.update();
+
+    key.getPersons().add(person);
+
+    if(AccessKey.keyExists(key)) {
+      key.update();
+    }
+    else {
+      key.save();
+    }
+
+    Logger.debug(String.format("New key [%s] saved", key));
 
     flash("added", "Device added");
     return redirect(routes.Administration.device());

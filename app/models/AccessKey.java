@@ -71,15 +71,32 @@ public class AccessKey extends Model {
     this.events = events;
   }
 
-  public static Finder<Long, AccessKey> find() {
-    return new Finder<>(Long.class, AccessKey.class);
-  }
-
   public Long getDeviceId() {
     return deviceId;
   }
 
   public void setDeviceId(Long deviceId) {
     this.deviceId = deviceId;
+  }
+
+  public static Finder<Long, AccessKey> find() {
+    return new Finder<>(Long.class, AccessKey.class);
+  }
+
+  public static boolean keyExists(AccessKey key) {
+    return findKey(key) != null;
+  }
+
+  public static AccessKey findKey(AccessKey key) {
+    return findKey(key.getDeviceId(), key.getAccessKey());
+  }
+
+  public static AccessKey findKey(Long deviceId, String accessKey) {
+    return find().where().eq("deviceId", deviceId).eq("accessKey", accessKey).findUnique();
+  }
+
+  @Override
+  public String toString() {
+    return String.format("AccessKey: deviceId=%d accessKey=%s", this.deviceId, this.accessKey);
   }
 }

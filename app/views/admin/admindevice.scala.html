@@ -17,7 +17,7 @@ along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 Copyright 2013 Anthony Christe
 *@
 
-@(opqDeviceForm: Form[models.OpqDevice], opqDeviceForms: List[Form[models.OpqDevice]])
+@(keyForm: Form[AccessKey], keyForms: List[Form[AccessKey]])
 
   @import helper._
   @implicitFieldConstructor = @{
@@ -25,7 +25,7 @@ Copyright 2013 Anthony Christe
   }
 
   @admin("Device Administration",
-    "This page allows you to add and configure devices.") {
+    "This page allows you to add and configure OPQBoxes.") {
     <div class="span7">
       <table class="table well well-small">
         @if(flash.contains("updated")) {
@@ -41,17 +41,17 @@ Copyright 2013 Anthony Christe
         <thead>
           <tr>
             <th>Device Id</th>
-            <th>Description</th>
+            <th>Key</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          @for(deviceForm <- opqDeviceForms) {
+          @for(filledKeyForm <- keyForms) {
             <tr>
-            @form(routes.Administration.updateDevice(Long.parseLong(deviceForm("deviceId").value)), 'class -> "form-inline") {
-              <td>@inputText(deviceForm("deviceId"), '_showConstraints -> false, '_label -> "", 'readonly -> "readonly",
+            @form(routes.Administration.updateDevice(Long.parseLong(filledKeyForm("deviceId").value)), 'class -> "form-inline") {
+              <td>@inputText(filledKeyForm("deviceId"), '_showConstraints -> false, '_label -> "", 'readonly -> "readonly",
                 'class -> "input-medium")</td>
-              <td>@inputText(deviceForm("description"), '_showConstraints -> false, '_label -> "",
+              <td>@inputText(filledKeyForm("accessKey"), '_showConstraints -> false, '_label -> "",
                 'class -> "")</td>
               <td>
                 <input type="submit" class="btn btn-warning pull-right" value="Update">
@@ -62,20 +62,20 @@ Copyright 2013 Anthony Christe
           @form(routes.Administration.saveDevice(), 'class -> "form-inline") {
             <tr>
               <td>
-              @inputText(opqDeviceForm("deviceId"),
+              @inputText(keyForm("deviceId"),
                 '_label -> "",
-                'placeholder -> "0123-4567-89AB-CDEF",
+                'placeholder -> "12345",
                 '_showConstraints -> false,
                 'class -> "input-medium",
                 'id -> "deviceId")
               </td>
               <td>
-              @inputText(opqDeviceForm("description"),
+              @inputText(keyForm("accessKey"),
                 '_label -> "",
-                'placeholder -> "Office",
+                'placeholder -> "your_access_key",
                 '_showConstraints -> false,
                 'class -> "",
-                'id -> "deviceDescription")
+                'id -> "accessKey")
               </td>
               <input type="hidden" name="sharingData" id="sharingData" value="false" />
               <td>
@@ -88,16 +88,14 @@ Copyright 2013 Anthony Christe
     </div>
     <div class="span2 well well-small">
       <p>
-        <b>Register new OPQ device</b>
-        <br> The device ID is a sequence of 16 characters and letters that should have
-        been supplied with your OPQ device.
+        <b>Device Id</b>
+        <br> The device id can be found on the bottom of your OPQBox.
       </p>
       <p>
-        <b>Registered OPQ Devices</b>
-        <br> This lists the devices that are currently registered to your account.
-        <br>
-        <br>
-        <br>
+        <b>Key</b>
+        <br />
+        The key is configured on the physical OPQBox. You must either have access to an OPQBox or someone must give you
+        the key to their OPQBox.
       </p>
     </div>
   }
