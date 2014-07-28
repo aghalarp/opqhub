@@ -17,7 +17,7 @@ along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 Copyright 2013 Anthony Christe
 *@
 
-@(keyForm: Form[AccessKey], keyForms: List[Form[AccessKey]])
+@(keyForm: Form[AccessKey], keys: Set[AccessKey])
 
   @import helper._
   @implicitFieldConstructor = @{
@@ -46,17 +46,13 @@ Copyright 2013 Anthony Christe
           </tr>
         </thead>
         <tbody>
-          @for(filledKeyForm <- keyForms) {
+          @for(key <- keys) {
             <tr>
-            @form(routes.Administration.updateDevice(Long.parseLong(filledKeyForm("deviceId").value)), 'class -> "form-inline") {
-              <td>@inputText(filledKeyForm("deviceId"), '_showConstraints -> false, '_label -> "", 'readonly -> "readonly",
-                'class -> "input-medium")</td>
-              <td>@inputText(filledKeyForm("accessKey"), '_showConstraints -> false, '_label -> "", 'readonly -> "readonly",
-                'class -> "")</td>
+              <td>@key.getDeviceId()</td>
+              <td>@key.getAccessKey()</td>
               <td>
-                <input type="submit" class="btn btn-warning pull-right" value="Update">
+                <a href="@routes.Administration.configureDevice(key.getDeviceId, key.getAccessKey)" class="btn btn-success pull-right">Configure Device</a>
               </td>
-            }
             </tr>
           }
           @form(routes.Administration.saveDevice(), 'class -> "form-inline") {

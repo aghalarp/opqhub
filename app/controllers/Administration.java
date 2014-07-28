@@ -86,17 +86,11 @@ public class Administration extends Controller {
   @Security.Authenticated(Secured.class)
   public static Result device() {
     Form<AccessKey> keyForm = form(AccessKey.class);
-    List<Form<AccessKey>> keyForms = new ArrayList<>();
 
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     Set<AccessKey> keys = person.getAccessKeys();
 
-    // For each device, fill a form with values from that device
-    for (AccessKey key : keys) {
-      keyForms.add(form(AccessKey.class).fill(key));
-    }
-
-    return ok(admindevice.render(keyForm, keyForms));
+    return ok(admindevice.render(keyForm, keys));
   }
 
   /**
@@ -117,7 +111,6 @@ public class Administration extends Controller {
 
     // If this key already exists, we want to use that key
     if(AccessKey.keyExists(key)) {
-      System.out.println("Key exists");
       key = AccessKey.findKey(key);
       person.getAccessKeys().add(key);
       person.update();
@@ -125,7 +118,6 @@ public class Administration extends Controller {
       key.update();
     }
     else {
-      System.out.println("Key DN exists");
       person.getAccessKeys().add(key);
       person.update();
       key.getPersons().add(person);
@@ -145,7 +137,9 @@ public class Administration extends Controller {
 
   public static Result configureDevice(Long deviceId, String accessKey) {
     AccessKey key = AccessKey.findKey(deviceId, accessKey);
-    return TODO;
+    OpqDevice device = key.getOpqDevice();
+    Form<OpqDevice> deviceForm = form(OpqDevice.class).fill(device);
+    return ok(views.html.admin.deviceconfig.render(key.getDeviceId(), key.getAccessKey(), deviceForm));
   }
 
   /**

@@ -1,10 +1,69 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-  <meta charset="UTF-8">
-  <title></title>
-</head>
-<body>
+@*
+This file is part of opq-ao.
 
-</body>
-</html>
+opa-ao is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+opa-ao is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
+
+Copyright 2013 Anthony Christe
+*@
+
+@(deviceId: Long, accessKey: String, deviceForm: Form[OpqDevice])
+
+@import helper._
+  @implicitFieldConstructor = @{
+    FieldConstructor(twitterBootstrapInput.render)
+  }
+
+@admin("Device Administration",
+  "OPQBox configuration Manager") {
+  <div class="span7">
+    <table class="table well well-small">
+
+      <thead>
+        <tr>
+          <th>Device Id</th>
+          <th>Key</th>
+          <th>Description</th>
+          <th>Sharing Data Publicly</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>@deviceId</td>
+          <td>@accessKey</td>
+          @form(routes.Administration.device(), 'class -> "form-inline") {
+            <td>@inputText(deviceForm("description"), '_showConstraints -> false, '_label -> "",
+              'class -> "input-medium")</td>
+            <td>@inputText(deviceForm("accessKey"), '_showConstraints -> false, '_label -> "", 'readonly -> "readonly",
+              'class -> "")</td>
+            <td>
+              <input type="submit" class="btn btn-warning pull-right" value="Update">
+            </td>    }
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="span2 well well-small">
+    <p>
+      <b>Device Id</b>
+      <br> The device id can be found on the bottom of your OPQBox.
+    </p>
+    <p>
+      <b>Key</b>
+      <br />
+      The key is configured on the physical OPQBox. You must either have access to an OPQBox or someone must give you
+      the key to their OPQBox.
+    </p>
+  </div>
+}

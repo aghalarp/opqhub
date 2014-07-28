@@ -46,6 +46,8 @@ GET         /private/admin/datashare                           controllers.Admin
 GET         /private/admin/datashare/update/:deviceId          controllers.Administration.editDataSharing(deviceId: Long)
 POST        /private/admin/datashare/update/:primaryKey        controllers.Administration.updateDataSharing(primaryKey: Long)
 
+GET         /device/:deviceId/:accessKey                       controllers.Administration.configureDevice(deviceId: Long, accessKey: String)
+
 # Events
 GET         /private/monitor/events                            controllers.Events.eventsByPage(p: Integer ?= 0, after: Long ?= 0)
 GET         /private/monitor/events/nearby                     controllers.Events.nearbyEvents()
