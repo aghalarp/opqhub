@@ -43,7 +43,6 @@ public class OpqDevice extends Model {
   @Constraints.Required
   private Long deviceId;
 
-  @Constraints.Required
   private String description;
 
   private Boolean sharingData;
@@ -57,15 +56,9 @@ public class OpqDevice extends Model {
   @ManyToOne(cascade = CascadeType.ALL)
   private Location location;
 
-  /**
-   * Finder for filtering persisted devices.
-   *
-   * @return Finder for filtering persisted devices.
-   */
-  public static Finder<Long, OpqDevice> find() {
-    return new Finder<>(Long.class, OpqDevice.class);
+  public OpqDevice(Long deviceId) {
+    this.setDeviceId(deviceId);
   }
-
 
   /**
    * The primary key.
@@ -133,5 +126,14 @@ public class OpqDevice extends Model {
 
   public void setLocation(Location location) {
     this.location = location;
+  }
+
+  /**
+   * Finder for filtering persisted devices.
+   *
+   * @return Finder for filtering persisted devices.
+   */
+  public static Finder<Long, OpqDevice> find() {
+    return new Finder<>(Long.class, OpqDevice.class);
   }
 }

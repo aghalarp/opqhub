@@ -117,18 +117,23 @@ public class Administration extends Controller {
 
     // If this key already exists, we want to use that key
     if(AccessKey.keyExists(key)) {
+      System.out.println("Key exists");
       key = AccessKey.findKey(key);
-    }
-
-    person.getAccessKeys().add(key);
-    person.update();
-
-    key.getPersons().add(person);
-
-    if(AccessKey.keyExists(key)) {
+      person.getAccessKeys().add(key);
+      person.update();
+      key.getPersons().add(person);
       key.update();
     }
     else {
+      System.out.println("Key DN exists");
+      person.getAccessKeys().add(key);
+      person.update();
+      key.getPersons().add(person);
+
+      OpqDevice device = new OpqDevice(key.getDeviceId());
+      device.setAccessKey(key);
+      key.setOpqDevice(device);
+      device.save();
       key.save();
     }
 
@@ -136,6 +141,11 @@ public class Administration extends Controller {
 
     flash("added", "Device added");
     return redirect(routes.Administration.device());
+  }
+
+  public static Result configureDevice(Long deviceId, String accessKey) {
+    AccessKey key = AccessKey.findKey(deviceId, accessKey);
+    return TODO;
   }
 
   /**

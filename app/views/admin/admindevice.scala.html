@@ -51,7 +51,7 @@ Copyright 2013 Anthony Christe
             @form(routes.Administration.updateDevice(Long.parseLong(filledKeyForm("deviceId").value)), 'class -> "form-inline") {
               <td>@inputText(filledKeyForm("deviceId"), '_showConstraints -> false, '_label -> "", 'readonly -> "readonly",
                 'class -> "input-medium")</td>
-              <td>@inputText(filledKeyForm("accessKey"), '_showConstraints -> false, '_label -> "",
+              <td>@inputText(filledKeyForm("accessKey"), '_showConstraints -> false, '_label -> "", 'readonly -> "readonly",
                 'class -> "")</td>
               <td>
                 <input type="submit" class="btn btn-warning pull-right" value="Update">
