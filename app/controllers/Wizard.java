@@ -81,7 +81,7 @@ public class Wizard extends Controller {
     person.save();
     opqDevice.save();
 
-    Logger.info(String.format("Successful creation of device [%s] and user [%s] through wizard",                              opqDevice.getDeviceId(), person.getEmail()));
+    Logger.info(String.format("Successful creation of device [%s] and user [%s] through wizard", opqDevice.getDeviceId(), person.getEmail()));
     return redirect(routes.Application.index());
   }
 

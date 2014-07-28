@@ -100,7 +100,7 @@ public class PowerQualityMonitoring extends Controller {
 
       // Get events associated with devices
 
-      events = device.getKey().getEvents();
+      events = device.getAccessKey().getEvents();
       afterTimestamp = json.findValue("after").asLong();
       beforeTimestamp = json.findValue("before").asLong();
 

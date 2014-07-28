@@ -71,8 +71,8 @@ Copyright 2013 Anthony Christe
         <tbody>
         @for(event <- events) {
           <tr>
-            <td>@event.getKey.getOpqDevice.getDeviceId</td>
-            <td>@event.getKey.getOpqDevice.getDescription</td>
+            <td>@event.getAccessKey.getOpqDevice.getDeviceId</td>
+            <td>@event.getAccessKey.getOpqDevice.getDescription</td>
             <td>@event.getEventType.getName</td>
             <td>@utils.DateUtils.toDateTime(event.getTimestamp)</td>
             <td>@event.getDuration</td>

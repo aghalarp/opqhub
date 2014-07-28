@@ -19,7 +19,7 @@
 
 package controllers;
 
-import models.Key;
+import models.AccessKey;
 import models.OpqDevice;
 import models.Person;
 import play.Logger;
@@ -88,9 +88,9 @@ public class Administration extends Controller {
     Form<OpqDevice> opqDeviceForm = form(OpqDevice.class);
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     List<OpqDevice> opqDevices = new LinkedList<>();
-    Set<Key> keys = person.getKeys();
-    for(Key key : keys) {
-      opqDevices.add(key.getOpqDevice());
+    Set<AccessKey> accessKeys = person.getAccessKeys();
+    for(AccessKey accessKey : accessKeys) {
+      opqDevices.add(accessKey.getOpqDevice());
     }
     List<Form<OpqDevice>> opqDeviceForms = new ArrayList<>();
 
@@ -176,10 +176,10 @@ public class Administration extends Controller {
   @Security.Authenticated(Secured.class)
   public static Result dataSharing() {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
-    Set<Key> keys = person.getKeys();
+    Set<AccessKey> accessKeys = person.getAccessKeys();
     List<OpqDevice> opqDevices = new LinkedList<>();
-    for(Key key : keys) {
-      opqDevices.add(key.getOpqDevice());
+    for(AccessKey accessKey : accessKeys) {
+      opqDevices.add(accessKey.getOpqDevice());
     }
 
     return ok(admindatashare.render(opqDevices));
@@ -193,10 +193,10 @@ public class Administration extends Controller {
   @Security.Authenticated(Secured.class)
   public static Result editDataSharing(Long deviceId) {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
-    Set<Key> keys = person.getKeys();
+    Set<AccessKey> accessKeys = person.getAccessKeys();
     List<OpqDevice> opqDevices = new LinkedList<>();
-    for(Key key : keys) {
-      opqDevices.add(key.getOpqDevice());
+    for(AccessKey accessKey : accessKeys) {
+      opqDevices.add(accessKey.getOpqDevice());
     }
     OpqDevice opqDevice = null;
     Form<OpqDevice> opqDeviceForm;

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-public class Key extends Model {
+public class AccessKey extends Model {
   /* ----- Fields ----- */
   @Id
   private Long primaryKey;
@@ -19,7 +19,7 @@ public class Key extends Model {
   private Long deviceId;
 
   @Constraints.Required
-  private String key;
+  private String accessKey;
 
   /* ----- Relationships ----- */
   @ManyToMany(cascade = CascadeType.ALL)
@@ -28,7 +28,7 @@ public class Key extends Model {
   @OneToOne
   private OpqDevice opqDevice;
 
-  @OneToMany(mappedBy = "key", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "accessKey", cascade = CascadeType.ALL)
   private List<Event> events = new ArrayList<>();
 
   public Long getPrimaryKey() {
@@ -39,12 +39,12 @@ public class Key extends Model {
     this.primaryKey = primaryKey;
   }
 
-  public String getKey() {
-    return key;
+  public String getAccessKey() {
+    return accessKey;
   }
 
-  public void setKey(String key) {
-    this.key = key;
+  public void setAccessKey(String accessKey) {
+    this.accessKey = accessKey;
   }
 
   public Set<Person> getPersons() {
@@ -71,8 +71,8 @@ public class Key extends Model {
     this.events = events;
   }
 
-  public static Finder<Long, Key> find() {
-    return new Finder<>(Long.class, Key.class);
+  public static Finder<Long, AccessKey> find() {
+    return new Finder<>(Long.class, AccessKey.class);
   }
 
   public Long getDeviceId() {

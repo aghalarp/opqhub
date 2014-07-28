@@ -1,0 +1,57 @@
+@(personForm: Form[models.Person])
+
+@import helper._
+@implicitFieldConstructor = @{
+  FieldConstructor(twitterBootstrapInput.render)
+}
+
+@main("Sign-Up for OPQHub", menu("Sign-Up", true)) {
+  <div class="row-fluid">
+
+      <!-- Side menu -->
+    <div class="span3">
+      <div class="well">
+        <b>OPQHub Sign-Up</b>
+        <p>
+          To create an OPQHub account. Fill out all fields on this page.
+        </p>
+        <p>
+          Once your account is created, you will be redirected to the OPQBox administration page. You will then be able
+          register OPQBoxes with your account.
+        </p>
+
+
+
+      </div>
+    </div>
+    <div class="span5">
+    @form(routes.Person.save(), 'class -> "form-horizontal well well-small", 'name -> "userAdminForm") {
+      <b>User Information</b>
+      <br />
+      @inputText(
+        personForm("firstName"), '_label -> "First Name", 'placeholder -> "John", 'id -> "firstName")
+      @inputText(personForm("lastName"), '_label -> "Last Name", 'placeholder -> "Doe", 'id -> "lastName")
+      @inputText(personForm("email"), '_label -> "E-Mail", 'placeholder -> "john.doe@email.com", 'id -> "email")
+      @inputPassword(personForm("password"), '_label -> "Password", 'placeholder -> "Password", 'id -> "password")
+      <hr />
+
+      <b>Alert Information</b>
+      <br />
+      @inputText(personForm("alertEmail"), '_label -> "Alert E-mail", 'placeholder -> "john.doe@email.com", 'id -> "alertEmail")
+      @select(
+        personForm("smsCarrier"),
+        options = options(utils.Sms.listOfCarriers),
+        '_label -> "SMS Carrier",
+        'id -> "smsCarrier")
+      @inputText(personForm("smsNumber"), '_label -> "SMS Number", 'placeholder -> "8085551234", 'id -> "smsNumber")
+
+      <div class="control-group">
+        <div class="controls">
+          <input type="submit" class="btn-primary" value="Create OPQHub Account" />
+        </div>
+      </div>
+    }
+    </div>
+
+  </div>
+}

@@ -30,26 +30,20 @@ Copyright 2013 Anthony Christe
       'id -> "deviceId")
     @inputText(opqDeviceForm("description"), '_label -> "Device Description", 'placeholder -> "Office",
       'id -> "deviceDescription")
-    @select(
-      opqDeviceForm("state"),
-      options = options(utils.FormUtils.LIST_OF_STATES),
-      '_label -> "State",
-      '_default -> "--- Select State ---",
-      'id -> "deviceState")
   </div>
   <div class="span3">
     <div class="well well-small">
       <p class="bold">OPQ Device</p>
       <p>
-        This section allows you to register your OPQ device.
+        This section allows you to register a single OPQBox. You can register more OPQBoxes later in the device
+        administration section.
       </p>
       <p class="bold">Device Id</p>
       <p>
-        The OPQ device id can be found on a sticker attached to your OPQ device. The id is represented by
-        16 hexadecimal digits split into groups of 4 digits.
+        Every OPQBox comes with a device id. The device id can be found on the underside of your OPQBox.
       </p>
       <p>
-        Example: 0123-4567-89AB-CDEF
+        Example: 12345
       </p>
       <p class="bold">Device Description</p>
       <p>

@@ -26,9 +26,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import java.util.List;
 
 /**
  * Contains methods for manipulating persisted OpqDevices.
@@ -54,7 +52,7 @@ public class OpqDevice extends Model {
 
   /* ----- Relationships ----- */
   @OneToOne
-  private Key key;
+  private AccessKey accessKey;
 
   @ManyToOne(cascade = CascadeType.ALL)
   private Location location;
@@ -121,12 +119,12 @@ public class OpqDevice extends Model {
     this.lastHeartbeat = lastHeartbeat;
   }
 
-  public Key getKey() {
-    return key;
+  public AccessKey getAccessKey() {
+    return accessKey;
   }
 
-  public void setKey(Key key) {
-    this.key = key;
+  public void setAccessKey(AccessKey accessKey) {
+    this.accessKey = accessKey;
   }
 
   public Location getLocation() {

@@ -19,6 +19,7 @@
 
 package models;
 
+import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import utils.Sms;
@@ -27,9 +28,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -59,6 +58,7 @@ public class Person extends Model {
   /**
    * E-mail address.
    */
+  @Constraints.Email
   @Required
   private String email;
 
@@ -80,6 +80,7 @@ public class Person extends Model {
   @Required
   private byte[] passwordSalt;
 
+  @Constraints.Email
   private String alertEmail;
 
   private Sms.SmsCarrier smsCarrier;
@@ -88,7 +89,7 @@ public class Person extends Model {
 
   /* ----- Relationships ----- */
   @ManyToMany(mappedBy = "persons", cascade = CascadeType.ALL)
-  private Set<Key> keys = new HashSet<>();
+  private Set<AccessKey> accessKeys = new HashSet<>();
 
   /**
    * Convenience constructor for creating Person objects while testing.
@@ -245,12 +246,12 @@ public class Person extends Model {
     this.passwordSalt = passwordSalt;
   }
 
-  public Set<Key> getKeys() {
-    return keys;
+  public Set<AccessKey> getAccessKeys() {
+    return accessKeys;
   }
 
-  public void setKeys(Set<Key> keys) {
-    this.keys = keys;
+  public void setAccessKeys(Set<AccessKey> accessKeys) {
+    this.accessKeys = accessKeys;
   }
 
   public String getAlertEmail() {

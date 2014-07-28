@@ -68,7 +68,7 @@ public class Event extends Model {
 
   /* ----- Relationships ----- */
   @ManyToOne(cascade = CascadeType.ALL)
-  private Key key;
+  private AccessKey accessKey;
   @ManyToOne(cascade = CascadeType.ALL)
   private Location location;
   @OneToOne
@@ -169,12 +169,12 @@ public class Event extends Model {
   /**
    * Many alerts can be associated with a single device.
    */
-  public Key getKey() {
-    return key;
+  public AccessKey getAccessKey() {
+    return accessKey;
   }
 
-  public void setKey(Key key) {
-    this.key = key;
+  public void setAccessKey(AccessKey accessKey) {
+    this.accessKey = accessKey;
   }
 
   /**

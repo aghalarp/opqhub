@@ -19,14 +19,12 @@
 
 package controllers;
 
-import controllers.routes;
 import jobs.HeartbeatAlertActor;
 import models.Event;
 import models.EventData;
-import models.Key;
+import models.AccessKey;
 import models.Location;
 import models.OpqDevice;
-import models.Person;
 import org.openpowerquality.protocol.JsonOpqPacketFactory;
 import org.openpowerquality.protocol.OpqPacket;
 import play.Logger;
@@ -35,10 +33,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
 import utils.Mailer;
-import utils.Sms;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -46,7 +42,7 @@ import java.util.Map;
  * Provides methods for handling packets sent to this server from a WebSockets client.
  */
 public class WebSockets extends Controller {
-  private static final Map<Key, WebSocket.Out<String>> keyToOut = new HashMap<>();
+  private static final Map<AccessKey, WebSocket.Out<String>> keyToOut = new HashMap<>();
 
   /**
    * Create a WebSocket object who can receive connections, receive packets, and break connections.
@@ -110,19 +106,19 @@ public class WebSockets extends Controller {
     Map<String, Object> queryMap = new HashMap<>();
     queryMap.put("deviceId", opqPacket.deviceId);
     queryMap.put("key", opqPacket.deviceKey);
-    Key key = Key.find().where().allEq(queryMap).findUnique();
+    AccessKey accessKey = AccessKey.find().where().allEq(queryMap).findUnique();
 
-    if(key == null) {
+    if(accessKey == null) {
       Logger.error(String.format("null key lookup for packet %s", opqPacket));
       return;
     }
 
     // Update connection mapping and heartbeat monitor
-    keyToOut.put(key, out);
-    HeartbeatAlertActor.update(key, opqPacket.timestamp);
+    keyToOut.put(accessKey, out);
+    HeartbeatAlertActor.update(accessKey, opqPacket.timestamp);
 
     // Update the device
-    OpqDevice opqDevice = key.getOpqDevice();
+    OpqDevice opqDevice = accessKey.getOpqDevice();
     if(opqDevice == null) {
       Logger.error(String.format("null opqDevice lookup for packet %s", opqPacket));
       return;
@@ -139,7 +135,7 @@ public class WebSockets extends Controller {
       Logger.error(String.format("null location lookup for packet %s", opqPacket));
       return;
     }
-    event.setKey(key);
+    event.setAccessKey(accessKey);
     event.setLocation(location);
     location.getEvents().add(event);
     location.update();
@@ -162,14 +158,14 @@ public class WebSockets extends Controller {
     event.save();
 
     // Update key
-    key.getEvents().add(event);
-    key.update();
+    accessKey.getEvents().add(event);
+    accessKey.update();
 
     switch(opqPacket.packetType) {
       case EVENT_DEVICE:
       case EVENT_FREQUENCY:
       case EVENT_VOLTAGE:
-        Mailer.sendAlerts(key.getPersons(), String.format("OPQ %s", opqPacket.packetType.getName()),
+        Mailer.sendAlerts(accessKey.getPersons(), String.format("OPQ %s", opqPacket.packetType.getName()),
                           String.format("Received alert:\n%s", opqPacket));
         break;
       default:
@@ -188,10 +184,10 @@ public class WebSockets extends Controller {
     String rawPowerStr = sb.toString();*/
 
   private static void handleDisconnect(WebSocket.Out<String> out) {
-    for(Key key : keyToOut.keySet()) {
-      if(keyToOut.get(key).equals(out)) {
-        Logger.debug(String.format("Removing [%d] from id->connection mapping", key));
-        keyToOut.remove(key);
+    for(AccessKey accessKey : keyToOut.keySet()) {
+      if(keyToOut.get(accessKey).equals(out)) {
+        Logger.debug(String.format("Removing [%d] from id->connection mapping", accessKey));
+        keyToOut.remove(accessKey);
       }
     }
   }
