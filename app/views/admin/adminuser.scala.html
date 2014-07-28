@@ -28,26 +28,28 @@ Copyright 2013 Anthony Christe
     "This page allows you to configure basic information such as e-mail address, password, and your address.") {
     <div class="span7">
     @form(routes.Administration.updateUser(), 'class -> "form-horizontal well well-small", 'name -> "userAdminForm") {
+      <b>User Information</b>
+      <br />
       @inputText(
         personForm("firstName"), '_label -> "First Name", 'placeholder -> "John", 'id -> "firstName")
       @inputText(personForm("lastName"), '_label -> "Last Name", 'placeholder -> "Doe", 'id -> "lastName")
       @inputText(personForm("email"), '_label -> "E-Mail", 'placeholder -> "john.doe@email.com", 'id -> "email")
       @inputPassword(personForm("password"), '_label -> "Password", 'placeholder -> "Password", 'id -> "password")
+      <hr />
+
+      <b>Alert Information</b>
+      <br />
+      @inputText(personForm("alertEmail"), '_label -> "Alert E-mail", 'placeholder -> "john.doe@email.com", 'id -> "alertEmail")
       @select(
-        personForm("state"),
-        options = options(utils.FormUtils.LIST_OF_STATES),
-        '_label -> "State",
-        '_default -> "--- Select State ---",
-        'id -> "personState")
-      @inputText(personForm("city"), '_label -> "City", 'placeholder -> "Kailua-Kona", 'id -> "userCity")
-      @inputText(personForm("zip"), '_label -> "Zip", 'placeholder -> "96739", 'id -> "userZip")
-      @inputText(personForm("streetName"), '_label -> "Street Name", 'placeholder -> "Palani Rd",
-        'id -> "userStreetName")
-      @inputText(personForm("streetNumber"), '_label -> "Street Number", 'placeholder -> "111",
-        'id -> "userStreetNumber")
+        personForm("smsCarrier"),
+        options = options(utils.Sms.listOfCarriers),
+        '_label -> "SMS Carrier",
+        'id -> "smsCarrier")
+      @inputText(personForm("smsNumber"), '_label -> "SMS Number", 'placeholder -> "8085551234", 'id -> "smsNumber")
+
       <div class="control-group">
         <div class="controls">
-          <input type="submit" class="btn-primary" value="Update User Information" />
+          <input type="submit" class="btn-primary" value="Update OPQHub Account" />
         </div>
       </div>
     }
