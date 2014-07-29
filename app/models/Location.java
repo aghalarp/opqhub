@@ -29,7 +29,7 @@ public class Location extends Model {
 
   private Double southWestLatitude;
 
-  private Double getSouthWestLongitude;
+  private Double southWestLongitude;
 
   /* ----- Relationships ----- */
   @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
@@ -109,12 +109,12 @@ public class Location extends Model {
     this.southWestLatitude = southWestLatitude;
   }
 
-  public Double getGetSouthWestLongitude() {
-    return getSouthWestLongitude;
+  public Double getSouthWestLongitude() {
+    return southWestLongitude;
   }
 
-  public void setGetSouthWestLongitude(Double getSouthWestLongitude) {
-    this.getSouthWestLongitude = getSouthWestLongitude;
+  public void setSouthWestLongitude(Double southWestLongitude) {
+    this.southWestLongitude = southWestLongitude;
   }
 
   public List<OpqDevice> getOpqDevices() {

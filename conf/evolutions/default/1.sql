@@ -41,7 +41,7 @@ create table location (
   north_east_latitude       double,
   north_east_longitude      double,
   south_west_latitude       double,
-  get_south_west_longitude  double,
+  south_west_longitude      double,
   constraint pk_location primary key (primary_key))
 ;
 

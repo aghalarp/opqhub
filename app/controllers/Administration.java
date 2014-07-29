@@ -22,6 +22,7 @@ package controllers;
 import models.AccessKey;
 import models.OpqDevice;
 import models.Person;
+import models.Location;
 import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
@@ -132,14 +133,42 @@ public class Administration extends Controller {
     Logger.debug(String.format("New key [%s] saved", key));
 
     flash("added", "Device added");
-    return redirect(routes.Administration.device());
+    return redirect(routes.Administration.configureDevice(key.getDeviceId(), key.getAccessKey()));
   }
 
   public static Result configureDevice(Long deviceId, String accessKey) {
     AccessKey key = AccessKey.findKey(deviceId, accessKey);
     OpqDevice device = key.getOpqDevice();
-    Form<OpqDevice> deviceForm = form(OpqDevice.class).fill(device);
-    return ok(views.html.admin.deviceconfig.render(key.getDeviceId(), key.getAccessKey(), deviceForm));
+    Location location = device.getLocation();
+    Form<OpqDevice> deviceForm  = form(OpqDevice.class).fill(device);
+    Form<Location> locationForm = (location == null) ? form(Location.class) : form(Location.class).fill(location);
+    return ok(views.html.admin.deviceconfig.render(key.getDeviceId(), key.getAccessKey(), deviceForm, locationForm));
+  }
+
+  public static Result saveDeviceConfiguration() {
+    Form<OpqDevice> deviceForm = form(OpqDevice.class).bindFromRequest();
+    Form<Location> locationForm = form(Location.class).bindFromRequest();
+
+    if (deviceForm.hasErrors()) {
+      Logger.debug(String.format("Device not updated due to errors %s", deviceForm.errors().toString()));
+      return ok(error.render("Problem updating device", deviceForm.errors().toString()));
+    }
+    if (locationForm.hasErrors()) {
+      Logger.debug(String.format("Location not updated due to errors %s", locationForm.errors().toString()));
+      return ok(error.render("Problem updating location...", locationForm.errors().toString()));
+    }
+
+    OpqDevice device = deviceForm.get();
+    Location location = locationForm.get();
+
+    Long pk = OpqDevice.find().where().eq("deviceId", device.getDeviceId()).findUnique().getPrimaryKey();
+
+    device.setLocation(location);
+    device.update(pk);
+    location.getOpqDevices().add(device);
+    location.save();
+
+    return redirect(routes.Administration.device());
   }
 
   /**
