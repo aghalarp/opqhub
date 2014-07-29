@@ -414,6 +414,14 @@ var grid = (function() {
 
   /* ------------------------- Public API -------------------------*/
 
+  function getZoomByDistance(distance) {
+    for(var i = 5; i <= 18; i++) {
+      if(getDistanceByZoom(i) === distance) {
+        return i;
+      }
+    }
+  }
+
   /**
    * Defines starting and stopping points (lat, lng) that bound the grid creation algorithms.
    * Currently, the bounding box created by the two points contain the entire Hawaiian island chain.
@@ -473,6 +481,10 @@ var grid = (function() {
     }
     coloredLayers.push({id: id, color: color});
     redrawMap();
+  }
+
+  function setView(center, zoom) {
+    map.setView(center, zoom);
   }
 
   /**
@@ -549,9 +561,11 @@ var grid = (function() {
     callbacks: callbacks,
     initMap: initMap,
     colorSquare: colorSquareById,
+    setView: setView,
     addPopupContent: addPopupContent,
     clearColoredLayers: clearColoredLayers,
     getVisibleIds: getVisibleIds,
+    getZoomByDistance: getZoomByDistance,
     addDebugPoint: addDebugPoint,
     invalidateSize: invalidateSize,
     island: island

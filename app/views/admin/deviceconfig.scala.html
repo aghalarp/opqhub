@@ -94,32 +94,41 @@ Copyright 2013 Anthony Christe
   <script src="@routes.Assets.at("javascripts/grid-map.js")" type="text/javascript"></script>
 
   <script type="text/javascript">
-  addDynamicCss ( '  @routes.Assets.at("stylesheets/leaflet.css") ');
+    addDynamicCss ( '  @routes.Assets.at("stylesheets/leaflet.css") ');
 
-  function onGridClick(feature, layer) {
-    $(function () {
-      $('#gridId').val(feature.properties.id);
-      $('#northEastLatitude').val(feature.properties.boundingBox.getNorthEast().lat);
-      $('#northEastLongitude').val(feature.properties.boundingBox.getNorthEast().lng);
-      $('#southWestLatitude').val(feature.properties.boundingBox.getSouthWest().lat);
-      $('#southWestLongitude').val(feature.properties.boundingBox.getSouthWest().lng);
-      $('#gridScale').val(feature.properties.scale);
-      $('#gridRow').val(feature.properties.row);
-      $('#gridCol').val(feature.properties.col);
-    });
+    function onGridClick(feature, layer) {
+      $(function () {
+        $('#gridId').val(feature.properties.id);
+        $('#northEastLatitude').val(feature.properties.boundingBox.getNorthEast().lat);
+        $('#northEastLongitude').val(feature.properties.boundingBox.getNorthEast().lng);
+        $('#southWestLatitude').val(feature.properties.boundingBox.getSouthWest().lat);
+        $('#southWestLongitude').val(feature.properties.boundingBox.getSouthWest().lng);
+        $('#gridScale').val(feature.properties.scale);
+        $('#gridRow').val(feature.properties.row);
+        $('#gridCol').val(feature.properties.col);
+      });
 
-    g.colorSquare(feature.properties.id, "red");
-  }
+      g.colorSquare(feature.properties.id, "red");
+    }
 
-  var g = grid;
-  g.config.singleSelectionMode = true;
-  g.callbacks.onGridClick = onGridClick;
-  g.initMap("grid-map", g.island.OAHU.latLng, g.island.OAHU.defaultZoom);
+    var g = grid;
+    g.config.singleSelectionMode = true;
+    g.callbacks.onGridClick = onGridClick;
 
-  $(document).ready(function() {
-    $('#opq-wizard').on('changed', function(e, data) {
-      g.invalidateSize();
-    });
-  });
+    var gridId = $('#gridId').val();
+    var gridScale = $('#gridScale').val()
+    var northEastLatitude = $('#northEastLatitude').val();
+    var northEastLongitude = $('#northEastLongitude').val();
+
+    if(gridId.length > 0 && gridScale.length > 0 && northEastLatitude.length > 0 && northEastLongitude.length > 0) {
+      var latLng = [parseFloat(northEastLatitude), parseFloat(northEastLongitude)];
+      var zoom = g.getZoomByDistance(parseInt(gridScale));
+      g.initMap("grid-map", latLng, zoom);
+      g.colorSquare(gridId, "red")
+    }
+    else {
+      g.initMap("grid-map", g.island.OAHU.latLng, g.island.OAHU.defaultZoom);
+    }
+
   </script>
 }
