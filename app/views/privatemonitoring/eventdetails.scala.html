@@ -17,7 +17,7 @@ along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 Copyright 2013 Anthony Christe
 *@
 
-@(event: Event, rawPowerData: String)
+@(event: Event, location: Location, rawPowerData: String)
 
 @import helper._
   @implicitFieldConstructor = @{
@@ -58,20 +58,13 @@ Copyright 2013 Anthony Christe
       </tbody>
     </table>
   </div>
-  @* TODO: Re-enable charts *@
 
   <!-- ITIC Curve - Should only be displayed on voltage events -->
-  @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.EVENT_VOLTAGE)) {
-    <div class="row">
-      <div id="itic-plot" class="span9" style="height:300px; width:500px;"></div>
-      <div class="span9" id="plotter" style="height:300px; width:500px"></div>
-    </div>
-  }
 
-  <!-- Raw RMS voltage -->
   <div class="row">
-
-
+    <div id="itic-plot" class="span9" style="height:300px; width:500px;"></div>
+    <div class="span9" id="plotter" style="height:300px; width:500px"></div>
+    <div id="location" class="span9" style="height:500px; width: 1000px"></div>
 
   </div>
 
@@ -80,17 +73,18 @@ Copyright 2013 Anthony Christe
   <script src="@routes.Assets.at("javascripts/flot/jquery.flot.navigate.js")" type="text/javascript"></script>
   <script src="@routes.Assets.at("javascripts/flot/jquery.flot.axislabels.js")" type="text/javascript"></script>
   <script src="@routes.Assets.at("javascripts/itic-plotter.js")" type="text/javascript"></script>
+  <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
+  <script src="@routes.Assets.at("javascripts/grid-map.js")" type="text/javascript"></script>
   <script type="text/javascript">
+    addDynamicCss ( '  @routes.Assets.at("stylesheets/leaflet.css") ');
 
-    console.log("Before t");
-   var t = @Html(Json.obj(
+    var t = @Html(Json.obj(
               "data" -> rawPowerData
             ).toString());
     var data = t.data.substring(0, t.data.length - 1);
-    console.log(data);
     var splitData = data.split(",");
     var points = [[]];
-  var rmsStandard = 169.7;
+    var rmsStandard = 169.7;
 
     var max = Math.max.apply(null, splitData);
     var min = Math.min.apply(null, splitData);
@@ -168,5 +162,21 @@ Copyright 2013 Anthony Christe
       p.update();
     }
 
+
+    // --- Grid
+    var g = grid;
+    g.config.singleSelectionMode = true;
+
+    var gridId = "@location.getGridId";
+    var gridScale = @location.getGridScale;
+    var northEastLatitude = @location.getNorthEastLatitude;
+    var northEastLongitude = @location.getNorthEastLongitude;
+    var southWestLatitude = @location.getSouthWestLatitude;
+    var southWestLongitude = @location.getSouthWestLongitude;
+    console.log(gridId, gridScale, northEastLatitude, northEastLongitude);
+    var latLng = [(northEastLatitude + southWestLatitude) / 2, (northEastLongitude + southWestLongitude) / 2];
+    var zoom = g.getZoomByDistance(parseInt(gridScale));
+    g.initMap("location", latLng, zoom);
+    g.colorSquare(gridId, "red")
   </script>
 }

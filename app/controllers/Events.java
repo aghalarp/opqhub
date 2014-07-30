@@ -7,6 +7,7 @@ import models.AccessKey;
 import models.Event;
 import models.OpqDevice;
 import models.Person;
+import models.Location;
 import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 import play.data.DynamicForm;
@@ -75,10 +76,10 @@ public class Events extends Controller {
   @Security.Authenticated(Secured.class)
   public static Result eventDetails(Long eventId) {
     Event event = Event.find().where().eq("primaryKey", eventId).findUnique();
-
+    Location location = event.getLocation();
     String waveform = event.getEventData().getWaveform();
 
-    return ok(views.html.privatemonitoring.eventdetails.render(event, waveform));
+    return ok(views.html.privatemonitoring.eventdetails.render(event, location, waveform));
   }
 
   public static Result rawPowerData(Long eventId) {
