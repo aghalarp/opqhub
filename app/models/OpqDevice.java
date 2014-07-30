@@ -26,9 +26,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.OneToOne;
 
 /**
  * Contains methods for manipulating persisted OpqDevices.
@@ -38,99 +36,96 @@ import java.util.List;
  */
 @Entity
 public class OpqDevice extends Model {
+  /* ----- Fields ----- */
+  @Id
+  private Long primaryKey;
+
+  @Constraints.Required
+  private Long deviceId;
+
+  private String description;
+
+  private Boolean sharingData;
+
+  private Long lastHeartbeat;
+
+  /* ----- Relationships ----- */
+  @OneToOne
+  private AccessKey accessKey;
+
+  @ManyToOne(cascade = CascadeType.ALL)
+  private Location location;
+
+  public OpqDevice(Long deviceId) {
+    this.setDeviceId(deviceId);
+  }
+
   /**
    * The primary key.
    */
-  @Id
-  private Long primaryKey;
+  public Long getPrimaryKey() {
+    return primaryKey;
+  }
+
+  public void setPrimaryKey(Long primaryKey) {
+    this.primaryKey = primaryKey;
+  }
 
   /**
    * The device id as a 64-bit integer.
    */
-  @Constraints.Required
-  private Long deviceId;
+  public Long getDeviceId() {
+    return deviceId;
+  }
+
+  public void setDeviceId(Long deviceId) {
+    this.deviceId = deviceId;
+  }
 
   /**
    * Short description of the device. I.e. basement, office, etc.
    */
-  @Constraints.Required
-  private String description;
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
   /**
    * Determines if device is participating in sharing data.
    */
-  private Boolean sharingData;
+  public Boolean getSharingData() {
+    return sharingData;
+  }
 
-  /**
-   * The id of the grid square associated with this device.
-   */
-  private String gridId;
+  public void setSharingData(Boolean sharingData) {
+    this.sharingData = sharingData;
+  }
 
-  /**
-   * The length of all sides of a grid square in km.
-   */
-  private Double gridScale;
+  public Long getLastHeartbeat() {
+    return lastHeartbeat;
+  }
 
-  /**
-   * The row within the grid this device is associated.
-   */
-  private Integer gridRow;
+  public void setLastHeartbeat(Long lastHeartbeat) {
+    this.lastHeartbeat = lastHeartbeat;
+  }
 
-  /**
-   * The column within the grid this device is associated.
-   */
-  private Integer gridCol;
+  public AccessKey getAccessKey() {
+    return accessKey;
+  }
 
-  /**
-   * The following latitude and longitudes can be used to make up the bounding box of the grid square that this
-   * device resides in.
-   */
-  private Double northEastLatitude;
-  private Double northEastLongitude;
-  private Double southWestLatitude;
-  private Double southWestLongitude;
+  public void setAccessKey(AccessKey accessKey) {
+    this.accessKey = accessKey;
+  }
 
-  /**
-   * Person that this device is associated with.
-   * <p/>
-   * Each device is associated with one and only one person.
-   */
-  @ManyToOne(cascade = CascadeType.ALL)
-  private Person person;
+  public Location getLocation() {
+    return location;
+  }
 
-  /**
-   * Measurements that this device is associated with.
-   * <p/>
-   * Each device can be associated with many measurements.
-   */
-  @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
-  private List<Measurement> measurements = new ArrayList<>();
-
-  /**
-   * Event notifications that this device is associated with.
-   * <p/>
-   * Each device can be associated with many alert notifications.
-   */
-  @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
-  private List<Alert> alerts = new ArrayList<>();
-
-  /**
-   * Alerts that this device is associated with.
-   * <p/>
-   * Each device can be associated with many events.
-   */
-  @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
-  private List<Event> events = new ArrayList<>();
-
-  /**
-   * Convenience constructor for test package.
-   *
-   * @param deviceId    Id of the device as 16 hex digits.
-   * @param description Short description of the device.
-   */
-  public OpqDevice(Long deviceId, String description) {
-    this.setDeviceId(deviceId);
-    this.setDescription(description);
+  public void setLocation(Location location) {
+    this.location = location;
   }
 
   /**
@@ -140,232 +135,5 @@ public class OpqDevice extends Model {
    */
   public static Finder<Long, OpqDevice> find() {
     return new Finder<>(Long.class, OpqDevice.class);
-  }
-
-  /**
-   * Gets the primary key.
-   *
-   * @return The primary key.
-   */
-  public Long getPrimaryKey() {
-    return primaryKey;
-  }
-
-  /**
-   * Sets the primary key.
-   *
-   * @param primaryKey The primary key.
-   */
-  public void setPrimaryKey(Long primaryKey) {
-    this.primaryKey = primaryKey;
-  }
-
-  /**
-   * Gets the device id.
-   *
-   * @return The device id (unique 64-bit int).
-   */
-  public Long getDeviceId() {
-    return this.deviceId;
-  }
-
-  /**
-   * Sets the device id.
-   *
-   * @param deviceId A unique 64-bit represented as a String.
-   */
-  public void setDeviceId(Long deviceId) {
-    this.deviceId = deviceId;
-  }
-
-  /**
-   * Gets the short description of the device.
-   *
-   * @return Short description of device.
-   */
-  public String getDescription() {
-    return description;
-  }
-
-  /**
-   * Sets the short description of the device.
-   *
-   * @param description Short description of the device.
-   */
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-
-  /**
-   * Gets whether or not this device is participating in sharing data.
-   *
-   * @return Participating in sharing data.
-   */
-  public Boolean getSharingData() {
-    return this.sharingData;
-  }
-
-  /**
-   * Returns the gridId.
-   * @return The gridId.
-   */
-  public String getGridId() {
-    return gridId;
-  }
-
-  /**
-   * Sets the gridId.
-   * @param gridId The gridId.
-   */
-  public void setGridId(String gridId) {
-    this.gridId = gridId;
-  }
-
-  /**
-   * Set whether or not this device is participating in sharing data.
-   *
-   * @param sharingData Participating in sharing data.
-   */
-  public void setSharingData(Boolean sharingData) {
-    this.sharingData = sharingData;
-  }
-
-  /**
-   * Get the person associated with this device.
-   *
-   * @return Person associated with this device.
-   */
-  public Person getPerson() {
-    return person;
-  }
-
-  /**
-   * Set the person associated with this device.
-   *
-   * @param person Person associated with this device.
-   */
-  public void setPerson(Person person) {
-    this.person = person;
-  }
-
-  /**
-   * Get measurements associated with this device.
-   *
-   * @return Measurements associated with this device.
-   */
-  public List<Measurement> getMeasurements() {
-    return measurements;
-  }
-
-  /**
-   * Set measurements associated with this device.
-   *
-   * @param measurements Measurements associated with this device.
-   */
-  public void setMeasurements(List<Measurement> measurements) {
-    this.measurements = measurements;
-  }
-
-  /**
-   * Get alert notifications associated with this device.
-   *
-   * @return Event notifications associated with this device.
-   */
-  public List<Alert> getAlerts() {
-    return alerts;
-  }
-
-  /**
-   * Set alert notifications associated with this device.
-   *
-   * @param alerts Event notifications associated with this device.
-   */
-  public void setAlerts(List<Alert> alerts) {
-    this.alerts = alerts;
-  }
-
-  /**
-   * Get events associated with this device.
-   *
-   * @return Alerts associated with this device.
-   */
-  public List<Event> getEvents() {
-    return events;
-  }
-
-  /**
-   * Set events associated with this device.
-   *
-   * @param events Alerts associated with this device.
-   */
-  public void setEvents(List<Event> events) {
-    this.events = events;
-  }
-
-
-  public Double getNorthEastLatitude() {
-    return northEastLatitude;
-  }
-
-  public void setNorthEastLatitude(Double northEastLatitude) {
-    this.northEastLatitude = northEastLatitude;
-  }
-
-  public Double getNorthEastLongitude() {
-    return northEastLongitude;
-  }
-
-  public void setNorthEastLongitude(Double northEastLongitude) {
-    this.northEastLongitude = northEastLongitude;
-  }
-
-  public Double getSouthWestLatitude() {
-    return southWestLatitude;
-  }
-
-  public void setSouthWestLatitude(Double southWestLatitude) {
-    this.southWestLatitude = southWestLatitude;
-  }
-
-  public Double getSouthWestLongitude() {
-    return southWestLongitude;
-  }
-
-  public void setSouthWestLongitude(Double southWestLongitude) {
-    this.southWestLongitude = southWestLongitude;
-  }
-
-  /**
-   * The scale of each grid square (length of side in km).
-   */
-  public Double getGridScale() {
-    return gridScale;
-  }
-
-  public void setGridScale(Double gridScale) {
-    this.gridScale = gridScale;
-  }
-
-  /**
-   * The row of the grid this device is associated with.
-   */
-  public Integer getGridRow() {
-    return gridRow;
-  }
-
-  public void setGridRow(Integer gridRow) {
-    this.gridRow = gridRow;
-  }
-
-  /**
-   * The column of the grid this device is associated with.
-   */
-  public Integer getGridCol() {
-    return gridCol;
-  }
-
-  public void setGridCol(Integer gridCol) {
-    this.gridCol = gridCol;
   }
 }

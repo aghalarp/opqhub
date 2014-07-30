@@ -63,33 +63,21 @@ Copyright 2013 Anthony Christe
             <th>Event Type</th>
             <th>Timestamp</th>
             <th>Duration (ms)</th>
-            <th>Event Value</th>
-            <th>External Cause</th>
+            <th>Frequency (Hz)</th>
+            <th>Voltage (V)</th>
             <th>Details</th>
           </tr>
         </thead>
         <tbody>
         @for(event <- events) {
           <tr>
-            <td>@event.getDevice.getDeviceId</td>
-            <td>@event.getDevice.getDescription</td>
+            <td>@event.getAccessKey.getDeviceId</td>
+            <td>@event.getAccessKey.getOpqDevice.getDescription</td>
             <td>@event.getEventType.getName</td>
             <td>@utils.DateUtils.toDateTime(event.getTimestamp)</td>
-            <td>@event.getEventDuration</td>
-            <td>
-              @event.getEventValue
-              @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.EVENT_FREQUENCY)) {
-                Hz
-              }
-              @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.EVENT_VOLTAGE)) {
-                Volts
-              }
-            </td>
-            <td>
-            @if(event.getExternalCause != null) {
-              @event.getExternalCause.getCauseType
-            }
-            </td>
+            <td>@event.getDuration</td>
+            <td>@event.getFrequency</td>
+            <td>@event.getVoltage</td>
             <td>
               <a href="@routes.Events.eventDetails(event.getPrimaryKey)" class="btn btn-primary">Details</a>
             </td>

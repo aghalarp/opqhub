@@ -19,11 +19,13 @@
 
 package controllers;
 
-import controllers.routes;
+import jobs.HeartbeatAlertActor;
 import models.Event;
-import models.Alert;
-import models.Measurement;
+import models.EventData;
+import models.AccessKey;
+import models.Location;
 import models.OpqDevice;
+import org.openpowerquality.protocol.JsonOpqPacketFactory;
 import org.openpowerquality.protocol.OpqPacket;
 import play.Logger;
 import play.libs.F;
@@ -31,8 +33,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
 import utils.DateUtils;
+import utils.Mailer;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +43,7 @@ import java.util.Map;
  * Provides methods for handling packets sent to this server from a WebSockets client.
  */
 public class WebSockets extends Controller {
-  private static final Map<Long, WebSocket.Out<String>> deviceIdToOut = new HashMap<>();
+  private static final Map<AccessKey, WebSocket.Out<String>> keyToOut = new HashMap<>();
 
   /**
    * Create a WebSocket object who can receive connections, receive packets, and break connections.
@@ -58,10 +60,10 @@ public class WebSockets extends Controller {
           @Override
           public void invoke(String s) throws Throwable {
             //System.out.println("recv: " + s);
-            OpqPacket opqPacket = new OpqPacket(s);
+            OpqPacket opqPacket = JsonOpqPacketFactory.opqPacketFromBase64EncodedJson(s);
             //opqPacket.reverseBytes();
             //System.out.println(opqPacket);
-            Logger.info(String.format("Received %s from %s", opqPacket.getType(), opqPacket.getDeviceId()));
+            Logger.info(String.format("Received %s from %s", opqPacket.packetType, opqPacket.deviceId));
             handlePacket(opqPacket, out);
           }
         });
@@ -78,8 +80,10 @@ public class WebSockets extends Controller {
   }
 
   public static Result sendToDevice(Long deviceId, String message) {
+    Logger.debug("Send to device [%d] %s", deviceId, message);
     OpqPacket packet = new OpqPacket();
-    if(deviceIdToOut.containsKey(deviceId)) {
+    if(keyToOut.containsKey(deviceId)) {
+      /*
       packet.setHeader();
       packet.setType(OpqPacket.PacketType.SETTING);
       packet.setSequenceNumber(0);
@@ -88,9 +92,9 @@ public class WebSockets extends Controller {
       packet.setBitfield(0);
       packet.setPayload(message.getBytes());
       packet.computeChecksum();
-      deviceIdToOut.get(deviceId).write(packet.getBase64Encoding());
+      deviceIdToOut.get(deviceId).write(packet.getBase64Encoding());*/
     }
-    return redirect(routes.Application.index());
+    return redirect(controllers.routes.Application.index());
   }
 
   /**
@@ -99,38 +103,83 @@ public class WebSockets extends Controller {
    * @param opqPacket The packet received from the WebSocket object.
    */
   private static void handlePacket(OpqPacket opqPacket, final WebSocket.Out<String> out) {
-    switch(opqPacket.getType()) {
+
+    Map<String, Object> queryMap = new HashMap<>();
+    queryMap.put("deviceId", opqPacket.deviceId);
+    queryMap.put("accessKey", opqPacket.deviceKey);
+    AccessKey accessKey = AccessKey.find().where().allEq(queryMap).findUnique();
+
+    if(accessKey == null) {
+      Logger.error(String.format("null key lookup for packet %s", opqPacket));
+      return;
+    }
+
+    // Update connection mapping and heartbeat monitor
+    keyToOut.put(accessKey, out);
+    HeartbeatAlertActor.update(accessKey, opqPacket.timestamp);
+
+    // Update the device
+    OpqDevice opqDevice = accessKey.getOpqDevice();
+    if(opqDevice == null) {
+      Logger.error(String.format("null opqDevice lookup for packet %s", opqPacket));
+      return;
+    }
+    opqDevice.setLastHeartbeat(opqPacket.timestamp);
+    opqDevice.update();
+
+    // Update event
+    Event event = new Event(opqPacket.timestamp, opqPacket.packetType, opqPacket.frequency, opqPacket.voltage,
+                            opqPacket.duration);
+
+    Location location = (Location) opqDevice.getLocation();
+    if(location == null) {
+      Logger.error(String.format("null location lookup for packet %s", opqPacket));
+      return;
+    }
+    event.setAccessKey(accessKey);
+    event.setLocation(location);
+    location.getEvents().add(event);
+    location.update();
+
+    //TODO: This is hacky, fix it
+    // Update event data
+    StringBuilder sb = new StringBuilder();
+    for(Double d : opqPacket.payload) {
+      //System.out.println(d);
+      sb.append(d);
+      sb.append(",");
+    }
+
+    String rawPowerStr = sb.toString();
+
+    EventData eventData = new EventData(rawPowerStr);
+    eventData.setEvent(event);
+    eventData.save();
+    event.setEventData(eventData);
+    event.save();
+
+    // Update key
+    accessKey.getEvents().add(event);
+    accessKey.update();
+
+    switch(opqPacket.packetType) {
+      case EVENT_DEVICE:
       case EVENT_FREQUENCY:
       case EVENT_VOLTAGE:
-      case EVENT_DEVICE:
-        handleAlert(opqPacket);
+        Mailer.sendAlerts(accessKey.getPersons(), String.format("OPQ %s", opqPacket.packetType.getName()),
+                          String.format("Received alert from %d at %s [%s, %f V, %f Hz]\n",
+                                        opqPacket.deviceId,
+                                        DateUtils.toDateTime(opqPacket.timestamp),
+                                        opqPacket.packetType.getName(),
+                                        opqPacket.voltage,
+                                        opqPacket.frequency));
         break;
-      case MEASUREMENT:
-        handleMeasurement(opqPacket);
-        break;
-      case PING:
-        handlePing(opqPacket, out);
+      default:
         break;
     }
   }
 
-  /**
-   * Handles receiving of alert packets from device.
-   * <p/>
-   * Once a valid alert is received, add it to the database.
-   *
-   * @param opqPacket Event packet from device.
-   */
-  private static void handleAlert(OpqPacket opqPacket) {
-    System.out.println("handleAlert");
-    Long deviceId = opqPacket.getDeviceId();
-    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
-
-    if(opqDevice == null) {
-      Logger.warn("handleAlert opq device is null");
-      return;
-    }
-
+    /*
     StringBuilder sb = new StringBuilder();
     for(Double d : opqPacket.getRawPowerData()) {
       //System.out.println(d);
@@ -138,112 +187,13 @@ public class WebSockets extends Controller {
       sb.append(",");
     }
 
-    String rawPowerStr = sb.toString();
-    /*
-    System.out.println("data: " + rawPowerStr);
-
-    System.out.println(opqPacket.getType());
-    System.out.println(opqPacket.getTimestamp());
-    System.out.println(opqPacket.getEventDuration());
-    System.out.println(opqPacket.getEventValue());
-    */
-    Event event = new Event(
-        opqDevice,
-        opqPacket.getType(),
-        opqPacket.getTimestamp(),
-        opqPacket.getEventDuration(),
-        opqPacket.getEventValue(),
-        rawPowerStr);
-
-    System.out.println("voltage:" + event.getEventValue());
-
-    //System.out.println("Event created");
-
-    event.setDevice(opqDevice);
-    //System.out.println("setDevice");
-    event.save();
-    //System.out.println("event.save");
-    opqDevice.getEvents().add(event);
-    //System.out.println("events.add");
-    opqDevice.save();
-    //System.out.println("device saved");
-
-    //System.out.println("Made it past saving event info");
-
-    // Determine whether or not to notify user based on their alert preferences
-    if(opqDevice.getAlerts().size() == 0) {
-      return;
-    }
-
-    Alert alert = opqDevice.getAlerts().get(0);
-    switch(opqPacket.getType()) {
-      case EVENT_FREQUENCY:
-        if(alert.getFrequencyAlertNotification() &&
-           (opqPacket.getEventValue() < alert.getMinAcceptableFrequency() ||
-            opqPacket.getEventValue() > alert.getMaxAcceptableFrequency())) {
-            if(alert.getAlertViaEmail()) {
-              utils.Mailer.sendAlert(opqPacket, alert.getNotificationEmail());
-            }
-            if(alert.getAlertViaSms()) {
-              utils.Mailer.sendAlert(opqPacket, utils.Sms.formatSmsEmailAddress(alert.getSmsNumber(), alert.getSmsCarrier()));
-            }
-        }
-        break;
-      case EVENT_VOLTAGE:
-        if(alert.getVoltageAlertNotification() &&
-           (opqPacket.getEventValue() < alert.getMinAcceptableVoltage() ||
-            opqPacket.getEventValue() > alert.getMaxAcceptableVoltage())) {
-          if(alert.getAlertViaEmail()) {
-            utils.Mailer.sendAlert(opqPacket, alert.getNotificationEmail());
-          }
-          if(alert.getAlertViaSms()) {
-            utils.Mailer.sendAlert(opqPacket, utils.Sms.formatSmsEmailAddress(alert.getSmsNumber(), alert.getSmsCarrier()));
-          }
-        }
-        break;
-      case EVENT_DEVICE: break;
-    }
-  }
-
-  /**
-   * Handles receiving of measurement packets from device.
-   * <p/>
-   * When a valid measurement is received, that measurement is added to the database.
-   *
-   * @param opqPacket Measurement packet from device.
-   */
-  private static void handleMeasurement(OpqPacket opqPacket) {
-    Long deviceId = opqPacket.getDeviceId();
-    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
-    System.out.println("recv: measurement");
-    if(opqDevice == null) {
-      Logger.warn("handleMeasurement opq device is null");
-      return;
-    }
-
-    Measurement measurement = new Measurement(
-        opqPacket.getTimestamp(),
-        opqPacket.getFrequency(),
-        opqPacket.getVoltage()
-    );
-
-    System.out.println("m: " + measurement.getVoltage() + " " + measurement.getFrequency());
-
-    measurement.setDevice(opqDevice);
-    measurement.save();
-    opqDevice.getMeasurements().add(measurement);
-    opqDevice.save();
-  }
-
-  private static void handlePing(OpqPacket opqPacket, WebSocket.Out<String> out) {
-    System.out.println("Received ping!");
-    deviceIdToOut.put(opqPacket.getDeviceId(), out);
-  }
+    String rawPowerStr = sb.toString();*/
 
   private static void handleDisconnect(WebSocket.Out<String> out) {
-    for(Long l : deviceIdToOut.keySet()) {
-      if(deviceIdToOut.get(l).equals(out)) {
-        deviceIdToOut.remove(l);
+    for(AccessKey accessKey : keyToOut.keySet()) {
+      if(keyToOut.get(accessKey).equals(out)) {
+        Logger.debug(String.format("Removing [%d] from id->connection mapping", accessKey));
+        keyToOut.remove(accessKey);
       }
     }
   }

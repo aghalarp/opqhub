@@ -17,7 +17,7 @@ along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 Copyright 2013 Anthony Christe
 *@
 
-@(event: Event, externalEventForm: Form[ExternalCause], rawPowerData: String)
+@(event: Event, location: Location, rawPowerData: String)
 
 @import helper._
   @implicitFieldConstructor = @{
@@ -33,68 +33,39 @@ Copyright 2013 Anthony Christe
       <thead>
         <tr>
           <th>Device Id</th>
+          <th>Device Key</th>
           <th>Description</th>
           <th>Event Type</th>
           <th>Timestamp</th>
           <th>Duration (ms)</th>
-          <th>Event Value</th>
+          <th>Frequency (Hz)</th>
+          <th>Voltage (V)</th>
+          <th>Raw Waveform</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>@event.getDevice.getDeviceId</td>
-          <td>@event.getDevice.getDescription</td>
+          <td>@event.getAccessKey.getDeviceId</td>
+          <td>@event.getAccessKey.getAccessKey</td>
+          <td>@event.getAccessKey.getOpqDevice.getDescription</td>
           <td>@event.getEventType.getName</td>
           <td>@utils.DateUtils.toDateTime(event.getTimestamp)</td>
-          <td>@event.getEventDuration</td>
-          <td>
-            @event.getEventValue
-            @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.EVENT_FREQUENCY)) {
-              Hz
-            }
-            @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.EVENT_VOLTAGE)) {
-              Volts
-            }
-          </td>
+          <td>@event.getDuration</td>
+          <td>@event.getFrequency</td>
+          <td>@event.getVoltage</td>
+          <td><a href="@routes.Events.rawPowerData(event.getPrimaryKey)" class="btn btn-warning">Raw Data</a></td>
         </tr>
       </tbody>
     </table>
   </div>
-  <div class="span9">
-    <p><b>External Cause</b></p>
-    @if(flash.contains("updated")) {
-      <p class="success">
-      @flash.get("updated")
-      </p>
-    }
-    @form(routes.Events.updateEventDetails(event.getPrimaryKey), 'class -> "form-horizontal well well-small", 'name -> "externalCauseForm") {
-      @inputText(
-        externalEventForm("causeType"), '_label -> "Event Type", 'placeholder -> "Tropical Storm Flossie", 'id -> "causeType")
-      @textarea(
-        externalEventForm("causeDescription"), '_label -> "Event Description", 'placeholder -> "Tropical Storm Flossie",
-        'id -> "causeDescription")
-      <div class="control-group">
-        <div class="controls">
-          <input type="submit" class="btn btn-primary" value="Update External Cause" />
-        </div>
-      </div>
-    }
-
-  </div>
 
   <!-- ITIC Curve - Should only be displayed on voltage events -->
-  @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.EVENT_VOLTAGE)) {
-    <div class="row">
-      <div id="itic-plot" class="span9 pull-right" style="width:950px;height:400px">
-      </div>
-    </div>
-  }
 
-  <!-- Raw RMS voltage -->
   <div class="row">
-    <div class="span9 pull-right" id="plotter" style="height:400px; width:950px">
-    </div>
-    <div class="pull-right"><a href="@routes.Events.rawPowerData(event.getPrimaryKey)">Raw Data</a></div>
+    <div id="itic-plot" class="span9" style="height:300px; width:500px;"></div>
+    <div class="span9" id="plotter" style="height:300px; width:500px"></div>
+    <div id="location" class="span9" style="height:500px; width: 1000px"></div>
+
   </div>
 
 
@@ -102,7 +73,10 @@ Copyright 2013 Anthony Christe
   <script src="@routes.Assets.at("javascripts/flot/jquery.flot.navigate.js")" type="text/javascript"></script>
   <script src="@routes.Assets.at("javascripts/flot/jquery.flot.axislabels.js")" type="text/javascript"></script>
   <script src="@routes.Assets.at("javascripts/itic-plotter.js")" type="text/javascript"></script>
+  <script src="@routes.Assets.at("javascripts/leaflet.js")" type="text/javascript"></script>
+  <script src="@routes.Assets.at("javascripts/grid-map.js")" type="text/javascript"></script>
   <script type="text/javascript">
+    addDynamicCss ( '  @routes.Assets.at("stylesheets/leaflet.css") ');
 
     var t = @Html(Json.obj(
               "data" -> rawPowerData
@@ -158,7 +132,7 @@ Copyright 2013 Anthony Christe
     @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.EVENT_VOLTAGE)) {
       var p = iticPlotter;
       p.init("#itic-plot");
-      p.addPoint(@event.getEventDuration, p.voltageToPercentNominalVoltage(@event.getEventValue));
+      p.addPoint(@event.getDuration, p.voltageToPercentNominalVoltage(@event.getVoltage));
 
       $("<div id='tooltip'></div>").css({
         position: "absolute",
@@ -188,5 +162,21 @@ Copyright 2013 Anthony Christe
       p.update();
     }
 
+
+    // --- Grid
+    var g = grid;
+    g.config.singleSelectionMode = true;
+
+    var gridId = "@location.getGridId";
+    var gridScale = @location.getGridScale;
+    var northEastLatitude = @location.getNorthEastLatitude;
+    var northEastLongitude = @location.getNorthEastLongitude;
+    var southWestLatitude = @location.getSouthWestLatitude;
+    var southWestLongitude = @location.getSouthWestLongitude;
+    console.log(gridId, gridScale, northEastLatitude, northEastLongitude);
+    var latLng = [(northEastLatitude + southWestLatitude) / 2, (northEastLongitude + southWestLongitude) / 2];
+    var zoom = g.getZoomByDistance(parseInt(gridScale));
+    g.initMap("location", latLng, zoom);
+    g.colorSquare(gridId, "red")
   </script>
 }

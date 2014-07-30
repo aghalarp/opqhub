@@ -87,7 +87,7 @@ public class PowerQualityMonitoring extends Controller {
 
     for (OpqDevice device : devices) {
       // We want to use the truncated grid id that corresponds to the current zoom level
-      shortId = device.getGridId().substring(0, idLength);
+      shortId = device.getLocation().getGridId().substring(0, idLength);
 
       if (!localMetrics.containsKey(shortId)) {
         localMetrics.put(shortId, new GridSquare());
@@ -99,7 +99,8 @@ public class PowerQualityMonitoring extends Controller {
       tmpGridSquare.numDevices++;
 
       // Get events associated with devices
-      events = device.getEvents();
+
+      events = device.getAccessKey().getEvents();
       afterTimestamp = json.findValue("after").asLong();
       beforeTimestamp = json.findValue("before").asLong();
 
@@ -127,7 +128,7 @@ public class PowerQualityMonitoring extends Controller {
             break;
           case EVENT_VOLTAGE:
             tmpGridSquare.numVoltageEvents++;
-            tmpGridSquare.addIticPoint(event.getEventDuration(), event.getEventValue());
+            tmpGridSquare.addIticPoint(event.getDuration(), event.getVoltage());
             break;
           default:
             break;

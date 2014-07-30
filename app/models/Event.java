@@ -24,10 +24,10 @@ import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 /**
  * This contains methods for viewing and modifying the persistent Event object.
@@ -37,48 +37,42 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 public class Event extends Model {
-  /**
-   * Primary Key.
-   */
+  /* ----- Fields ----- */
   @Id
   private Long primaryKey;
-  /**
-   * The type of alert as given by the AlertType Enum.
-   */
-  @Required
-  private OpqPacket.PacketType eventType;
-  /**
-   * The value of the alert in either Hertz or Volts depending on the alert type.
-   */
-  @Required
-  private Double eventValue;
 
-  /**
-   * Contains raw power data.
-   */
-  @Column(columnDefinition = "MEDIUMTEXT")
-  private String rawPowerData;
-
-  /**
-   * Time alert occurred as milliseconds since the epoch.
-   */
   @Required
   private Long timestamp;
-  /**
-   * The amount of time the alert lasted in milliseconds.
-   */
+
   @Required
-  private Long eventDuration;
+  private OpqPacket.PacketType eventType;
+
+  @Required
+  private Double frequency;
+
+  @Required
+  private Double voltage;
+
+  /*
   /**
-   * Many alerts can be associated with a single device.
-   */
+   * Contains raw power data.
+   *
+  @Column(columnDefinition = "MEDIUMTEXT")
+  private String rawPowerData;
+  */
+
+
+  @Required
+  private Long duration;
+
+
+  /* ----- Relationships ----- */
   @ManyToOne(cascade = CascadeType.ALL)
-  private OpqDevice device;
-  /**
-   * Many alerts can be associated with an external event.
-   */
+  private AccessKey accessKey;
   @ManyToOne(cascade = CascadeType.ALL)
-  private ExternalCause externalCause;
+  private Location location;
+  @OneToOne
+  private EventData eventData;
 
   /**
    * Convenience method for creating an event during testing.
@@ -88,14 +82,12 @@ public class Event extends Model {
    * @param timestamp     Timestamp for when alert happened representing number of milliseconds since epoch.
    * @param eventDuration Number of milliseconds that event occurred for.
    */
-  public Event(OpqDevice device, OpqPacket.PacketType eventType, Long timestamp, Long eventDuration, Double eventValue,
-               String rawPowerData) {
-    this.setDevice(device);
-    this.setEventType(eventType);
-    this.setEventValue(eventValue);
-    this.setRawPowerData(rawPowerData);
+  public Event(Long timestamp, OpqPacket.PacketType eventType, Double frequency, Double voltage, Long duration) {
     this.setTimestamp(timestamp);
-    this.setEventDuration(eventDuration);
+    this.setEventType(eventType);
+    this.setFrequency(frequency);
+    this.setVoltage(voltage);
+    this.setDuration(duration);
   }
 
   /**
@@ -107,140 +99,100 @@ public class Event extends Model {
     return new Finder<>(Long.class, Event.class);
   }
 
+
   /**
-   * Get the primary key.
-   *
-   * @return The primary key.
+   * Primary Key.
    */
   public Long getPrimaryKey() {
     return primaryKey;
   }
 
-  /**
-   * Set the primary key.
-   *
-   * @param primaryKey The primary key.
-   */
   public void setPrimaryKey(Long primaryKey) {
     this.primaryKey = primaryKey;
   }
 
   /**
-   * Get alert type.
-   *
-   * @return The alert type.
-   */
-  public OpqPacket.PacketType getEventType() {
-    return eventType;
-  }
-
-  /**
-   * Set alert type.
-   * <p/>
-   * The alert type should be a member of the AlertType Enum.
-   *
-   * @param eventType The alert type.
-   */
-  public void setEventType(OpqPacket.PacketType eventType) {
-    this.eventType = eventType;
-  }
-
-  /**
-   * Get the alert value in hertz or volts depending on the alert type.
-   *
-   * @return The alert value in hertz or volts.
-   */
-  public Double getEventValue() {
-    return eventValue;
-  }
-
-  /**
-   * Set the alert value in either hertz or volts depending on the alert type.
-   *
-   * @param eventValue Value of the alert in either hertz or volts depending on the alert type.
-   */
-  public void setEventValue(Double eventValue) {
-    this.eventValue = eventValue;
-  }
-
-  public String getRawPowerData() {
-    return this.rawPowerData;
-  }
-
-  public void setRawPowerData(String rawPowerData) {
-    this.rawPowerData = rawPowerData;
-  }
-
-  /**
-   * Get the timestamp of an alert represented as the number of milliseconds since the epoch.
-   *
-   * @return The time an alert occurred in milliseconds since the epoch.
+   * Time alert occurred as milliseconds since the epoch.
    */
   public Long getTimestamp() {
     return timestamp;
   }
 
-  /**
-   * Set the timestamp of an alert.
-   *
-   * @param timestamp Timestamp of an alert represented as number of milliseconds since the epoch.
-   */
   public void setTimestamp(Long timestamp) {
     this.timestamp = timestamp;
   }
 
   /**
-   * Get the duration of an alert.
-   *
-   * @return The duration of an alert represented in milliseconds.
+   * The type of alert as given by the AlertType Enum.
    */
-  public Long getEventDuration() {
-    return eventDuration;
+  public OpqPacket.PacketType getEventType() {
+    return eventType;
+  }
+
+  public void setEventType(OpqPacket.PacketType eventType) {
+    this.eventType = eventType;
   }
 
   /**
-   * Set the duration of an alert.
-   *
-   * @param eventDuration Duration of an alert represented in milliseconds.
+   * The frequency of the event.
    */
-  public void setEventDuration(Long eventDuration) {
-    this.eventDuration = eventDuration;
+  public Double getFrequency() {
+    return frequency;
+  }
+
+  public void setFrequency(Double frequency) {
+    this.frequency = frequency;
   }
 
   /**
-   * Get the device associated with this alert.
-   *
-   * @return Device associated with this alert.
+   * The voltage of the event.
    */
-  public OpqDevice getDevice() {
-    return device;
+  public Double getVoltage() {
+    return voltage;
+  }
+
+  public void setVoltage(Double voltage) {
+    this.voltage = voltage;
   }
 
   /**
-   * Set the device associated with this alert.
-   *
-   * @param device The device associated with this alert.
+   * The amount of time the alert lasted in milliseconds.
    */
-  public void setDevice(OpqDevice device) {
-    this.device = device;
+  public Long getDuration() {
+    return duration;
+  }
+
+  public void setDuration(Long duration) {
+    this.duration = duration;
   }
 
   /**
-   * Get the external event associated with this alert (if one exists).
-   *
-   * @return External event associated with this alert.
+   * Many alerts can be associated with a single device.
    */
-  public ExternalCause getExternalCause() {
-    return externalCause;
+  public AccessKey getAccessKey() {
+    return accessKey;
+  }
+
+  public void setAccessKey(AccessKey accessKey) {
+    this.accessKey = accessKey;
   }
 
   /**
-   * Set the external event associated with this alert.
-   *
-   * @param externalCause External event associated with this alert.
+   * Many alerts can be associated with an external event.
    */
-  public void setExternalCause(ExternalCause externalCause) {
-    this.externalCause = externalCause;
+  public Location getLocation() {
+    return location;
   }
 
+  public void setLocation(Location location) {
+    this.location = location;
+  }
+
+  public EventData getEventData() {
+    return eventData;
+  }
+
+  public void setEventData(EventData eventData) {
+    this.eventData = eventData;
+  }
 }

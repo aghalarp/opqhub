@@ -19,25 +19,23 @@
 
 package controllers;
 
-import controllers.routes;
-import models.Alert;
+import models.AccessKey;
 import models.OpqDevice;
 import models.Person;
+import models.Location;
 import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import views.html.admin.adminalert;
-import views.html.admin.admindatashare;
 import views.html.admin.admindevice;
 import views.html.admin.adminuser;
-import views.html.admin.alertdetails;
-import views.html.admin.updatedatashare;
 import views.html.error;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import static play.data.Form.form;
 
@@ -65,7 +63,7 @@ public class Administration extends Controller {
    */
   @Security.Authenticated(Secured.class)
   public static Result updateUser() {
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    Person person = Person.getLoggedIn();
     Form<Person> personForm = form(Person.class).bindFromRequest();
 
     if (personForm.hasErrors()) {
@@ -86,18 +84,14 @@ public class Administration extends Controller {
    */
   @Security.Authenticated(Secured.class)
   public static Result device() {
-    Form<OpqDevice> opqDeviceForm = form(OpqDevice.class);
+    Form<AccessKey> keyForm = form(AccessKey.class);
+
     Person person = Person.find().where().eq("email", session("email")).findUnique();
-    List<OpqDevice> opqDevices = person.getDevices();
-    List<Form<OpqDevice>> opqDeviceForms = new ArrayList<>();
+    Set<AccessKey> keys = person.getAccessKeys();
 
-    // For each device, fill a form with values from that device
-    for (OpqDevice opqDevice : opqDevices) {
-      opqDeviceForms.add(form(OpqDevice.class).fill(opqDevice));
-    }
-
-    return ok(admindevice.render(opqDeviceForm, opqDeviceForms));
+    return ok(admindevice.render(keyForm, keys));
   }
+
 
   /**
    * Saves a new OPQ device to the DB.
@@ -105,206 +99,94 @@ public class Administration extends Controller {
    */
   @Security.Authenticated(Secured.class)
   public static Result saveDevice() {
-    Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
+    Form<AccessKey> keyForm = form(AccessKey.class).bindFromRequest();
 
-    if (opqDeviceForm.hasErrors()) {
-      Logger.debug(String.format("New device not saved due to errors %s", opqDeviceForm.errors().toString()));
-      return ok(error.render("Problem saving new device", opqDeviceForm.errors().toString()));
+    if (keyForm.hasErrors()) {
+      Logger.debug(String.format("New device not saved due to errors %s", keyForm.errors().toString()));
+      return ok(error.render("Problem saving new device", keyForm.errors().toString()));
     }
 
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
-    OpqDevice opqDevice = opqDeviceForm.get();
-    person.getDevices().add(opqDevice);
-    opqDevice.setPerson(person);
-    opqDevice.save();
-    person.save();
+    AccessKey key = keyForm.get();
+    AccessKey existingKey;
+    Person person = Person.getLoggedIn();
 
-    Logger.debug(String.format("New device [%s] saved", opqDevice.getSharingData()));
+    if(AccessKey.keyExists(key)) {
+      existingKey = AccessKey.findKey(key);
+      existingKey.getPersons().add(person);
+      existingKey.update();
+    }
+    else {
+      OpqDevice device = new OpqDevice(key.getDeviceId());
+
+      key.save();
+      device.save();
+
+      // Update person
+      person.getAccessKeys().add(key);
+      person.update();
+
+      // Update key
+      key.getPersons().add(person);
+      key.setOpqDevice(device);
+      key.update();
+
+      // Update device
+      device.setAccessKey(key);
+      device.update();
+    }
+
+    Logger.debug(String.format("New key [%s] saved", key));
 
     flash("added", "Device added");
+    return redirect(routes.Administration.configureDevice(key.getDeviceId(), key.getAccessKey()));
+  }
+
+  public static Result configureDevice(Long deviceId, String accessKey) {
+    AccessKey key = AccessKey.findKey(deviceId, accessKey);
+    OpqDevice device = key.getOpqDevice();
+    Location location = device.getLocation();
+    Form<OpqDevice> deviceForm  = form(OpqDevice.class).fill(device);
+    Form<Location> locationForm = (location == null) ? form(Location.class) : form(Location.class).fill(location);
+    return ok(views.html.admin.deviceconfig.render(key.getDeviceId(), key.getAccessKey(), deviceForm, locationForm, location));
+  }
+
+  public static Result saveDeviceConfiguration() {
+    Form<OpqDevice> deviceForm = form(OpqDevice.class).bindFromRequest();
+    Form<Location> locationForm = form(Location.class).bindFromRequest();
+
+    if (deviceForm.hasErrors()) {
+      Logger.debug(String.format("Device not updated due to errors %s", deviceForm.errors().toString()));
+      return ok(error.render("Problem updating device", deviceForm.errors().toString()));
+    }
+    if (locationForm.hasErrors()) {
+      Logger.debug(String.format("Location not updated due to errors %s", locationForm.errors().toString()));
+      return ok(error.render("Problem updating location...", locationForm.errors().toString()));
+    }
+
+    OpqDevice deviceFromForm = deviceForm.get();
+    Location location = locationForm.get();
+
+    OpqDevice device = OpqDevice.find().where().eq("deviceId", deviceFromForm.getDeviceId()).findUnique();
+
+    device.setDescription(deviceFromForm.getDescription());
+    device.setSharingData(deviceFromForm.getSharingData());
+    device.setLocation(location);
+    device.update();
+
+    Location tmp = Location.find().where().eq("gridId", location.getGridId()).findUnique();
+
+    Long locationPk;
+
+    location.getOpqDevices().add(device);
+
+    if(tmp == null) {
+      location.save();
+    }
+    else {
+      locationPk = tmp.getPrimaryKey();
+      location.update(locationPk);
+    }
+
     return redirect(routes.Administration.device());
-  }
-
-  /**
-   * Updates device fields.
-   * @param deviceId The device id.
-   * @return Redirect to device administration.
-   */
-  @Security.Authenticated(Secured.class)
-  public static Result updateDevice(Long deviceId) {
-    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
-    Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
-
-    if (opqDeviceForm.hasErrors()) {
-      Logger.debug(String.format("device not updated due to %s", opqDeviceForm.errors().toString()));
-      return ok(error.render("Problem updating device", opqDeviceForm.errors().toString()));
-    }
-
-    opqDeviceForm.get().update(opqDevice.getPrimaryKey());
-    Logger.debug(String.format("device [%s] updated", opqDevice.getDeviceId()));
-    flash("updated", "Device updated");
-    return redirect(routes.Administration.device());
-  }
-
-
-  /**
-   * Warning: Don't call this unless you want every relationship attached to it deleted as well.
-   *
-   * @param deviceId Device id.
-   *
-   * @return Redirect back to devices page.
-   */
-  @Security.Authenticated(Secured.class)
-  public static Result deleteDevice(Long deviceId) {
-    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
-    opqDevice.delete();
-    opqDevice.save();
-
-    Logger.debug(String.format("Device [%s] deleted", opqDevice.getDeviceId()));
-
-    return redirect(routes.Administration.device());
-  }
-
-  /**
-   * Render the view for alert administration.
-   *
-   * @return The rendered view for alert administration.
-   */
-  @Security.Authenticated(Secured.class)
-  public static Result alert() {
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
-    List<OpqDevice> devices = person.getDevices();
-
-    return ok(adminalert.render(devices));
-  }
-
-  @Security.Authenticated(Secured.class)
-  public static Result alertDetails(Long deviceId) {
-    // Get alerts associated with this device
-    List<Alert> alerts = Alert.find().where().eq("device.deviceId", deviceId).findList();
-
-    Form<Alert> alertForm = form(Alert.class);
-
-    if(alerts.size() > 0) {
-      alertForm = form(Alert.class).fill(alerts.get(0));
-    }
-
-    return ok(alertdetails.render(alertForm, deviceId));
-  }
-
-  /**
-   * Saves a bew alert notification to the DB.
-   * @return Redirect to alert administration.
-   */
-  @Security.Authenticated(Secured.class)
-  public static Result saveAlert() {
-    Form<Alert> alertNotificationForm = form(Alert.class).bindFromRequest();
-
-    if (alertNotificationForm.hasErrors()) {
-      Logger.debug(String.format("Could not save alert due to %s", alertNotificationForm.errors().toString()));
-      return ok(error.render("Problem creating new alert notification", alertNotificationForm.errors().toString()));
-    }
-
-    Alert alert = alertNotificationForm.get();
-    OpqDevice opqDevice =
-        OpqDevice.find().where().eq("deviceId", alertNotificationForm.data().get("deviceId")).findUnique();
-
-    opqDevice.getAlerts().add(alert);
-    alert.setDevice(opqDevice);
-
-    opqDevice.save();
-    alert.save();
-    flash("added", "Added new device alert");
-    Logger.debug(String.format("Added device [%s] alert", opqDevice.getDeviceId()));
-    return redirect(routes.Administration.alert());
-  }
-
-  @Security.Authenticated(Secured.class)
-  public static Result updateAlert(Long deviceId) {
-    Form<Alert> alertForm = form(Alert.class).bindFromRequest();
-    List<Alert> alerts = Alert.find().where().eq("device.deviceId", deviceId).findList();
-
-    if (alertForm.hasErrors()) {
-      Logger.debug(String.format("Could not update alert notification %s", alertForm.errors().toString()));
-      return ok(error.render("Problem updating alert notifications", alertForm.errors().toString()));
-    }
-
-    // Updating the alert
-    if(alerts.size() > 0) {
-      alertForm.get().update(alerts.get(0).getPrimaryKey());
-      flash("updated", "Updated  alert");
-      Logger.debug(String.format("Updated device alert"));
-      return redirect(routes.Administration.alert());
-    }
-
-    // Saving a new alert
-    Alert alert = alertForm.get();
-    OpqDevice opqDevice =
-        OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
-
-    opqDevice.getAlerts().add(alert);
-    alert.setDevice(opqDevice);
-
-    opqDevice.save();
-    alert.save();
-
-    return redirect(routes.Administration.alert());
-  }
-
-  /**
-   * Render the view for data sharing administration.
-   *
-   * @return The rendered view for data sharing administration.
-   */
-  @Security.Authenticated(Secured.class)
-  public static Result dataSharing() {
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
-    List<OpqDevice> opqDevices = person.getDevices();
-
-    return ok(admindatashare.render(opqDevices));
-  }
-
-  /**
-   * Update data sharing information connected to an opq device.
-   * @param deviceId The device id.
-   * @return Redirect to data sharing administration.
-   */
-  @Security.Authenticated(Secured.class)
-  public static Result editDataSharing(Long deviceId) {
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
-    List<OpqDevice> opqDevices = person.getDevices();
-    OpqDevice opqDevice = null;
-    Form<OpqDevice> opqDeviceForm;
-
-    for(OpqDevice device : opqDevices) {
-      if(device.getDeviceId().equals(deviceId)) {
-        opqDevice = device;
-        break;
-      }
-    }
-
-    if(opqDevice == null) {
-      Logger.error(String.format("Unknown device [%s] when trying to edit data sharing", session("email")));
-      return ok(error.render("Unknown device", ""));
-    }
-
-    opqDeviceForm = form(OpqDevice.class).fill(opqDevice);
-    Logger.debug(String.format("Data sharing updated for [%s]", opqDevice.getDeviceId()));
-    return ok(updatedatashare.render(opqDeviceForm));
-  }
-
-  @Security.Authenticated(Secured.class)
-  public static Result updateDataSharing(Long primaryKey) {
-    Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
-
-    if(opqDeviceForm.hasErrors()) {
-      Logger.debug(String.format("Could not update data sharing due to %s", opqDeviceForm.errors().toString()));
-      return ok(error.render("Problem updating data share", opqDeviceForm.errors().toString()));
-    }
-
-    opqDeviceForm.get().update(primaryKey);
-    flash("updated", "Data sharing updated");
-    Logger.debug(String.format("Data sharing updated for [%s]", opqDeviceForm.data().get("email")));
-    return redirect(routes.Administration.dataSharing());
   }
 }

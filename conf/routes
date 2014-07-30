@@ -23,8 +23,8 @@
 GET         /                                                  controllers.Application.index()
 
 # Sign Up
-GET         /public/wizard                                     controllers.Wizard.index()
-POST        /public/wizard/save                                controllers.Wizard.save()
+GET         /signup                                            controllers.Person.signup()
+POST        /signup                                            controllers.Person.save()
 
 # Log in/out
 GET         /public/login                                      controllers.Application.login()
@@ -37,34 +37,21 @@ POST        /private/admin/user/update                         controllers.Admin
 
 GET         /private/admin/device                              controllers.Administration.device()
 POST        /private/admin/device/save                         controllers.Administration.saveDevice()
-POST        /private/admin/device/update/:id                   controllers.Administration.updateDevice(id: Long)
-GET         /private/admin/device/delete/:id                   controllers.Administration.deleteDevice(id: Long)
 
-GET         /private/admin/alert                               controllers.Administration.alert()
-POST        /private/admin/alert/save                          controllers.Administration.saveAlert()
-GET         /private/admin/alert/:deviceId                     controllers.Administration.alertDetails(deviceId: Long)
-POST        /private/admin/alert/:deviceId/update              controllers.Administration.updateAlert(deviceId: Long)
-
-GET         /private/admin/datashare                           controllers.Administration.dataSharing()
-GET         /private/admin/datashare/update/:deviceId          controllers.Administration.editDataSharing(deviceId: Long)
-POST        /private/admin/datashare/update/:primaryKey        controllers.Administration.updateDataSharing(primaryKey: Long)
+GET         /device/:deviceId/:accessKey                       controllers.Administration.configureDevice(deviceId: Long, accessKey: String)
+POST        /device                                            controllers.Administration.saveDeviceConfiguration()
 
 # Events
+#GET         /private/monitor/events                            controllers.Events.newEvents()
 GET         /private/monitor/events                            controllers.Events.eventsByPage(p: Integer ?= 0, after: Long ?= 0)
 GET         /private/monitor/events/nearby                     controllers.Events.nearbyEvents()
 POST        /private/monitor/events/nearby/filter              controllers.Events.filterNearbyEvents()
 GET         /private/monitor/events/nearby/:deviceId           controllers.Events.nearbyEventsByPage(deviceId: Long, page: Integer ?= 0, after: Long ?= 0)
 POST        /private/monitor/events/filter                     controllers.Events.filterEvents()
 GET         /private/monitor/events/:eventId                   controllers.Events.eventDetails(eventId: Long)
-POST        /private/monitor/events/:eventId                   controllers.Events.updateEventDetails(eventId: Long)
 
 GET         /private/monitor/events/:eventId/raw               controllers.Events.rawPowerData(eventId: Long)
 
-
-# Measurements
-GET         /private/monitor/measurements                      controllers.Measurements.measurements()
-POST        /private/monitor/measurements/filter               controllers.Measurements.filterMeasurements()
-GET         /private/monitor/measurements/:deviceId            controllers.Measurements.measurementsByPage(deviceId: Long, p: Integer ?= 0, after: Long ?= 0)
 
 # Public Monitoring
 GET         /public/monitor                                    controllers.PowerQualityMonitoring.publicMonitor()
