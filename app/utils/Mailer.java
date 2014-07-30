@@ -55,7 +55,7 @@ public class Mailer {
         Mailer.sendEmail(alertEmail, subject, body);
       }
 
-      if(smsCarrier != null && smsNumber != null) {
+      if(smsCarrier != null || smsNumber != null) {
         Mailer.sendEmail(Sms.formatSmsEmailAddress(smsNumber,smsCarrier), subject, body);
       }
     }
