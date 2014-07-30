@@ -103,9 +103,11 @@ public class WebSockets extends Controller {
    */
   private static void handlePacket(OpqPacket opqPacket, final WebSocket.Out<String> out) {
 
+    Logger.debug(opqPacket.toString());
+
     Map<String, Object> queryMap = new HashMap<>();
     queryMap.put("deviceId", opqPacket.deviceId);
-    queryMap.put("key", opqPacket.deviceKey);
+    queryMap.put("accessKey", opqPacket.deviceKey);
     AccessKey accessKey = AccessKey.find().where().allEq(queryMap).findUnique();
 
     if(accessKey == null) {

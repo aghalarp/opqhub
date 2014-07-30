@@ -1,8 +1,13 @@
 package controllers;
 
+import com.avaje.ebean.Query;
+import com.avaje.ebean.Ebean;
 import controllers.routes;
+import models.AccessKey;
 import models.Event;
 import models.OpqDevice;
+import models.Person;
+import org.apache.commons.lang3.StringUtils;
 import play.Logger;
 import play.data.DynamicForm;
 import play.data.Form;
@@ -13,7 +18,9 @@ import utils.DateUtils;
 import views.html.error;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Events extends Controller {
   @Security.Authenticated(Secured.class)
@@ -25,6 +32,34 @@ public class Events extends Controller {
     session("pastTimeSelectEvents", selectedTimeUnit);
     session("eventsAfterAmount", adjustedTimestamp.toString());
     return redirect(controllers.routes.Events.eventsByPage(0, adjustedTimestamp));
+  }
+
+  @Security.Authenticated(Secured.class)
+  public static Result newEvents() {
+    Person person = Person.getLoggedIn();
+    Set<AccessKey> keys = person.getAccessKeys();
+
+    List<String> sqlList = new ArrayList<>();
+    List<Object> paramsList = new ArrayList<>();
+
+    Query<Event> query = Ebean.createQuery(Event.class);
+
+    for(AccessKey key : keys) {
+      sqlList.add("accessKey.primaryKey like ?");
+      paramsList.add(key.getPrimaryKey().toString() + "%");
+    }
+
+    query.where(StringUtils.join(sqlList, " OR "));
+
+    int i = 1;
+    for(Object param : paramsList) {
+      query.setParameter(i, param);
+      i++;
+    }
+
+    List<Event> events = query.order("timestamp desc").findPagingList(10).getPage(0).getList();
+    //return ok(views.html.privatemonitoring.privateevents.render(events, page, pages));
+    return ok(views.html.privatemonitoring.privateevents.render(events, 0, 0));
   }
 
   @Security.Authenticated(Secured.class)

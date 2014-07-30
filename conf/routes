@@ -42,7 +42,8 @@ GET         /device/:deviceId/:accessKey                       controllers.Admin
 POST        /device                                            controllers.Administration.saveDeviceConfiguration()
 
 # Events
-GET         /private/monitor/events                            controllers.Events.eventsByPage(p: Integer ?= 0, after: Long ?= 0)
+GET         /private/monitor/events                            controllers.Events.newEvents()
+GET         /private/monitor/eventsOld                            controllers.Events.eventsByPage(p: Integer ?= 0, after: Long ?= 0)
 GET         /private/monitor/events/nearby                     controllers.Events.nearbyEvents()
 POST        /private/monitor/events/nearby/filter              controllers.Events.filterNearbyEvents()
 GET         /private/monitor/events/nearby/:deviceId           controllers.Events.nearbyEventsByPage(deviceId: Long, page: Integer ?= 0, after: Long ?= 0)
