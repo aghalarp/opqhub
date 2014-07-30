@@ -64,18 +64,38 @@ public class Events extends Controller {
 
   @Security.Authenticated(Secured.class)
   public static Result eventsByPage(Integer page, Long afterTimestamp) {
-    Integer pages;
+    Person person = Person.getLoggedIn();
+    Set<AccessKey> keys = person.getAccessKeys();
+
+    List<String> sqlList = new ArrayList<>();
+    List<Object> paramsList = new ArrayList<>();
     final Integer ROWS_PER_PAGE = 10;
+    Query<Event> query = Ebean.createQuery(Event.class);
+
+    for(AccessKey key : keys) {
+      sqlList.add("accessKey.primaryKey like ?");
+      paramsList.add(key.getPrimaryKey().toString() + "%");
+    }
+
+    query.where(StringUtils.join(sqlList, " OR "));
+
+    int i = 1;
+    for(Object param : paramsList) {
+      query.setParameter(i, param);
+      i++;
+    }
+
     Long after = (afterTimestamp == null) ? 0 : afterTimestamp;
-    List<Event> events = Event.find().where()
-        .eq("device.person.email", session("email"))
+
+    List<Event> events = query
+        .where()
         .gt("timestamp", after)
         .order("timestamp desc")
         .findPagingList(ROWS_PER_PAGE)
         .getPage(page)
         .getList();
 
-    pages = Event.find().where().eq("device.person.email", session("email")).gt("timestamp", after).findRowCount() / ROWS_PER_PAGE;
+    Integer pages = query.where().gt("timestamp", after).findRowCount() / ROWS_PER_PAGE;
 
     return ok(views.html.privatemonitoring.privateevents.render(events, page, pages));
   }

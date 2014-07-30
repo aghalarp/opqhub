@@ -32,6 +32,7 @@ import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
+import utils.DateUtils;
 import utils.Mailer;
 
 import java.util.HashMap;
@@ -103,8 +104,6 @@ public class WebSockets extends Controller {
    */
   private static void handlePacket(OpqPacket opqPacket, final WebSocket.Out<String> out) {
 
-    Logger.debug(opqPacket.toString());
-
     Map<String, Object> queryMap = new HashMap<>();
     queryMap.put("deviceId", opqPacket.deviceId);
     queryMap.put("accessKey", opqPacket.deviceKey);
@@ -168,7 +167,12 @@ public class WebSockets extends Controller {
       case EVENT_FREQUENCY:
       case EVENT_VOLTAGE:
         Mailer.sendAlerts(accessKey.getPersons(), String.format("OPQ %s", opqPacket.packetType.getName()),
-                          String.format("Received alert:\n%s", opqPacket));
+                          String.format("Received alert from %d at %s [%s, %f V, %f Hz]\n",
+                                        opqPacket.deviceId,
+                                        DateUtils.toDateTime(opqPacket.timestamp),
+                                        opqPacket.packetType.getName(),
+                                        opqPacket.voltage,
+                                        opqPacket.frequency));
         break;
       default:
         break;
