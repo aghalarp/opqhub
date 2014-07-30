@@ -76,13 +76,9 @@ public class Events extends Controller {
   public static Result eventDetails(Long eventId) {
     Event event = Event.find().where().eq("primaryKey", eventId).findUnique();
 
-    //TODO: Fix this
-    String rawPowerData = "1,2,3,4,5,";
+    String waveform = event.getEventData().getWaveform();
 
-
-    // TODO: Error page for when event is not found
-
-    return ok(views.html.privatemonitoring.eventdetails.render(event, rawPowerData));
+    return ok(views.html.privatemonitoring.eventdetails.render(event, waveform));
   }
 
   public static Result rawPowerData(Long eventId) {

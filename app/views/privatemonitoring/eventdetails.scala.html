@@ -80,18 +80,20 @@ Copyright 2013 Anthony Christe
   <script src="@routes.Assets.at("javascripts/itic-plotter.js")" type="text/javascript"></script>
   <script type="text/javascript">
 
-   @* var t = @Html(Json.obj(
+    console.log("Before t");
+   var t = @Html(Json.obj(
               "data" -> rawPowerData
             ).toString());
     var data = t.data.substring(0, t.data.length - 1);
+    console.log(data);
     var splitData = data.split(",");
     var points = [[]];
-    var rmsStandard = 169.7;
+  var rmsStandard = 169.7;
 
     var max = Math.max.apply(null, splitData);
     var min = Math.min.apply(null, splitData);
     for(var i = 0; i < splitData.length; i++) {
-        points[0].push([i, @rawPowerData.]);
+        points[0].push([i, splitData[i]]);
     }
 
     //var standardLinePositive = [[0, rmsStandard], [points[0].length, rmsStandard]];
@@ -129,7 +131,7 @@ Copyright 2013 Anthony Christe
     };
 
     $.plot($("#plotter"), points, plotOptions);
-    *@
+
 
     @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.EVENT_VOLTAGE)) {
       var p = iticPlotter;
