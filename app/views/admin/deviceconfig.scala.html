@@ -119,7 +119,7 @@ Copyright 2013 Anthony Christe
     var gridScale = $('#gridScale').val()
     var northEastLatitude = $('#northEastLatitude').val();
     var northEastLongitude = $('#northEastLongitude').val();
-
+    console.log(gridId, gridScale, northEastLatitude, northEastLongitude);
     if(gridId.length > 0 && gridScale.length > 0 && northEastLatitude.length > 0 && northEastLongitude.length > 0) {
       var latLng = [parseFloat(northEastLatitude), parseFloat(northEastLongitude)];
       var zoom = g.getZoomByDistance(parseInt(gridScale));
@@ -127,6 +127,7 @@ Copyright 2013 Anthony Christe
       g.colorSquare(gridId, "red")
     }
     else {
+      console.log("Default");
       g.initMap("grid-map", g.island.OAHU.latLng, g.island.OAHU.defaultZoom);
     }
 

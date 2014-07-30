@@ -94,6 +94,7 @@ public class Administration extends Controller {
     return ok(admindevice.render(keyForm, keys));
   }
 
+
   /**
    * Saves a new OPQ device to the DB.
    * @return Redirect to device administration.
@@ -109,26 +110,59 @@ public class Administration extends Controller {
 
     AccessKey key = keyForm.get();
     Person person = Person.find().where().eq("email", session("email")).findUnique();
+    OpqDevice device = new OpqDevice(key.getDeviceId());
 
-    // If this key already exists, we want to use that key
-    if(AccessKey.keyExists(key)) {
-      key = AccessKey.findKey(key);
-      person.getAccessKeys().add(key);
-      person.update();
-      key.getPersons().add(person);
-      key.update();
-    }
-    else {
-      person.getAccessKeys().add(key);
-      person.update();
-      key.getPersons().add(person);
+    key.save();
+    device.save();
 
-      OpqDevice device = new OpqDevice(key.getDeviceId());
-      device.setAccessKey(key);
-      key.setOpqDevice(device);
-      device.save();
-      key.save();
-    }
+    // Update person
+    person.getAccessKeys().add(key);
+    person.update();
+
+    // Update key
+    key.getPersons().add(person);
+    key.setOpqDevice(device);
+    key.update();
+
+    // Update device
+    device.setAccessKey(key);
+    device.update();
+
+
+//    // If this key already exists, we want to use that key
+//    if(AccessKey.keyExists(key)) {
+//      key = AccessKey.findKey(key);
+//      person.getAccessKeys().add(key);
+//      person.update();
+//      key.getPersons().add(person);
+//      key.update();
+//    }
+//    else {
+//      OpqDevice device = new OpqDevice(key.getDeviceId());
+//      device.save();
+//      key.save();
+//
+//      key.getPersons().add(person);
+//      key.setOpqDevice(device);
+//      key.update();
+//
+//      device.setAccessKey(key);
+//      device.update();
+//
+//      person.getAccessKeys().add(key);
+//      person.update(person.getPrimaryKey());
+//
+//      /*
+//      OpqDevice device = new OpqDevice(key.getDeviceId());
+//      key.getPersons().add(person);
+//      key.setOpqDevice(device);
+//      key.save();
+//      device.setAccessKey(key);
+//      device.save();
+//      person.getAccessKeys().add(key);
+//      person.update(person.getPrimaryKey());
+//      */
+//    }
 
     Logger.debug(String.format("New key [%s] saved", key));
 
@@ -158,15 +192,29 @@ public class Administration extends Controller {
       return ok(error.render("Problem updating location...", locationForm.errors().toString()));
     }
 
-    OpqDevice device = deviceForm.get();
+    OpqDevice deviceFromForm = deviceForm.get();
     Location location = locationForm.get();
 
-    Long pk = OpqDevice.find().where().eq("deviceId", device.getDeviceId()).findUnique().getPrimaryKey();
+    OpqDevice device = OpqDevice.find().where().eq("deviceId", deviceFromForm.getDeviceId()).findUnique();
 
+    device.setDescription(deviceFromForm.getDescription());
+    device.setSharingData(deviceFromForm.getSharingData());
     device.setLocation(location);
-    device.update(pk);
+    device.update();
+
+    Location tmp = Location.find().where().eq("gridId", location.getGridId()).findUnique();
+
+    Long locationPk;
+
     location.getOpqDevices().add(device);
-    location.save();
+
+    if(tmp == null) {
+      location.save();
+    }
+    else {
+      locationPk = tmp.getPrimaryKey();
+      location.update(locationPk);
+    }
 
     return redirect(routes.Administration.device());
   }
