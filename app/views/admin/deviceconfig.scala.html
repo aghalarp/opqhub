@@ -17,7 +17,7 @@ along with opq-ao. If not, see <http://www.gnu.org/licenses/>.
 Copyright 2013 Anthony Christe
 *@
 
-@(deviceId: Long, accessKey: String, deviceForm: Form[OpqDevice], locationForm: Form[Location])
+@(deviceId: Long, accessKey: String, deviceForm: Form[OpqDevice], locationForm: Form[Location], location: Location)
 
 @import helper._
   @implicitFieldConstructor = @{
@@ -44,13 +44,24 @@ Copyright 2013 Anthony Christe
         <tr>
 
           @form(routes.Administration.saveDeviceConfiguration(), 'class -> "form-inline") {
-            <input type="hidden" id="northEastLatitude" name="northEastLatitude" />
-            <input type="hidden" id="northEastLongitude" name="northEastLongitude" />
-            <input type="hidden" id="southWestLatitude" name="southWestLatitude" />
-            <input type="hidden" id="southWestLongitude" name="southWestLongitude" />
-            <input type="hidden" id="gridScale" name="gridScale" />
-            <input type="hidden" id="gridRow" name="gridRow" />
-            <input type="hidden" id="gridCol" name="gridCol" />
+            @if(location == null) {
+              <input type="hidden" id="northEastLatitude" name="northEastLatitude" />
+              <input type="hidden" id="northEastLongitude" name="northEastLongitude" />
+              <input type="hidden" id="southWestLatitude" name="southWestLatitude" />
+              <input type="hidden" id="southWestLongitude" name="southWestLongitude" />
+              <input type="hidden" id="gridScale" name="gridScale" />
+              <input type="hidden" id="gridRow" name="gridRow" />
+              <input type="hidden" id="gridCol" name="gridCol" />
+            } else {
+              <input type="hidden" id="northEastLatitude" name="northEastLatitude" value="@location.getNorthEastLatitude().toString()" />
+              <input type="hidden" id="northEastLongitude" name="northEastLongitude" value="@location.getNorthEastLongitude().toString()" />
+              <input type="hidden" id="southWestLatitude" name="southWestLatitude" value="@location.getSouthWestLatitude().toString()" />
+              <input type="hidden" id="southWestLongitude" name="southWestLongitude" value="@location.getSouthWestLongitude()z.toString()" />
+              <input type="hidden" id="gridScale" name="gridScale" value="@location.getGridScale().toString()" />
+              <input type="hidden" id="gridRow" name="gridRow" value="@location.getGridRow().toString()" />
+              <input type="hidden" id="gridCol" name="gridCol" value="@location.getGridCol().toString()" />
+            }
+
             <td>
               @inputText(deviceForm("deviceId"), '_showConstraints -> false, '_label -> "",
                 'class -> "input-small", 'readonly -> "readonly")

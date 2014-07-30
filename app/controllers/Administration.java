@@ -176,7 +176,7 @@ public class Administration extends Controller {
     Location location = device.getLocation();
     Form<OpqDevice> deviceForm  = form(OpqDevice.class).fill(device);
     Form<Location> locationForm = (location == null) ? form(Location.class) : form(Location.class).fill(location);
-    return ok(views.html.admin.deviceconfig.render(key.getDeviceId(), key.getAccessKey(), deviceForm, locationForm));
+    return ok(views.html.admin.deviceconfig.render(key.getDeviceId(), key.getAccessKey(), deviceForm, locationForm, location));
   }
 
   public static Result saveDeviceConfiguration() {
