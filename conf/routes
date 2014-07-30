@@ -23,8 +23,6 @@
 GET         /                                                  controllers.Application.index()
 
 # Sign Up
-GET         /public/wizard                                     controllers.Wizard.index()
-POST        /public/wizard/save                                controllers.Wizard.save()
 GET         /signup                                            controllers.Person.signup()
 POST        /signup                                            controllers.Person.save()
 
