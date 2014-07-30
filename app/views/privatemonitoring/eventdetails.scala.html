@@ -40,6 +40,7 @@ Copyright 2013 Anthony Christe
           <th>Duration (ms)</th>
           <th>Frequency (Hz)</th>
           <th>Voltage (V)</th>
+          <th>Raw Waveform</th>
         </tr>
       </thead>
       <tbody>
@@ -52,6 +53,7 @@ Copyright 2013 Anthony Christe
           <td>@event.getDuration</td>
           <td>@event.getFrequency</td>
           <td>@event.getVoltage</td>
+          <td><a href="@routes.Events.rawPowerData(event.getPrimaryKey)" class="btn btn-warning">Raw Data</a></td>
         </tr>
       </tbody>
     </table>
@@ -61,16 +63,16 @@ Copyright 2013 Anthony Christe
   <!-- ITIC Curve - Should only be displayed on voltage events -->
   @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.EVENT_VOLTAGE)) {
     <div class="row">
-      <div id="itic-plot" class="span9 pull-right" style="width:950px;height:400px">
-      </div>
+      <div id="itic-plot" class="span9" style="height:300px; width:500px;"></div>
+      <div class="span9" id="plotter" style="height:300px; width:500px"></div>
     </div>
   }
 
   <!-- Raw RMS voltage -->
   <div class="row">
-    <div class="span9 pull-right" id="plotter" style="height:400px; width:950px">
-    </div>
-    <div class="pull-right"><a href="@routes.Events.rawPowerData(event.getPrimaryKey)">Raw Data</a></div>
+
+
+
   </div>
 
 
