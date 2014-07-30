@@ -28,10 +28,8 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import views.html.admin.admindatashare;
 import views.html.admin.admindevice;
 import views.html.admin.adminuser;
-import views.html.admin.updatedatashare;
 import views.html.error;
 
 import java.util.ArrayList;
@@ -128,42 +126,6 @@ public class Administration extends Controller {
     device.setAccessKey(key);
     device.update();
 
-
-//    // If this key already exists, we want to use that key
-//    if(AccessKey.keyExists(key)) {
-//      key = AccessKey.findKey(key);
-//      person.getAccessKeys().add(key);
-//      person.update();
-//      key.getPersons().add(person);
-//      key.update();
-//    }
-//    else {
-//      OpqDevice device = new OpqDevice(key.getDeviceId());
-//      device.save();
-//      key.save();
-//
-//      key.getPersons().add(person);
-//      key.setOpqDevice(device);
-//      key.update();
-//
-//      device.setAccessKey(key);
-//      device.update();
-//
-//      person.getAccessKeys().add(key);
-//      person.update(person.getPrimaryKey());
-//
-//      /*
-//      OpqDevice device = new OpqDevice(key.getDeviceId());
-//      key.getPersons().add(person);
-//      key.setOpqDevice(device);
-//      key.save();
-//      device.setAccessKey(key);
-//      device.save();
-//      person.getAccessKeys().add(key);
-//      person.update(person.getPrimaryKey());
-//      */
-//    }
-
     Logger.debug(String.format("New key [%s] saved", key));
 
     flash("added", "Device added");
@@ -217,110 +179,5 @@ public class Administration extends Controller {
     }
 
     return redirect(routes.Administration.device());
-  }
-
-  /**
-   * Updates device fields.
-   * @param deviceId The device id.
-   * @return Redirect to device administration.
-   */
-  @Security.Authenticated(Secured.class)
-  public static Result updateDevice(Long deviceId) {
-    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
-    Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
-
-    if (opqDeviceForm.hasErrors()) {
-      Logger.debug(String.format("device not updated due to %s", opqDeviceForm.errors().toString()));
-      return ok(error.render("Problem updating device", opqDeviceForm.errors().toString()));
-    }
-
-    opqDeviceForm.get().update(opqDevice.getPrimaryKey());
-    Logger.debug(String.format("device [%s] updated", opqDevice.getDeviceId()));
-    flash("updated", "Device updated");
-    return redirect(routes.Administration.device());
-  }
-
-
-  /**
-   * Warning: Don't call this unless you want every relationship attached to it deleted as well.
-   *
-   * @param deviceId Device id.
-   *
-   * @return Redirect back to devices page.
-   */
-  @Security.Authenticated(Secured.class)
-  public static Result deleteDevice(Long deviceId) {
-    OpqDevice opqDevice = OpqDevice.find().where().eq("deviceId", deviceId).findUnique();
-    opqDevice.delete();
-    opqDevice.save();
-
-    Logger.debug(String.format("Device [%s] deleted", opqDevice.getDeviceId()));
-
-    return redirect(routes.Administration.device());
-  }
-
-  /**
-   * Render the view for data sharing administration.
-   *
-   * @return The rendered view for data sharing administration.
-   */
-  @Security.Authenticated(Secured.class)
-  public static Result dataSharing() {
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
-    Set<AccessKey> accessKeys = person.getAccessKeys();
-    List<OpqDevice> opqDevices = new LinkedList<>();
-    for(AccessKey accessKey : accessKeys) {
-      opqDevices.add(accessKey.getOpqDevice());
-    }
-
-    return ok(admindatashare.render(opqDevices));
-  }
-
-  /**
-   * Update data sharing information connected to an opq device.
-   * @param deviceId The device id.
-   * @return Redirect to data sharing administration.
-   */
-  @Security.Authenticated(Secured.class)
-  public static Result editDataSharing(Long deviceId) {
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
-    Set<AccessKey> accessKeys = person.getAccessKeys();
-    List<OpqDevice> opqDevices = new LinkedList<>();
-    for(AccessKey accessKey : accessKeys) {
-      opqDevices.add(accessKey.getOpqDevice());
-    }
-    OpqDevice opqDevice = null;
-    Form<OpqDevice> opqDeviceForm;
-
-    for(OpqDevice device : opqDevices) {
-      if(device.getDeviceId().equals(deviceId)) {
-        opqDevice = device;
-        break;
-      }
-    }
-
-    if(opqDevice == null) {
-      Logger.error(String.format("Unknown device [%s] when trying to edit data sharing", session("email")));
-      return ok(error.render("Unknown device", ""));
-    }
-
-    opqDeviceForm = form(OpqDevice.class).fill(opqDevice);
-    Logger.debug(String.format("Data sharing updated for [%s]", opqDevice.getDeviceId()));
-    return ok(updatedatashare.render(opqDeviceForm));
-  }
-
-  @Security.Authenticated(Secured.class)
-  public static Result updateDataSharing(Long primaryKey) {
-    Form<OpqDevice> opqDeviceForm = form(OpqDevice.class).bindFromRequest();
-
-    if(opqDeviceForm.hasErrors()) {
-      Logger.debug(String.format("Could not update data sharing due to %s", opqDeviceForm.errors().toString()));
-      return ok(error.render("Problem updating data share", opqDeviceForm.errors().toString()));
-    }
-
-    opqDeviceForm.get().update(primaryKey);
-    flash("updated", "Data sharing updated");
-    Logger.debug(String.format("Data sharing updated for [%s]", opqDeviceForm.data().get("email")));
-    return redirect(routes.Administration.dataSharing());
   }
 }

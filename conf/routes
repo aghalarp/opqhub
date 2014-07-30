@@ -39,12 +39,6 @@ POST        /private/admin/user/update                         controllers.Admin
 
 GET         /private/admin/device                              controllers.Administration.device()
 POST        /private/admin/device/save                         controllers.Administration.saveDevice()
-POST        /private/admin/device/update/:id                   controllers.Administration.updateDevice(id: Long)
-GET         /private/admin/device/delete/:id                   controllers.Administration.deleteDevice(id: Long)
-
-GET         /private/admin/datashare                           controllers.Administration.dataSharing()
-GET         /private/admin/datashare/update/:deviceId          controllers.Administration.editDataSharing(deviceId: Long)
-POST        /private/admin/datashare/update/:primaryKey        controllers.Administration.updateDataSharing(primaryKey: Long)
 
 GET         /device/:deviceId/:accessKey                       controllers.Administration.configureDevice(deviceId: Long, accessKey: String)
 POST        /device                                            controllers.Administration.saveDeviceConfiguration()
