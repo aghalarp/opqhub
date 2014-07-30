@@ -107,24 +107,33 @@ public class Administration extends Controller {
     }
 
     AccessKey key = keyForm.get();
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
-    OpqDevice device = new OpqDevice(key.getDeviceId());
+    AccessKey existingKey;
+    Person person = Person.getLoggedIn();
 
-    key.save();
-    device.save();
+    if(AccessKey.keyExists(key)) {
+      existingKey = AccessKey.findKey(key);
+      existingKey.getPersons().add(person);
+      existingKey.update();
+    }
+    else {
+      OpqDevice device = new OpqDevice(key.getDeviceId());
 
-    // Update person
-    person.getAccessKeys().add(key);
-    person.update();
+      key.save();
+      device.save();
 
-    // Update key
-    key.getPersons().add(person);
-    key.setOpqDevice(device);
-    key.update();
+      // Update person
+      person.getAccessKeys().add(key);
+      person.update();
 
-    // Update device
-    device.setAccessKey(key);
-    device.update();
+      // Update key
+      key.getPersons().add(person);
+      key.setOpqDevice(device);
+      key.update();
+
+      // Update device
+      device.setAccessKey(key);
+      device.update();
+    }
 
     Logger.debug(String.format("New key [%s] saved", key));
 
