@@ -14,7 +14,7 @@
   You should have received a copy of the GNU General Public License
   along with OPQHub.  If not, see <http://www.gnu.org/licenses/>.
 
-  Copyright 2013 Anthony Christe
+  Copyright 2014 Anthony Christe
  */
 
 package utils;
