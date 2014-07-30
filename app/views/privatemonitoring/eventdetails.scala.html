@@ -45,6 +45,7 @@ Copyright 2013 Anthony Christe
       <tbody>
         <tr>
           <td>@event.getAccessKey.getDeviceId</td>
+          <td>@event.getAccessKey.getAccessKey</td>
           <td>@event.getAccessKey.getOpqDevice.getDescription</td>
           <td>@event.getEventType.getName</td>
           <td>@utils.DateUtils.toDateTime(event.getTimestamp)</td>
@@ -56,7 +57,7 @@ Copyright 2013 Anthony Christe
     </table>
   </div>
   @* TODO: Re-enable charts *@
-  @*
+
   <!-- ITIC Curve - Should only be displayed on voltage events -->
   @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.EVENT_VOLTAGE)) {
     <div class="row">
@@ -79,7 +80,7 @@ Copyright 2013 Anthony Christe
   <script src="@routes.Assets.at("javascripts/itic-plotter.js")" type="text/javascript"></script>
   <script type="text/javascript">
 
-    var t = @Html(Json.obj(
+   @* var t = @Html(Json.obj(
               "data" -> rawPowerData
             ).toString());
     var data = t.data.substring(0, t.data.length - 1);
@@ -128,7 +129,7 @@ Copyright 2013 Anthony Christe
     };
 
     $.plot($("#plotter"), points, plotOptions);
-
+    *@
 
     @if(event.getEventType.equals(org.openpowerquality.protocol.OpqPacket.PacketType.EVENT_VOLTAGE)) {
       var p = iticPlotter;
@@ -164,5 +165,4 @@ Copyright 2013 Anthony Christe
     }
 
   </script>
-  *@
 }
