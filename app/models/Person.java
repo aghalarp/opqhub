@@ -22,6 +22,7 @@ package models;
 import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
+import play.mvc.Controller;
 import utils.Sms;
 
 import javax.persistence.CascadeType;
@@ -115,6 +116,10 @@ public class Person extends Model {
    */
   public static Finder<Long, Person> find() {
     return new Finder<>(Long.class, Person.class);
+  }
+
+  public static Person getLoggedIn() {
+    return Person.find().where().eq("email", Controller.session("email")).findUnique();
   }
 
   /**

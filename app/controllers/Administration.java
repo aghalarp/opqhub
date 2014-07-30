@@ -63,7 +63,7 @@ public class Administration extends Controller {
    */
   @Security.Authenticated(Secured.class)
   public static Result updateUser() {
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    Person person = Person.getLoggedIn();
     Form<Person> personForm = form(Person.class).bindFromRequest();
 
     if (personForm.hasErrors()) {
