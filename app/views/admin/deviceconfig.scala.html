@@ -130,9 +130,12 @@ Copyright 2013 Anthony Christe
     var gridScale = $('#gridScale').val()
     var northEastLatitude = $('#northEastLatitude').val();
     var northEastLongitude = $('#northEastLongitude').val();
+    var southWestLatitude = $('#southWestLatitude').val();
+    var southWestLongitude = $('#southWestLongitude').val();
     console.log(gridId, gridScale, northEastLatitude, northEastLongitude);
     if(gridId.length > 0 && gridScale.length > 0 && northEastLatitude.length > 0 && northEastLongitude.length > 0) {
-      var latLng = [parseFloat(northEastLatitude), parseFloat(northEastLongitude)];
+      var latLng = [(parseFloat(northEastLatitude) + parseFloat(southWestLatitude)) / 2,
+                    (parseFloat(northEastLongitude) + parseFloat(southWestLongitude)) / 2];
       var zoom = g.getZoomByDistance(parseInt(gridScale));
       g.initMap("grid-map", latLng, zoom);
       g.colorSquare(gridId, "red")
