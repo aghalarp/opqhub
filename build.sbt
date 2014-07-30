@@ -1,4 +1,4 @@
-name := "opq-ao"
+name := "OPQHub"
 
 version := "1.0-SNAPSHOT"
 
