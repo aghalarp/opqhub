@@ -15,6 +15,12 @@ public class HeartbeatAlertActor extends UntypedActor {
   private static final Map<AccessKey, Long> deviceHeartbeats = new HashMap<>();
 
   public static synchronized void update(AccessKey accessKey, Long timestamp) {
+    // If this device is just coming up, let user know that its connected
+    if(!deviceHeartbeats.containsKey(accessKey)) {
+      Mailer.sendAlerts(accessKey.getPersons(), "OPQBox Online",
+                        String.format("OPQBox with deviceId = %s has come online.", accessKey.getDeviceId()));
+    }
+
     deviceHeartbeats.put(accessKey, timestamp);
   }
 
@@ -28,7 +34,7 @@ public class HeartbeatAlertActor extends UntypedActor {
   public Set<AccessKey> checkHeartbeats() {
     Logger.debug("Checking heartbeats");
     long currentTime = DateUtils.getMillis();
-    long cutoff = DateUtils.getPastTime(currentTime, DateUtils.TimeUnit.Minute, 10);
+    long cutoff = DateUtils.getPastTime(currentTime, DateUtils.TimeUnit.Minute, 60);
     Set<AccessKey> deadDevices = new HashSet<>();
 
     for(AccessKey accessKey : deviceHeartbeats.keySet()) {

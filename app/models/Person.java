@@ -122,6 +122,20 @@ public class Person extends Model {
     return Person.find().where().eq("email", Controller.session("email")).findUnique();
   }
 
+  public static boolean hasKey(AccessKey key) {
+    return hasKey(key.getDeviceId(), key.getAccessKey());
+  }
+
+  public static boolean hasKey(Long deviceId, String accessKey) {
+    Set<AccessKey> keys = getLoggedIn().getAccessKeys();
+    for(AccessKey key : keys) {
+      if(key.getDeviceId().equals(deviceId) && key.getAccessKey().equals(accessKey)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /**
    * Gets the primary key.
    *

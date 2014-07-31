@@ -59,11 +59,12 @@ public class WebSockets extends Controller {
         in.onMessage(new F.Callback<String>() {
           @Override
           public void invoke(String s) throws Throwable {
-            System.out.println("recv: " + s);
+            //stem.out.println("recv: " + s.);
             OpqPacket opqPacket = JsonOpqPacketFactory.opqPacketFromJson(s);
             //opqPacket.reverseBytes();
             //System.out.println(opqPacket);
             Logger.info(String.format("Received %s from %s", opqPacket.packetType, opqPacket.deviceId));
+            Logger.info("Payload size " + opqPacket.payloadSize);
             handlePacket(opqPacket, out);
           }
         });
@@ -79,8 +80,17 @@ public class WebSockets extends Controller {
     };
   }
 
-  public static Result sendToDevice(Long deviceId, String message) {
+  public static Result sendToDevice(Long deviceId, String accessKey, String message) {
     Logger.debug("Send to device [%d] %s", deviceId, message);
+    models.Person person = models.Person.getLoggedIn();
+
+    // Make sure whoever is doing this has permission to
+    if(person == null || !person.hasKey(deviceId, accessKey)) {
+      Logger.debug("Illegal access of device %d %s", deviceId, message);
+      return redirect(controllers.routes.Application.index());
+    }
+
+
     OpqPacket packet = new OpqPacket();
     if(keyToOut.containsKey(deviceId)) {
       /*
