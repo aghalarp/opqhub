@@ -59,8 +59,8 @@ public class WebSockets extends Controller {
         in.onMessage(new F.Callback<String>() {
           @Override
           public void invoke(String s) throws Throwable {
-            //System.out.println("recv: " + s);
-            OpqPacket opqPacket = JsonOpqPacketFactory.opqPacketFromBase64EncodedJson(s);
+            System.out.println("recv: " + s);
+            OpqPacket opqPacket = JsonOpqPacketFactory.opqPacketFromJson(s);
             //opqPacket.reverseBytes();
             //System.out.println(opqPacket);
             Logger.info(String.format("Received %s from %s", opqPacket.packetType, opqPacket.deviceId));
