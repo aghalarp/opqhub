@@ -140,7 +140,7 @@ function initPage() {
 }
 
 function initWebsocket() {
-  ws = new WebSocket("ws://128.171.10.188:9000/public", "protocolOne");
+  ws = new WebSocket("ws://emilia.ics.hawaii.edu:8194/public", "protocolOne");
   ws.onopen = wsOnOpen;
   ws.onmessage = wsOnMessage;
 }
