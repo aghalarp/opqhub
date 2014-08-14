@@ -27,6 +27,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.index;
 import views.html.login;
+import views.html.publicmap;
 import views.html.signup;
 
 import java.util.Arrays;
@@ -44,7 +45,8 @@ public class Application extends Controller {
    * @return The rendered view for the homepage.
    */
   public static Result index() {
-    return ok(index.render(!session().containsKey("email")));
+
+    return ok(publicmap.render());
   }
 
   public static Result signup() {

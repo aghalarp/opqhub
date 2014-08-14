@@ -37,13 +37,13 @@ Copyright 2014 Anthony Christe
           <ul class="nav">
           @if(publicMenu) {
             @createMenuItem("Public Power Quality Monitoring", "power quality monitoring",
-              routes.PowerQualityMonitoring.publicMonitor())
+              routes.Application.index())
           } else {
             @createMenuItem("Administration", "administration", routes.Administration.user())
             @createMenuItem("Private Power Quality Monitoring", "private power quality monitoring",
               routes.Events.eventsByPage())
             @createMenuItem("Public Power Quality Monitoring", "public power quality monitoring",
-              routes.PowerQualityMonitoring.publicMonitor())
+              routes.Application.index())
           }
           </ul>
           @if(!publicMenu) {

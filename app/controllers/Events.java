@@ -1,25 +1,18 @@
 package controllers;
 
 import com.avaje.ebean.Query;
-import com.avaje.ebean.Ebean;
-import controllers.routes;
 import models.AccessKey;
 import models.Event;
-import models.OpqDevice;
 import models.Person;
 import models.Location;
-import org.apache.commons.lang3.StringUtils;
-import play.Logger;
 import play.data.DynamicForm;
-import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.DateUtils;
-import views.html.error;
+import utils.DbUtils;
 
-import java.util.Arrays;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -37,28 +30,16 @@ public class Events extends Controller {
 
   @Security.Authenticated(Secured.class)
   public static Result eventsByPage(Integer page, Long afterTimestamp) {
-    Person person = Person.getLoggedIn();
-    Set<AccessKey> keys = person.getAccessKeys();
-
-    List<String> sqlList = new ArrayList<>();
-    List<Object> paramsList = new ArrayList<>();
     final Integer ROWS_PER_PAGE = 10;
-    Query<Event> query = Ebean.createQuery(Event.class);
-
-    for(AccessKey key : keys) {
-      sqlList.add("accessKey.primaryKey like ?");
-      paramsList.add(key.getPrimaryKey().toString() + "%");
-    }
-
-    query.where(StringUtils.join(sqlList, " OR "));
-
-    int i = 1;
-    for(Object param : paramsList) {
-      query.setParameter(i, param);
-      i++;
-    }
-
     Long after = (afterTimestamp == null) ? 0 : afterTimestamp;
+    Person person = Person.getLoggedIn();
+    Set<String> keyValues = new HashSet<>();
+
+    for(AccessKey key : person.getAccessKeys()) {
+      keyValues.add(key.getPrimaryKey().toString());
+    }
+
+    Query<Event> query = DbUtils.getAnyLike(Event.class, "accessKey.primaryKey", keyValues);
 
     List<Event> events = query
         .where()

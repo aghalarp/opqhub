@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="UTF-8">
+    <title>OPQHub - Public Power Quality</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+      <!-- Needed libraries -->
+    <script src="@routes.Assets.at("dev/contrib/js/jquery-2.1.1.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("dev/contrib/js/moment.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("dev/contrib/js/bootstrap.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("dev/contrib/js/bootstrap-datetimepicker.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("dev/contrib/js/leaflet.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("dev/contrib/js/jquery.flot.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("dev/contrib/js/jquery.flot.navigate.js")" type="text/javascript"></script>
+
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("dev/contrib/css/bootstrap.css")">
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("dev/contrib/css/bootstrap-datetimepicker.css")">
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("dev/contrib/css/leaflet.css")">
+
+      <!-- Site specific details -->
+    <script src="@routes.Assets.at("dev/js/grid-map.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("dev/js/itic-plotter.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("dev/js/site.js")" type="text/javascript"></script>
+
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("dev/css/site.css")">
+
+  </head>
+  <body>
+
+      <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+            class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="myModalLabel">Event Details</h4>
+            <div class="modal-body">
+              <div>
+                <input type="hidden" id="details-center-lat" />
+                <input type="hidden" id="details-center-lng" />
+                <input type="hidden" id="details-zoom" />
+                <table class="table table-striped">
+                  <tbody>
+                    <tr>
+                      <td>Timestamp</td>
+                      <td id="details-timestamp"></td>
+                    </tr>
+
+                    <tr>
+                      <td>Event Type</td>
+                      <td id="details-event-type"></td>
+                    </tr>
+                    <tr>
+                      <td>Frequency</td>
+                      <td id="details-frequency"></td>
+                    </tr>
+                    <tr>
+                      <td>Voltage</td>
+                      <td id="details-voltage"></td>
+                    </tr>
+                    <tr>
+                      <td>Duration</td>
+                      <td id="details-duration"></td>
+                    </tr>
+                    <tr>
+                      <td>ITIC Severity</td>
+                      <td id="details-itic-severity"></td>
+                    </tr>
+                    <tr>
+                      <td>Event Level</td>
+                      <td id="details-event-level">Local</td>
+                    </tr>
+                    <tr>
+                      <td>Location</td>
+                      <td><a class="btn btn-link" id="details-grid-id"></a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div id="waveform" class="plot"></div>
+            <br/>
+            <br/>
+
+            <div id="itic-plot" class="plot"></div>
+            <br/>
+            <br/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <!-- Responsive navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <!--  Display three horizontal lines when navbar collapsed. -->
+            <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand">OPQHub</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <div class="nav pull-right">
+
+              <a href="@routes.Application.login()" class="btn btn-link">Login</a>
+              <a href="/signup" class="btn btn-link">Sign-Up</a>
+
+
+            @*<li class="dropdown" id="menuLogin">*@
+              @*<a class="dropdown-toggle" href="#" data-toggle="dropdown" id="navLogin">Login</a>*@
+
+              @*<div class="dropdown-menu" style="padding:17px;">*@
+                @*<form class="form" id="formLogin">*@
+                  @*<input name="username" id="username" placeholder="Username" type="text">*@
+                  @*<input name="password" id="password" placeholder="Password" type="password"><br>*@
+                  @*<button type="button" id="btnLogin" class="btn">Login</button>*@
+                @*</form>*@
+              @*</div>*@
+            @*</li>*@
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <!-- Main content -->
+    <div class="container" id="main-content">
+      <div class="row">
+        <div class="col-md-7" id="public-map"></div>
+
+          <!-- Inspector -->
+        <div class="col-md-5" id="inspector">
+
+            <!-- Event Ticker -->
+          <div class="row">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Event Ticker</h3>
+              </div>
+              <div class="panel-body" id="ticker-table">
+                <table class="table table-hover" id="ticker">
+                  <thead>
+                    <th>Timestamp</th>
+                    <th>Type</th>
+                    <th>ITIC Severity</th>
+                  </thead>
+                  <tbody>
+
+              </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+            <!-- Statistics -->
+          <div class="row">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">OPQHub Statistics</h3>
+              </div>
+              <div class="panel-body">
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    <span class="badge" id="totalRegisteredDevices"></span>
+                    Registered Devices
+                  </li>
+                  <li class="list-group-item">
+                    <span class="badge" id="totalActiveDevices"></span>
+                    Active Devices
+                  </li>
+                  <li class="list-group-item">
+                    <span class="badge" id="totalEvents"></span>
+                    Total Events
+                  </li>
+                  <li class="list-group-item">
+                    <span class="badge" id="totalFrequencyEvents"></span>
+                    Frequency Events
+                  </li>
+                  <li class="list-group-item">
+                    <span class="badge" id="totalVoltageEvents"></span>
+                    Voltage Events
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+            <!-- Controls -->
+          <div class="row">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">OPQHub Controls</h3>
+              </div>
+              <div class="panel-body">
+                <form class="form-horizontal" role="form">
+                  <label for="filters" class="col-sm-2 control-label">Filter</label>
+
+                  <div class="form-group" id="filters">
+                    <label class="checkbox-inline">
+                      <input type="checkbox" id="requestFrequency" checked="true"> Frequency
+                    </label>
+                    <label class="checkbox-inline">
+                      <input type="checkbox" id="requestVoltage" checked="true"> Voltage
+                    </label>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="startTimestamp" class="col-sm-2 control-label">Start</label>
+
+                    <div class="col-sm-10">
+                      <div class='input-group date' id='startTimestamp'>
+                        <input type='text' class="form-control" id="startTimestampInput"/>
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="stopTimestamp" class="col-sm-2 control-label">End</label>
+
+                    <div class="col-sm-10">
+                      <div class='input-group date' id='stopTimestamp'>
+                        <input type='text' class="form-control" id="stopTimestampInput"/>
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                      </div>
+                    </div>
+                    <div id="error" class="verror"></div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <a class="btn btn-sm btn-primary" id="update">Update</a>
+                      <a class="btn btn-sm btn-warning" id="reset">Reset</a>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+    $(document).ready(function () {
+    g.invalidateSize();
+    });
+    </script>
+  </body>
+</html>
