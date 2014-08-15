@@ -92,8 +92,6 @@ public class MonitorWebsocket extends Controller {
     // Update event statistics
     Map<String, String> tmpEvent;
 
-    Logger.info(req.startTimestamp + " " + req.stopTimestamp);
-
     for (Event event : events) {
       if (event.getAccessKey().getOpqDevice().getSharingData() && event.getTimestamp() > startTimestamp &&
           event.getTimestamp() < stopTimestamp) {
