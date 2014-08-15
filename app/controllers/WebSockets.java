@@ -63,7 +63,7 @@ public class WebSockets extends Controller {
             OpqPacket opqPacket = JsonOpqPacketFactory.opqPacketFromJson(s);
             //opqPacket.reverseBytes();
             //System.out.println(opqPacket);
-            Logger.info(String.format("Received %s from %s", opqPacket.packetType, opqPacket.deviceId));
+            Logger.info(String.format("Received %s from %s with duration %d", opqPacket.packetType, opqPacket.deviceId, opqPacket.duration));
             Logger.info("Payload size " + opqPacket.payloadSize);
             handlePacket(opqPacket, out);
           }
