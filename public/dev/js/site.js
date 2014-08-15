@@ -230,7 +230,7 @@ function updateEvents(data) {
   clearTicker();
   for (var event in events) {
     addEventToTicker(events[event]);
-    tickerToKey[parseInt(event)] = events[event].pk;
+    tickerToKey[parseInt(event) + 1] = events[event].pk;
   }
 
   // Handle click events on event ticker
