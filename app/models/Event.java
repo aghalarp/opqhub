@@ -197,7 +197,7 @@ public class Event extends Model implements Comparable<Event> {
   }
 
   @Override
-  public int compareTo(Event event) {
-    return this.timestamp.compareTo(event.getTimestamp());
+  public int compareTo(Event event) {    
+    return event.timestamp.compareTo(this.timestamp);
   }
 }
