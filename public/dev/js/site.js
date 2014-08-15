@@ -194,7 +194,6 @@ function wsOnMessage(event) {
       console.log("Unknown packet type: " + data.packetType);
       break;
   }
-
 }
 
 function handleUpdate(data) {
@@ -231,7 +230,7 @@ function updateEvents(data) {
   clearTicker();
   for (var event in events) {
     addEventToTicker(events[event]);
-    tickerToKey[parseInt(event) + 1] = events[event].pk;
+    tickerToKey[parseInt(event)] = events[event].pk;
   }
 
   // Handle click events on event ticker
@@ -275,7 +274,7 @@ function showEventDetails(event) {
 
 function addEventToTicker(event) {
   var row = tr(td(event.timestamp) + td(event.type) + td(event.itic));
-  $(row).prependTo("#ticker > tbody");
+  $(row).appendTo("#ticker > tbody");
 }
 
 function clearTicker() {
