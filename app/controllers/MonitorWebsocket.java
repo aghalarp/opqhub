@@ -38,7 +38,7 @@ public class MonitorWebsocket extends Controller {
         in.onMessage(new F.Callback<String>() {
           @Override
           public void invoke(String s) throws Throwable {
-            Logger.info(s);
+
             switch (JsonUtils.getPacketType(s)) {
               case "public-update":
                 Logger.info("Public update");
@@ -158,7 +158,6 @@ public class MonitorWebsocket extends Controller {
     }
 
     // Send response to client
-    Logger.info(resp.toJson());
     out.write(resp.toJson());
   }
 

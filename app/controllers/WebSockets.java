@@ -59,12 +59,8 @@ public class WebSockets extends Controller {
         in.onMessage(new F.Callback<String>() {
           @Override
           public void invoke(String s) throws Throwable {
-            //stem.out.println("recv: " + s.);
             OpqPacket opqPacket = JsonOpqPacketFactory.opqPacketFromJson(s);
-            //opqPacket.reverseBytes();
-            //System.out.println(opqPacket);
             Logger.info(String.format("Received %s from %s with duration %d", opqPacket.packetType, opqPacket.deviceId, opqPacket.duration));
-            Logger.info("Payload size " + opqPacket.payloadSize);
             handlePacket(opqPacket, out);
           }
         });
@@ -80,40 +76,12 @@ public class WebSockets extends Controller {
     };
   }
 
-  public static Result sendToDevice(Long deviceId, String accessKey, String message) {
-    Logger.debug("Send to device [%d] %s", deviceId, message);
-    models.Person person = models.Person.getLoggedIn();
-
-    // Make sure whoever is doing this has permission to
-    if(person == null || !person.hasKey(deviceId, accessKey)) {
-      Logger.debug("Illegal access of device %d %s", deviceId, message);
-      return redirect(controllers.routes.Application.index());
-    }
-
-
-    OpqPacket packet = new OpqPacket();
-    if(keyToOut.containsKey(deviceId)) {
-      /*
-      packet.setHeader();
-      packet.setType(OpqPacket.PacketType.SETTING);
-      packet.setSequenceNumber(0);
-      packet.setDeviceId(deviceId);
-      packet.setTimestamp(DateUtils.getMillis());
-      packet.setBitfield(0);
-      packet.setPayload(message.getBytes());
-      packet.computeChecksum();
-      deviceIdToOut.get(deviceId).write(packet.getBase64Encoding());*/
-    }
-    return redirect(controllers.routes.Application.index());
-  }
-
   /**
    * Determines the type of packet that was received from the WebSocket, and calls the correct sub-handler.
    *
    * @param opqPacket The packet received from the WebSocket object.
    */
   private static void handlePacket(OpqPacket opqPacket, final WebSocket.Out<String> out) {
-
     Map<String, Object> queryMap = new HashMap<>();
     queryMap.put("deviceId", opqPacket.deviceId);
     queryMap.put("accessKey", opqPacket.deviceKey);
@@ -168,8 +136,8 @@ public class WebSockets extends Controller {
     event.setEventData(eventData);
     event.save();
 
+
     // Update key
-    accessKey.getEvents().add(event);
     accessKey.update();
 
     switch(opqPacket.packetType) {
