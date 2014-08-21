@@ -1,5 +1,7 @@
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import com.avaje.ebean.config.ServerConfig;
+import com.avaje.ebean.event.ServerConfigStartup;
 import play.Application;
 import play.GlobalSettings;
 import play.data.format.Formatters;
@@ -13,7 +15,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 
-public class Global extends GlobalSettings {
+public class Global extends GlobalSettings implements ServerConfigStartup {
   @Override
   public void onStart(Application app) {
     Formatters.register(Sms.SmsCarrier.class, new Formatters.SimpleFormatter<Sms.SmsCarrier>() {
@@ -39,4 +41,10 @@ public class Global extends GlobalSettings {
         Akka.system().dispatcher(),
         null);
   }
+
+  @Override
+  public void onStart(ServerConfig serverConfig) {
+    serverConfig.setUpdateChangesOnly(true);
+  }
 }
+
