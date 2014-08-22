@@ -28,7 +28,7 @@ public class AccessKey extends Model {
   @OneToOne
   private OpqDevice opqDevice;
 
-  @OneToMany(mappedBy = "accessKey", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "accessKey")
   private List<Event> events = new ArrayList<>();
 
   public Long getPrimaryKey() {
@@ -98,5 +98,9 @@ public class AccessKey extends Model {
   @Override
   public String toString() {
     return String.format("AccessKey: deviceId=%d accessKey=%s", this.deviceId, this.accessKey);
+  }
+
+  public void addEvent(Event event) {
+    events.add(event);
   }
 }
