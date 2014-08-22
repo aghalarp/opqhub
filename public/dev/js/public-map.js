@@ -1,31 +1,57 @@
 /* HTML Utils */
+/**
+ * Place the body between two td tags.
+ * @param body
+ * @returns {string}
+ */
 function td(body) {
   return "<td>" + body + "</td>";
 }
 
+/**
+ * Place the body between two tr tags.
+ * @param body
+ * @returns {string}
+ */
 function tr(body) {
   return "<tr>" + body + "</tr>";
 }
 
-// Grid map
-var g;
+/**
+ * Reference to gridMap object.
+ */
+var gridMap;
 
-// Websocket connection
-var ws;
+/**
+ * Reference to websocket connection.
+ */
+var websocket;
 
-// ticker row to event primary key
+/**
+ * Store the row number of each event in the ticker and match it with its primary key.
+ * @type {{string, integer}}
+ */
 var tickerToKey = {};
 
+/**
+ * Initialize the grid map and request first set of data.
+ */
 function initGridMap() {
-  g = grid;
+  gridMap = grid;
 
-  g.callbacks.onMapChange = function () {
+  gridMap.callbacks.onMapChange = function () {
     wsRequestUpdate();
   };
 
-  g.initMap("public-map", g.island.OAHU.latLng, g.island.OAHU.defaultZoom);
+  gridMap.initMap("public-map", gridMap.island.OAHU.latLng, gridMap.island.OAHU.defaultZoom);
 }
 
+/**
+ * Updates the detailed waveform of a chosen event and plots it.
+ * @param points The points in the waveform.
+ * @param min The minimum-y value to show on the waveform.
+ * @param max The maximum-y value to show on the waveform.
+ */
 function updateWaveform(points, min, max) {
   var plotOptions = {
     min: min - 20,
@@ -54,6 +80,9 @@ function updateWaveform(points, min, max) {
   $.plot($("#waveform"), points, plotOptions);
 }
 
+/**
+ * Initialize ITIC plot.
+ */
 function initIticPlots() {
   var p = iticPlotter;
   p.init("#itic-plot");
@@ -87,6 +116,10 @@ function initIticPlots() {
   p.update();
 }
 
+/**
+ * Ensures that the start timestamp filter comes before the stop timestamp filter.
+ * @returns {boolean} True if start time is before stop time, false otherwise.
+ */
 function verifyDates() {
   var startTime = $("#startTimestampInput").val() == "" ?
     0 :
@@ -99,12 +132,15 @@ function verifyDates() {
   return startTime < stopTime;
 }
 
+/**
+ * Initializes misc. elements of the page and sets up action handlers.
+ */
 function initPage() {
   // Setup date time pickers
   $('#startTimestamp').datetimepicker();
   $('#stopTimestamp').datetimepicker();
 
-  // Update map with filtered parameters
+  // Update page using filtered parameters
   $("#update").click(function() {
     if(verifyDates()) {
       $("#startTimestamp").removeClass("has-error");
@@ -125,7 +161,7 @@ function initPage() {
     $("#stopTimestampInput").val(null);
     $('#requestFrequency').prop('checked', true);
     $('#requestVoltage').prop('checked', true);
-    g.setView(g.island.OAHU.latLng, g.island.OAHU.defaultZoom);
+    gridMap.setView(gridMap.island.OAHU.latLng, gridMap.island.OAHU.defaultZoom);
     wsRequestUpdate();
   });
 
@@ -135,22 +171,26 @@ function initPage() {
     var centerLng = parseFloat($("#details-center-lng").val());
     var zoom = parseInt($("#details-zoom").val());
     $("#myModal").modal("hide");
-    g.setView(L.latLng(centerLat, centerLng), zoom);
+    gridMap.setView(L.latLng(centerLat, centerLng), zoom);
   });
 }
 
+/**
+ * Initialize the websocket connection.
+ */
 function initWebsocket() {
-  ws = new WebSocket("ws://emilia.ics.hawaii.edu:8194/public", "protocolOne");
-  ws.onopen = wsOnOpen;
-  ws.onmessage = wsOnMessage;
+  websocket = new WebSocket("ws://emilia.ics.hawaii.edu:8194/public", "protocolOne");
+  websocket.onopen = function(event) {
+    wsRequestUpdate();
+  };
+  websocket.onmessage = wsOnMessage;
 }
 
-function wsOnOpen(event) {
-  wsRequestUpdate();
-}
-
+/**
+ * Request new data for the page using the given map area and filtered elements.
+ */
 function wsRequestUpdate() {
-  if (ws) {
+  if (websocket) {
     var startTime = $("#startTimestampInput").val() == "" ?
       0 :
       $("#startTimestamp").data("DateTimePicker").getDate()._d.getTime();
@@ -166,21 +206,29 @@ function wsRequestUpdate() {
       requestHeartbeats: false,
       startTimestamp: startTime,
       stopTimestamp: stopTime,
-      visibleIds: g.getVisibleIds()});
-    ws.send(json);
+      visibleIds: gridMap.getVisibleIds()});
+    websocket.send(json);
   }
 }
 
-function wsRequestDetails(r) {
-  if(ws) {
+/**
+ * Request the details for a particular event.
+ * @param rowIndex The row index where the event is stored.
+ */
+function wsRequestDetails(rowIndex) {
+  if(websocket) {
     var json = JSON.stringify({
       packetType: "public-event-details",
-      pk: tickerToKey[r]
+      pk: tickerToKey[rowIndex]
     });
-    ws.send(json);
+    websocket.send(json);
   }
 }
 
+/**
+ * Handles packets received from the server.
+ * @param event Stores the data sent from the server.
+ */
 function wsOnMessage(event) {
   var data = JSON.parse(event.data);
   switch(data.packetType) {
@@ -196,13 +244,21 @@ function wsOnMessage(event) {
   }
 }
 
+/**
+ * General page update received from server. Update with new data.
+ * @param data Data for updating the main page.
+ */
 function handleUpdate(data) {
-  g.redrawMap();
+  gridMap.redrawMap();
   updateStatistics(data);
   updateMap(data);
   updateEvents(data);
 }
 
+/**
+ * Updates the badge statistics.
+ * @param data Data containing the statistics.
+ */
 function updateStatistics(data) {
   $("#totalRegisteredDevices").text(data.totalRegisteredDevices);
   $("#totalActiveDevices").text(data.totalActiveDevices);
@@ -211,46 +267,64 @@ function updateStatistics(data) {
   $("#totalVoltageEvents").text(data.totalVoltageEvents);
 }
 
+/**
+ * Updates the grid map with number of devices and number of events.
+ * @param data Data to update the grid map with.
+ */
 function updateMap(data) {
   // Update device numbers
   var devices = data.gridIdsToDevices;
   for (var id in devices) {
-    g.addNumberOfDevices(id, devices[id]);
+    if(devices.hasOwnProperty(id)) {
+      gridMap.addNumberOfDevices(id, devices[id]);
+    }
   }
 
   // Update event numbers
   var events = data.gridIdsToEvents;
   for (var idd in events) {
-    g.addNumberOfEvents(idd, events[idd]);
+    if(events.hasOwnProperty(idd)) {
+      gridMap.addNumberOfEvents(idd, events[idd]);
+    }
   }
 }
 
+/**
+ * Updates the event ticker.
+ * @param data Events.
+ */
 function updateEvents(data) {
   var events = data.events;
   clearTicker();
   for (var event in events) {
-    addEventToTicker(events[event]);
-    tickerToKey[parseInt(event) + 1] = events[event].pk;
+    if(events.hasOwnProperty(event)) {
+      addEventToTicker(events[event]);
+      tickerToKey[parseInt(event) + 1] = events[event].pk;
+    }
   }
 
   // Handle click events on event ticker
-  $("#ticker > tbody > tr").click(function() {
+  $('#ticker').find('> tbody > tr').click(function() {
     wsRequestDetails(this.rowIndex);
   });
 }
 
+/**
+ * Update and display modal dialog containing event details.
+ * @param event Event details.
+ */
 function showEventDetails(event) {
   // Update hidden fields
   $("#details-center-lat").val(event.centerLat);
   $("#details-center-lng").val(event.centerLng);
-  $("#details-zoom").val(g.getZoomByDistance(event.gridScale));
+  $("#details-zoom").val(gridMap.getZoomByDistance(event.gridScale));
 
   // Update table
   $("#details-timestamp").text(event.timestamp);
   $("#details-event-type").text(event.eventType);
   $("#details-frequency").text(event.frequency);
   $("#details-voltage").text(event.voltage);
-  $("#details-duration").text("N/A");
+  $("#details-duration").text(event.duration);
   $("#details-itic-severity").text("N/A");
   $("#details-event-level").text(event.eventLevel);
   $("#details-grid-id").text(event.gridId);
@@ -272,18 +346,28 @@ function showEventDetails(event) {
   $("#myModal").modal("show");
 }
 
+/**
+ * Add event to bottom of event ticket.
+ * @param event Event to add to ticker.
+ */
 function addEventToTicker(event) {
   var row = tr(td(event.timestamp) + td(event.type) + td(event.itic));
   $(row).appendTo("#ticker > tbody");
 }
 
+/**
+ * Clears all events from the ticker.
+ */
 function clearTicker() {
-  $("#ticker > tbody").children().remove();
+  $("#ticker").find("> tbody").children().remove();
   while(tickerToKey.length > 0) {
     tickerToKey.pop();
   }
 }
 
+/**
+ * Initializes the page.
+ */
 function init() {
   initGridMap();
   initPage();
