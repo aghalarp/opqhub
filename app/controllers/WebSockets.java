@@ -30,7 +30,6 @@ import org.openpowerquality.protocol.OpqPacket;
 import play.Logger;
 import play.libs.F;
 import play.mvc.Controller;
-import play.mvc.Result;
 import play.mvc.WebSocket;
 import utils.DateUtils;
 import utils.Mailer;
@@ -109,7 +108,7 @@ public class WebSockets extends Controller {
     Event event = new Event(opqPacket.timestamp, opqPacket.packetType, opqPacket.frequency, opqPacket.voltage,
                             opqPacket.duration);
 
-    Location location = (Location) opqDevice.getLocation();
+    Location location = opqDevice.getLocation();
     if(location == null) {
       Logger.error(String.format("null location lookup for packet %s", opqPacket));
       return;
@@ -170,7 +169,7 @@ public class WebSockets extends Controller {
   private static void handleDisconnect(WebSocket.Out<String> out) {
     for(AccessKey accessKey : keyToOut.keySet()) {
       if(keyToOut.get(accessKey).equals(out)) {
-        Logger.debug(String.format("Removing [%d] from id->connection mapping", accessKey));
+        Logger.debug(String.format("Removing [%s] from id->connection mapping", accessKey));
         keyToOut.remove(accessKey);
       }
     }

@@ -72,7 +72,7 @@ public class MonitorWebsocket extends Controller {
     };
   }
 
-  public static void handlePublicMap(final WebSocket.Out<String> out, MapRequest req) {
+  private static void handlePublicMap(final WebSocket.Out<String> out, MapRequest req) {
     PublicMapResponse resp = new PublicMapResponse();
     final int MAX_EVENTS = 100;
     // Did we get starting and ending timestamps in the request?
@@ -109,7 +109,7 @@ public class MonitorWebsocket extends Controller {
           if (resp.events.size() < MAX_EVENTS) {
             tmpEvent = new HashMap<>();
             tmpEvent.put("id", event.getPrimaryKey().toString());
-            tmpEvent.put("timestamp", DateUtils.toDateTime(event.getTimestamp()).toString());
+            tmpEvent.put("timestamp", DateUtils.toDateTime(event.getTimestamp()));
             tmpEvent.put("type", event.getEventType().getName().split(" ")[0]);
             tmpEvent.put("itic", "N/A");
             resp.events.add(tmpEvent);
@@ -127,7 +127,7 @@ public class MonitorWebsocket extends Controller {
           if (resp.events.size() < MAX_EVENTS) {
             tmpEvent = new HashMap<>();
             tmpEvent.put("pk", event.getPrimaryKey().toString());
-            tmpEvent.put("timestamp", DateUtils.toDateTime(event.getTimestamp()).toString());
+            tmpEvent.put("timestamp", DateUtils.toDateTime(event.getTimestamp()));
             tmpEvent.put("type", event.getEventType().getName().split(" ")[0]);
             tmpEvent.put("itic", "N/A");
             resp.events.add(tmpEvent);
@@ -161,7 +161,7 @@ public class MonitorWebsocket extends Controller {
     out.write(resp.toJson());
   }
 
-  public static void handleEventDetails(final WebSocket.Out<String> out, PublicEventRequest req) {
+  private static void handleEventDetails(final WebSocket.Out<String> out, PublicEventRequest req) {
     Event event = Event.find().byId(req.pk);
     PublicEventResponse resp = new PublicEventResponse();
     resp.timestamp = DateUtils.toDateTime(event.getTimestamp());
@@ -177,11 +177,11 @@ public class MonitorWebsocket extends Controller {
     String waveformStr = event.getEventData().getWaveform();
     // Remove trailing comma
     waveformStr = waveformStr.substring(0, waveformStr.length() - 1);
-    for(String d : waveformStr.split(",")) {
+    for(String doubleStr : waveformStr.split(",")) {
       try {
-        resp.waveform.add(Double.parseDouble(d));
+        resp.waveform.add(Double.parseDouble(doubleStr));
       } catch (NumberFormatException e) {
-
+         Logger.warn(String.format("Invalid waveform data: %s\n%s", doubleStr, e.getMessage()));
       }
     }
     out.write(resp.toJson());

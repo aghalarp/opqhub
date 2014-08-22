@@ -25,7 +25,6 @@ import play.data.Form;
 import play.data.validation.Constraints;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.index;
 import views.html.login;
 import views.html.publicmap;
 import views.html.signup;
