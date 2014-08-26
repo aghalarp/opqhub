@@ -15,6 +15,7 @@ import play.mvc.WebSocket;
 import utils.DateUtils;
 import utils.DbUtils;
 
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -74,6 +75,9 @@ public class MonitorWebsocket extends Controller {
 
   private static void handlePublicMap(final WebSocket.Out<String> out, MapRequest req) {
     PublicMapResponse resp = new PublicMapResponse();
+
+    DecimalFormat decimalFormat = new DecimalFormat("#.00");
+
     final int MAX_EVENTS = 100;
     // Did we get starting and ending timestamps in the request?
     // If not set to beginning of time and now.
@@ -111,7 +115,9 @@ public class MonitorWebsocket extends Controller {
             tmpEvent.put("id", event.getPrimaryKey().toString());
             tmpEvent.put("timestamp", DateUtils.toDateTime(event.getTimestamp()));
             tmpEvent.put("type", event.getEventType().getName().split(" ")[0]);
-            tmpEvent.put("itic", "N/A");
+            tmpEvent.put("frequency", decimalFormat.format(event.getFrequency()));
+            tmpEvent.put("voltage", decimalFormat.format(event.getVoltage()));
+            tmpEvent.put("duration", event.getDuration().toString());
             resp.events.add(tmpEvent);
           }
         }
@@ -129,7 +135,9 @@ public class MonitorWebsocket extends Controller {
             tmpEvent.put("pk", event.getPrimaryKey().toString());
             tmpEvent.put("timestamp", DateUtils.toDateTime(event.getTimestamp()));
             tmpEvent.put("type", event.getEventType().getName().split(" ")[0]);
-            tmpEvent.put("itic", "N/A");
+            tmpEvent.put("frequency", decimalFormat.format(event.getFrequency()));
+            tmpEvent.put("voltage", decimalFormat.format(event.getVoltage()));
+            tmpEvent.put("duration", event.getDuration().toString());
             resp.events.add(tmpEvent);
           }
         }

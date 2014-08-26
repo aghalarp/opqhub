@@ -23,6 +23,11 @@ function tr(body) {
 var gridMap;
 
 /**
+ * ITIC plot.
+ */
+var iticPlot;
+
+/**
  * Reference to websocket connection.
  */
 var websocket;
@@ -84,8 +89,8 @@ function updateWaveform(points, min, max) {
  * Initialize ITIC plot.
  */
 function initIticPlots() {
-  var p = iticPlotter;
-  p.init("#itic-plot");
+  itic = iticPlotter;
+  /*itic.init("#itic-plot");
 
   $("<div id='tooltip'></div>").css({
     position: "absolute",
@@ -113,7 +118,7 @@ function initIticPlots() {
       $("#tooltip").hide();
     }
   });
-  p.update();
+  itic.update();  */
 }
 
 /**
@@ -179,7 +184,8 @@ function initPage() {
  * Initialize the websocket connection.
  */
 function initWebsocket() {
-  websocket = new WebSocket("ws://emilia.ics.hawaii.edu:8194/public", "protocolOne");
+  //websocket = new WebSocket("ws://emilia.ics.hawaii.edu:8194/public", "protocolOne");
+  websocket = new WebSocket("ws://localhost:8194/public", "protocolOne");
   websocket.onopen = function(event) {
     wsRequestUpdate();
   };
@@ -351,7 +357,35 @@ function showEventDetails(event) {
  * @param event Event to add to ticker.
  */
 function addEventToTicker(event) {
-  var row = tr(td(event.timestamp) + td(event.type) + td(event.itic));
+  var eventValue;
+  var iticRegion = itic.getRegionOfPoint(event.duration * 1000, itic.voltageToPercentNominalVoltage(event.voltage));
+  var badgeClass;
+
+  switch(iticRegion) {
+    case itic.Region.NO_INTERRUPTION:
+      badgeClass = "itic-no-interruption";
+      break;
+    case itic.Region.NO_DAMAGE:
+      badgeClass = "itic-no-damage";
+      break;
+    case Region.PROHIBITED:
+      badgeClass = "itic-prohibited";
+      break;
+  }
+
+  switch(event.type) {
+    case "Frequency":
+      eventValue = event.frequency + " Hz";
+      break;
+    case "Voltage":
+      eventValue = event.voltage + " V";
+      break;
+    default:
+      eventValue = "N/A";
+      break;
+  }
+  var regionColor = "<span class='badge itic-badge " + badgeClass +"'>&nbsp;</span>";
+  var row = tr(td(event.timestamp) + td(event.type) + td(event.duration + " s") + td(eventValue) + td(iticRegion +  regionColor));
   $(row).appendTo("#ticker > tbody");
 }
 
@@ -372,6 +406,7 @@ function init() {
   initGridMap();
   initPage();
   initWebsocket();
+  initIticPlots();
 }
 
 $(document).ready(function () {

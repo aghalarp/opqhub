@@ -302,7 +302,8 @@ var iticPlotter = (function () {
     msToC: msToC,
     cToMs: cToMs,
     percentNominalVoltageToVoltage: percentNominalVoltageToVoltage,
-    voltageToPercentNominalVoltage: voltageToPercentNominalVoltage
+    voltageToPercentNominalVoltage: voltageToPercentNominalVoltage,
+    Region: Region
     //tooltipCallback: tooltipCallback
   };
 })();

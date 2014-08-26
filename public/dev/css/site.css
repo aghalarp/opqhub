@@ -4,8 +4,8 @@ body {
 
 #public-map {
   padding-left: 30px;
-  width: 650px;
-  height: 830px;
+  width: 450px;
+  height: 400px;
 }
 
 #inspector {
@@ -21,6 +21,22 @@ body {
   padding: 60px;
   height: 200px;
   width: 550px;
+}
+
+.itic-badge {
+    margin-left: 10px;
+}
+
+.itic-no-interruption {
+    background: #008000;
+}
+
+.itic-no-damage {
+    background: #ffff00;
+}
+
+.itic-prohibited {
+    background: #ff0000;
 }
 
 .leaflet-num-icon {
