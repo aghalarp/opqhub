@@ -400,7 +400,8 @@ var grid = (function () {
     var polys = getPolys(points, distance);
 
     gridLayer = L.geoJson(polys, {
-      onEachFeature: onEachFeature
+      onEachFeature: onEachFeature,
+      weight: 2
     }).addTo(map);
   }
 
@@ -503,16 +504,6 @@ var grid = (function () {
     map = L.map(div, {maxZoom: config.maxZoom, minZoom: config.minZoom});
     map.addLayer(osm);
 
-    // Add the legend
-    var legend = L.control({position: 'topright'});
-    legend.onAdd = function (map) {
-      var legend = L.DomUtil.create('div', 'info legend');
-      legend.innerHTML += '<i style="background:#00FF00"></i># OPQBoxes<br/>';
-      legend.innerHTML += '<i style="background:#FF0000"></i># OPQEvents<br/>';
-      return legend;
-    };
-    legend.addTo(map);
-
     map.setView(center, zoom);
     onMapChange();
 
@@ -546,14 +537,26 @@ var grid = (function () {
     }
   }
 
+  function addEventNumbers(gridId, high, medium, low) {
+      function span(clazz, body) {
+          return "<span class='" + clazz + "'>" + body + "</span>";
+      }
+
+      var text = span("text-bad", high) + "/" +
+                 span("text-ok", medium) + "/" +
+                 span("text-good", low);
+      addTextToSquare(gridId, text, "nw", "leaflet-center-text");
+  }
+
   function addNumberOfDevices(gridId, n) {
 //    addTextToSquare(gridId, n, "nw", "leaflet-num-devices", gridLayer);
-    addTextToSquare(gridId, n, "nw", "leaflet-num-devices");
+    //addTextToSquare(gridId, n, "nw", "leaflet-num-devices");
   }
 
   function addNumberOfEvents(gridId, n) {
+      console.log(gridId);
     if (gridId && n) {
-      addTextToSquare(gridId, n, "sw", "leaflet-num-events");
+      //addTextToSquare(gridId, n, "sw", "leaflet-num-events");
     }
   }
 
@@ -626,7 +629,7 @@ var grid = (function () {
     },
     OAHU: {
       latLng: L.latLng(21.466700, -157.983300),
-      defaultZoom: 10
+      defaultZoom: 8
     }
   };
 
@@ -636,6 +639,7 @@ var grid = (function () {
     initMap: initMap,
     colorSquare: colorSquareById,
     addTextToSquare: addTextToSquare,
+    addEventNumbers: addEventNumbers,
     addNumberOfDevices: addNumberOfDevices,
     addNumberOfEvents: addNumberOfEvents,
     setView: setView,

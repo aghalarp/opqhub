@@ -2,25 +2,39 @@ body {
   padding-top: 70px;
 }
 
+.panel-title {
+  text-align: center;
+}
+
+@-moz-document url-prefix() {
+  fieldset { display: table-cell; }
+}
+
 #public-map {
-  padding-left: 30px;
-  width: 450px;
-  height: 400px;
+  /*padding-left: 30px;*/
+  width: 100%;
+  height: 338px;
 }
 
-#inspector {
+#public-map-right-col {
   padding-left: 30px;
 }
 
-#ticker-table {
+#events-table {
   max-height: 200px;
   overflow-y: scroll;
+}
+
+.global-stats {
+  margin-left: 5px;
+  margin-right: 10px;
+  margin-bottom: 5px;
 }
 
 .plot {
   padding: 60px;
   height: 200px;
-  width: 550px;
+  width: 400px;
 }
 
 .itic-badge {
@@ -42,15 +56,33 @@ body {
 .leaflet-num-icon {
   text-align: center;
   vertical-align: middle;
-  height: 50px;
-  width: 50px;
-  border: solid 5px;
-  border-radius: 20px;
-  padding-top: 5px;
-  background: white;
+  height: 40px;
+  width: auto;
+  border: solid 2px;
+  /*border-radius: 20px;*/
+  padding: 5px;
+  background: black;
   font-weight: bold;
   font-size: large;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.text-good {
+  color: #00FF00;
+}
+
+.text-ok {
+  color: #ffff00;
+}
+
+.text-bad {
+    color: #ff0000;
+}
+
+.leaflet-center-text {
+    color: #ffffff;
+    left: 5px;
+    top: 5px;
 }
 
 .leaflet-num-devices {
