@@ -14,6 +14,8 @@ import play.mvc.Controller;
 import play.mvc.WebSocket;
 import utils.DateUtils;
 import utils.DbUtils;
+import utils.PqUtils;
+import utils.PqUtils.IticRegion;
 
 import java.text.DecimalFormat;
 import java.util.Collections;
@@ -75,7 +77,6 @@ public class MonitorWebsocket extends Controller {
 
   private static void handlePublicMap(final WebSocket.Out<String> out, MapRequest req) {
     PublicMapResponse resp = new PublicMapResponse();
-
     DecimalFormat decimalFormat = new DecimalFormat("#.00");
 
     final int MAX_EVENTS = 100;
@@ -92,55 +93,40 @@ public class MonitorWebsocket extends Controller {
     List<Event> events = DbUtils.getAnyLike(Event.class, "location.gridId", req.visibleIds).findList();
     Collections.sort(events);
     String gridId;
+    Integer[] tmpEventMetrics;
+    IticRegion region;
 
     // Update event statistics
     Map<String, String> tmpEvent;
+    for(Event event : events) {
+      if(req.containsEvent(event)) {
+        // Global metrics
+        resp.totalFrequencyEvents = event.getEventType().equals(OpqPacket.PacketType.EVENT_FREQUENCY) ? resp.totalFrequencyEvents + 1 : resp.totalFrequencyEvents;
+        resp.totalVoltageEvents = event.getEventType().equals(OpqPacket.PacketType.EVENT_VOLTAGE) ? resp.totalVoltageEvents + 1 : resp.totalVoltageEvents;
+        resp.totalEvents++;
 
-    for (Event event : events) {
-      if (event.getAccessKey().getOpqDevice().getSharingData() && event.getTimestamp() > startTimestamp &&
-          event.getTimestamp() < stopTimestamp) {
-
-
-        if (event.getEventType().equals(OpqPacket.PacketType.EVENT_FREQUENCY) && req.requestFrequency) {
-          resp.totalFrequencyEvents++;
-          resp.totalEvents++;
-          gridId = event.getAccessKey().getOpqDevice().getLocation().getGridId().substring(0, gridIdLength);
-          if (!resp.gridIdsToEvents.containsKey(gridId)) {
-            resp.gridIdsToEvents.put(gridId, 0);
-          }
-          resp.gridIdsToEvents.put(gridId, resp.gridIdsToEvents.get(gridId) + 1);
-          affectedDevices.add(event.getAccessKey().getOpqDevice());
-          if (resp.events.size() < MAX_EVENTS) {
-            tmpEvent = new HashMap<>();
-            tmpEvent.put("id", event.getPrimaryKey().toString());
-            tmpEvent.put("timestamp", DateUtils.toDateTime(event.getTimestamp()));
-            tmpEvent.put("type", event.getEventType().getName().split(" ")[0]);
-            tmpEvent.put("frequency", decimalFormat.format(event.getFrequency()));
-            tmpEvent.put("voltage", decimalFormat.format(event.getVoltage()));
-            tmpEvent.put("duration", event.getDuration().toString());
-            resp.events.add(tmpEvent);
-          }
+        // Grid id to metrics
+        gridId = event.getAccessKey().getOpqDevice().getLocation().getGridId().substring(0, gridIdLength);
+        if (!resp.gridIdToEventMetrics.containsKey(gridId)) {
+          Integer[] z = {0, 0, 0};
+          resp.gridIdToEventMetrics.put(gridId, z);
         }
-        if (event.getEventType().equals(OpqPacket.PacketType.EVENT_VOLTAGE) && req.requestVoltage) {
-          resp.totalVoltageEvents++;
-          resp.totalEvents++;
-          gridId = event.getAccessKey().getOpqDevice().getLocation().getGridId().substring(0, gridIdLength);
-          if (!resp.gridIdsToEvents.containsKey(gridId)) {
-            resp.gridIdsToEvents.put(gridId, 0);
-          }
-          resp.gridIdsToEvents.put(gridId, resp.gridIdsToEvents.get(gridId) + 1);
-          affectedDevices.add(event.getAccessKey().getOpqDevice());
-          if (resp.events.size() < MAX_EVENTS) {
-            tmpEvent = new HashMap<>();
-            tmpEvent.put("pk", event.getPrimaryKey().toString());
-            tmpEvent.put("timestamp", DateUtils.toDateTime(event.getTimestamp()));
-            tmpEvent.put("type", event.getEventType().getName().split(" ")[0]);
-            tmpEvent.put("frequency", decimalFormat.format(event.getFrequency()));
-            tmpEvent.put("voltage", decimalFormat.format(event.getVoltage()));
-            tmpEvent.put("duration", event.getDuration().toString());
-            resp.events.add(tmpEvent);
-          }
-        }
+        tmpEventMetrics = resp.gridIdToEventMetrics.get(gridId);
+        region = PqUtils.getIticRegion(event.getDuration() * 1000, event.getVoltage());
+        tmpEventMetrics[region.severity]++;
+        resp.gridIdToEventMetrics.put(gridId, tmpEventMetrics);
+
+        affectedDevices.add(event.getAccessKey().getOpqDevice());
+        if (resp.events.size() < MAX_EVENTS) {
+          tmpEvent = new HashMap<>();
+          tmpEvent.put("id", event.getPrimaryKey().toString());
+          tmpEvent.put("timestamp", DateUtils.toDateTime(event.getTimestamp()));
+          tmpEvent.put("type", event.getEventType().getName().split(" ")[0]);
+          tmpEvent.put("frequency", decimalFormat.format(event.getFrequency()));
+          tmpEvent.put("voltage", decimalFormat.format(event.getVoltage()));
+          tmpEvent.put("duration", event.getDuration().toString());
+          resp.events.add(tmpEvent);
+        }  
       }
     }
 
@@ -164,18 +150,18 @@ public class MonitorWebsocket extends Controller {
         }
       }
     }
-
     // Send response to client
     out.write(resp.toJson());
   }
 
   private static void handleEventDetails(final WebSocket.Out<String> out, PublicEventRequest req) {
+    DecimalFormat decimalFormat = new DecimalFormat("#.00");
     Event event = Event.find().byId(req.pk);
     PublicEventResponse resp = new PublicEventResponse();
-    resp.timestamp = DateUtils.toDateTime(event.getTimestamp());
+    resp.timestamp = DateUtils.toShortDateTime(event.getTimestamp());
     resp.eventType = event.getEventType().getName().split(" ")[0];
-    resp.frequency = event.getFrequency();
-    resp.voltage = event.getVoltage();
+    resp.frequency = decimalFormat.format(event.getFrequency());
+    resp.voltage = decimalFormat.format(event.getVoltage());
     resp.duration = event.getDuration();
     resp.eventLevel = "Local";
     resp.gridId = event.getLocation().getGridId();

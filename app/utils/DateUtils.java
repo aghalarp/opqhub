@@ -70,4 +70,9 @@ public class DateUtils {
 
     return new SimpleDateFormat("HH:mm:ss [dd MMM YYYY]").format(dateStr);
   }
+
+  public static String toShortDateTime(Long millisecondsSinceEpoch) {
+    Date dateStr = new Date(millisecondsSinceEpoch);
+    return new SimpleDateFormat("HH:mm:ss dd/MM/YY").format(dateStr);
+  }
 }

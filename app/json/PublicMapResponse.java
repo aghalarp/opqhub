@@ -9,6 +9,7 @@ public class PublicMapResponse extends JsonData {
   // Map specific data
   public Map<String, Integer> gridIdsToEvents;
   public Map<String, Integer> gridIdsToDevices;
+  public Map<String, Integer[]> gridIdToEventMetrics;  
 
   // Events
   public List<Map<String, String>> events;
@@ -25,6 +26,8 @@ public class PublicMapResponse extends JsonData {
     super("public-map-response");
     this.gridIdsToEvents = new HashMap<>();
     this.gridIdsToDevices = new HashMap<>();
+    this.gridIdsToDevices = new HashMap<>();
+    this.gridIdToEventMetrics = new HashMap<>();
     this.events = new ArrayList<>();
     this.totalRegisteredDevices = 0;
     this.totalActiveDevices = 0;

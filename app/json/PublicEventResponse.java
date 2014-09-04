@@ -10,8 +10,8 @@ public class PublicEventResponse extends JsonData {
   public Double centerLat;
   public Double centerLng;
   public Double gridScale;
-  public Double frequency;
-  public Double voltage;
+  public String frequency;
+  public String voltage;
   public String eventLevel;
   public Long duration;
   public List<Double> waveform;
@@ -24,8 +24,8 @@ public class PublicEventResponse extends JsonData {
     this.centerLat = 0.0;
     this.centerLng = 0.0;
     this.gridScale = 0.0;
-    this.frequency = 0.0;
-    this.voltage = 0.0;
+    this.frequency = "";
+    this.voltage = "";
     this.eventLevel = "";
     this.duration = 0L;
     this.waveform = new ArrayList<>();
