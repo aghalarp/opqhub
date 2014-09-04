@@ -1,6 +1,5 @@
 package controllers;
 
-import controllers.routes;
 import play.Logger;
 import play.data.Form;
 import play.data.validation.ValidationError;
@@ -24,7 +23,7 @@ public class Person extends Controller {
     // Validate form
     if (form.hasErrors()) {
       Logger.debug(String.format("Wizard person form errors %s", form.errors().toString()));
-      return makeError("Can not create new account due to the following errors", form.errors());
+      return makeError(form.errors());
     }
 
     // Save account information
@@ -41,11 +40,10 @@ public class Person extends Controller {
    * Makes an error message out of a short description and a list of errors.
    *
    * This method should eventually be deleted as full validation is used.
-   * @param name Name of the error (short description).
    * @param errors Map of errors returned by play.
    * @return Rendered error page displaying errors.
    */
-  private static Result makeError(String name, Map<String, List<ValidationError>> errors) {
-    return ok(error.render(name, errors.toString()));
+  private static Result makeError(Map<String, List<ValidationError>> errors) {
+    return ok(error.render("Can not create new account due to the following errors", errors.toString()));
   }
 }

@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotNull;
 
 @Entity
 public class EventData extends Model {
@@ -16,8 +15,6 @@ public class EventData extends Model {
 
   @Column(columnDefinition = "MEDIUMTEXT")
   private String waveform;
-
-  //private double[] waveform;
 
   /* ----- Relationships ----- */
   @OneToOne

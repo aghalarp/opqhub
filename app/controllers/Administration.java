@@ -32,9 +32,6 @@ import views.html.admin.admindevice;
 import views.html.admin.adminuser;
 import views.html.error;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import static play.data.Form.form;

@@ -27,7 +27,7 @@ Copyright 2014 Anthony Christe
   @admin("User Administration",
     "This page allows you to configure basic information such as e-mail address, password, and your address.") {
     <div class="span7">
-    @form(routes.Administration.updateUser(), 'class -> "form-horizontal well well-small", 'name -> "userAdminForm") {
+    @form(routes.Administration.updateUser(), 'class -> "form-horizontal well well-small", 'name -> "userAdminForm", 'id -> "userAdminForm") {
       <b>User Information</b>
       <br />
       @inputText(
@@ -35,7 +35,14 @@ Copyright 2014 Anthony Christe
       @inputText(personForm("lastName"), '_label -> "Last Name", 'placeholder -> "Doe", 'id -> "lastName")
       @inputText(personForm("email"), '_label -> "E-Mail", 'placeholder -> "john.doe@email.com", 'id -> "email")
       @inputPassword(personForm("password"), '_label -> "Password", 'placeholder -> "Password", 'id -> "password")
-      <hr />
+<div class="control-group ">
+          <label class="control-label" for="password_again">Confirm Password</label>
+          <div class="controls">
+                  <input type="password" id="password_again" name="password_again" placeholder="Password">
+          </div>
+                  <span class="help-inline"></span>
+       </div>      
+<hr />
 
       <b>Alert Information</b>
       <br />
@@ -68,4 +75,21 @@ Copyright 2014 Anthony Christe
         information.
       </p>
     </div>
+<script src="http://jqueryvalidation.org/files/dist/jquery.validate.min.js"></script>
+  <script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
+  <script type="text/javascript">
+          jQuery.validator.setDefaults({
+  debug: true,
+  success: "valid"
+  });
+  $( "#userAdminForm" ).validate({
+  rules: {
+  password: "required",
+  password_again: {
+  equalTo: "#password"
+  }
+  }
+  });
+  </script>
+
   }

@@ -1,6 +1,8 @@
 package models;
 
+import com.avaje.ebean.Query;
 import play.db.ebean.Model;
+import utils.DbUtils;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -8,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Location extends Model {
@@ -42,6 +45,10 @@ public class Location extends Model {
 
   public static Finder<Long, Location> find() {
     return new Finder<>(Long.class, Location.class);
+  }
+
+  public static Query<Location> getLocationsFromIds(Set<String> ids) {
+       return DbUtils.getAnyLike(Location.class, "gridId", ids);
   }
 
 

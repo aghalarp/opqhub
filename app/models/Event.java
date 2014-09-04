@@ -36,7 +36,7 @@ import javax.persistence.OneToOne;
  * off the status-quo, or that an error has occurred with the user's opq-device.
  */
 @Entity
-public class Event extends Model {
+public class Event extends Model implements Comparable<Event> {
   /* ----- Fields ----- */
   @Id
   private Long primaryKey;
@@ -194,5 +194,10 @@ public class Event extends Model {
 
   public void setEventData(EventData eventData) {
     this.eventData = eventData;
+  }
+
+  @Override
+  public int compareTo(Event event) {    
+    return event.timestamp.compareTo(this.timestamp);
   }
 }
