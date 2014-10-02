@@ -29,7 +29,7 @@
 
   </head>
   <body>
-    <!-- Responsive navbar -->
+      <!-- Responsive navbar -->
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
@@ -39,39 +39,63 @@
           </button>
           <a class="navbar-brand">OPQHub</a>
         </div>
-        <div class="collapse navbar-collapse">
-          <div class="nav pull-right">
 
-            <a href="@routes.Application.login()" class="btn btn-link">Login</a>
-            <a href="/signup" class="btn btn-link">Sign-Up</a>
-
-
-              <!-- @*<li class="dropdown" id="menuLogin">*@
-              @*<a class="dropdown-toggle" href="#" data-toggle="dropdown" id="navLogin">Login</a>*@
-
-              @*<div class="dropdown-menu" style="padding:17px;">*@
-              @*<form class="form" id="formLogin">*@
-              @*<input name="username" id="username" placeholder="Username" type="text">*@
-              @*<input name="password" id="password" placeholder="Password" type="password"><br>*@
-              @*<button type="button" id="btnLogin" class="btn">Login</button>*@
-              @*</form>*@
-              @*</div>*@
-              @*</li>*@-->
-          </div>
+          <!-- Drop down login -->
+        <div class="dropdown pull-right" id="login-dropdown">
+          <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+            Login
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+            <form class="form-horizontal" role="form">
+              <div class="form-group">
+                <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+                <div class="col-sm-10">
+                  <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+                <div class="col-sm-10">
+                  <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox"> Remember me
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-default">Sign in</button>
+                </div>
+              </div>
+            </form>
+          </ul>
         </div>
+        @*<div class="collapse navbar-collapse">*@
+        @*<div class="nav pull-right">*@
+        @*<a href="@routes.Application.login()" class="btn btn-link">Login</a>*@
+        @*<a href="/signup" class="btn btn-link">Sign-Up</a>*@
+        @*</div>*@
+        @*</div>*@
       </div>
     </div>
 
-    <!-- Main content -->
+      <!-- Main content -->
     <div class="container" id="main-content">
 
-      <!-- Main two columns. Left: controls & map. Right: Events and event details. -->
+        <!-- Main two columns. Left: controls & map. Right: Events and event details. -->
       <div class="row">
 
-        <!-- Controls and map -->
+          <!-- Controls and map -->
         <div class="col-md-5">
 
-          <!-- Controls -->
+            <!-- Controls -->
           <div class="row">
             <div class="panel panel-default">
               <div class="panel-heading">
@@ -79,7 +103,7 @@
               </div>
               <div class="panel-body">
 
-                <!-- Frequency filter -->
+                  <!-- Frequency filter -->
                 <div class="row">
                   <label class="col-sm-3">Freq. (Hz)</label>
                   <div class="col-xs-1">
@@ -94,7 +118,7 @@
                   <label class="col-sm-1">80</label>
                 </div>
 
-                <!-- Voltage filter -->
+                  <!-- Voltage filter -->
                 <div class="row">
                   <label class="col-sm-3">Voltage (V)</label>
                   <div class="col-xs-1">
@@ -109,7 +133,7 @@
                   <label class="col-sm-1">150</label>
                 </div>
 
-                <!-- Duration filter -->
+                  <!-- Duration filter -->
                 <div class="row">
                   <label class="col-sm-4">Duration (sec)</label>
                   <label class="col-sm-1">0</label>
@@ -118,10 +142,10 @@
                     data-slider-min="0" data-slider-max="60" data-slider-step="1"
                     data-slider-value="[0,60]"/>
                   </div>
-                  <label class="col-sm-1">60</label>
+                  <label class="col-sm-1" id="max-duration">60</label>
                 </div>
 
-                <!-- ITIC filter -->
+                  <!-- ITIC filter -->
                 <div class="row">
                   <label class="col-sm-4 control-label">ITIC</label>
                   <label class="col-xs-2 control-label">Severe</label>
@@ -139,11 +163,11 @@
                 </div>
 
 
-                <!-- Time interval filter -->
+                  <!-- Time interval filter -->
                 <div class="row">
                   <div class="form-group">
 
-                    <!-- Start time interval -->
+                      <!-- Start time interval -->
                     <label for="startTimestamp" class="col-sm-2 control-label">Time Interval</label>
                     <div class="col-sm-5">
                       <div class='input-group date' id='startTimestamp'>
@@ -154,7 +178,7 @@
                       </div>
                     </div>
 
-                    <!-- Stop time interval -->
+                      <!-- Stop time interval -->
                     <div class="col-sm-5">
                       <div class='input-group date' id='stopTimestamp'>
                         <input type='text' class="form-control" id="stopTimestampInput"/>
@@ -167,7 +191,7 @@
                   <div id="error" class="verror"></div>
                 </div>
 
-                <!-- Update/Reset buttons -->
+                  <!-- Update/Reset buttons -->
                 <div class="row">
                   <label class="col-sm-2">Actions</label>
                   <div class="col-sm-8">
@@ -179,16 +203,16 @@
             </div>
           </div>
 
-          <!-- Map -->
+            <!-- Map -->
           <div class="row public-map">
             <div class="public-map" id="public-map"></div>
           </div>
         </div>
 
-        <!-- Events and event details -->
+          <!-- Events and event details -->
         <div class="col-md-7" id="public-map-right-col">
 
-          <!-- Events -->
+            <!-- Events -->
           <div class="row">
             <div class="panel panel-default">
               <div class="panel-heading">
@@ -214,7 +238,7 @@
                       <th>Type</th>
                       <th>Duration</th>
                       <th>Value</th>
-                      <th>ITIC Severity</th>
+                      <th>ITIC</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -227,9 +251,9 @@
             </div>
           </div>
 
-          <!-- Event details -->
+            <!-- Event details -->
           <div class="row">
-            <!-- Hidden fields that allow us to store the location of each event -->
+              <!-- Hidden fields that allow us to store the location of each event -->
             <input type="hidden" id="details-center-lat" />
             <input type="hidden" id="details-center-lng" />
             <input type="hidden" id="details-zoom" />

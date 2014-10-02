@@ -387,13 +387,24 @@ var events = {
   update: function(data) {
     // Remove old events
     events.clear();
+    var maxDuration = -1;
+    var duration;
     for (var event in data.events) {
       if(data.events.hasOwnProperty(event)) {
         events.add(data.events[event]);
+        duration = parseInt(data.events[event]["duration"]);
+        if(duration > maxDuration) {
+          maxDuration = duration;
+        }
         // Row index in HTML tables start at 1 instead of 0.
         events.tickerToKey[parseInt(event) + 1] = data.events[event].id;
       }
     }
+
+    // Update duration in filters
+    console.log(maxDuration);
+    $("#max-duration").text(maxDuration);
+    $("#duration-slider").slider("setAttribute", "max", [parseFloat(maxDuration)]);
 
     // Update statistics
     $("#totalEvents").text(data.totalEvents);
@@ -609,7 +620,7 @@ var html = {
 $(document).ready(function () {
   map.init();
   details.init();
-  ws.init("ws://128.171.10.187:8194/public");
+  ws.init("ws://emilia.ics.hawaii.edu:8194/public");
   //ws.init("ws://emilia.ics.hawaii.edu:8194/public");
   filters.init();
 });
