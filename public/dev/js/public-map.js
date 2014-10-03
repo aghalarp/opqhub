@@ -387,13 +387,51 @@ var events = {
   update: function(data) {
     // Remove old events
     events.clear();
+    var maxDuration = -1;
+    var maxVoltage = -1;
+    var minVoltage = Number.MAX_VALUE;
+    var maxFrequency = -1;
+    var minFrequency = Number.MAX_VALUE;
+    var duration, frequency, voltage;
     for (var event in data.events) {
       if(data.events.hasOwnProperty(event)) {
         events.add(data.events[event]);
+        duration = parseInt(data.events[event]["duration"]);
+        frequency = parseInt(data.events[event]["frequency"]);
+        voltage = parseInt(data.events[event]["voltage"]);
+        if(duration > maxDuration) {
+          maxDuration = duration;
+        }
+        if(voltage < minVoltage) {
+          minVoltage = voltage;
+        }
+        if(voltage > maxVoltage) {
+          maxVoltage = voltage;
+        }
+        if(frequency < minFrequency) {
+          minFrequency = frequency;
+        }
+        if(frequency > maxFrequency) {
+          maxFrequency = frequency;
+        }
         // Row index in HTML tables start at 1 instead of 0.
         events.tickerToKey[parseInt(event) + 1] = data.events[event].id;
       }
     }
+
+    // Update duration in filters
+    $("#max-duration").text(maxDuration);
+    $("#duration-slider").slider("setAttribute", "max", [parseFloat(maxDuration)]);
+
+    $("#max-frequency").text(maxFrequency);
+    $("#min-frequency").text(minFrequency);
+    $("#frequency-slider").slider("setAttribute", "min", [parseFloat(minFrequency)]);
+    $("#frequency-slider").slider("setAttribute", "max", [parseFloat(maxFrequency)]);
+
+    $("#max-voltage").text(maxVoltage);
+    $("#min-voltage").text(minVoltage);
+    $("#voltage-slider").slider("setAttribute", "min", [parseFloat(minVoltage)]);
+    $("#voltage-slider").slider("setAttribute", "max", [parseFloat(maxVoltage)]);
 
     // Update statistics
     $("#totalEvents").text(data.totalEvents);
@@ -609,7 +647,7 @@ var html = {
 $(document).ready(function () {
   map.init();
   details.init();
-  ws.init("ws://128.171.10.187:8194/public");
+  ws.init("ws://emilia.ics.hawaii.edu:8194/public");
   //ws.init("ws://emilia.ics.hawaii.edu:8194/public");
   filters.init();
 });
