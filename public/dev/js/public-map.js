@@ -73,6 +73,10 @@ var ws = {
       case "public-map-response":
         map.update(data);
         events.update(data);
+        if(!filters.alreadyAdjustedSliders) {
+          filters.alreadyAdjustedSliders = true;
+          filters.adjust(data);
+        }
         break;
       // Update event details
       case "public-event-response":
@@ -90,6 +94,8 @@ var ws = {
  * Manages the controls/filters.
  */
 var filters = {
+  alreadyAdjustedSliders: false,
+
   /**
    * A mapping from the name of a slider->slider object.
    */
@@ -196,9 +202,10 @@ var filters = {
 
     sliderList.map(function(slider) {
       filters.sliders[slider.title] = $('#' + slider.title);
-      filters.sliders[slider.title].slider({formater: function(v) {
-        return " " + v + " " + slider.unit;
-      }});
+      filters.sliders[slider.title].slider({
+        formatter: function(v) {return " " + v + " " + slider.unit;},
+        tooltip: 'always'
+       });
     });
   },
 
@@ -253,6 +260,32 @@ var filters = {
     else {
       return [];
     }
+  },
+
+  adjust: function(data) {
+    function updateSlider(slider, min, max) {
+      var intMin = Math.round(min);
+      var intMax = Math.round(max);
+
+      // Update the dom
+      var rangeValue = "[" + intMin + "," + intMax + "]";
+      $(slider).attr("data-slider-value", rangeValue);
+      $(slider).attr("data-slider-min", intMin.toString());
+      $(slider).attr("data-slider-max", intMax.toString());
+
+      $(slider).slider("setAttribute", "min", intMin);
+      $(slider).slider("setAttribute", "max", intMax);
+      $(slider).slider("setValue", [intMin, intMax]);
+    }
+
+    $("#max-duration").text(data.maxDuration + 1);
+    $("#min-frequency").text(parseInt(data.minFrequency) - 1);
+    $("#max-frequency").text(parseInt(data.maxFrequency) + 1);
+    $("#min-voltage").text(parseInt(data.minVoltage) - 1);
+    $("#max-voltage").text(parseInt(data.maxVoltage) + 1);
+    updateSlider("#frequency-slider", data.minFrequency - 1, data.maxFrequency + 1);
+    updateSlider("#voltage-slider", data.minVoltage - 1, data.maxVoltage + 1);
+    updateSlider("#duration-slider", 0, data.maxDuration + 1);
   },
 
   /**
@@ -387,56 +420,19 @@ var events = {
   update: function(data) {
     // Remove old events
     events.clear();
-    var maxDuration = -1;
-    var maxVoltage = -1;
-    var minVoltage = Number.MAX_VALUE;
-    var maxFrequency = -1;
-    var minFrequency = Number.MAX_VALUE;
-    var duration, frequency, voltage;
     for (var event in data.events) {
       if(data.events.hasOwnProperty(event)) {
         events.add(data.events[event]);
-        duration = parseInt(data.events[event]["duration"]);
-        frequency = parseInt(data.events[event]["frequency"]);
-        voltage = parseInt(data.events[event]["voltage"]);
-        if(duration > maxDuration) {
-          maxDuration = duration;
-        }
-        if(voltage < minVoltage) {
-          minVoltage = voltage;
-        }
-        if(voltage > maxVoltage) {
-          maxVoltage = voltage;
-        }
-        if(frequency < minFrequency) {
-          minFrequency = frequency;
-        }
-        if(frequency > maxFrequency) {
-          maxFrequency = frequency;
-        }
+
         // Row index in HTML tables start at 1 instead of 0.
         events.tickerToKey[parseInt(event) + 1] = data.events[event].id;
       }
     }
 
-    // Update duration in filters
-    $("#max-duration").text(maxDuration);
-    $("#duration-slider").slider("setAttribute", "max", [parseFloat(maxDuration)]);
-
-    $("#max-frequency").text(maxFrequency);
-    $("#min-frequency").text(minFrequency);
-    $("#frequency-slider").slider("setAttribute", "min", [parseFloat(minFrequency)]);
-    $("#frequency-slider").slider("setAttribute", "max", [parseFloat(maxFrequency)]);
-
-    $("#max-voltage").text(maxVoltage);
-    $("#min-voltage").text(minVoltage);
-    $("#voltage-slider").slider("setAttribute", "min", [parseFloat(minVoltage)]);
-    $("#voltage-slider").slider("setAttribute", "max", [parseFloat(maxVoltage)]);
-
     // Update statistics
     $("#totalEvents").text(data.totalEvents);
-    $("#totalFrequencyEvents").text(data.totalFrequencyEvents);
-    $("#totalVoltageEvents").text(data.totalVoltageEvents);
+    //$("#totalFrequencyEvents").text(data.totalFrequencyEvents);
+    //$("#totalVoltageEvents").text(data.totalVoltageEvents);
 
     // Handle click events on event ticker
     $('#events').find('> tbody > tr').click(function() {
@@ -647,7 +643,8 @@ var html = {
 $(document).ready(function () {
   map.init();
   details.init();
-  ws.init("ws://emilia.ics.hawaii.edu:8194/public");
+  //ws.init("ws://emilia.ics.hawaii.edu:8194/public");
+  ws.init("ws://128.171.10.187:9000/public")
   //ws.init("ws://emilia.ics.hawaii.edu:8194/public");
   filters.init();
 });

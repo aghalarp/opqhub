@@ -96,9 +96,35 @@ public class MonitorWebsocket extends Controller {
     Integer[] tmpEventMetrics;
     IticRegion region;
 
+    // For filter controls
+    long duration;
+    long maxDuration = Long.MIN_VALUE;
+    double frequency;
+    double minFrequency = Double.MAX_VALUE;
+    double maxFrequency = Double.MIN_VALUE;
+    double voltage;
+    double minVoltage = Double.MAX_VALUE;
+    double maxVoltage = Double.MIN_VALUE;
+
     // Update event statistics
     Map<String, String> tmpEvent;
     for(Event event : events) {
+
+      // For filter controls
+      duration = event.getDuration();
+      frequency = event.getFrequency();
+      voltage = event.getVoltage();
+      if(duration < 500 && duration > maxDuration) maxDuration = duration;
+      if(frequency > 0 && frequency < minFrequency) minFrequency = frequency;
+      if(frequency > maxFrequency) maxFrequency = frequency;
+      if(voltage > 0 && voltage < minVoltage) minVoltage = voltage;
+      if(voltage > maxVoltage) maxVoltage = voltage;
+      resp.maxDuration = maxDuration;
+      resp.minFrequency = minFrequency;
+      resp.maxFrequency = maxFrequency;
+      resp.minVoltage = minVoltage;
+      resp.maxVoltage = maxVoltage;
+
       if(req.containsEvent(event)) {
         // Global metrics
         resp.totalFrequencyEvents = event.getEventType().equals(OpqPacket.PacketType.EVENT_FREQUENCY) ? resp.totalFrequencyEvents + 1 : resp.totalFrequencyEvents;

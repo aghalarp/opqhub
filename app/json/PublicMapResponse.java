@@ -21,6 +21,11 @@ public class PublicMapResponse extends JsonData {
   public int totalEvents;
   public int totalFrequencyEvents;
   public int totalVoltageEvents;
+  public long maxDuration;
+  public double minFrequency;
+  public double maxFrequency;
+  public double minVoltage;
+  public double maxVoltage;
 
   public PublicMapResponse() {
     super("public-map-response");
@@ -35,5 +40,10 @@ public class PublicMapResponse extends JsonData {
     this.totalEvents = 0;
     this.totalFrequencyEvents = 0;
     this.totalVoltageEvents = 0;
+    this.maxDuration = 0L;
+    this.minFrequency = 0.0;
+    this.maxFrequency = 0.0;
+    this.minVoltage = 0;
+    this.maxVoltage = 0;
   }
 }
