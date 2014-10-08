@@ -14,3 +14,7 @@ dist
 /RUNNING_PID
 /.settings
 /public/dev/contrib
+*.swp
+*DS_Store
+*.DS_Strore
+*._.DS_Store
