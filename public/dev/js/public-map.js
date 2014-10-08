@@ -193,9 +193,7 @@ var filters = {
   },
 
   /**
-   * Initialize sliders.
-   */
-  initSliders: function() {
+   * Initialize sliders.  */ initSliders: function() {
     var sliderList = [{title: 'frequency-slider', unit: 'Hz'},
                       {title: 'voltage-slider',   unit: 'V'},
                       {title: 'duration-slider',  unit: 's'}];
@@ -312,10 +310,7 @@ var filters = {
       $("#startTimestamp").removeClass("has-error");
       $("#stopTimestamp").removeClass("has-error");
       $("#error").text(null);
-      return true;
-    }
-    else {
-      $("#startTimestamp").addClass("has-error");
+      return true; } else { $("#startTimestamp").addClass("has-error");
       $("#stopTimestamp").addClass("has-error");
       $("#error").text("Start date should be before end date.");
       return false;
@@ -645,6 +640,5 @@ $(document).ready(function () {
   details.init();
   //ws.init("ws://emilia.ics.hawaii.edu:8194/public");
   ws.init("ws://128.171.10.187:9000/public")
-  //ws.init("ws://emilia.ics.hawaii.edu:8194/public");
   filters.init();
 });

@@ -26,6 +26,7 @@ import play.data.validation.Constraints;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.login;
+import views.html.newsignup;
 import views.html.publicmap;
 import views.html.signup;
 
@@ -50,7 +51,9 @@ public class Application extends Controller {
 
   public static Result signup() {
     Form<Person> form = Form.form(Person.class);
-    return ok(signup.render(form));
+    //return ok(signup.render(form));
+
+    return ok(newsignup.render());
   }
 
   /**
