@@ -7,6 +7,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.error;
 import views.html.signup;
+import views.html.newsignup;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,8 @@ import java.util.Map;
 public class Person extends Controller {
   public static Result signup() {
     Form<models.Person> form = Form.form(models.Person.class);
-    return ok(signup.render(form));
+    //return ok(signup.render(form));
+    return ok(newsignup.render());
   }
 
   public static Result save() {
