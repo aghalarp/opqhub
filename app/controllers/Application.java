@@ -63,7 +63,7 @@ public class Application extends Controller {
   public static Result logout() {
     session().clear();
     flash("success", "You've been logged out");
-    return redirect(routes.Application.login());
+    return redirect(routes.Application.index());
   }
 
   /**
@@ -81,12 +81,12 @@ public class Application extends Controller {
   public static Result authenticate() {
     Form<Login> loginForm = form(Login.class).bindFromRequest();
     if (loginForm.hasErrors()) {
-      Logger.info(String.format("Bad login attempt from %s", loginForm.data().get("email")));
+      Logger.info(String.format("Bad login attempt from %s", loginForm.data().get("loginEmail")));
       return badRequest(login.render(loginForm));
     }
     else {
       session().clear();
-      session("email", loginForm.get().email);
+      session("email", loginForm.get().loginEmail);
       return redirect(routes.Events.eventsByPage(0, 0L));
     }
   }
@@ -100,13 +100,13 @@ public class Application extends Controller {
      */
     @Constraints.Required
     @Constraints.Email
-    public String email;
+    public String loginEmail;
 
     /**
      * Password of the user.
      */
     @Constraints.Required
-    public String password;
+    public String loginPassword;
 
     /**
      * Attempts to validate user by first matching the e-mail, and then matching the password hash.
@@ -114,12 +114,12 @@ public class Application extends Controller {
      */
     public String validate() {
       // First try to find a person with a matching email
-      Person person = Person.find().where().eq("email", email).findUnique();
+      Person person = Person.find().where().eq("email", loginEmail).findUnique();
       if (person == null) {
         return "Invalid email or password";
       }
       // See if the passwords match
-      byte[] hashedPassword = utils.FormUtils.hashPassword(password, person.getPasswordSalt());
+      byte[] hashedPassword = utils.FormUtils.hashPassword(loginPassword, person.getPasswordSalt());
       if (!Arrays.equals(person.getPasswordHash(), hashedPassword)) {
         return "Invalid email or password";
       }

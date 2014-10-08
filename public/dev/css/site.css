@@ -14,6 +14,18 @@ body {
     margin-top: 10px;
 }
 
+.dropdown-upper-pad {
+    margin-top: 10px;
+}
+
+#dropdown-menu {
+    min-width: 260px;
+}
+
+.dropdown-input {
+    margin-left: 20px;
+}
+
 #public-map {
   /*padding-left: 30px;*/
   width: 100%;
