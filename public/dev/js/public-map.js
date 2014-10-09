@@ -638,7 +638,7 @@ var html = {
 $(document).ready(function () {
   map.init();
   details.init();
-  //ws.init("ws://emilia.ics.hawaii.edu:8194/public");
-  ws.init("ws://128.171.10.187:9000/public")
+  ws.init("ws://emilia.ics.hawaii.edu:8194/public");
+  //ws.init("ws://128.171.10.187:9000/public")
   filters.init();
 });
