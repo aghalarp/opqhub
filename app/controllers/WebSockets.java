@@ -34,6 +34,10 @@ import play.mvc.WebSocket;
 import utils.DateUtils;
 import utils.Mailer;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +47,6 @@ import java.util.Map;
  */
 public class WebSockets extends Controller {
   private static final Map<AccessKey, WebSocket.Out<String>> keyToOut = new HashMap<>();
-
   /**
    * Create a WebSocket object who can receive connections, receive packets, and break connections.
    *
@@ -58,6 +61,7 @@ public class WebSockets extends Controller {
         in.onMessage(new F.Callback<String>() {
           @Override
           public void invoke(String s) throws Throwable {
+
             OpqPacket opqPacket = JsonOpqPacketFactory.opqPacketFromJson(s);
             Logger.info(String.format("Received %s from %s with duration %d", opqPacket.packetType, opqPacket.deviceId, opqPacket.duration));
             handlePacket(opqPacket, out);
