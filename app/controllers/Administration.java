@@ -30,6 +30,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import views.html.admin.admindevice;
 import views.html.admin.adminuser;
+import views.html.deviceadmin;
 import views.html.error;
 
 import java.util.Set;
@@ -86,7 +87,8 @@ public class Administration extends Controller {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     Set<AccessKey> keys = person.getAccessKeys();
 
-    return ok(admindevice.render(keyForm, keys));
+    //return ok(admindevice.render(keyForm, keys));
+    return ok(deviceadmin.render(keyForm, keys));
   }
 
 
