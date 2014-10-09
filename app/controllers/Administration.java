@@ -32,6 +32,7 @@ import views.html.admin.admindevice;
 import views.html.admin.adminuser;
 import views.html.deviceadmin;
 import views.html.error;
+import views.html.useradmin;
 
 import java.util.Set;
 
@@ -52,7 +53,8 @@ public class Administration extends Controller {
   public static Result user() {
     Person person = Person.find().where().eq("email", session("email")).findUnique();
     Form<Person> personForm = form(Person.class).fill(person);
-    return ok(adminuser.render(personForm));
+    //return ok(adminuser.render(personForm));
+    return ok(useradmin.render(personForm));
   }
 
   /**
@@ -72,6 +74,7 @@ public class Administration extends Controller {
     Logger.debug(String.format("%s user information updated", person.getPrimaryKey()));
 
     personForm.get().update(person.getPrimaryKey());
+    flash("updated", "Account Updated");
     return redirect(controllers.routes.Administration.user());
   }
 
