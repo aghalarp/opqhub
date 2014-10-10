@@ -28,9 +28,8 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import views.html.admin.admindevice;
-import views.html.admin.adminuser;
 import views.html.deviceadmin;
+import views.html.deviceconfig;
 import views.html.error;
 import views.html.useradmin;
 
@@ -149,7 +148,8 @@ public class Administration extends Controller {
     Location location = device.getLocation();
     Form<OpqDevice> deviceForm  = form(OpqDevice.class).fill(device);
     Form<Location> locationForm = (location == null) ? form(Location.class) : form(Location.class).fill(location);
-    return ok(views.html.admin.deviceconfig.render(key.getDeviceId(), key.getAccessKey(), deviceForm, locationForm, location));
+    //return ok(views.html.admin.deviceconfig.render(key.getDeviceId(), key.getAccessKey(), deviceForm, locationForm, location));
+    return ok(deviceconfig.render(key.getDeviceId(), key.getAccessKey(), deviceForm, locationForm, location));
   }
 
   public static Result saveDeviceConfiguration() {
@@ -167,6 +167,11 @@ public class Administration extends Controller {
 
     OpqDevice deviceFromForm = deviceForm.get();
     Location location = locationForm.get();
+    Location oldLocation = Location.find().where().eq("gridId", location.getGridId()).findUnique();
+
+    if(oldLocation != null) {
+      location = oldLocation;
+    }
 
     OpqDevice device = OpqDevice.find().where().eq("deviceId", deviceFromForm.getDeviceId()).findUnique();
 
@@ -175,20 +180,18 @@ public class Administration extends Controller {
     device.setLocation(location);
     device.update();
 
-    Location tmp = Location.find().where().eq("gridId", location.getGridId()).findUnique();
-
-    Long locationPk;
-
-    location.getOpqDevices().add(device);
-
-    if(tmp == null) {
+    if(oldLocation == null) {
+      location.getOpqDevices().add(device);
       location.save();
-    }
-    else {
-      locationPk = tmp.getPrimaryKey();
-      location.update(locationPk);
+    } else {
+      if(!location.getOpqDevices().contains(device)) {
+        location.getOpqDevices().add(device);
+      }
+      location.update();
     }
 
-    return redirect(routes.Administration.device());
+
+    flash("updated", "Updated device information.");
+    return redirect(routes.Administration.configureDevice(device.getDeviceId(), device.getAccessKey().getAccessKey()));
   }
 }

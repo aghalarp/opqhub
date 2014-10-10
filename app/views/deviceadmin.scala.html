@@ -40,6 +40,7 @@
               <th>Description</th>
               <th>Id</th>
               <th>Key</th>
+              <th>Sharing Data</th>
               <th><!--Empty for configure button--></th>
             </thead>
             <tbody>
@@ -48,6 +49,7 @@
                 <td>@key.getOpqDevice.getDescription</td>
                 <td>@key.getDeviceId()</td>
                 <td>@key.getAccessKey()</td>
+                <td>@key.getOpqDevice.getSharingData</td>
                 <td>
                   <a href="@routes.Administration.configureDevice(key.getDeviceId, key.getAccessKey)" class="btn btn-warning btn-xs pull-right">Configure OPQBox</a>
                 </td>
@@ -70,6 +72,7 @@
                     <input type="text" class="form-control input-sm" id="accessKey" name="accessKey" placeholder="">
                   </div>
                 </td>
+                <td><!-- Empty for sharing data field --></td>
                 <input type="hidden" name="sharingData" id="sharingData" value="false" />
                 <td><button type="submit" class="btn btn-primary btn-xs pull-right">Add OPQBox</button></td>
               </form>
