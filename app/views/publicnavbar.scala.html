@@ -14,16 +14,16 @@
     <!-- Drop down login -->
     <div class="dropdown pull-right" id="login-dropdown">
       <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-        Login
+        Login / Sign Up
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" id="dropdown-menu" role="menu" aria-labelledby="dropdown-menu">
         <form id="dropdown-form" class="navbar-form" role="form" method="POST" action="/public/login/authenticate">
           <div class="row">
-            @helper.emailinput("loginEmail", "Email", "dropdown-input", "dropdown-input", "jane.doe@email.com")
+            @helper.emailinput("loginEmail", "Email *", "dropdown-input", "dropdown-input", "jane.doe@email.com")
           </div>
           <div class="row" class="dropdown-upper-pad">
-            @helper.passwordinput("loginPassword", "Password", "dropdown-input", "dropdown-input", "")
+            @helper.passwordinput("loginPassword", "Password *", "dropdown-input", "dropdown-input", "")
           </div>
           <div class="row">
             <button type="submit" class="btn btn-primary btn-sm dropdown-input dropdown-upper-pad">Log In</button>
@@ -34,4 +34,3 @@
     </div>
   </div>
 </div>
-

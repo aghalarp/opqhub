@@ -28,8 +28,7 @@
         <div class="col-lg-4 well">
           <b>OPQHub Sign-Up</b>
           <p>To create an OPQHub account. Fill out all fields on this page.</p>
-          <p>First Name, Last Name, E-mail, and Password fields are <b>required.</b></p>
-          <p>Alert E-mail, SMS Carrier, SMS Number fields are <b>optional.</b></p>
+          <p>Fields marked with an "<b>*</b>" are required.</p>
           <p>Once your account is created, you will be redirected to the OPQBox administration page. You will then be able register OPQBoxes with your account.</p>
         </div>
 
@@ -38,19 +37,19 @@
           <form action="/signup" method="POST" name="userAdminForm" id="userAdminForm" class="form-horizontal" role="form">
 
             <!-- First name -->
-            @helper.textinput("firstName", "First Name", "col-sm-3", "col-sm-7", "Jane")
+            @helper.textinput("firstName", "First Name *", "col-sm-3", "col-sm-7", "Jane")
 
             <!-- Last name -->
-            @helper.textinput("lastName", "Last Name", "col-sm-3", "col-sm-7", "Doe")
+            @helper.textinput("lastName", "Last Name *", "col-sm-3", "col-sm-7", "Doe")
 
             <!-- Email -->
-            @helper.emailinput("email", "E-mail", "col-sm-3", "col-sm-7", "jane.doe@email.com")
+            @helper.emailinput("email", "E-mail *", "col-sm-3", "col-sm-7", "jane.doe@email.com")
 
             <!-- Password -->
-            @helper.passwordinput("password", "Password", "col-sm-3", "col-sm-7", "")
+            @helper.passwordinput("password", "Password *", "col-sm-3", "col-sm-7", "")
 
             <!-- Confirm password -->
-            @helper.passwordinput("confirmPassword", "Confirm Password", "col-sm-3", "col-sm-7", "")
+            @helper.passwordinput("confirmPassword", "Confirm Password *", "col-sm-3", "col-sm-7", "")
 
             <!-- Alert email -->
             @helper.emailinput("alertEmail", "Alert Email", "col-sm-3", "col-sm-7", "jane.doe@email.com")
