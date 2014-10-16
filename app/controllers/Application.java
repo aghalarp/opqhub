@@ -78,7 +78,7 @@ public class Application extends Controller {
     else {
       session().clear();
       session("email", loginForm.get().loginEmail);
-      return redirect(routes.Events.eventsByPage(0, 0L));
+      return redirect(routes.Application.index());
     }
   }
 
