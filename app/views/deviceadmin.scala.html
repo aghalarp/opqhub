@@ -16,6 +16,10 @@
 
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("dev/css/site.css")">
 
+    <!-- Validation -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.2/css/bootstrapValidator.min.css"/>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.2/js/bootstrapValidator.min.js"></script>
+
   </head>
   <body>
     @navbar()
@@ -26,10 +30,11 @@
       <div class="col-lg-4 well">
         <b>OPQBoxes</b>
         <p>This page allows for the management of OPQBoxes.</p>
-        <p>OPQBoxes already registered with your account will show up as a list on this page.</p>
+        <p>OPQBoxes already registered with your account will show up in the table</p>
         <p>Each row displays basic facts about your registered OPQBoxes.</p>
-        <p>The last row allows you to register one or more OPQBoxes.</p>
         <p>To update an existing box, select the "Configure OPQBox" button beside the OPQBox you would like to configure.</p>
+        <p>To add an exisiting OPQBox you have access to, fill out the information in the "Connect to OPQBox" form.</p>
+
       </div>
 
       <!-- List of opq boxes -->
@@ -55,33 +60,66 @@
                 </td>
               </tr>
             }
-
-            <!-- Form for adding new device -->
-            <tr>
-              <form action="/private/admin/device/save" method="POST" class="form-inline">
-                <td><!-- Empty for device description --></td>
-                <td>
-                  <div class="form-group">
-                    <label class="sr-only" for="deviceId">Email address</label>
-                    <input type="text" class="form-control input-sm" id="deviceId" name="deviceId" placeholder="">
-                  </div>
-                </td>
-                <td>
-                  <div class="form-group">
-                    <label class="sr-only" for="deviceId">Access Key</label>
-                    <input type="text" class="form-control input-sm" id="accessKey" name="accessKey" placeholder="">
-                  </div>
-                </td>
-                <td><!-- Empty for sharing data field --></td>
-                <input type="hidden" name="sharingData" id="sharingData" value="false" />
-                <td><button type="submit" class="btn btn-primary btn-xs pull-right">Add OPQBox</button></td>
-              </form>
-            </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
+
+    <!-- Device adition form -->
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Connect to OPQBox</h3>
+          </div>
+          <div class="panel-body">
+            <form id="addDeviceForm" action="/private/admin/device/save" method="POST" class="form-horizontal">
+              @helper.textinput("deviceId", "Device Id *", "col-sm-3", "col-sm-7", "")
+              @helper.textinput("accessKey", "Access Key *", "col-sm-3", "col-sm-7", "")
+              <input type="hidden" name="sharingData" id="sharingData" value="false" />
+              <button type="submit" class="btn btn-primary btn-xs col-sm-offset-3">Add OPQBox</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+      $('#addDeviceForm').bootstrapValidator({
+          message: 'This value is not valid',
+          feedbackIcons: {
+              valid: 'glyphicon glyphicon-ok',
+              invalid: 'glyphicon glyphicon-remove',
+              validating: 'glyphicon glyphicon-refresh'
+          },
+          fields: {
+              deviceId: {
+                  message: 'The device id is not valid',
+                  validators: {
+                      notEmpty: {
+                          message: 'The device id is required and cannot be empty'
+                      },
+                      digits: {
+                        message: "The device id should only contain digits"
+                      }
+                  }
+              },
+              accessKey: {
+                message: "The access key is not valid",
+                validators: {
+                  notEmpty: {
+                    message: 'The access key is required and cannot be empty'
+                  }
+                }
+              },
+
+          }
+      });
+});
+  </script>
   </body>
 </html>

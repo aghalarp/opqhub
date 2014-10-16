@@ -8,6 +8,11 @@ body {
     color: green;
 }
 
+.invalid {
+  text-align: center;
+  font-weight: bold;
+  color: red;
+}
 
 .panel-title {
   text-align: center;
@@ -152,5 +157,3 @@ body {
   margin-right: 8px;
   opacity: 0.7;
 }
-
-

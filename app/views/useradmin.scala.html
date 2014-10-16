@@ -16,7 +16,7 @@
 
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("dev/css/site.css")">
 
-    <!-- Validation 0-->
+    <!-- Validation -->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.2/css/bootstrapValidator.min.css"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.2/js/bootstrapValidator.min.js"></script>
 
@@ -30,8 +30,7 @@
         <div class="col-lg-4 well">
           <b>OPQHub Account Settings</b>
           <p>This page allows you to update your account information.</p>
-          <p>First Name, Last Name, E-mail, and Password fields are <b>required.</b></p>
-          <p>Alert E-mail, SMS Carrier, SMS Number fields are <b>optional.</b></p>
+          <p>Fields marked with an "<b>*</b>" are required.</p>
         </div>
 
         <!-- Sign Up Form -->
@@ -44,19 +43,19 @@
           <form action="/private/admin/user/update" method="POST" name="userAdminForm" id="userAdminForm" class="form-horizontal" role="form">
 
             <!-- First name -->
-            @helper.textinput("firstName", "First Name", "col-sm-3", "col-sm-7", "Jane", personForm("firstName").value)
+            @helper.textinput("firstName", "First Name *", "col-sm-3", "col-sm-7", "Jane", personForm("firstName").value)
 
             <!-- Last name -->
-            @helper.textinput("lastName", "Last Name", "col-sm-3", "col-sm-7", "Doe", personForm("lastName").value)
+            @helper.textinput("lastName", "Last Name *", "col-sm-3", "col-sm-7", "Doe", personForm("lastName").value)
 
             <!-- Email -->
-            @helper.emailinput("email", "E-mail", "col-sm-3", "col-sm-7", "jane.doe@email.com", personForm("email").value)
+            @helper.emailinput("email", "E-mail *", "col-sm-3", "col-sm-7", "jane.doe@email.com", personForm("email").value)
 
             <!-- Password -->
-            @helper.passwordinput("password", "Password", "col-sm-3", "col-sm-7", "")
+            @helper.passwordinput("password", "Password *", "col-sm-3", "col-sm-7", "")
 
             <!-- Confirm password -->
-            @helper.passwordinput("confirmPassword", "Confirm Password", "col-sm-3", "col-sm-7", "")
+            @helper.passwordinput("confirmPassword", "Confirm Password *", "col-sm-3", "col-sm-7", "")
 
             <!-- Alert email -->
             @helper.emailinput("alertEmail", "Alert Email", "col-sm-3", "col-sm-7", "jane.doe@email.com", personForm("alertEmail").value)
