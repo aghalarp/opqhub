@@ -118,5 +118,21 @@ public class Application extends Controller {
       }
       return null;
     }
+
+    public String getLoginEmail() {
+      return this.loginEmail;
+    }
+
+    public void setLoginEmail(String loginEmail) {
+      this.loginEmail = loginEmail;
+    }
+
+    public String getLoginPassword() {
+      return this.loginPassword;
+    }
+
+    public void setLoginPassword(String loginPassword) {
+      this.loginPassword = loginPassword;
+    }
   }
 }

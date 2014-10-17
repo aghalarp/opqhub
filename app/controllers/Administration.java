@@ -82,11 +82,11 @@ public class Administration extends Controller {
    *
    * @return The rendered view for device administration.
    */
-  @Security.Authenticated(Secured.class)
-  public static Result device() {
+  @Security.Authenticated(SecuredAndMatched.class)
+  public static Result device(String email) {
     Form<AccessKey> keyForm = form(AccessKey.class);
 
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    Person person = Person.find().where().eq("email", email).findUnique();
     Set<AccessKey> keys = person.getAccessKeys();
 
     //return ok(admindevice.render(keyForm, keys));

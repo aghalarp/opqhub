@@ -19,7 +19,7 @@
       </button>
       <ul class="dropdown-menu" role="menu" aria-labelledby="dropdown-menu">
         <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Administration.user(session.get("email"))"><span class="glyphicon glyphicon-user"></span> Account</a></li>
-        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Administration.device()"><span class="glyphicon glyphicon-hdd"></span> OPQBoxes</a></li>
+        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Administration.device(session.get("email"))"><span class="glyphicon glyphicon-hdd"></span> OPQBoxes</a></li>
         <li role="presentation" class="divider"></li>
         <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Application.index()"><span class="glyphicon glyphicon-eye-open"></span> Public Analysis</a></li>
         <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Events.eventsByPage(0, 0)"><span class="glyphicon glyphicon-eye-close"></span> User Analysis</a></li>

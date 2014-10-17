@@ -37,7 +37,7 @@ GET         /:email/logout                              controllers.Application.
 GET         /:email/account                             controllers.Administration.user(email: String)
 POST        /private/admin/user/update                  controllers.Administration.updateUser()
 
-GET         /private/admin/device                       controllers.Administration.device()
+GET         /:email/opqboxes                            controllers.Administration.device(email: String)
 POST        /private/admin/device/save                  controllers.Administration.saveDevice()
 
 GET         /device/:deviceId/:accessKey                controllers.Administration.configureDevice(deviceId: Long, accessKey: String)
