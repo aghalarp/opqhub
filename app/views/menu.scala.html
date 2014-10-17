@@ -39,7 +39,7 @@ Copyright 2014 Anthony Christe
             @createMenuItem("Public Power Quality Monitoring", "power quality monitoring",
               routes.Application.index())
           } else {
-            @createMenuItem("Administration", "administration", routes.Administration.user())
+            @createMenuItem("Administration", "administration", routes.Administration.user(session.get("email")))
             @createMenuItem("Private Power Quality Monitoring", "private power quality monitoring",
               routes.Events.eventsByPage())
             @createMenuItem("Public Power Quality Monitoring", "public power quality monitoring",
