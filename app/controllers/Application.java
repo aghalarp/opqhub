@@ -25,6 +25,7 @@ import play.data.Form;
 import play.data.validation.Constraints;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import views.html.login;
 import views.html.publicmap;
 
@@ -51,9 +52,10 @@ public class Application extends Controller {
    * Logs out current user by clearing the session.
    * @return Redirect to log-in page.
    */
-  public static Result logout() {
+  @Security.Authenticated(SecuredAndMatched.class)
+  public static Result logout(String email) {
     session().clear();
-    flash("success", "You've been logged out");
+    flash("success", email + " has been logged out");
     return redirect(routes.Application.index());
   }
 

@@ -47,7 +47,7 @@ Copyright 2014 Anthony Christe
           }
           </ul>
           @if(!publicMenu) {
-            <a href="@routes.Application.logout()" class="btn btn-primary pull-right">Logout</a>
+            <a href="@routes.Application.logout(session.get("email"))" class="btn btn-primary pull-right">Logout</a>
           }
         </div>
       </div>

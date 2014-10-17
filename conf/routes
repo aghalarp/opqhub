@@ -31,7 +31,7 @@ POST        /signup                                     controllers.Person.save(
 # Log in/out
 GET         /public/login                               controllers.Application.login()
 POST        /public/login/authenticate                  controllers.Application.authenticate()
-GET         /private/logout                             controllers.Application.logout()
+GET         /:email/logout                              controllers.Application.logout(email: String)
 
 # Administration
 GET         /:email/account                             controllers.Administration.user(email: String)
