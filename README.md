@@ -84,4 +84,35 @@ If you wish to enable this feature in your build, you'll need to have access to 
     smtp.pass="your_alert_email_password"
 
 ### Deploying to production
-Todo
+Once everything else is set up, it's possible to create a production OPQHub by using Play's `dist` command. This method makes it easy to transfer OPQHub to a server without the need of installing any of Play's dependencies. The only dependency required for this method is a configured database on the production server.
+
+1. Open a terminal window and change to the cloned OPQHub directory
+2. Issue the command `play` to enter the Play environment
+3. Issue the command `clean`
+4. Issue the command `dist` to rebuild from scratch and package your application
+
+Once the application has been packaged, the resulting .zip file can be found in `OPQHub/target/universal/opqhub-1.0-SNAPSHOT.zip`.
+
+Copy the above .zip file to your production server and unzip it into a directory called `opqhub`. This should give you `.../opqhub/opqhub-1.0-SNAPSHOT/`
+
+To start the server
+1. Open a terminal window and change to the location of the unzipped distribution's `bin` directory `.../opqhub/opqhub-1.0-SNAPSHOT/bin/`
+2. On linux, make sure the script `opqhub` is executable by issueing the command `chmod u+x opqhub`
+3. On Linux, to start the production distribution of OPQHub, issue the command `bash opqhub`. On Windows, issue the command `opqhub.bat`
+4. If you wish to configure the port pass the option `-Dhttp.port=your_port` where `your_port` is replaced by the port number you wish to run OPQHub from
+
+### Production server over SSH
+If you need to SSH into your production environment, then the above method will work until your SSH connection is closed. Then, the process will die due to receiving a SIGTERM signal.
+
+To overcome this, I recommend using [tmux](http://tmux.sourceforge.net/) on your production server which will manage processes even after the SSH connection has died. A great introduction to tmux can be found at [http://robots.thoughtbot.com/a-tmux-crash-course](http://robots.thoughtbot.com/a-tmux-crash-course).
+
+In general though, if you have tmux installed, you can complete the following steps
+
+1. Log into production server over ssh
+2. Deploy to production as above
+4. If you haven't created a tmux session before, do so now by issueing the command `tmux new -s opqhub-production`. This will create a new tmux session for you to run OPQHub in.
+5. If you've already created the tmux session, switch to it by issueing the command `tmux attach -t opqhub-production`
+6. Run OQPHub be switching to the OPQHub's `bin` directory
+7. Run the correct script for your system and background the task (i.e. `bash opqhub&`)
+8. Detach from the tmux session with `tmux detach`.
+9. Now you can safely log off of SSH and OPQHub will continue running under tmux
