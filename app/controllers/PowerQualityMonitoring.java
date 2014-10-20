@@ -44,18 +44,6 @@ import java.util.Map;
 public class PowerQualityMonitoring extends Controller {
 
   /**
-   * Render a public "google-maps" style map with devices and alerts from users who are participating in data sharing.
-   *
-   * @return Rendered view of publics' devices and public alerts.
-   */
-  public static Result publicMonitor() {
-    List<Event> events = Event.find().all();
-    List<models.OpqDevice> devices = OpqDevice.find().where().eq("sharingData", true).findList();
-    boolean loggedOut = !(session().containsKey("email"));
-    return ok(views.html.publicmonitoring.publicpowerqualitymonitoring.render(events, devices, loggedOut));
-  }
-
-  /**
    * Finds alerts associated with given list of visible grid-square ids.
    *
    * This method receives a json array of currently visible grid-squares on the map and then finds all events associated

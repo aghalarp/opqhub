@@ -13,50 +13,42 @@
 #   You should have received a copy of the GNU General Public License
 #   along with opq-ao.  If not, see <http://www.gnu.org/licenses/>.
 #
-#   Copyright 2013 Anthony Christe
+#   Copyright 2014 Anthony Christe
 
 # Routes
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
 # Home page
-GET         /                                               controllers.Application.index()
+GET         /                                           controllers.Application.index()
 
 # Sign Up
-GET         /signup                                         controllers.Person.signup()
-POST        /signup                                         controllers.Person.save()
+GET         /signup                                     controllers.Person.signup()
+POST        /signup                                     controllers.Person.save()
 
 # Log in/out
-GET         /public/login                                   controllers.Application.login()
-POST        /public/login/authenticate                      controllers.Application.authenticate()
-GET         /private/logout                                 controllers.Application.logout()
+POST        /public/login/authenticate                  controllers.Application.authenticate()
+GET         /:email/logout                              controllers.Application.logout(email: String)
 
 # Administration
-GET         /private/admin/user                             controllers.Administration.user()
-POST        /private/admin/user/update                      controllers.Administration.updateUser()
+GET         /:email/account                             controllers.Administration.user(email: String)
+POST        /private/admin/user/update                  controllers.Administration.updateUser()
 
-GET         /private/admin/device                           controllers.Administration.device()
-POST        /private/admin/device/save                      controllers.Administration.saveDevice()
+GET         /:email/opqboxes                            controllers.Administration.device(email: String)
+POST        /private/admin/device/save                  controllers.Administration.saveDevice()
 
-GET         /device/:deviceId/:accessKey                    controllers.Administration.configureDevice(deviceId: Long, accessKey: String)
-POST        /device                                         controllers.Administration.saveDeviceConfiguration()
+GET         /device/:deviceId/:accessKey                controllers.Administration.configureDevice(deviceId: Long, accessKey: String)
+POST        /device                                     controllers.Administration.saveDeviceConfiguration()
 
 # Events
-#GET         /private/monitor/events                            controllers.Events.newEvents()
-GET         /private/monitor/events                         controllers.Events.eventsByPage(p: Integer ?= 0, after: Long ?= 0)
-POST        /private/monitor/events/filter                  controllers.Events.filterEvents()
-GET         /private/monitor/events/:eventId                controllers.Events.eventDetails(eventId: Long)
-
-GET         /private/monitor/events/:eventId/raw            controllers.Events.rawPowerData(eventId: Long)
-
+GET         /private/monitor/events                     controllers.Events.eventsByPage(p: Integer ?= 0, after: Long ?= 0)
 
 # Public Monitoring
-GET         /public/monitor                                 controllers.PowerQualityMonitoring.publicMonitor()
-POST        /public/alerts                                  controllers.PowerQualityMonitoring.alertsFromIds()
-GET         /public                                         controllers.MonitorWebsocket.handleSocket()
+POST        /public/alerts                              controllers.PowerQualityMonitoring.alertsFromIds()
+GET         /public                                     controllers.MonitorWebsocket.handleSocket()
 
 # Handling WebSockets
-GET         /private/ws                                     controllers.WebSockets.handleSocket()
+GET         /private/ws                                 controllers.WebSockets.handleSocket()
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                                   controllers.Assets.at(path="/public", file)
+GET         /assets/*file                               controllers.Assets.at(path="/public", file)

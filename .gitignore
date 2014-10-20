@@ -18,3 +18,9 @@ dist
 *DS_Store
 *.DS_Strore
 *._.DS_Store
+deploy.sh
+*.old
+*.gz
+*.out
+*.jar
+*.autosave

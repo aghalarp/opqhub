@@ -48,9 +48,9 @@ public class Administration extends Controller {
    *
    * @return The rendered view for user administration.
    */
-  @Security.Authenticated(Secured.class)
-  public static Result user() {
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
+  @Security.Authenticated(SecuredAndMatched.class)
+  public static Result user(String email) {
+    Person person = Person.find().where().eq("email", email).findUnique();
     Form<Person> personForm = form(Person.class).fill(person);
     //return ok(adminuser.render(personForm));
     return ok(useradmin.render(personForm));
@@ -74,7 +74,7 @@ public class Administration extends Controller {
 
     personForm.get().update(person.getPrimaryKey());
     flash("updated", "Account Updated");
-    return redirect(controllers.routes.Administration.user());
+    return redirect(controllers.routes.Administration.user(person.getEmail()));
   }
 
   /**
@@ -82,11 +82,11 @@ public class Administration extends Controller {
    *
    * @return The rendered view for device administration.
    */
-  @Security.Authenticated(Secured.class)
-  public static Result device() {
+  @Security.Authenticated(SecuredAndMatched.class)
+  public static Result device(String email) {
     Form<AccessKey> keyForm = form(AccessKey.class);
 
-    Person person = Person.find().where().eq("email", session("email")).findUnique();
+    Person person = Person.find().where().eq("email", email).findUnique();
     Set<AccessKey> keys = person.getAccessKeys();
 
     //return ok(admindevice.render(keyForm, keys));

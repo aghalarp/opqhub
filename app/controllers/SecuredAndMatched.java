@@ -27,7 +27,7 @@ import play.mvc.Security;
  * Allows us to use annotation based security by checking the username and defining what happens
  * when a user attempts to access an area and they are not authorized.
  */
-public class Secured extends Security.Authenticator {
+public class SecuredAndMatched extends Security.Authenticator {
   /**
    * Returns either the e-mail of the current logged in user or null.
    * @param context Current context storing session.
@@ -35,8 +35,16 @@ public class Secured extends Security.Authenticator {
    */
   @Override
   public String getUsername(Http.Context context) {
-    //Logger.info(context.request().body().toString());
-    return context.session().get("email");
+    String request = context.request().toString();
+    String requestEmail = request.replaceFirst("GET ", "").split("/")[1];
+    String sessionEmail = context.session().get("email");
+
+    if(requestEmail.equals(sessionEmail)) {
+      return sessionEmail;
+    }
+    else {
+      return null;
+    }
   }
 
   /**
