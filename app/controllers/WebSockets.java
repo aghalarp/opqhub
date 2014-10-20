@@ -38,6 +38,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,6 +53,7 @@ public class WebSockets extends Controller {
    *
    * @return A WebSocket object.
    */
+
   public static WebSocket<String> handleSocket() {
     return new WebSocket<String>() {
       @Override
@@ -59,11 +61,12 @@ public class WebSockets extends Controller {
         Logger.info("Websocket ready");
 
         in.onMessage(new F.Callback<String>() {
+
           @Override
           public void invoke(String s) throws Throwable {
 
             OpqPacket opqPacket = JsonOpqPacketFactory.opqPacketFromJson(s);
-            Logger.info(String.format("Received %s from %s with duration %d", opqPacket.packetType, opqPacket.deviceId, opqPacket.duration));
+            Logger.info(String.format("[%s] Received %s from %s with duration %d, v=%s", DateUtils.toDateTime(opqPacket.timestamp), opqPacket.packetType, opqPacket.deviceId, opqPacket.duration, opqPacket.voltage.toString()));
             handlePacket(opqPacket, out);
           }
         });

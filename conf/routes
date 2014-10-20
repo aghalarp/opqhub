@@ -13,7 +13,7 @@
 #   You should have received a copy of the GNU General Public License
 #   along with opq-ao.  If not, see <http://www.gnu.org/licenses/>.
 #
-#   Copyright 2013 Anthony Christe
+#   Copyright 2014 Anthony Christe
 
 # Routes
 # This file defines all application routes (Higher priority routes first)
@@ -22,14 +22,11 @@
 # Home page
 GET         /                                           controllers.Application.index()
 
-GET         /exportdata                                 controllers.Data.exportData()
-
 # Sign Up
 GET         /signup                                     controllers.Person.signup()
 POST        /signup                                     controllers.Person.save()
 
 # Log in/out
-GET         /public/login                               controllers.Application.login()
 POST        /public/login/authenticate                  controllers.Application.authenticate()
 GET         /:email/logout                              controllers.Application.logout(email: String)
 
@@ -44,16 +41,9 @@ GET         /device/:deviceId/:accessKey                controllers.Administrati
 POST        /device                                     controllers.Administration.saveDeviceConfiguration()
 
 # Events
-#GET         /private/monitor/events                            controllers.Events.newEvents()
 GET         /private/monitor/events                     controllers.Events.eventsByPage(p: Integer ?= 0, after: Long ?= 0)
-POST        /private/monitor/events/filter              controllers.Events.filterEvents()
-GET         /private/monitor/events/:eventId            controllers.Events.eventDetails(eventId: Long)
-
-GET         /private/monitor/events/:eventId/raw        controllers.Events.rawPowerData(eventId: Long)
-
 
 # Public Monitoring
-GET         /public/monitor                             controllers.PowerQualityMonitoring.publicMonitor()
 POST        /public/alerts                              controllers.PowerQualityMonitoring.alertsFromIds()
 GET         /public                                     controllers.MonitorWebsocket.handleSocket()
 

@@ -32,7 +32,7 @@ public class Person extends Controller {
     // Log the person in
     session("email", person.getEmail());
 
-    return redirect(controllers.routes.Administration.device());
+    return redirect(controllers.routes.Administration.device(person.getEmail()));
   }
 
   /**

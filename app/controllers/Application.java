@@ -26,7 +26,6 @@ import play.data.validation.Constraints;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import views.html.login;
 import views.html.publicmap;
 
 import java.util.Arrays;
@@ -44,7 +43,6 @@ public class Application extends Controller {
    * @return The rendered view for the homepage.
    */
   public static Result index() {
-
     return ok(publicmap.render());
   }
 
@@ -63,9 +61,9 @@ public class Application extends Controller {
    * Display the login page.
    * @return Rendered view of the login page.
    */
-  public static Result login() {
-    return ok(login.render(form(Login.class)));
-  }
+  //public static Result login() {
+  //  return ok(login.render(form(Login.class)));
+  //}
 
   /**
    * Authenticates a user by storing their email in the session.
@@ -75,11 +73,14 @@ public class Application extends Controller {
     Form<Login> loginForm = form(Login.class).bindFromRequest();
     if (loginForm.hasErrors()) {
       Logger.info(String.format("Bad login attempt from %s", loginForm.data().get("loginEmail")));
-      return badRequest(login.render(loginForm));
+      //return badRequest(login.render(loginForm));
+      flash("warn", "Bag login attempt.");
+      return redirect(routes.Application.index());
     }
     else {
       session().clear();
       session("email", loginForm.get().loginEmail);
+      flash("success", "Logg");
       return redirect(routes.Application.index());
     }
   }
