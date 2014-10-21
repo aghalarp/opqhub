@@ -73,10 +73,6 @@ var ws = {
       case "public-map-response":
         map.update(data);
         events.update(data);
-        if(!filters.alreadyAdjustedSliders) {
-          filters.alreadyAdjustedSliders = true;
-          filters.adjust(data);
-        }
         break;
       // Update event details
       case "public-event-response":
@@ -94,13 +90,6 @@ var ws = {
  * Manages the controls/filters.
  */
 var filters = {
-  alreadyAdjustedSliders: false,
-
-  /**
-   * A mapping from the name of a slider->slider object.
-   */
-  sliders: {},
-
   /**
    * Request frequency events from cloud.
    */
