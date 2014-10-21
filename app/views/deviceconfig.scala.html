@@ -32,14 +32,13 @@
           <p>To change the location of your device, select a new location on the map.</p>
         </div>
 
-        <!-- Sign Up Form -->
         <div class="col-lg-4">
           @if(flash.contains("updated")) {
             <p class="success">
             @flash.get("updated")
             </p>
           }
-          <form action="/device" method="POST" class="form-horizontal" role="form">
+          <form action="@routes.Administration.saveDeviceConfiguration(session.get("email"), deviceForm("accessKey.accessKey").value, Long.parseLong(deviceForm("deviceId").value))" method="POST" class="form-horizontal" role="form">
             @if(location == null) {
               <input type="hidden" id="northEastLatitude" name="northEastLatitude" />
               <input type="hidden" id="northEastLongitude" name="northEastLongitude" />
