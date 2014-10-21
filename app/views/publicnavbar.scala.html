@@ -18,7 +18,7 @@
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" id="dropdown-menu" role="menu" aria-labelledby="dropdown-menu">
-        <form id="dropdown-form" class="navbar-form" role="form" method="POST" action="/public/login/authenticate">
+        <form id="dropdown-form" class="navbar-form" role="form" method="POST" action="@routes.Application.authenticate()">
           <div class="row">
             @helper.emailinput("loginEmail", "Email *", "dropdown-input", "dropdown-input", "jane.doe@email.com")
           </div>

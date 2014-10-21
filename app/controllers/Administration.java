@@ -60,11 +60,14 @@ public class Administration extends Controller {
    * Updates person fields and redirects back to person administration.
    * @return Redirect to person administration.
    */
-  @Security.Authenticated(Secured.class)
-  public static Result updateUser() {
+  @Security.Authenticated(SecuredAndMatched.class)
+  public static Result updateUser(String email) {
     Person person = Person.getLoggedIn();
     Form<Person> personForm = form(Person.class).bindFromRequest();
 
+    if(!person.getEmail().equals(email)) {
+        return unauthorized("You do not have access to edit this person's data.");
+    }
     if (personForm.hasErrors()) {
       Logger.debug(String.format("%s user information NOT updated due to errors %s", person.getPrimaryKey(), personForm.errors().toString()));
       return ok(error.render("Problem updating person", personForm.errors().toString()));
@@ -98,8 +101,8 @@ public class Administration extends Controller {
    * Saves a new OPQ device to the DB.
    * @return Redirect to device administration.
    */
-  @Security.Authenticated(Secured.class)
-  public static Result saveDevice() {
+  @Security.Authenticated(SecuredAndMatched.class)
+  public static Result saveDevice(String email) {
     Form<AccessKey> keyForm = form(AccessKey.class).bindFromRequest();
 
     if (keyForm.hasErrors()) {
@@ -110,6 +113,10 @@ public class Administration extends Controller {
     AccessKey key = keyForm.get();
     AccessKey existingKey;
     Person person = Person.getLoggedIn();
+
+    if(!person.getEmail().equals(email)) {
+        return unauthorized("You do not have access to modify this account");
+    }
 
     if(AccessKey.keyExists(key)) {
       existingKey = AccessKey.findKey(key);
@@ -139,10 +146,11 @@ public class Administration extends Controller {
     Logger.debug(String.format("New key [%s] saved", key));
 
     flash("added", "Device added");
-    return redirect(routes.Administration.configureDevice(key.getDeviceId(), key.getAccessKey()));
+    return redirect(routes.Administration.configureDevice(email, key.getAccessKey(),key.getDeviceId()));
   }
 
-  public static Result configureDevice(Long deviceId, String accessKey) {
+  @Security.Authenticated(SecuredAndMatched.class)
+  public static Result configureDevice(String email, String accessKey, Long deviceId) {
     AccessKey key = AccessKey.findKey(deviceId, accessKey);
     OpqDevice device = key.getOpqDevice();
     Location location = device.getLocation();
@@ -152,7 +160,7 @@ public class Administration extends Controller {
     return ok(deviceconfig.render(key.getDeviceId(), key.getAccessKey(), deviceForm, locationForm, location));
   }
 
-  public static Result saveDeviceConfiguration() {
+  public static Result saveDeviceConfiguration(String email, String accessKey, Long deviceId) {
     Form<OpqDevice> deviceForm = form(OpqDevice.class).bindFromRequest();
     Form<Location> locationForm = form(Location.class).bindFromRequest();
 
@@ -192,6 +200,6 @@ public class Administration extends Controller {
 
 
     flash("updated", "Updated device information.");
-    return redirect(routes.Administration.configureDevice(device.getDeviceId(), device.getAccessKey().getAccessKey()));
+    return redirect(routes.Administration.configureDevice(email, accessKey, deviceId));
   }
 }

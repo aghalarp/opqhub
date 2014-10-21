@@ -40,7 +40,7 @@
             @flash.get("updated")
             </p>
           }
-          <form action="/private/admin/user/update" method="POST" name="userAdminForm" id="userAdminForm" class="form-horizontal" role="form">
+          <form action="@routes.Administration.updateUser(session.get("email"))" method="POST" name="userAdminForm" id="userAdminForm" class="form-horizontal" role="form">
 
             <!-- First name -->
             @helper.textinput("firstName", "First Name *", "col-sm-3", "col-sm-7", "Jane", personForm("firstName").value)

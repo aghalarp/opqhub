@@ -4,7 +4,7 @@
 # --- !Ups
 
 create table access_key (
-  primary_key               bigint not null,
+  primary_key               bigint auto_increment not null,
   device_id                 bigint,
   access_key                varchar(255),
   opq_device_primary_key    bigint,
@@ -12,7 +12,7 @@ create table access_key (
 ;
 
 create table event (
-  primary_key               bigint not null,
+  primary_key               bigint auto_increment not null,
   timestamp                 bigint,
   event_type                integer,
   frequency                 double,
@@ -26,14 +26,14 @@ create table event (
 ;
 
 create table event_data (
-  primary_key               bigint not null,
+  primary_key               bigint auto_increment not null,
   waveform                  MEDIUMTEXT,
   event_primary_key         bigint,
   constraint pk_event_data primary key (primary_key))
 ;
 
 create table location (
-  primary_key               bigint not null,
+  primary_key               bigint auto_increment not null,
   grid_id                   varchar(255),
   grid_scale                double,
   grid_row                  integer,
@@ -46,10 +46,10 @@ create table location (
 ;
 
 create table opq_device (
-  primary_key               bigint not null,
+  primary_key               bigint auto_increment not null,
   device_id                 bigint,
   description               varchar(255),
-  sharing_data              boolean,
+  sharing_data              tinyint(1) default 0,
   last_heartbeat            bigint,
   access_key_primary_key    bigint,
   location_primary_key      bigint,
@@ -57,7 +57,7 @@ create table opq_device (
 ;
 
 create table person (
-  primary_key               bigint not null,
+  primary_key               bigint auto_increment not null,
   first_name                varchar(255),
   last_name                 varchar(255),
   email                     varchar(255),
@@ -77,18 +77,6 @@ create table access_key_person (
   person_primary_key             bigint not null,
   constraint pk_access_key_person primary key (access_key_primary_key, person_primary_key))
 ;
-create sequence access_key_seq;
-
-create sequence event_seq;
-
-create sequence event_data_seq;
-
-create sequence location_seq;
-
-create sequence opq_device_seq;
-
-create sequence person_seq;
-
 alter table access_key add constraint fk_access_key_opqDevice_1 foreign key (opq_device_primary_key) references opq_device (primary_key) on delete restrict on update restrict;
 create index ix_access_key_opqDevice_1 on access_key (opq_device_primary_key);
 alter table event add constraint fk_event_accessKey_2 foreign key (access_key_primary_key) references access_key (primary_key) on delete restrict on update restrict;
@@ -106,39 +94,27 @@ create index ix_opq_device_location_7 on opq_device (location_primary_key);
 
 
 
-alter table access_key_person add constraint fk_access_key_person_access_k_01 foreign key (access_key_primary_key) references access_key (primary_key) on delete restrict on update restrict;
+alter table access_key_person add constraint fk_access_key_person_access_key_01 foreign key (access_key_primary_key) references access_key (primary_key) on delete restrict on update restrict;
 
 alter table access_key_person add constraint fk_access_key_person_person_02 foreign key (person_primary_key) references person (primary_key) on delete restrict on update restrict;
 
 # --- !Downs
 
-SET REFERENTIAL_INTEGRITY FALSE;
+SET FOREIGN_KEY_CHECKS=0;
 
-drop table if exists access_key;
+drop table access_key;
 
-drop table if exists access_key_person;
+drop table access_key_person;
 
-drop table if exists event;
+drop table event;
 
-drop table if exists event_data;
+drop table event_data;
 
-drop table if exists location;
+drop table location;
 
-drop table if exists opq_device;
+drop table opq_device;
 
-drop table if exists person;
+drop table person;
 
-SET REFERENTIAL_INTEGRITY TRUE;
-
-drop sequence if exists access_key_seq;
-
-drop sequence if exists event_seq;
-
-drop sequence if exists event_data_seq;
-
-drop sequence if exists location_seq;
-
-drop sequence if exists opq_device_seq;
-
-drop sequence if exists person_seq;
+SET FOREIGN_KEY_CHECKS=1;
 

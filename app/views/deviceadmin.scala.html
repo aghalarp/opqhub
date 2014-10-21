@@ -56,7 +56,7 @@
                 <td>@key.getAccessKey()</td>
                 <td>@key.getOpqDevice.getSharingData</td>
                 <td>
-                  <a href="@routes.Administration.configureDevice(key.getDeviceId, key.getAccessKey)" class="btn btn-warning btn-xs pull-right">Configure OPQBox</a>
+                  <a href="@routes.Administration.configureDevice(session.get("email"), key.getAccessKey, key.getDeviceId)" class="btn btn-warning btn-xs pull-right">Configure OPQBox</a>
                 </td>
               </tr>
             }
@@ -74,7 +74,7 @@
             <h3 class="panel-title">Connect to OPQBox</h3>
           </div>
           <div class="panel-body">
-            <form id="addDeviceForm" action="/private/admin/device/save" method="POST" class="form-horizontal">
+            <form id="addDeviceForm" action="@routes.Administration.saveDevice(session.get("email"))" method="POST" class="form-horizontal">
               @helper.textinput("deviceId", "Device Id *", "col-sm-3", "col-sm-7", "")
               @helper.textinput("accessKey", "Access Key *", "col-sm-3", "col-sm-7", "")
               <input type="hidden" name="sharingData" id="sharingData" value="false" />
