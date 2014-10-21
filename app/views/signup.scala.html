@@ -34,7 +34,7 @@
 
         <!-- Sign Up Form -->
         <div class="col-lg-8">
-          <form action="/signup" method="POST" name="userAdminForm" id="userAdminForm" class="form-horizontal" role="form">
+          <form action="@routes.Person.signup()" method="POST" name="userAdminForm" id="userAdminForm" class="form-horizontal" role="form">
 
             <!-- First name -->
             @helper.textinput("firstName", "First Name *", "col-sm-3", "col-sm-7", "Jane")
