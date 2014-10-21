@@ -22,5 +22,4 @@ deploy.sh
 *.old
 *.gz
 *.out
-*.jar
 *.autosave
