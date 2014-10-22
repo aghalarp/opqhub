@@ -25,26 +25,9 @@ var ws = {
    */
   requestUpdate: function() {
     if (ws.websocket) {
-      // Bind the filters from the view
-      filters.update();
-      var json = JSON.stringify({
-        packetType: "public-update",
-        requestFrequency: filters.requestFrequency,
-        requestVoltage: filters.requestVoltage,
-        requestHeartbeats: filters.requestHeartbeats,
-        requestIticSevere: filters.requestIticSevere,
-        requestIticModerate: filters.requestIticModerate,
-        requestIticOk: filters.requestIticOk,
-        minFrequency: filters.minFrequency,
-        maxFrequency: filters.maxFrequency,
-        minVoltage: filters.minVoltage,
-        maxVoltage: filters.maxVoltage,
-        minDuration: filters.minDuration,
-        maxDuration: filters.maxDuration,
-        startTimestamp: filters.startTimestamp,
-        stopTimestamp: filters.stopTimestamp,
-        visibleIds: map.gridMap.getVisibleIds()});
-      ws.websocket.send(json);
+      var json = filters.toJson();
+      json.packetType = "public-update";
+      ws.websocket.send(JSON.stringify(json));
     }
   },
 
@@ -73,6 +56,14 @@ var ws = {
       case "public-map-response":
         map.update(data);
         events.update(data);
+        filters.updateDefaults({
+          frequencyGt: data['minFrequency'],
+          frequencyLt: data['maxFrequency'],
+          voltageGt: data['minVoltage'],
+          voltageLt: data['maxVoltage'],
+          durationGt: 0,
+          durationLt: data['maxDuration']
+        });
         break;
       // Update event details
       case "public-event-response":
@@ -82,266 +73,6 @@ var ws = {
       default:
         console.log("Unknown packet type: " + data.packetType);
         break;
-    }
-  }
-};
-
-/**
- * Manages the controls/filters.
- */
-var filters = {
-  /**
-   * Request frequency events from cloud.
-   */
-  requestFrequency: false,
-
-  /**
-   * Request voltage events from cloud.
-   */
-  requestVoltage: false,
-
-  /**
-   * Request heartbeat events from cloud.
-   */
-  requestHeartbeats: false,
-
-  /**
-   * Request events with a frequency >= minFrequency.
-   */
-  minFrequency: 0.0,
-
-  /**
-   * Request events with a frequency <= maxFrequency.
-   */
-  maxFrequency: 0.0,
-
-  /**
-   * Request events with a voltage >= minVoltage.
-   */
-  minVoltage: 0.0,
-
-  /**
-   * Request events with a voltage <= maxVoltage.
-   */
-  maxVoltage: 0.0,
-
-  /**
-   * Request events with a duration >= minDuration.
-   */
-  minDuration: 0.0,
-
-  /**
-   * Request events with a duration <= maxDuration.
-   */
-  maxDuration: 0.0,
-
-  /**
-   * Request severe itic events.
-   */
-  requestIticSevere: false,
-
-  /**
-   * Request moderate itic events.
-   */
-  requestIticModerate: false,
-
-  /**
-   * Request ok itic events.
-   */
-  requestIticOk: false,
-
-  /**
-   * Request events with timestamp >= startTimestamp.
-   */
-  startTimestamp: 0,
-
-  /**
-   * Request events with timestamp <= stopTimestamp.
-   */
-  stopTimestamp: 0,
-
-  /**
-   * Setup action events for controls/filters and initialize the sliders.
-   */
-  init: function() {
-    // Setup date time pickers
-    $('#startTimestamp').datetimepicker();
-    $('#stopTimestamp').datetimepicker();
-
-    // Action listeners
-    $('#updateBtn').click(function() {
-      filters.updatePage();
-    });
-
-    $('#resetBtn').click(function() {
-      filters.reset();
-    });
-
-    // Setup sliders
-    filters.initSliders();
-  },
-
-  /**
-   * Initialize sliders.  */ initSliders: function() {
-    var sliderList = [{title: 'frequency-slider', unit: 'Hz'},
-                      {title: 'voltage-slider',   unit: 'V'},
-                      {title: 'duration-slider',  unit: 's'}];
-
-    sliderList.map(function(slider) {
-      filters.sliders[slider.title] = $('#' + slider.title);
-      filters.sliders[slider.title].slider({
-        formatter: function(v) {return " " + v + " " + slider.unit;},
-        tooltip: 'always'
-       });
-    });
-  },
-
-  /**
-   * Returns the min and max range of the passed in slider.
-   * @param slider The slider to determine the min/max range of.
-   * @returns {*} The min max range in the form of [min, max].
-   */
-  sliderVals: function(slider) {
-    return slider.slider('getAttribute', ['value']);
-  },
-
-  /**
-   * Returns the minimum of the range given by slider.
-   * @param slider The slider to find the minimum range for.
-   * @returns {*} The minimum of the range of the passed in slider.
-   */
-  sliderMin: function(slider) {
-    return filters.sliderVals(slider)[0];
-  },
-
-  /**
-   * Returns the maximum of the range given by slider.
-   * @param slider The slider to find the maximum range for.
-   * @returns {*} The maximum of the range of the passed in slider.
-   */
-  sliderMax: function(slider) {
-    return filters.sliderVals(slider)[1];
-  },
-
-  /**
-   * Retrieves the timestamps from the time interval calendar widgets.
-   * If the calendars are invalid (i.e. start value after stop value), this method will return an empty
-   * list to signify a validation error.
-   *
-   * If the start calendar is empty, choose "0" for the start of time.
-   * If the stop calendar is empty, choose the current time for the stop time.
-   * @returns {*} The start and stop timestamp in the form [start, stop] or [] on a validation error.
-   */
-  timestamps: function() {
-    var startTime = $("#startTimestampInput").val() == "" ?
-      0 :
-      $("#startTimestamp").data("DateTimePicker").getDate()._d.getTime();
-
-    var stopTime = $("#stopTimestampInput").val() == "" ?
-      new Date().getTime() :
-      $("#stopTimestamp").data("DateTimePicker").getDate()._d.getTime();
-
-    if(startTime < stopTime) {
-      return [startTime, stopTime];
-    }
-    else {
-      return [];
-    }
-  },
-
-  adjust: function(data) {
-    function updateSlider(slider, min, max) {
-      var intMin = Math.round(min);
-      var intMax = Math.round(max);
-
-      // Update the dom
-      var rangeValue = "[" + intMin + "," + intMax + "]";
-      $(slider).attr("data-slider-value", rangeValue);
-      $(slider).attr("data-slider-min", intMin.toString());
-      $(slider).attr("data-slider-max", intMax.toString());
-
-      $(slider).slider("setAttribute", "min", intMin);
-      $(slider).slider("setAttribute", "max", intMax);
-      $(slider).slider("setValue", [intMin, intMax]);
-    }
-
-    $("#max-duration").text(data.maxDuration + 1);
-    $("#min-frequency").text(parseInt(data.minFrequency) - 1);
-    $("#max-frequency").text(parseInt(data.maxFrequency) + 1);
-    $("#min-voltage").text(parseInt(data.minVoltage) - 1);
-    $("#max-voltage").text(parseInt(data.maxVoltage) + 1);
-    updateSlider("#frequency-slider", data.minFrequency - 1, data.maxFrequency + 1);
-    updateSlider("#voltage-slider", data.minVoltage - 1, data.maxVoltage + 1);
-    updateSlider("#duration-slider", 0, data.maxDuration + 1);
-  },
-
-  /**
-   * Bind the data on the page to the internal data model of the filter.
-   * @returns {boolean} true if bound without validation errors, false if there are validation errors.
-   */
-  update: function() {
-    filters.requestFrequency    = $('#requestFrequency').is(':checked');
-    filters.requestVoltage      = $('#requestVoltage').is(':checked');
-    filters.minFrequency        = filters.sliderMin(filters.sliders['frequency-slider']);
-    filters.maxFrequency        = filters.sliderMax(filters.sliders['frequency-slider']);
-    filters.minVoltage          = filters.sliderMin(filters.sliders['voltage-slider']);
-    filters.maxVoltage          = filters.sliderMax(filters.sliders['voltage-slider']);
-    filters.minDuration         = filters.sliderMin(filters.sliders['duration-slider']);
-    filters.maxDuration         = filters.sliderMax(filters.sliders['duration-slider']);
-    filters.requestIticSevere   = $('#requestIticSevere').is(':checked');
-    filters.requestIticModerate = $('#requestIticModerate').is(':checked');
-    filters.requestIticOk       = $('#requestIticOk').is(':checked');
-
-    var timestamps = filters.timestamps();
-    if(timestamps.length == 2) {
-      filters.startTimestamp = timestamps[0];
-      filters.stopTimestamp = timestamps[1];
-      $("#startTimestamp").removeClass("has-error");
-      $("#stopTimestamp").removeClass("has-error");
-      $("#error").text(null);
-      return true; } else { $("#startTimestamp").addClass("has-error");
-      $("#stopTimestamp").addClass("has-error");
-      $("#error").text("Start date should be before end date.");
-      return false;
-    }
-  },
-
-  /**
-   * Reset all filters/controls back to default state.
-   */
-  reset: function() {
-    // Reset sliders to min/max of slider range
-    Object.keys(filters.sliders).map(function(key) {
-      var slider = filters.sliders[key];
-      var min = slider.slider('getAttribute', ['min']);
-      var max = slider.slider('getAttribute', ['max']);
-      slider.slider('setValue', [min, max]);
-    });
-
-    // Reset timestamps
-    $("#startTimestampInput").val(null);
-    $("#stopTimestampInput").val(null);
-
-    // Reset check boxes
-    $('#requestFrequency').prop('checked', true);
-    $('#requestVoltage').prop('checked', true);
-    $('#requestIticServere').prop('checked', true);
-    $('#requestIticModerate').prop('checked', true);
-    $('#requestIticOk').prop('checked', true);
-
-    // Reset map
-    gridMap.setView(gridMap.island.OAHU.latLng, gridMap.island.OAHU.defaultZoom);
-
-    // Get new data
-    ws.requestUpdate();
-  },
-
-  /**
-   * Update the page if there are no validation errors.
-   */
-  updatePage: function() {
-    if(filters.update()) {
-      ws.requestUpdate();
     }
   }
 };
@@ -415,8 +146,8 @@ var events = {
 
     // Update statistics
     $("#totalEvents").text(data.totalEvents);
-    //$("#totalFrequencyEvents").text(data.totalFrequencyEvents);
-    //$("#totalVoltageEvents").text(data.totalVoltageEvents);
+    $("#totalFrequencyEvents").text(data.totalFrequencyEvents);
+    $("#totalVoltageEvents").text(data.totalVoltageEvents);
 
     // Handle click events on event ticker
     $('#events').find('> tbody > tr').click(function() {
@@ -527,7 +258,6 @@ var details = {
    * @param max The maximum y-point in the data.
    */
   updateWaveform: function(points, min, max) {
-    console.log(points);
     var plotOptions = {
       min: min - 0,
       max: max + 0,
@@ -628,6 +358,6 @@ var html = {
 function initPage(serverWs) {
   map.init();
   details.init();
-  ws.init(serverWs);
   filters.init();
+  ws.init(serverWs);
 }
