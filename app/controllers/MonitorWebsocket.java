@@ -106,7 +106,6 @@ public class MonitorWebsocket extends Controller {
     double voltage;
     double minVoltage = Double.MAX_VALUE;
     double maxVoltage = Double.MIN_VALUE;
-
     // Update event statistics
     Map<String, String> tmpEvent;
     for(Event event : events) {
@@ -156,12 +155,11 @@ public class MonitorWebsocket extends Controller {
         }  
       }
     }
-
     resp.totalAffectedDevices = affectedDevices.size();
 
     List<OpqDevice> devices = DbUtils.getAnyLike(OpqDevice.class, "location.gridId", req.visibleIds).findList();
-
     // Update device statistics
+    int i = 0;
     for (OpqDevice device : devices) {
       if (device.getSharingData()) {
         gridId = device.getLocation().getGridId().substring(0, gridIdLength);
@@ -169,11 +167,10 @@ public class MonitorWebsocket extends Controller {
           resp.gridIdsToDevices.put(gridId, 0);
         }
         resp.gridIdsToDevices.put(gridId, resp.gridIdsToDevices.get(gridId) + 1);
-
         resp.totalRegisteredDevices++;
-
-        if (device.getLastHeartbeat() > DateUtils.getPastTime(DateUtils.getMillis(), DateUtils.TimeUnit.Day, 1)) {
+        if (device.getLastHeartbeat() != null && device.getLastHeartbeat() > DateUtils.getPastTime(DateUtils.getMillis(), DateUtils.TimeUnit.Day, 1)) {
           resp.totalActiveDevices++;
+
         }
       }
     }

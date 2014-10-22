@@ -27,6 +27,7 @@ var ws = {
     if (ws.websocket) {
       var json = filters.toJson();
       json.packetType = "public-update";
+      console.log("Request update", json);
       ws.websocket.send(JSON.stringify(json));
     }
   },
@@ -54,6 +55,7 @@ var ws = {
     switch(data.packetType) {
       // Update the entire page
       case "public-map-response":
+        console.log(data);
         map.update(data);
         events.update(data);
         filters.updateDefaults({
