@@ -62,7 +62,12 @@ var ws = {
           voltageGt: data['minVoltage'],
           voltageLt: data['maxVoltage'],
           durationGt: 0,
-          durationLt: data['maxDuration']
+          durationLt: data['maxDuration'],
+          requestFrequency: true,
+          requestVoltage: true,
+          requestIticSevere: true,
+          requestIticModerate: true,
+          requestIticOk: true
         });
         break;
       // Update event details

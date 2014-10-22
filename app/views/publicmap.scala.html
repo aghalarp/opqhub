@@ -256,7 +256,9 @@
 
         $("#resetBtn").click(function() {
           filters.reset();
+         // map.gridMap.setView(map.gridMap.island.OAHU.latLng, map.gridMap.island.OAHU.defaultZoom);
         });
+
         $("#updateBtn").click(function() {
           ws.requestUpdate();
         });

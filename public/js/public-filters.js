@@ -33,7 +33,7 @@ var filters = {
       $(filters.toId(filter)).val(Math.round(val));
     }
     if(filters.checkBoxes.indexOf(filter) > -1) {
-      return $(filters.toId(filter)).prop('checked', true);
+      $(filters.toId(filter)).prop('checked', val);
     }
     if(filters.timeRanges.indexOf(filter) > -1) {
 
@@ -82,7 +82,9 @@ var filters = {
   },
 
   reset: function() {
+
     Object.keys(filters.defaults).map(function(filter){
+
       filters.setFilter(filter, filters.defaults[filter]);
     });
     $("#startTimestampInput").val(null);
