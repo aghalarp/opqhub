@@ -106,6 +106,10 @@ public class MonitorWebsocket extends Controller {
     double voltage;
     double minVoltage = Double.MAX_VALUE;
     double maxVoltage = Double.MIN_VALUE;
+    long timestamp;
+    long minTimestamp = DateUtils.getPastTime(DateUtils.getMillis(), DateUtils.TimeUnit.Year, 2);
+    long maxTimestamp = DateUtils.getMillis();
+
     // Update event statistics
     Map<String, String> tmpEvent;
     for(Event event : events) {
@@ -114,16 +118,21 @@ public class MonitorWebsocket extends Controller {
       duration = event.getDuration();
       frequency = event.getFrequency();
       voltage = event.getVoltage();
+      timestamp = event.getTimestamp();
       if(duration < 500 && duration > maxDuration) maxDuration = duration;
       if(frequency > 0 && frequency < minFrequency) minFrequency = frequency;
-      if(frequency > maxFrequency) maxFrequency = frequency;
+      if(frequency < 200 && frequency > maxFrequency) maxFrequency = frequency;
       if(voltage > 0 && voltage < minVoltage) minVoltage = voltage;
       if(voltage > maxVoltage) maxVoltage = voltage;
+      if(timestamp > DateUtils.getPastTime(DateUtils.getMillis(), DateUtils.TimeUnit.Year, 2) && timestamp < minTimestamp) minTimestamp = timestamp;
+      if(timestamp < DateUtils.getMillis() && timestamp > maxTimestamp) maxTimestamp = timestamp;
       resp.maxDuration = maxDuration;
       resp.minFrequency = minFrequency;
       resp.maxFrequency = maxFrequency;
       resp.minVoltage = minVoltage;
       resp.maxVoltage = maxVoltage;
+      resp.minTimestamp = minTimestamp;
+      resp.maxTimestamp = maxTimestamp;
 
       if(req.containsEvent(event)) {
         // Global metrics
