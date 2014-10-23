@@ -27,7 +27,6 @@ var ws = {
     if (ws.websocket) {
       var json = filters.toJson();
       json.packetType = "public-update";
-      console.log("Request update", json);
       ws.websocket.send(JSON.stringify(json));
     }
   },
@@ -69,7 +68,9 @@ var ws = {
           requestVoltage: true,
           requestIticSevere: true,
           requestIticModerate: true,
-          requestIticOk: true
+          requestIticOk: true,
+          startTimestamp: data['minTimestamp'],
+          stopTimestamp: data['maxTimestamp']
         });
         break;
       // Update event details
