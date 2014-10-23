@@ -17,7 +17,7 @@ var filters = {
     requestIticModerate: true,
     requestIticOk: true,
     startTimestamp: 0,
-    stopTimestamp: 10000000
+    stopTimestamp: new Date().getTime()
   },
 
   toId: function(filter) {
