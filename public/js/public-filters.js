@@ -140,7 +140,14 @@ var filters = {
           messages.push("Minimum time range must be before the maximum time range.");
       }
 
-      $(errorDiv).html(messages.join("<br />"));
+      if(messages.length == 0) {
+          $(errorDiv).html("");
+          return true;
+      }
+      else {
+          $(errorDiv).html(messages.join("<br />"));
+          return false;
+      }
   }
 
 };

@@ -267,7 +267,9 @@
         });
 
         $("#updateBtn").click(function() {
-          ws.requestUpdate();
+          if(filters.validate('#messages')) {
+            ws.requestUpdate();
+          }
         });
     });
 
