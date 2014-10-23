@@ -111,6 +111,36 @@ var filters = {
       stopTimestamp: orDefault('stopTimestamp'),
       visibleIds: filters.queryFilter('visibleIds')
     };
+  },
+
+  validate: function(errorDiv) {
+      var messages = [];
+
+      function isNumeric(n) {
+          return !isNaN(n);
+      }
+
+      function numericAndOrdered(min, max, name) {
+          if(!isNumeric(min)) {
+              messages.push("Minimum "+ name + " must be a numeric value.");
+          }
+          if(!isNumeric(max)) {
+              messages.push("Maximum "+ name + " must be a numeric value.");
+          }
+          if(parseFloat(min) > parseFloat(max)) {
+              messages.push("Minimum "+ name + " must be smaller than maximum "+ name + ".");
+          }
+      }
+
+      numericAndOrdered(filters.queryFilter('frequencyGt'), filters.queryFilter('frequencyLt'), 'frequency');
+      numericAndOrdered(filters.queryFilter('voltageGt'), filters.queryFilter('voltageLt'), 'voltage');
+      numericAndOrdered(filters.queryFilter('durationGt'), filters.queryFilter('durationLt'), 'duration');
+
+      if(parseFloat(filters.queryFilter('startTimestamp')) > parseFloat(filters.queryFilter('stopTimestamp'))) {
+          messages.push("Minimum time range must be before the maximum time range.");
+      }
+
+      $(errorDiv).html(messages.join("<br />"));
   }
 
 };

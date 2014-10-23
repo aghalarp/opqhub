@@ -28,6 +28,12 @@
 
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("css/site.css")">
 
+    <!-- Validation -->
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/additional-methods.min.js"></script>
+
+
+
   </head>
   <body>
       <!-- Responsive navbar -->
@@ -44,6 +50,7 @@
 
             <!-- Controls -->
           <div class="row">
+            <form id="filtersForm">
             <div class="panel panel-default">
               <div class="panel-heading">
                 <h3 class="panel-title">Display</h3>
@@ -145,12 +152,14 @@
                 <div class="row">
                   <label class="col-sm-2">Actions</label>
                   <div class="col-sm-8">
-                    <button class="btn btn-primary btn-xs" id="updateBtn">Update</button>
+                    <button type="button" class="btn btn-primary btn-xs updateBtn" id="updateBtn">Update</button>
                     <button class="btn btn-danger btn-xs" id="resetBtn">Reset</button>
                   </div>
                 </div>
               </div>
+              <div id="messages" class="invalid"></div>
             </div>
+            </form>
           </div>
 
             <!-- Map -->
@@ -262,7 +271,8 @@
         $("#updateBtn").click(function() {
           ws.requestUpdate();
         });
-      });
+    });
+
     </script>
   </body>
 </html>
