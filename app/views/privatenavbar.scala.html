@@ -22,6 +22,8 @@
         <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Administration.device(session.get("email"))"><span class="glyphicon glyphicon-hdd"></span> OPQBoxes</a></li>
         <li role="presentation" class="divider"></li>
         <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Application.index()"><span class="glyphicon glyphicon-eye-open"></span> Public Analysis</a></li>
+        <li role="presentation" class="divider"></li>
+        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.PrivatePowerQuality.getMain(session.get("email"))"><span class="glyphicon glyphicon-eye-close"></span> Private Analysis</a></li>
         <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.PrivatePowerQuality.getTrends(session.get("email"))"><span class="glyphicon glyphicon-signal"></span> PQ Trends</a></li>
         @*<li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Events.eventsByPage(0, 0)"><span class="glyphicon glyphicon-eye-close"></span> User Analysis</a></li>*@
         <li role="presentation" class="divider"></li>
