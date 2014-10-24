@@ -109,7 +109,6 @@ public class Data extends Controller {
       Person person = Person.find().where().eq("email", email).findUnique();
       Set<AccessKey> accessKeys = person.getAccessKeys();
       Map<OpqDevice, ArrayList<Double>> deviceToVoltageTrends = new HashMap<>();
-      ObjectNode json = Json.newObject();
       OpqDevice tmpDevice;
       List<Event> events;
       Long timestamp;
@@ -118,7 +117,7 @@ public class Data extends Controller {
       for(AccessKey accessKey : accessKeys) {
           tmpDevice = accessKey.getOpqDevice();
           if(!deviceToVoltageTrends.containsKey(tmpDevice)) {
-              deviceToVoltageTrends.put(tmpDevice, new ArrayList<>());
+              deviceToVoltageTrends.put(tmpDevice, new ArrayList<Double>());
           }
           events = accessKey.getEvents();
           for(Event event : events) {
