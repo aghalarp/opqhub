@@ -46,7 +46,8 @@ GET         /:email/trends                               controllers.PrivatePowe
 # Private API
 GET         /:email/api/events                           controllers.Data.getEvents(email: String, timestampGt: Long ?= 0, timestampLt: Long ?= Long.MaxValue)
 GET         /:email/api/events/:eventKey                 controllers.Data.getWaveform(email: String, eventKey: Long)
-GET         /:email/api/trends                           controllers.Data.getTrends(email: String, timestampGt: Long ?= 0, timestampLt: Long ?=        Long.MaxValue)
+GET         /:email/api/voltages                         controllers.Data.getVoltages(email: String, timestampGt: Long ?= 0, timestampLt: Long ?=        Long.MaxValue)
+GET         /:email/api/frequencies                      controllers.Data.getFrequencies(email: String, timestampGt: Long ?= 0, timestampLt: Long ?=        Long.MaxValue)
 
 # OPQBox websocket connection
 GET         /private/ws                                  controllers.WebSockets.handleSocket()
