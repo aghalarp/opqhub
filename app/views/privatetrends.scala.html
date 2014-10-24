@@ -65,7 +65,9 @@
                        max: ymax
                    },
                    xaxis: {
-                       ticks: 3
+                       mode: "time",
+                       timeformat: "%H:%M"
+                       ticks: 4
                    }
                 });
             }
@@ -81,25 +83,25 @@
                         makeCharts(data, "#v-1h", 100, 140);
                     });
 
-        $.get('@routes.Data.getVoltages(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Hour, 6), utils.DateUtils.getMillis)')
-        .done(function(data) {
-        makeCharts(data, "#v-6h", 100, 140);
-        });
+                $.get('@routes.Data.getVoltages(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Hour, 6), utils.DateUtils.getMillis)')
+                  .done(function(data) {
+                    makeCharts(data, "#v-6h", 100, 140);
+                  });
 
                 $.get('@routes.Data.getFrequencies(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Minute, 5), utils.DateUtils.getMillis)')
-                .done(function(data) {
+                  .done(function(data) {
                     makeCharts(data, "#f-5m", 58, 62);
-                });
+                  });
 
                 $.get('@routes.Data.getFrequencies(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Hour, 1), utils.DateUtils.getMillis)')
-                .done(function(data) {
+                  .done(function(data) {
                     makeCharts(data, "#f-1h", 58, 62);
-                });
+                 });
 
-        $.get('@routes.Data.getFrequencies(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Hour, 6), utils.DateUtils.getMillis)')
-        .done(function(data) {
-        makeCharts(data, "#f-6h", 58, 62);
-        });
+                $.get('@routes.Data.getFrequencies(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Hour, 6), utils.DateUtils.getMillis)')
+                  .done(function(data) {
+                    makeCharts(data, "#f-6h", 58, 62);
+                  });
             });
         </script>
     </body>
