@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>OPQHub - Public Power Quality</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Needed libraries -->
+        <script src="@routes.Assets.at("contrib/js/jquery-2.1.1.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("contrib/js/moment.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("contrib/js/bootstrap.js")" type="text/javascript"></script>
+
+        <script src="@routes.Assets.at("contrib/js/jquery.flot.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("contrib/js/jquery.flot.navigate.js")" type="text/javascript"></script>
+
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("contrib/css/bootstrap.css")">
+
+        <!-- Site specific details -->
+        <script src="@routes.Assets.at("js/trends.js")" type="text/javascript"></script>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("css/site.css")">
+    </head>
+    <body>
+        <!-- Responsive navbar -->
+        @navbar()
+
+        <!-- Main content -->
+        <div class="container" id="main-content">
+            <div class="row">
+                <div id="trends" class="col-lg-12" style="height: 500px">
+
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            function makeCharts(data) {
+                var series = [];
+                var id, description, points;
+                for(var i = 0; i < data.length; i++) {
+                    description = data[i]['description'];
+                    id = data[i]['id'];
+                    points = data[i]['points'];
+                    series.push({label: description + "[" + id + "]", data: []});
+                    for(var j = 0; j < data[i]['points' ].length; j += 2) {
+                        series[series.length - 1]['data' ].push([points[j], points[j + 1]])
+                    }
+                }
+                $.plot("#trends", series, {});
+            }
+
+            $(document ).ready(function() {
+                $.get('@routes.Data.getTrends(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Minute, 15), utils.DateUtils.getMillis)')
+                    .done(function(data) {
+                        makeCharts(data['trends']);
+                    });
+                $("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+            });
+        </script>
+    </body>
+</html>

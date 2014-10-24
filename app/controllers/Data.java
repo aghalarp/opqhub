@@ -123,7 +123,7 @@ public class Data extends Controller {
           events = accessKey.getEvents();
           for(Event event : events) {
               timestamp = event.getTimestamp();
-              if(timestamp != null && timestamp > timestampGt && timestamp < timestampLt) {
+              if(timestamp != null && timestamp > timestampGt && timestamp < timestampLt && event.getVoltage() > 0) {
                   deviceToVoltageTrends.get(tmpDevice).add(timestamp.doubleValue());
                   deviceToVoltageTrends.get(tmpDevice).add(event.getVoltage());
               }
