@@ -63,22 +63,22 @@
             $(document ).ready(function() {
                 $.get('@routes.Data.getVoltages(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Minute, 1), utils.DateUtils.getMillis)')
                     .done(function(data) {
-                        makeCharts(data, "#v-1m", 105, 135);
+                        makeCharts(data, "#v-1m", 115, 125);
                     });
 
                 $.get('@routes.Data.getVoltages(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Hour, 1), utils.DateUtils.getMillis)')
                     .done(function(data) {
-                        makeCharts(data, "#v-1h", 105, 135);
+                        makeCharts(data, "#v-1h", 115, 125);
                     });
 
                 $.get('@routes.Data.getFrequencies(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Minute, 1), utils.DateUtils.getMillis)')
                 .done(function(data) {
-                    makeCharts(data, "#f-1m", 55, 65);
+                    makeCharts(data, "#f-1m", 58, 62);
                 });
 
                 $.get('@routes.Data.getFrequencies(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Hour, 1), utils.DateUtils.getMillis)')
                 .done(function(data) {
-                    makeCharts(data, "#f-1h", 55, 65);
+                    makeCharts(data, "#f-1h", 58, 62);
                 });
             });
         </script>
