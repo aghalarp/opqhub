@@ -23,26 +23,33 @@
         <!-- Main content -->
         <div class="container" id="main-content">
             <div class="row">
-                <div class="col-lg-6">
-                    <p>1 Minute (Voltage)</p>
-                    <div id="v-1m" style="height: 200px"></div>
+                <div class="col-lg-4">
+                    <p>5 Minute (Voltage)</p>
+                    <div id="v-5m" style="height: 200px"></div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <p>1 Hour (Voltage)</p>
                     <div id="v-1h" style="height: 200px"></div>
                 </div>
+                <div class="col-lg-4">
+                    <p>6 Hour (Voltage)</p>
+                    <div id="v-6h" style="height: 200px"></div>
+                </div>
             </div>
             <div class="row">
-                <div class="col-lg-6">
-                    <p>1 Minute (Frequency)</p>
-                    <div id="f-1m" style="height: 200px"></div>
+                <div class="col-lg-4">
+                    <p>5 Minute (Frequency)</p>
+                    <div id="v-5m" style="height: 200px"></div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <p>1 Hour (Frequency)</p>
                     <div id="f-1h" style="height: 200px"></div>
                 </div>
+                <div class="col-lg-4">
+                    <p>6 Hour (Frequency)</p>
+                    <div id="f-6h" style="height: 200px"></div>
+                </div>
             </div>
-        </div>
 
         <script type="text/javascript">
             function makeCharts(data, chart, ymin, ymax) {
@@ -61,9 +68,9 @@
             }
 
             $(document ).ready(function() {
-                $.get('@routes.Data.getVoltages(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Minute, 1), utils.DateUtils.getMillis)')
+                $.get('@routes.Data.getVoltages(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Minute, 5), utils.DateUtils.getMillis)')
                     .done(function(data) {
-                        makeCharts(data, "#v-1m", 115, 125);
+                        makeCharts(data, "#v-5m", 115, 125);
                     });
 
                 $.get('@routes.Data.getVoltages(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Hour, 1), utils.DateUtils.getMillis)')
@@ -71,15 +78,25 @@
                         makeCharts(data, "#v-1h", 115, 125);
                     });
 
-                $.get('@routes.Data.getFrequencies(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Minute, 1), utils.DateUtils.getMillis)')
+        $.get('@routes.Data.getVoltages(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Hour, 6), utils.DateUtils.getMillis)')
+        .done(function(data) {
+        makeCharts(data, "#v-6h", 115, 125);
+        });
+
+                $.get('@routes.Data.getFrequencies(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Minute, 5), utils.DateUtils.getMillis)')
                 .done(function(data) {
-                    makeCharts(data, "#f-1m", 58, 62);
+                    makeCharts(data, "#f-5m", 58, 62);
                 });
 
                 $.get('@routes.Data.getFrequencies(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Hour, 1), utils.DateUtils.getMillis)')
                 .done(function(data) {
                     makeCharts(data, "#f-1h", 58, 62);
                 });
+
+        $.get('@routes.Data.getFrequencies(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Hour, 6), utils.DateUtils.getMillis)')
+        .done(function(data) {
+        makeCharts(data, "#f-6h", 58, 62);
+        });
             });
         </script>
     </body>
