@@ -1,6 +1,14 @@
 package controllers;
 
-import models.*;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import json.Trend;
+import json.Trends;
+import models.AccessKey;
+import models.Event;
+import models.OpqDevice;
+import models.Person;
+import play.libs.Json;
+import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -21,7 +29,7 @@ import java.util.UUID;
 public class Data extends Controller {
   @Security.Authenticated(SecuredAndMatched.class)
   public static Result getEvents(String email, Long timestampGt, Long timestampLt) {
-    models.Person person = models.Person.find().where().eq("email", email).findUnique();
+    Person person = Person.find().where().eq("email", email).findUnique();
     Set<AccessKey> accessKeys = person.getAccessKeys();
     List<Event> events = new ArrayList<>();
     for(AccessKey accessKey : accessKeys) {
@@ -71,7 +79,7 @@ public class Data extends Controller {
 
   @Security.Authenticated(SecuredAndMatched.class)
   public static Result getWaveform(String email, Long eventPrimaryKey) {
-    models.Person person = models.Person.find().where().eq("email", email).findUnique();
+    Person person = Person.find().where().eq("email", email).findUnique();
     Event event = Event.find().byId(eventPrimaryKey);
 
     if(!event.getAccessKey().getPersons().contains(person)) {
@@ -94,5 +102,44 @@ public class Data extends Controller {
     }
     return ok(new java.io.File(fileLocation));
   }
+
+  @Security.Authenticated(SecuredAndMatched.class)
+  @BodyParser.Of(BodyParser.Json.class)
+  public static Result getTrends(String email, Long timestampGt, Long timestampLt) {
+      Person person = Person.find().where().eq("email", email).findUnique();
+      Set<AccessKey> accessKeys = person.getAccessKeys();
+      Map<OpqDevice, ArrayList<Double>> deviceToVoltageTrends = new HashMap<>();
+      ObjectNode json = Json.newObject();
+      OpqDevice tmpDevice;
+      List<Event> events;
+      Long timestamp;
+
+      // Get and filter the data on the timestamps
+      for(AccessKey accessKey : accessKeys) {
+          tmpDevice = accessKey.getOpqDevice();
+          if(!deviceToVoltageTrends.containsKey(tmpDevice)) {
+              deviceToVoltageTrends.put(tmpDevice, new ArrayList<>());
+          }
+          events = accessKey.getEvents();
+          for(Event event : events) {
+              timestamp = event.getTimestamp();
+              if(timestamp != null && timestamp > timestampGt && timestamp < timestampLt) {
+                  deviceToVoltageTrends.get(tmpDevice).add(timestamp.doubleValue());
+                  deviceToVoltageTrends.get(tmpDevice).add(event.getVoltage());
+              }
+          }
+      }
+
+      Trends trends = new Trends();
+      // Transform into json
+      for(OpqDevice device : deviceToVoltageTrends.keySet()) {
+          if(deviceToVoltageTrends.get(device).size() > 0) {
+              trends.add(new Trend(device.getDeviceId(), device.getDescription(), deviceToVoltageTrends.get(device)));
+          }
+      }
+
+      return ok(Json.parse(trends.toJson()));
+  }
+
 }
 
