@@ -1,11 +1,7 @@
 package controllers;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import json.Trend;
-import json.Trends;
 import models.AccessKey;
 import models.Event;
-import models.OpqDevice;
 import models.Person;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -106,38 +102,26 @@ public class Data extends Controller {
   @Security.Authenticated(SecuredAndMatched.class)
   @BodyParser.Of(BodyParser.Json.class)
   public static Result getTrends(String email, Long timestampGt, Long timestampLt) {
-      Person person = Person.find().where().eq("email", email).findUnique();
-      Set<AccessKey> accessKeys = person.getAccessKeys();
-      Map<OpqDevice, ArrayList<Double>> deviceToVoltageTrends = new HashMap<>();
-      OpqDevice tmpDevice;
-      List<Event> events;
-      Long timestamp;
+    Person person = Person.find().where().eq("email", email).findUnique();
 
-      // Get and filter the data on the timestamps
-      for(AccessKey accessKey : accessKeys) {
-          tmpDevice = accessKey.getOpqDevice();
-          if(!deviceToVoltageTrends.containsKey(tmpDevice)) {
-              deviceToVoltageTrends.put(tmpDevice, new ArrayList<Double>());
-          }
-          events = accessKey.getEvents();
-          for(Event event : events) {
-              timestamp = event.getTimestamp();
-              if(timestamp != null && timestamp > timestampGt && timestamp < timestampLt && event.getVoltage() > 0) {
-                  deviceToVoltageTrends.get(tmpDevice).add(timestamp.doubleValue());
-                  deviceToVoltageTrends.get(tmpDevice).add(event.getVoltage());
-              }
-          }
+    List<Event> events = Event.find().where()
+          .in("accessKey", person.getAccessKeys())
+          .gt("timestamp", timestampGt)
+          .lt("timestamp", timestampLt)
+          .gt("voltage", 0.0)
+          .findList();
+
+    Map<Long, List<Double[]>> idToPoints = new HashMap<>();
+    Long deviceId;
+    for(Event event : events) {
+      deviceId = event.getAccessKey().getDeviceId();
+      if(!idToPoints.containsKey(deviceId)) {
+        idToPoints.put(deviceId, new ArrayList<Double[]>());
       }
+      idToPoints.get(deviceId).add(new Double[]{event.getTimestamp().doubleValue(), event.getVoltage()});
+    }
 
-      Trends trends = new Trends();
-      // Transform into json
-      for(OpqDevice device : deviceToVoltageTrends.keySet()) {
-          if(deviceToVoltageTrends.get(device).size() > 0) {
-              trends.add(new Trend(device.getDeviceId(), device.getDescription(), deviceToVoltageTrends.get(device)));
-          }
-      }
-
-      return ok(Json.parse(trends.toJson()));
+    return ok(Json.toJson(idToPoints));
   }
 
 }

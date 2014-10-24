@@ -10,8 +10,7 @@
         <script src="@routes.Assets.at("contrib/js/moment.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("contrib/js/bootstrap.js")" type="text/javascript"></script>
 
-        <script src="@routes.Assets.at("contrib/js/jquery.flot.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.at("contrib/js/jquery.flot.navigate.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("contrib/js/dygraph-combined.js")" type="text/javascript"></script>
 
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("contrib/css/bootstrap.css")">
 
@@ -27,49 +26,45 @@
         <div class="container" id="main-content">
             <div class="row">
                 Past 15 Minutes
-                <div id="trends-15m" class="col-lg-12" style="height: 200px"></div>
+                <div id="trends-1m" class="col-lg-12" style="height: 200px"></div>
             </div>
             <div class="row">
                 Past 1 Day
-                <div id="trends-1d" class="col-lg-12" style="height: 200px"></div>
+                <div id="trends-1h" class="col-lg-12" style="height: 200px"></div>
             </div>
             <div class="row">
                 Past 1 Week
-                <div id="trends-1w" class="col-lg-12" style="height: 200px"></div>
+                <div id="trends-1d" class="col-lg-12" style="height: 200px"></div>
             </div>
         </div>
 
         <script type="text/javascript">
             function makeCharts(data, chart) {
                 var series = [];
-                var id, description, points;
-                for(var i = 0; i < data.length; i++) {
-                    description = data[i]['description'];
-                    id = data[i]['id'];
-                    points = data[i]['points'];
-                    series.push({label: description + "[" + id + "]", data: []});
-                    for(var j = 0; j < data[i]['points' ].length; j += 2) {
-                        series[series.length - 1]['data' ].push([points[j], points[j + 1]])
+                for(var boxId in data) {
+                    if(data.hasOwnProperty(boxId)) {
+                        series.push({label: boxId, data: data[boxId]});
                     }
                 }
-                $.plot(chart, series, {});
+                $.plot(chart, series)
             }
 
             $(document ).ready(function() {
-                $.get('@routes.Data.getTrends(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Minute, 15), utils.DateUtils.getMillis)')
+                $.get('@routes.Data.getTrends(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Minute, 1), utils.DateUtils.getMillis)')
                     .done(function(data) {
-                        makeCharts(data['trends'], "#trends-15m");
+                        makeCharts(data, "#trends-1m");
                     });
 
-        $.get('@routes.Data.getTrends(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Day, 1), utils.DateUtils.getMillis)')
-        .done(function(data) {
-        makeCharts(data['trends'], "#trends-1d");
-        });
+                $.get('@routes.Data.getTrends(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Hour, 1), utils.DateUtils.getMillis)')
+                    .done(function(data) {
+                        makeCharts(data, "#trends-1h");
+                    });
 
-        $.get('@routes.Data.getTrends(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Day, 7), utils.DateUtils.getMillis)')
-        .done(function(data) {
-        makeCharts(data['trends'], "#trends-1w");
-        });
+                $.get('@routes.Data.getTrends(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Day, 1), utils.DateUtils.getMillis)')
+                    .done(function(data) {
+                        makeCharts(data, "#trends-1d");
+                    });
+
             });
         </script>
     </body>
