@@ -101,7 +101,7 @@ public class Data extends Controller {
 
   @Security.Authenticated(SecuredAndMatched.class)
   @BodyParser.Of(BodyParser.Json.class)
-  public static Result getTrends(String email, Long timestampGt, Long timestampLt) {
+  public static Result getVoltages(String email, Long timestampGt, Long timestampLt) {
     Person person = Person.find().where().eq("email", email).findUnique();
 
     List<Event> events = Event.find().where()
@@ -123,6 +123,31 @@ public class Data extends Controller {
 
     return ok(Json.toJson(idToPoints));
   }
+
+    @Security.Authenticated(SecuredAndMatched.class)
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Result getFrequencies(String email, Long timestampGt, Long timestampLt) {
+        Person person = Person.find().where().eq("email", email).findUnique();
+
+        List<Event> events = Event.find().where()
+                .in("accessKey", person.getAccessKeys())
+                .gt("timestamp", timestampGt)
+                .lt("timestamp", timestampLt)
+                .gt("frequency", 0.0)
+                .findList();
+
+        Map<Long, List<Double[]>> idToPoints = new HashMap<>();
+        Long deviceId;
+        for(Event event : events) {
+            deviceId = event.getAccessKey().getDeviceId();
+            if(!idToPoints.containsKey(deviceId)) {
+                idToPoints.put(deviceId, new ArrayList<Double[]>());
+            }
+            idToPoints.get(deviceId).add(new Double[]{event.getTimestamp().doubleValue(), event.getFrequency()});
+        }
+
+        return ok(Json.toJson(idToPoints));
+    }
 
 }
 
