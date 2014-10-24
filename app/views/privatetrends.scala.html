@@ -23,28 +23,23 @@
         <!-- Main content -->
         <div class="container" id="main-content">
             <div class="row">
-                1 minute voltage
-                <div id="v-1m" class="col-lg-12" style="height: 200px"></div>
+
+                <div id="v-1m" class="col-lg-4" style="height: 200px"></div>
+
+
+                <div id="v-1h" class="col-lg-4" style="height: 200px"></div>
+
+
+                <div id="v-1d" class="col-lg-4" style="height: 200px"></div>
             </div>
             <div class="row">
-                1 hour voltage
-                <div id="v-1h" class="col-lg-12" style="height: 200px"></div>
-            </div>
-            <div class="row">
-                1 day voltage
-                <div id="v-1d" class="col-lg-12" style="height: 200px"></div>
-            </div>
-            <div class="row">
-                1 minute frequency
-                <div id="f-1m" class="col-lg-12" style="height: 200px"></div>
-            </div>
-            <div class="row">
-                1 hour frequency
-                <div id="f-1h" class="col-lg-12" style="height: 200px"></div>
-            </div>
-            <div class="row">
-                1 day frequency
-                <div id="f-1d" class="col-lg-12" style="height: 200px"></div>
+
+                <div id="f-1m" class="col-lg-4" style="height: 200px"></div>
+
+
+                <div id="f-1h" class="col-lg-4" style="height: 200px"></div>
+
+                <div id="f-1d" class="col-lg-4" style="height: 200px"></div>
             </div>
         </div>
 
@@ -80,17 +75,17 @@
                         makeCharts(data, "#v-1d", 105, 135);
                     });
 
-                $.get('@routes.Data.getVoltages(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Minute, 1), utils.DateUtils.getMillis)')
+                $.get('@routes.Data.getFrequencies(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Minute, 1), utils.DateUtils.getMillis)')
                 .done(function(data) {
                     makeCharts(data, "#f-1m", 55, 65);
                 });
 
-                $.get('@routes.Data.getVoltages(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Hour, 1), utils.DateUtils.getMillis)')
+                $.get('@routes.Data.getFrequencies(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Hour, 1), utils.DateUtils.getMillis)')
                 .done(function(data) {
                     makeCharts(data, "#f-1h", 55, 65);
                 });
 
-                $.get('@routes.Data.getVoltages(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Day, 1), utils.DateUtils.getMillis)')
+                $.get('@routes.Data.getFrequencies(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Day, 1), utils.DateUtils.getMillis)')
                 .done(function(data) {
                     makeCharts(data, "#f-1d", 55, 65);
                 });
