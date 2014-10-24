@@ -26,14 +26,21 @@
         <!-- Main content -->
         <div class="container" id="main-content">
             <div class="row">
-                <div id="trends" class="col-lg-12" style="height: 500px">
-
-                </div>
+                Past 15 Minutes
+                <div id="trends-15m" class="col-lg-12" style="height: 200px"></div>
+            </div>
+            <div class="row">
+                Past 1 Day
+                <div id="trends-1d" class="col-lg-12" style="height: 200px"></div>
+            </div>
+            <div class="row">
+                Past 1 Week
+                <div id="trends-1w" class="col-lg-12" style="height: 200px"></div>
             </div>
         </div>
 
         <script type="text/javascript">
-            function makeCharts(data) {
+            function makeCharts(data, chart) {
                 var series = [];
                 var id, description, points;
                 for(var i = 0; i < data.length; i++) {
@@ -45,15 +52,24 @@
                         series[series.length - 1]['data' ].push([points[j], points[j + 1]])
                     }
                 }
-                $.plot("#trends", series, {});
+                $.plot(chart, series, {});
             }
 
             $(document ).ready(function() {
                 $.get('@routes.Data.getTrends(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Minute, 15), utils.DateUtils.getMillis)')
                     .done(function(data) {
-                        makeCharts(data['trends']);
+                        makeCharts(data['trends'], "#trends-15m");
                     });
-                $("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+
+        $.get('@routes.Data.getTrends(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Day, 1), utils.DateUtils.getMillis)')
+        .done(function(data) {
+        makeCharts(data['trends'], "#trends-1d");
+        });
+
+        $.get('@routes.Data.getTrends(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Day, 7), utils.DateUtils.getMillis)')
+        .done(function(data) {
+        makeCharts(data['trends'], "#trends-1w");
+        });
             });
         </script>
     </body>
