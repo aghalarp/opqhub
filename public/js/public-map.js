@@ -1,3 +1,6 @@
+var spinner;
+var spinnerTarget = document.getElementById('main-content');
+
 /**
  * Manages the web socket connection with the cloud.
  * @type {{websocket: null, init: init, requestUpdate: requestUpdate, requestDetails: requestDetails, onMessage: onMessage}}
@@ -5,14 +8,16 @@
 var ws = {
   websocket: null,
 
+  spinner: null,
+
   /**
    * Open a new WS connection with the passed in address.
    * @param addr The address of the WS server.
    */
-  init: function(addr) {
+  init: function(addr, spinner) {
     // Create connection
     ws.websocket = new WebSocket(addr, "protocolOne");
-
+    ws.spinner = spinner;
     // Setup callbacks
     ws.websocket.onopen = function() {
       ws.requestUpdate();
@@ -25,6 +30,7 @@ var ws = {
    */
   requestUpdate: function() {
     if (ws.websocket) {
+      ws.spinner.spin(document.getElementById('main-content'));
       var json = filters.toJson();
       json.packetType = "public-update";
       ws.websocket.send(JSON.stringify(json));
@@ -54,6 +60,7 @@ var ws = {
     switch(data.packetType) {
       // Update the entire page
       case "public-map-response":
+        ws.spinner.stop();
         console.log(data);
         map.update(data);
         events.update(data);
@@ -364,8 +371,30 @@ var html = {
  * Entry point into this script.
  */
 function initPage(serverWs) {
+  var opts = {
+    lines: 7, // The number of lines to draw
+    length: 20, // The length of each line
+    width: 10, // The line thickness
+    radius: 16, // The radius of the inner circle
+    corners: 1, // Corner roundness (0..1)
+    rotate: 0, // The rotation offset
+    direction: 1, // 1: clockwise, -1: counterclockwise
+    color: '#000', // #rgb or #rrggbb or array of colors
+    speed: 1, // Rounds per second
+    trail: 60, // Afterglow percentage
+    shadow: false, // Whether to render a shadow
+    hwaccel: false, // Whether to use hardware acceleration
+    className: 'spinner', // The CSS class to assign to the spinner
+    zIndex: 2e9, // The z-index (defaults to 2000000000)
+    top: '65%', // Top position relative to parent
+    left: '50%' // Left position relative to parent
+  };
+  var target = document.getElementById('main-content');
+  var spinner = new Spinner(opts).spin(target);
+  //spinner.stop();
+
   map.init();
   details.init();
   filters.init();
-  ws.init(serverWs);
+  ws.init(serverWs, spinner);
 }
