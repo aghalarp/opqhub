@@ -53,7 +53,7 @@ GET         /:email/api/frequencies                      controllers.Data.getFre
 GET         /private/ws                                  controllers.WebSockets.handleSocket()
 
 # Websocket connection for public display
-GET         /wsdata                                      controllers.MonitorWebsocket.handleSocket()
+GET         /ws/data                                      controllers.MonitorWebsocket.handleSocket()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                controllers.Assets.at(path="/public", file)
