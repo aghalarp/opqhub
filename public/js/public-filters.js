@@ -62,7 +62,8 @@ var filters = {
         return "";
       }
       else {
-        return $(filterId).data("DateTimePicker").getDate()._d.getTime();
+        //return $(filterId).data("DateTimePicker").getDate()._d.getTime();
+        return moment.utc($(filterId).data("DateTimePicker").getDate())._d.getTime();
       }
     }
     if(filters.gridMap.indexOf(filter) > -1) {
