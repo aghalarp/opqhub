@@ -107,7 +107,7 @@ public class MonitorWebsocket extends Controller {
     double minVoltage = Double.MAX_VALUE;
     double maxVoltage = Double.MIN_VALUE;
     long timestamp;
-    long minTimestamp = DateUtils.getPastTime(DateUtils.getMillis(), DateUtils.TimeUnit.Year, 2);
+    long minTimestamp = Long.MAX_VALUE;
     long maxTimestamp = DateUtils.getMillis();
 
     // Update event statistics

@@ -44,16 +44,16 @@ POST        /:email/opqboxes/:accessKey/:deviceId        controllers.Administrat
 GET         /:email/trends                               controllers.PrivatePowerQuality.getTrends(email: String)
 
 # Private API
-GET         /:email/api/events                           controllers.Data.getEvents(email: String, timestampGt: Long ?= 0, timestampLt: Long ?= Long.MaxValue)
+GET         /:email/api/events                           controllers.Data.getEvents(email: String, timestampGt: Long ?= 0, timestampLt: Long ?=        Long.MaxValue)
 GET         /:email/api/events/:eventKey                 controllers.Data.getWaveform(email: String, eventKey: Long)
 GET         /:email/api/voltages                         controllers.Data.getVoltages(email: String, timestampGt: Long ?= 0, timestampLt: Long ?=        Long.MaxValue)
-GET         /:email/api/frequencies                      controllers.Data.getFrequencies(email: String, timestampGt: Long ?= 0, timestampLt: Long ?=        Long.MaxValue)
+GET         /:email/api/frequencies                      controllers.Data.getFrequencies(email: String, timestampGt: Long ?= 0, timestampLt: Long ?=        Long.        MaxValue)
 
 # OPQBox websocket connection
 GET         /private/ws                                  controllers.WebSockets.handleSocket()
 
 # Websocket connection for public display
-GET         /ws/data                                      controllers.MonitorWebsocket.handleSocket()
+GET         /ws/data                                     controllers.MonitorWebsocket.handleSocket()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                controllers.Assets.at(path="/public", file)

@@ -156,7 +156,16 @@ public class Administration extends Controller {
     Location location = device.getLocation();
     Form<OpqDevice> deviceForm  = form(OpqDevice.class).fill(device);
     Form<Location> locationForm = (location == null) ? form(Location.class) : form(Location.class).fill(location);
-    //return ok(views.html.admin.deviceconfig.render(key.getDeviceId(), key.getAccessKey(), deviceForm, locationForm, location));
+
+    // For some reason switching the devices id number will create a new location with null values
+    // As ugly as it is, we need to check for null values and set the entire location to null.
+    // A better fix would be to not create any location at all when a new device is saved.
+    if(location.getGridId() == null || location.getGridScale() == null || location.getGridCol() == null ||
+       location.getGridRow() == null || location.getNorthEastLatitude() == null || location.getNorthEastLongitude() == null ||
+       location.getSouthWestLatitude() == null || location.getSouthWestLongitude() == null) {
+      location = null;
+    }
+
     return ok(deviceconfig.render(key.getDeviceId(), key.getAccessKey(), deviceForm, locationForm, location));
   }
 
