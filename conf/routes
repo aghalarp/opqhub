@@ -41,6 +41,7 @@ GET         /:email/opqboxes/:accessKey/:deviceId        controllers.Administrat
 POST        /:email/opqboxes/:accessKey/:deviceId        controllers.Administration.saveDeviceConfiguration(email: String, accessKey: String, deviceId: Long)
 
 # Private Data
+GET         /:email/events                               controllers.PrivatePowerQuality.display(email: String)
 GET         /:email/trends                               controllers.PrivatePowerQuality.getTrends(email: String)
 
 # Private API
@@ -54,6 +55,9 @@ GET         /private/ws                                  controllers.WebSockets.
 
 # Websocket connection for public display
 GET         /ws/data                                     controllers.MonitorWebsocket.handleSocket()
+
+# Secured websocket connection
+GET         /:email/ws/data                              controllers.PrivateMonitorWebsocket.handleSocket(email: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                controllers.Assets.at(path="/public", file)

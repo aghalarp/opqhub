@@ -20,6 +20,7 @@
 package models;
 
 import com.avaje.ebean.Query;
+import filters.Filter;
 import org.openpowerquality.protocol.OpqPacket;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -30,6 +31,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This contains methods for viewing and modifying the persistent Event object.
@@ -201,6 +203,17 @@ public class Event extends Model implements Comparable<Event> {
   @Override
   public int compareTo(Event event) {    
     return event.timestamp.compareTo(this.timestamp);
+  }
+
+  public static List<Event> filter(Set<Filter<Event>> filters) {
+    List<Event> eventList = null;
+    Query<Event> eventQuery = Event.find();
+
+    for(Filter<Event> filter : filters) {
+      filter.apply(eventQuery);
+    }
+    eventList = eventQuery.findList();
+    return eventList;
   }
 
 }
