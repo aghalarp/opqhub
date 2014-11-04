@@ -174,7 +174,7 @@ public class Data extends Controller {
                         .put("description", accessKey.getOpqDevice().getDescription()));
     }
 
-    return ok(devices);
+    return ok(root);
   }
 
   @Security.Authenticated(SecuredAndMatched.class)
