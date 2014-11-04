@@ -1,5 +1,6 @@
 package json;
 
+import java.util.List;
 import java.util.Set;
 import models.Event;
 import org.openpowerquality.protocol.OpqPacket.PacketType;
@@ -21,30 +22,14 @@ public class PrivateMapRequest extends JsonData {
   public boolean requestIticSevere;
   public boolean requestIticModerate;
   public boolean requestIticOk;
-  public Set<String> visibleIds;
+  public List<Long> deviceIds;
 
   public static PrivateMapRequest fromJson(String json) {
     return JsonUtils.toObject(json, PrivateMapRequest.class);
   }
 
   public boolean containsEvent(Event event) {
-    switch(event.getEventType()) {
-      case EVENT_FREQUENCY:
-        if(!requestFrequency || event.getFrequency() < minFrequency || event.getFrequency() > maxFrequency) {
-          return false;
-        }
-        break;
-      case EVENT_VOLTAGE:
-        if(!requestVoltage || event.getVoltage() < minVoltage || event.getVoltage() > maxVoltage) {
-          return false;
-        }
-        break;
-      case EVENT_HEARTBEAT:
-        if(!requestHeartbeats) {
-          return false;
-        }
-        break;
-    }
+
     IticRegion region = PqUtils.getIticRegion(event.getDuration() * 1000, event.getVoltage());
     switch(region) {
       case PROHIBITED:
@@ -63,12 +48,7 @@ public class PrivateMapRequest extends JsonData {
         }
         break;
     }
-    if(event.getDuration() < minDuration || event.getDuration() > maxDuration) {
-      return false;
-    }
-    if(event.getTimestamp() < startTimestamp || event.getTimestamp() > stopTimestamp) {
-      return false;
-    }
+
     return true;
   }
 }

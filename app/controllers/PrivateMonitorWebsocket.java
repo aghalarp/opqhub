@@ -1,9 +1,12 @@
 package controllers;
 
+import filters.RangeFilter;
+import filters.SetEqualsFilter;
 import json.JsonUtils;
 import json.MapRequest;
 import json.PrivateEventRequest;
 import json.PrivateEventResponse;
+import json.PrivateMapRequest;
 import json.PrivateMapResponse;
 import models.Event;
 import models.OpqDevice;
@@ -49,7 +52,7 @@ public class PrivateMonitorWebsocket extends Controller {
             switch (JsonUtils.getPacketType(s)) {
               case "private-update":
                 Logger.info("Private update");
-                MapRequest req = MapRequest.fromJson(s);
+                PrivateMapRequest req = PrivateMapRequest.fromJson(s);
                 if (req != null) {
                   handlePrivateMap(out, req);
                 }
@@ -79,7 +82,83 @@ public class PrivateMonitorWebsocket extends Controller {
     };
   }
 
-  private static void handlePrivateMap(final WebSocket.Out<String> out, MapRequest req) {
+  private static void handlePrivateMap(final WebSocket.Out<String> out, PrivateMapRequest req) {
+    // Filter on min/max timestamp
+    RangeFilter<Event, Long> timestampFilter = new RangeFilter<>("timestamp", req.startTimestamp, req.stopTimestamp);
+
+    // Filter on min/max duration
+    RangeFilter<Event, Long> durationFilter = new RangeFilter<>("duration", req.minDuration, req.maxDuration);
+
+    // Filter on min/max frequency
+    RangeFilter<Event, Double> frequencyFilter = new RangeFilter<>("frequency", req.minFrequency, req.maxFrequency);
+
+    // Filter on min/max voltage
+    RangeFilter<Event, Double> voltageFilter = new RangeFilter<>("voltage", req.minVoltage, req.maxVoltage);
+
+    // Filter on event type
+    Set<OpqPacket.PacketType> packetTypes = new HashSet<>();
+    if(req.requestHeartbeats) packetTypes.add(OpqPacket.PacketType.EVENT_HEARTBEAT);
+    if(req.requestFrequency) packetTypes.add(OpqPacket.PacketType.EVENT_FREQUENCY);
+    if(req.requestVoltage) packetTypes.add(OpqPacket.PacketType.EVENT_VOLTAGE);
+    SetEqualsFilter<Event, OpqPacket.PacketType> eventTypeFilter = new SetEqualsFilter<>("eventType", packetTypes);
+
+    // Filter on device ids
+    Set<Long> deviceIds = new HashSet<>();
+    deviceIds.addAll(req.deviceIds);
+    SetEqualsFilter<Event, Long> deviceIdFilter = new SetEqualsFilter<>("accessKey.deviceId", deviceIds);
+
+    // Collect the events up to this point
+    List<Event> events = Event.filter(timestampFilter, durationFilter, frequencyFilter, voltageFilter, eventTypeFilter, deviceIdFilter);
+
+    // Finally, filter on ITIC curve
+    IticRegion region;
+    for(Event event : events) {
+      region = PqUtils.getIticRegion(event.getDuration() * 1000, event.getVoltage());
+      if(region.equals(IticRegion.NO_INTERRUPTION) && !req.requestIticOk) {
+        events.remove(event);
+      }
+      if(region.equals(IticRegion.NO_DAMAGE) && !req.requestIticModerate) {
+        events.remove(event);
+      }
+      if(region.equals(IticRegion.PROHIBITED) && !req.requestIticSevere) {
+        events.remove(event);
+      }
+    }
+
+    // Construct response
+    PrivateMapResponse resp = new PrivateMapResponse();
+    DecimalFormat decimalFormat = new DecimalFormat("#.00");
+
+    long maxDuration = Long.MIN_VALUE;
+    double minFrequency = Double.MAX_VALUE;
+    double maxFrequency = Double.MIN_VALUE;
+    double minVoltage = Double.MAX_VALUE;
+    double maxVoltage = Double.MIN_VALUE;
+    long minTimestamp = Long.MAX_VALUE;
+    long maxTimestamp = Long.MIN_VALUE;
+
+    for(Event event : events) {
+      resp.totalEvents++;
+      if(event.getEventType().equals(OpqPacket.PacketType.EVENT_FREQUENCY)) resp.totalFrequencyEvents++;
+      if(event.getEventType().equals(OpqPacket.PacketType.EVENT_VOLTAGE)) resp.totalVoltageEvents++;
+      resp.minTimestamp = event.getTimestamp() < minTimestamp ? event.getTimestamp() : minTimestamp;
+      resp.maxTimestamp = event.getTimestamp() > maxTimestamp ? event.getTimestamp() : maxTimestamp;
+      resp.maxDuration = event.getDuration() > maxDuration ? event.getDuration() : maxDuration;
+      resp.minFrequency = event.getFrequency() < minFrequency ? event.getFrequency() : minFrequency;
+      resp.maxFrequency = event.getFrequency() > maxFrequency ? event.getFrequency() : maxFrequency;
+      resp.minVoltage = event.getVoltage() < minVoltage ? event.getVoltage() : minVoltage;
+      resp.maxVoltage = event.getVoltage() > maxVoltage ? event.getVoltage() : maxVoltage;
+      resp.addEvent("id", event.getPrimaryKey().toString(),
+                    "timestamp", DateUtils.toDateTime(event.getTimestamp()),
+                    "type", event.getEventType().getName().split(" ")[0],
+                    "frequency", decimalFormat.format(event.getFrequency()),
+                    "voltage", decimalFormat.format(event.getVoltage()),
+                    "duration", event.getDuration().toString());
+    }
+
+    out.write(resp.toJson());
+
+    /*
     PrivateMapResponse resp = new PrivateMapResponse();
     DecimalFormat decimalFormat = new DecimalFormat("#.00");
 
@@ -188,6 +267,7 @@ public class PrivateMonitorWebsocket extends Controller {
     }
     // Send response to client
     out.write(resp.toJson());
+    */
   }
 
   private static void handleEventDetails(final WebSocket.Out<String> out, PrivateEventRequest req) {
@@ -196,6 +276,8 @@ public class PrivateMonitorWebsocket extends Controller {
     PrivateEventResponse resp = new PrivateEventResponse();
     resp.timestamp = DateUtils.toShortDateTime(event.getTimestamp());
     resp.eventType = event.getEventType().getName().split(" ")[0];
+    resp.deviceId = event.getAccessKey().getDeviceId();
+    resp.deviceDescription = event.getAccessKey().getOpqDevice().getDescription();
     resp.frequency = decimalFormat.format(event.getFrequency());
     resp.voltage = decimalFormat.format(event.getVoltage());
     resp.duration = event.getDuration();
@@ -216,4 +298,5 @@ public class PrivateMonitorWebsocket extends Controller {
     }
     out.write(resp.toJson());
   }
+
 }

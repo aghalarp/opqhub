@@ -296,4 +296,8 @@ public class Person extends Model {
   public void setSmsNumber(String smsNumber) {
     this.smsNumber = smsNumber;
   }
+
+  public static Person withEmail(String email) {
+    return Person.find().where().eq("email", email).findUnique();
+  }
 }

@@ -1,4 +1,4 @@
-@(privateWsUrl: String)
+@(privateWsUrl: String, devices: List[String])
 
 <!DOCTYPE html>
 <html>
@@ -24,7 +24,6 @@
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("contrib/css/leaflet.css")">
 
       <!-- Site specific details -->
-    <script src="@routes.Assets.at("js/grid-map.js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("js/itic-plotter.js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("js/private-map.js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("js/private-filters.js")" type="text/javascript"></script>
@@ -150,6 +149,18 @@
                   <div id="error" class="verror"></div>
                 </div>
 
+                <!-- Device Id filter -->
+                <div class="row">
+                  <label for="deviceIds" class="col-sm-2 control-label">Devices</label>
+                  <div class="form-group col-sm-10">
+                    <select id="deviceIds" multiple class="form-control">
+                      @for(device <- devices) {
+                        <option>@device</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+
                   <!-- Update/Reset buttons -->
                 <div class="row">
                   <label class="col-sm-2">Actions</label>
@@ -163,10 +174,7 @@
             </div>
           </div>
 
-            <!-- Map -->
-          <div class="row public-map">
-            <div class="public-map" id="private-map"></div>
-          </div>
+
         </div>
 
           <!-- Events and event details -->
@@ -227,6 +235,14 @@
                   <table class="table table-condensed">
                     <tbody>
                       <tr>
+                        <td>Device Id</td>
+                        <td id="details-device-id"></td>
+                      </tr>
+                      <tr>
+                        <td>Description</td>
+                        <td id="details-device-description"></td>
+                      </tr>
+                      <tr>
                         <td>Frequency</td>
                         <td id="details-frequency"></td>
                       </tr>
@@ -253,7 +269,7 @@
                     </tbody>
                   </table>
                 </div>
-                <div id="waveform" class="col-md-4 plot"></div>
+                <div id="private-waveform" class="col-md-4 plot"></div>
               </div>
             </div>
           </div>
@@ -269,7 +285,6 @@
 
         $("#resetBtn").click(function() {
           filters.reset();
-          map.gridMap.setView(map.gridMap.island.OAHU.latLng, map.gridMap.island.OAHU.defaultZoom);
         });
 
         $("#updateBtn").click(function() {

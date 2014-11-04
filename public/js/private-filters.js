@@ -2,7 +2,7 @@ var filters = {
   textInputs: ["frequencyGt", "frequencyLt", "voltageGt", "voltageLt", "durationGt", "durationLt"],
   checkBoxes: ["requestFrequency", "requestVoltage", "requestIticSevere", "requestIticModerate", "requestIticOk"],
   timeRanges: ["startTimestamp", "stopTimestamp"],
-  gridMap: ["visibleIds"],
+  deviceIds: ["deviceIds"],
 
   defaults: {
     frequencyGt: 0,
@@ -42,9 +42,6 @@ var filters = {
     if(filters.timeRanges.indexOf(filter) > -1) {
       $(filterId).data("DateTimePicker").setDate(new Date(val));
     }
-    if(filters.gridMap.indexOf(filter) > -1) {
-
-    }
   },
 
   queryFilter: function(filter) {
@@ -62,13 +59,13 @@ var filters = {
         return "";
       }
       else {
-        //return $(filterId).data("DateTimePicker").getDate()._d.getTime();
         return moment.utc($(filterId).data("DateTimePicker").getDate())._d.getTime();
       }
     }
-    if(filters.gridMap.indexOf(filter) > -1) {
-      return map.gridMap.getVisibleIds();
+    if(filters.deviceIds.indexOf(filter > -1)) {
+      return $(filterId).val();
     }
+
     return null;
   },
 
@@ -83,7 +80,7 @@ var filters = {
   },
 
   reset: function() {
-
+    $("#deviceIds").find("option").prop('selected', true);
     Object.keys(filters.defaults).map(function(filter){
       filters.setFilter(filter, filters.defaults[filter]);
     });
@@ -110,7 +107,9 @@ var filters = {
       maxDuration: orDefault('durationLt'),
       startTimestamp: orDefault('startTimestamp'),
       stopTimestamp: orDefault('stopTimestamp'),
-      visibleIds: filters.queryFilter('visibleIds')
+      deviceIds: filters.queryFilter("deviceIds").map(function(selectedLine) {
+                   return selectedLine.split("\t")[0];
+                 })
     };
   },
 

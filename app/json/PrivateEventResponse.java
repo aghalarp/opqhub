@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PrivateEventResponse extends JsonData {
+  public Long deviceId;
+  public String deviceDescription;
   public String timestamp;
   public String eventType;
   public String gridId;
@@ -18,6 +20,8 @@ public class PrivateEventResponse extends JsonData {
 
   public PrivateEventResponse() {
     super("private-event-response");
+    this.deviceId = 0L;
+    this.deviceDescription = "";
     this.timestamp = "";
     this.eventType = "";
     this.gridId = "";

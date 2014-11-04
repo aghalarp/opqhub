@@ -30,6 +30,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -203,6 +205,12 @@ public class Event extends Model implements Comparable<Event> {
   @Override
   public int compareTo(Event event) {    
     return event.timestamp.compareTo(this.timestamp);
+  }
+
+  public static List<Event> filter(Filter<Event> ... filters) {
+    Set<Filter<Event>> filterSet = new HashSet<>();
+    Collections.addAll(filterSet, filters);
+    return filter(filterSet);
   }
 
   public static List<Event> filter(Set<Filter<Event>> filters) {

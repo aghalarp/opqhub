@@ -61,8 +61,6 @@ var ws = {
       // Update the entire page
       case "private-map-response":
         ws.spinner.stop();
-        console.log(data);
-        map.update(data);
         events.update(data);
         filters.updateDefaults({
           frequencyGt: data['minFrequency'],
@@ -92,45 +90,6 @@ var ws = {
   }
 };
 
-/**
- * Manages the map.
- * @type {{gridMap: (grid|*), init: init, update: update}}
- */
-var map = {
-  /**
-   * Reference to grid object.
-   */
-  gridMap: grid,
-
-  /**
-   * Setup action handlers and set the initial view of the map.
-   */
-  init: function() {
-    map.gridMap.callbacks.onMapChange = function () {
-      ws.requestUpdate();
-    };
-
-    map.gridMap.initMap("private-map", map.gridMap.island.OAHU.latLng, map.gridMap.island.OAHU.defaultZoom);
-  },
-
-  /**
-   * Updates the map with new metrics.
-   * @param data
-   */
-  update: function(data) {
-    var gridIdToEventMetrics = data['gridIdToEventMetrics'];
-    function getMetrics(metrics) {
-      return {severe: metrics[0], moderate: metrics[1], ok: metrics[2]};
-    }
-    var m;
-    for (var gridId in gridIdToEventMetrics) {
-      if(gridIdToEventMetrics.hasOwnProperty(gridId)) {
-        m = getMetrics(gridIdToEventMetrics[gridId]);
-        map.gridMap.addEventNumbers(gridId, m.severe, m.moderate, m.ok);
-      }
-    }
-  }
-};
 
 /**
  * Manages the events pane.
@@ -220,15 +179,7 @@ var details = {
    * Set up the details pane and any action listeners.
    */
   init: function() {
-    /**
-     * Pans and zooms the grid to clicked location.
-     */
-    $("#details-grid-id").click(function() {
-      var centerLat = parseFloat($("#details-center-lat").val());
-      var centerLng = parseFloat($("#details-center-lng").val());
-      var zoom = parseInt($("#details-zoom").val());
-      map.gridMap.setView(L.latLng(centerLat, centerLng), zoom);
-    });
+
   },
 
   /**
@@ -236,14 +187,11 @@ var details = {
    * @param event
    */
   show: function(event) {
-    // Update hidden fields
-    $("#details-center-lat").val(event.centerLat);
-    $("#details-center-lng").val(event.centerLng);
-    $("#details-zoom").val(map.gridMap.getZoomByDistance(event.gridScale));
-
     // Update table
     var iticRegion = itic.itic.getRegionOfPoint(event.duration * 1000, itic.itic.voltageToPercentNominalVoltage(event.voltage));
     $("#event-title").text("Event Details - " + event.timestamp + " (" + event.eventType + ")");
+    $("#details-device-id").text(event.deviceId);
+    $("#details-device-description").text(event.deviceDescription);
     $("#details-frequency").text(event.frequency);
     $("#details-voltage").text(event.voltage);
     $("#details-duration").text(event.duration);
@@ -301,7 +249,7 @@ var details = {
         points: {show: false}
       }
     };
-    $.plot($("#waveform"), points, plotOptions);
+    $.plot($("#private-waveform"), points, plotOptions);
   }
 };
 
@@ -391,9 +339,7 @@ function initPage(serverWs) {
   };
   var target = document.getElementById('main-content');
   var spinner = new Spinner(opts).spin(target);
-  //spinner.stop();
 
-  map.init();
   details.init();
   filters.init();
   ws.init(serverWs, spinner);

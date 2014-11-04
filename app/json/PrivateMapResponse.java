@@ -1,15 +1,13 @@
 package json;
 
+import play.Logger;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class PrivateMapResponse extends JsonData {
-  // Map specific data
-  public Map<String, Integer> gridIdsToEvents;
-  public Map<String, Integer> gridIdsToDevices;
-  public Map<String, Integer[]> gridIdToEventMetrics;  
 
   // Events
   public List<Map<String, String>> events;
@@ -31,10 +29,6 @@ public class PrivateMapResponse extends JsonData {
 
   public PrivateMapResponse() {
     super("private-map-response");
-    this.gridIdsToEvents = new HashMap<>();
-    this.gridIdsToDevices = new HashMap<>();
-    this.gridIdsToDevices = new HashMap<>();
-    this.gridIdToEventMetrics = new HashMap<>();
     this.events = new ArrayList<>();
     this.totalRegisteredDevices = 0;
     this.totalActiveDevices = 0;
@@ -49,5 +43,23 @@ public class PrivateMapResponse extends JsonData {
     this.maxVoltage = 0;
     this.minTimestamp = 0L;
     this.maxTimestamp = 0L;
+  }
+
+  public void addEvent(String ... keyValuePairs) {
+    final int MAX_EVENTS = 100;
+    if(events.size() >= MAX_EVENTS) {
+      return;
+    }
+
+
+    if(keyValuePairs.length % 2 != 0) {
+      Logger.warn("Sending private event info does not have even number of values");
+      return;
+    }
+    Map<String, String> event = new HashMap<>();
+    for(int i = 0; i < keyValuePairs.length; i += 2) {
+      event.put(keyValuePairs[i], keyValuePairs[i + 1]);
+    }
+    events.add(event);
   }
 }
