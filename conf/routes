@@ -49,6 +49,7 @@ GET         /:email/api/events                           controllers.Data.getEve
 GET         /:email/api/events/:eventKey                 controllers.Data.getWaveform(email: String, eventKey: Long)
 GET         /:email/api/voltages                         controllers.Data.getVoltages(email: String, timestampGt: Long ?= 0, timestampLt: Long ?=        Long.MaxValue)
 GET         /:email/api/frequencies                      controllers.Data.getFrequencies(email: String, timestampGt: Long ?= 0, timestampLt: Long ?=        Long.        MaxValue)
+GET         /:email/api/devices                          controllers.Data.devices(email: String)
 
 # OPQBox websocket connection
 GET         /private/ws                                  controllers.WebSockets.handleSocket()

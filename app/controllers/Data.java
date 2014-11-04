@@ -1,5 +1,8 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import filters.Filter;
 import filters.RangeFilter;
 import filters.SetEqualsFilter;
@@ -156,6 +159,23 @@ public class Data extends Controller {
 
         return ok(Json.toJson(idToPoints));
     }
+
+  @Security.Authenticated(SecuredAndMatched.class)
+  @BodyParser.Of(BodyParser.Json.class)
+  public static Result devices(String email) {
+    Set<AccessKey> accessKeys = Person.withEmail(email).getAccessKeys();
+    ObjectMapper mapper = new ObjectMapper();
+    ObjectNode root = mapper.createObjectNode();
+    ArrayNode devices = root.putArray("devices");
+
+    for(AccessKey accessKey : accessKeys) {
+      devices.add(mapper.createObjectNode()
+                        .put("id", accessKey.getDeviceId())
+                        .put("description", accessKey.getOpqDevice().getDescription()));
+    }
+
+    return ok(devices);
+  }
 
   @Security.Authenticated(SecuredAndMatched.class)
   @BodyParser.Of(BodyParser.Json.class)
