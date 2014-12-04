@@ -125,21 +125,30 @@ public class WebSockets extends Controller {
     location.getEvents().add(event);
     location.update();
 
-    //TODO: This is hacky, fix it
-    // Update event data
-    StringBuilder sb = new StringBuilder();
-    for(Double d : opqPacket.payload) {
-      //System.out.println(d);
-      sb.append(d);
-      sb.append(",");
+    // Only store data for voltage and frequency events, not heartbeats
+    switch(opqPacket.packetType) {
+      case EVENT_FREQUENCY:
+      case EVENT_VOLTAGE:
+        //TODO: This is hacky, fix it
+        // Update event data
+        StringBuilder sb = new StringBuilder();
+        for(Double d : opqPacket.payload) {
+          //System.out.println(d);
+          sb.append(d);
+          sb.append(",");
+        }
+
+        String rawPowerStr = sb.toString();
+
+        EventData eventData = new EventData(rawPowerStr);
+        eventData.setEvent(event);
+        eventData.save();
+        event.setEventData(eventData);
+        break;
+      default:
+        break;
     }
 
-    String rawPowerStr = sb.toString();
-
-    EventData eventData = new EventData(rawPowerStr);
-    eventData.setEvent(event);
-    eventData.save();
-    event.setEventData(eventData);
     event.save();
 
 
