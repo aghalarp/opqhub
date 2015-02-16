@@ -25,7 +25,9 @@ import org.apache.commons.mail.*;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import static play.libs.Akka.future;
+//import static play.libs.Akka.future;
+import java.util.concurrent.Callable;
+import static play.libs.F.Promise.promise;
 
 public class Mailer {
   private static final String host = play.Play.application().configuration().getString("smtp.host");
@@ -35,24 +37,25 @@ public class Mailer {
   private static final boolean ssl = play.Play.application().configuration().getBoolean("smtp.ssl");
 
   private static void sendEmail(final String to, final String subject, final String body) {
-    future(new Callable<Object>() {
-      @Override
-      public Object call() throws Exception {
-        Email email = new SimpleEmail();
-        email.setHostName(host);
-        email.setSmtpPort(port);
-        email.setAuthenticator(new DefaultAuthenticator(user, pass));
-        email.setSSLOnConnect(ssl);
 
-        email.setFrom("alert@openpowerquality.com");
-        email.setSubject(subject);
-        email.setMsg(body);
-        email.addTo(to);
-        email.send();
-
-        return null;
-      }
-    });
+//    future(new Callable<Object>() {
+//      @Override
+//      public Object call() throws Exception {
+//        Email email = new SimpleEmail();
+//        email.setHostName(host);
+//        email.setSmtpPort(port);
+//        email.setAuthenticator(new DefaultAuthenticator(user, pass));
+//        email.setSSLOnConnect(ssl);
+//
+//        email.setFrom("alert@openpowerquality.com");
+//        email.setSubject(subject);
+//        email.setMsg(body);
+//        email.addTo(to);
+//        email.send();
+//
+//        return null;
+//      }
+//    });
   }
 
   public static void sendAlerts(Set<Person> persons, String subject, String body) {
