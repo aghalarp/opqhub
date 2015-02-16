@@ -64,6 +64,8 @@ var filters = {
     }
     if(filters.deviceIds.indexOf(filter > -1)) {
       return $(filterId).val();
+    } else {
+      return [];
     }
 
     return null;

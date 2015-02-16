@@ -77,6 +77,9 @@ var ws = {
           startTimestamp: data['minTimestamp'],
           stopTimestamp: data['maxTimestamp']
         });
+        if(filters.deviceIds.indexOf(filter <= -1)) {
+          $('#deviceIds option').attr('selected', 'selected');
+        }
         break;
       // Update event details
       case "private-event-response":
