@@ -1,0 +1,54 @@
+package jobs.support_classes;
+
+import java.util.List;
+
+/**
+ * Specialization class to hold data linking a Person with his/her devices.
+ */
+public class PersonDeviceInfo {
+    private String personFirstName;
+    private String personLastName;
+    private String personEmail;
+    private List<DeviceStats> deviceStatsList;
+
+    public PersonDeviceInfo(String personFirstName, String personLastName, String personEmail,
+                            List<DeviceStats> deviceStatsList) {
+        this.personFirstName = personFirstName;
+        this.personLastName = personLastName;
+        this.personEmail = personEmail;
+        this.deviceStatsList = deviceStatsList;
+    }
+
+    public String getPersonFirstName() {
+        return personFirstName;
+    }
+
+    public void setPersonFirstName(String personFirstName) {
+        this.personFirstName = personFirstName;
+    }
+
+    public String getPersonLastName() {
+        return personLastName;
+    }
+
+    public void setPersonLastName(String personLastName) {
+        this.personLastName = personLastName;
+    }
+
+    public String getPersonEmail() {
+        return personEmail;
+    }
+
+    public void setPersonEmail(String personEmail) {
+        this.personEmail = personEmail;
+    }
+
+    public List<DeviceStats> getDeviceStatsList() {
+        return deviceStatsList;
+    }
+
+    public void setDeviceStatsList(List<DeviceStats> deviceStatsList) {
+        this.deviceStatsList = deviceStatsList;
+    }
+}
+

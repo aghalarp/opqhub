@@ -30,6 +30,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -299,5 +300,9 @@ public class Person extends Model {
 
   public static Person withEmail(String email) {
     return Person.find().where().eq("email", email).findUnique();
+  }
+
+  public static List<Person> getPersons() {
+    return Person.find().all();
   }
 }
