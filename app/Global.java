@@ -2,6 +2,7 @@ import akka.actor.ActorRef;
 import akka.actor.Props;
 import com.avaje.ebean.config.ServerConfig;
 import com.avaje.ebean.event.ServerConfigStartup;
+import jobs.EventReportActor;
 import play.Application;
 import play.GlobalSettings;
 import play.data.format.Formatters;
@@ -40,6 +41,18 @@ public class Global extends GlobalSettings implements ServerConfigStartup {
         "hello, world",
         Akka.system().dispatcher(),
         null);
+
+
+      ActorRef mailerActor = Akka.system().actorOf(new Props(EventReportActor.class));
+      Akka.system().scheduler().schedule(
+              Duration.create(0, TimeUnit.MILLISECONDS), //Initial delay
+              Duration.create(60, TimeUnit.SECONDS),     //Frequency
+              mailerActor,
+              EventReportActor.Message.FULL_REPORT,
+              Akka.system().dispatcher(),
+              null
+      );
+
   }
 
   @Override
