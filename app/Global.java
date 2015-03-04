@@ -43,7 +43,7 @@ public class Global extends GlobalSettings implements ServerConfigStartup {
         null);
 
 
-      ActorRef mailerActor = Akka.system().actorOf(new Props(EventReportActor.class));
+      ActorRef mailerActor = Akka.system().actorOf(Props.create(EventReportActor.class));
       Akka.system().scheduler().schedule(
               Duration.create(0, TimeUnit.MILLISECONDS), //Initial delay
               Duration.create(60, TimeUnit.SECONDS),     //Frequency
