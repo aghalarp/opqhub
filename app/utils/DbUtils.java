@@ -26,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Contains Ebean utility methods for creates queries.
@@ -63,12 +64,28 @@ public class DbUtils {
     return query;
   }
 
+  public static String parens(String val) {
+    return String.format("(%s)", val);
+  }
+
   public static String or(List<String> ors) {
-    return StringUtils.join(ors, " OR ");
+    return parens(StringUtils.join(ors, " OR "));
   }
 
   public static String and(List<String> ands) {
-    return StringUtils.join(ands, " AND ");
+    return parens(StringUtils.join(ands, " AND "));
+  }
+
+  public static String eq(String field, Long val) {
+    return String.format("(%s = %d)", field, val);
+  }
+
+  public static String eq(String field, String val) {
+    return String.format("(%s = \"%s\")", field, val);
+  }
+
+  public static String beginsWith(String field, String value) {
+    return String.format("(%s LIKE %s%%)", field, value);
   }
 
 }

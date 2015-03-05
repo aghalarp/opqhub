@@ -393,8 +393,12 @@ function initPage(serverWs) {
   var spinner = new Spinner(opts).spin(target);
   //spinner.stop();
 
+  map.gridMap.callbacks.onGridClick = function(feature, layer) {
+    console.log(feature);
+  };
   map.init();
   details.init();
   filters.init();
   ws.init(serverWs, spinner);
+
 }

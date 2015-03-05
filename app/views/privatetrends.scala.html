@@ -101,7 +101,7 @@
                 divToSpinner[divs[i]] = new Spinner(opts).spin(document.getElementById(divs[i]));
             }
 
-
+                @*
                 $.get('@routes.Data.getVoltages(session.get("email"), utils.DateUtils.getPastTime(utils.DateUtils.getMillis, utils.DateUtils.TimeUnit.Minute, 5), utils.DateUtils.getMillis)')
                     .done(function(data) {
                         makeCharts(data, "#v-5m", 100, 140);
@@ -136,7 +136,7 @@
                   .done(function(data) {
                     makeCharts(data, "#f-6h", 58, 62);
         divToSpinner['f-6h' ].stop();
-                  });
+                  });  *@
             });
         </script>
     </body>

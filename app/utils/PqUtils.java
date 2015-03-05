@@ -1,6 +1,11 @@
 package utils;
 
+import models.Event;
 import java.awt.Polygon;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Set;
 
 public class PqUtils {
   private static final Polygon PROHIBITED_POLYGON = new Polygon(
@@ -42,6 +47,17 @@ public class PqUtils {
     else {
       return IticRegion.NO_INTERRUPTION;
     }
+  }
+
+  public static List<Event> filterEventsWithRegions(List<Event> events, boolean includeSevere, boolean includeModerate,
+                                                    boolean includeOk) {
+    Set<IticRegion> regions = new HashSet<>();
+    if(includeSevere) regions.add(IticRegion.PROHIBITED);
+    if(includeModerate) regions.add(IticRegion.NO_DAMAGE);
+    if(includeOk) regions.add(IticRegion.NO_INTERRUPTION);
+    return events.parallelStream()
+                 .filter(evt -> regions.contains(getIticRegion(evt.getDuration() * 1000, evt.getVoltage())))
+                 .collect(Collectors.toList());
   }
 }
 
