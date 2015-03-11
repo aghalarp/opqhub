@@ -18,6 +18,7 @@ public class HtmlMailerActor extends UntypedActor {
         if (msg instanceof HtmlMailerMessage) {
             HtmlMailerMessage message = (HtmlMailerMessage) msg;
             String mailTo = message.getMailTo();
+            String mailSubject = message.getMailSubject();
             String htmlTemplate = message.getHtmlTemplate();
 
             //Setup Mailer
@@ -33,7 +34,7 @@ public class HtmlMailerActor extends UntypedActor {
                 email.setAuthenticator(new DefaultAuthenticator(smtpUser, smtpPass));
                 email.setSSLOnConnect(true);
                 email.setFrom(smtpUser);
-                email.setSubject("OPQ Event Report");
+                email.setSubject(mailSubject);
                 email.setHtmlMsg(htmlTemplate);
                 email.addTo(mailTo);
                 email.send();

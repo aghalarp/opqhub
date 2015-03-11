@@ -1,4 +1,4 @@
-@(keyForm: Form[AccessKey], keys: Set[AccessKey])
+@(keyForm: Form[AccessKey], keys: Set[AccessKey], pdi: jobs.support_classes.PersonDeviceInfo)
 
 <!DOCTYPE html>
 <html>
@@ -26,68 +26,131 @@
     <!-- Main content -->
   <div class="container" id="main-content">
     <div class="row">
-      <!-- OPQBoxes docs -->
-      <div class="col-lg-4 well">
-        <b>OPQBoxes</b>
-        <p>This page allows for the management of OPQBoxes.</p>
-        <p>OPQBoxes already registered with your account will show up in the table</p>
-        <p>Each row displays basic facts about your registered OPQBoxes.</p>
-        <p>To update an existing box, select the "Configure OPQBox" button beside the OPQBox you would like to configure.</p>
-        <p>To add an exisiting OPQBox you have access to, fill out the information in the "Connect to OPQBox" form.</p>
+      <!-- Left Column -->
+      <div class="col-lg-4">
+          <!-- OPQBoxes docs -->
+          <div class="row">
+              <div class="col-lg-12">
+                  <div class="well">
+                    <b>OPQBoxes</b>
+                    <p>This page allows for the management of OPQBoxes.</p>
+                    <p>OPQBoxes already registered with your account will show up in the table</p>
+                    <p>Each row displays basic facts about your registered OPQBoxes.</p>
+                    <p>To update an existing box, select the "Configure OPQBox" button beside the OPQBox you would like to configure.</p>
+                    <p>To add an exisiting OPQBox you have access to, fill out the information in the "Connect to OPQBox" form.</p>
+                  </div>
+              </div>
+          </div>
 
+          <!-- Device addition form -->
+          <div class="row">
+              <div class="col-lg-12">
+                  <div class="panel panel-default">
+                      <div class="panel-heading">
+                          <h3 class="panel-title">Connect to OPQBox</h3>
+                      </div>
+                      <div class="panel-body">
+                          <form id="addDeviceForm" action="@routes.Administration.saveDevice(session.get("email"))" method="POST" class="form-horizontal">
+                              @helper.textinput("deviceId", "Device Id *", "col-sm-4", "col-sm-8", "")
+                              @helper.textinput("accessKey", "Access Key *", "col-sm-4", "col-sm-8", "")
+                              <input type="hidden" name="sharingData" id="sharingData" value="false" />
+                              <button type="submit" class="btn btn-primary btn-xs pull-right">Add OPQBox</button>
+                          </form>
+                      </div>
+                  </div>
+              </div>
+          </div>
       </div>
 
-      <!-- List of opq boxes -->
+      <!-- Right Column -->
       <div class="col-lg-8">
-        <div class="table-responsive">
-          <table class="table table-striped">
-            <thead>
-              <th>Description</th>
-              <th>Id</th>
-              <th>Key</th>
-              <th>Sharing Data</th>
-              <th><!--Empty for configure button--></th>
-            </thead>
-            <tbody>
-            @for(key <- keys) {
-              <tr>
-                <td>@key.getOpqDevice.getDescription</td>
-                <td>@key.getDeviceId()</td>
-                <td>@key.getAccessKey()</td>
-                <td>@key.getOpqDevice.getSharingData</td>
-                <td>
-                  <a href="@routes.Administration.configureDevice(session.get("email"), key.getAccessKey, key.getDeviceId)" class="btn btn-warning btn-xs pull-right">Configure OPQBox</a>
-                </td>
-              </tr>
-            }
-            </tbody>
-          </table>
-        </div>
+          <!-- List of opq boxes -->
+          <div class="row">
+              <div class="col-lg-12">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                      <span class="glyphicon glyphicon-hdd" style="margin-right: 5px;" aria-hidden="true"></span>Linked OPQBoxes
+                  </div>
+                    <div class="table-responsive">
+                      <table class="table table-striped">
+                        <thead>
+                          <th>Description</th>
+                          <th>Id</th>
+                          <th>Key</th>
+                          <th>Sharing Data</th>
+                          <th><!--Empty for configure button--></th>
+                        </thead>
+                        <tbody>
+                        @for(key <- keys) {
+                          <tr>
+                            <td>@key.getOpqDevice.getDescription</td>
+                            <td>@key.getDeviceId()</td>
+                            <td>@key.getAccessKey()</td>
+                            <td>@key.getOpqDevice.getSharingData</td>
+                            <td>
+                              <a href="@routes.Administration.configureDevice(session.get("email"), key.getAccessKey, key.getDeviceId)" class="btn btn-warning btn-xs pull-right">Configure OPQBox</a>
+                            </td>
+                          </tr>
+                        }
+                        </tbody>
+                      </table>
+                    </div>
+                </div>
+              </div>
+          </div>
+
+          <!-- Device Statistics -->
+          <div class="row">
+              <div class="col-lg-12">
+                  <div class="panel panel-default">
+                      <div class="panel-heading">
+                          <span class="glyphicon glyphicon-stats" style="margin-right: 5px;" aria-hidden="true"></span>OPQBox Activity
+                          <!-- Single button -->
+                          <div class="dropdown stats-dropdown pull-right">
+                              <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                  Past Day <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu stats-menu" role="menu">
+                                  <li><a href="#">Past Day </a></li>
+                                  <li><a href="#">Past Week </a></li>
+                                  <li><a href="#">Past Month </a></li>
+                              </ul>
+                          </div>
+                      </div>
+                      <div class="table-responsive">
+                          <table class="table table-striped">
+                              <thead>
+                                  <th>Device ID</th>
+                                  <th>Frequency Events</th>
+                                  <th>Voltage Events</th>
+                                  <th>Last Heartbeat</th>
+                              </thead>
+                              <tbody>
+                                 @for(devStats <- pdi.getDeviceStatsList()) {
+                                      <tr>
+                                          <td>@devStats.getDeviceID()</td>
+                                          <td>@devStats.getFreqEventCount()</td>
+                                          <td>@devStats.getVoltEventCount()</td>
+                                          @if(devStats.getIsRecentLastHeartbeat().equals(true)) {
+                                              <td style="color: green;">@devStats.getReadableLastHeartbeat()</td>
+                                          } else {
+                                              <td style="color: red;">@devStats.getReadableLastHeartbeat()</td>
+                                          }
+                                      </tr>
+                                  }
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
       </div>
     </div>
 
-    <!-- Device adition form -->
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-4">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">Connect to OPQBox</h3>
-          </div>
-          <div class="panel-body">
-            <form id="addDeviceForm" action="@routes.Administration.saveDevice(session.get("email"))" method="POST" class="form-horizontal">
-              @helper.textinput("deviceId", "Device Id *", "col-sm-3", "col-sm-7", "")
-              @helper.textinput("accessKey", "Access Key *", "col-sm-3", "col-sm-7", "")
-              <input type="hidden" name="sharingData" id="sharingData" value="false" />
-              <button type="submit" class="btn btn-primary btn-xs col-sm-offset-3">Add OPQBox</button>
-            </form>
-          </div>
-        </div>
 
-      </div>
-    </div>
+
   </div>
   <script type="text/javascript">
-
     $(document).ready(function() {
       $('#addDeviceForm').bootstrapValidator({
           message: 'This value is not valid',
@@ -119,7 +182,16 @@
 
           }
       });
-});
+    });
+  </script>
+
+  <!-- Handles dropdown menu in Device Stats panel -->
+  <script>
+      $(".stats-menu li a").click(function(e){
+        e.preventDefault();
+        var caret = $(this).parents(".stats-dropdown").find(".btn").children(); // Store the bootstrap caret span code to append later.
+        $(this).parents(".stats-dropdown").find('.btn').text($(this).text()).append(caret);
+      });
   </script>
   </body>
 </html>

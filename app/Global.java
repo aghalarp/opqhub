@@ -42,16 +42,17 @@ public class Global extends GlobalSettings implements ServerConfigStartup {
         Akka.system().dispatcher(),
         null);
 
+    //Setup scheduled event report email system.
+    ActorRef mailerActor = Akka.system().actorOf(new Props(EventReportActor.class));
+    Akka.system().scheduler().schedule(
+      Duration.create(0, TimeUnit.MILLISECONDS), //Initial delay
+      Duration.create(600, TimeUnit.SECONDS),     //Frequency
+      mailerActor,
+      EventReportActor.Message.FULL_REPORT,
+      Akka.system().dispatcher(),
+      null
+    );
 
-      ActorRef mailerActor = Akka.system().actorOf(new Props(EventReportActor.class));
-      Akka.system().scheduler().schedule(
-              Duration.create(0, TimeUnit.MILLISECONDS), //Initial delay
-              Duration.create(60, TimeUnit.SECONDS),     //Frequency
-              mailerActor,
-              EventReportActor.Message.FULL_REPORT,
-              Akka.system().dispatcher(),
-              null
-      );
 
   }
 

@@ -7,10 +7,12 @@ package jobs.support_classes;
  */
 public class HtmlMailerMessage {
     private final String mailTo; // Email address.
+    private final String mailSubject;
     private final String htmlTemplate; // Complete Html to send in email.
 
-    public HtmlMailerMessage(String mailTo, String htmlTemplate) {
+    public HtmlMailerMessage(String mailTo, String mailSubject, String htmlTemplate) {
         this.mailTo = mailTo;
+        this.mailSubject = mailSubject;
         this.htmlTemplate = htmlTemplate;
     }
 
@@ -20,5 +22,9 @@ public class HtmlMailerMessage {
 
     public String getHtmlTemplate() {
         return htmlTemplate;
+    }
+
+    public String getMailSubject() {
+        return mailSubject;
     }
 }
