@@ -92,6 +92,7 @@ public class MonitorWebsocket extends Controller {
 
     Set<OpqDevice> affectedDevices = new HashSet<>();
     List<Event> events = DbUtils.getAnyLike(Event.class, "location.gridId", req.visibleIds).findList();
+
     Collections.sort(events);
     String gridId;
     Integer[] tmpEventMetrics;

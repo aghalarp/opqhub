@@ -33,7 +33,7 @@ public class Global extends GlobalSettings implements ServerConfigStartup {
 
     // Start up device health monitoring
     Logger.debug("Starting akka system for scheduled heartbeat checks");
-    ActorRef actor = Akka.system().actorOf(new Props(jobs.HeartbeatAlertActor.class));
+    ActorRef actor = Akka.system().actorOf(Props.create(jobs.HeartbeatAlertActor.class), "heartbeatActor");
     Akka.system().scheduler().schedule(
         Duration.create(0, TimeUnit.MILLISECONDS),
         Duration.create(10, TimeUnit.MINUTES),
