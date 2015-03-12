@@ -583,6 +583,18 @@ var grid = (function () {
     return visibleIds;
   }
 
+  function getCenterLat() {
+    return map.getCenter().lat;
+  }
+
+  function getCenterLng() {
+    return map.getCenter().lng;
+  }
+
+  function getZoom() {
+    return map.getZoom();
+  }
+
   /**
    * Draws a small circle on the map which can be used in debugging.
    * @param latLng - The latitude and longitude to place the point.
@@ -650,7 +662,10 @@ var grid = (function () {
     getZoomByDistance: getZoomByDistance,
     addDebugPoint: addDebugPoint,
     invalidateSize: invalidateSize,
-    island: island
+    island: island,
+    getCenterLat: getCenterLat,
+    getCenterLng: getCenterLng,
+    getZoom: getZoom
   };
 })();
 

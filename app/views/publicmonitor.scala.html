@@ -1,4 +1,6 @@
-@(events: List[models.Event], totalEvents: Long, frequencyEvents: Long, voltageEvents: Long, mapCenterLat: Double, mapCenterLng: Double, mapZoom: Int)
+@(events: List[models.Event], totalEvents: Long, frequencyEvents: Long, voltageEvents: Long, mapCenterLat: Double,
+    mapCenterLng: Double, mapZoom: Int, requestFrequency: Boolean, minFrequency: Double, maxFrequency: Double, requestVoltage: Boolean, minVoltage: Double,
+    maxVoltage: Double, minDuration: Int, maxDuration: Int, minTimestamp: Long, maxTimestamp: Long, iticSevere: Boolean, iticModerate: Boolean, iticOk: Boolean)
 <!DOCTYPE html>
 <html>
     <head lang="en">
@@ -62,15 +64,15 @@
                                 <div class="row">
                                     <label class="col-sm-3">Freq. (Hz)</label>
                                     <div class="col-xs-1">
-                                        <input type="checkbox" class="checkbox" id="requestFrequency" checked="checked">
+                                        <input type="checkbox" class="checkbox" id="requestFrequency" @if(requestFrequency){checked="checked"}>
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label class="sr-only" for="frequencyGt">Frequency Greater Than</label>
-                                        <input type="text" class="form-control" id="frequencyGt" placeholder="">
+                                        <input type="text" class="form-control" id="frequencyGt" value="@minFrequency">
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label class="sr-only" for="frequencyLt">Frequency Less Than</label>
-                                        <input type="text" class="form-control" id="frequencyLt" placeholder="">
+                                        <input type="text" class="form-control" id="frequencyLt" value="@maxFrequency">
                                     </div>
                                 </div>
 
@@ -78,15 +80,15 @@
                                 <div class="row">
                                     <label class="col-sm-3">Voltage (V)</label>
                                     <div class="col-xs-1">
-                                        <input type="checkbox" id="requestVoltage" checked="checked">
+                                        <input type="checkbox" id="requestVoltage" @if(requestVoltage){checked="checked"}>
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label class="sr-only" for="voltageGt">Voltage Greater Than</label>
-                                        <input type="text" class="form-control" id="voltageGt" placeholder="">
+                                        <input type="text" class="form-control" id="voltageGt" value="@minVoltage">
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label class="sr-only" for="voltageLt">Voltage Less Than</label>
-                                        <input type="text" class="form-control" id="voltageLt" placeholder="">
+                                        <input type="text" class="form-control" id="voltageLt" value="@maxVoltage">
                                     </div>
                                 </div>
 
@@ -95,11 +97,11 @@
                                     <label class="col-sm-4">Duration (sec)</label>
                                     <div class="form-group col-sm-4">
                                         <label class="sr-only" for="durationGt">Duration Greater Than</label>
-                                        <input type="text" class="form-control" id="durationGt" placeholder="">
+                                        <input type="text" class="form-control" id="durationGt" value="@minDuration">
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label class="sr-only" for="durationLt">Duration Less Than</label>
-                                        <input type="text" class="form-control" id="durationLt" placeholder="">
+                                        <input type="text" class="form-control" id="durationLt" value="@maxDuration">
                                     </div>
                                 </div>
 
@@ -108,15 +110,15 @@
                                     <label class="col-sm-4 control-label">ITIC</label>
                                     <label class="col-xs-2 control-label">Severe</label>
                                     <div class="col-xs-1">
-                                        <input type="checkbox" id="requestIticSevere" checked="checked">
+                                        <input type="checkbox" id="requestIticSevere" @if(iticSevere){checked="checked"}>
                                     </div>
                                     <label class="col-xs-2 control-label">Moderate</label>
                                     <div class="col-xs-1">
-                                        <input type="checkbox" id="requestIticModerate" checked="checked">
+                                        <input type="checkbox" id="requestIticModerate" @if(iticModerate){checked="checked"}>
                                     </div>
                                     <label class="col-xs-1 control-label">OK</label>
                                     <div class="col-xs-1">
-                                        <input type="checkbox" id="requestIticOk" checked="checked">
+                                        <input type="checkbox" id="requestIticOk" @if(iticOk){checked="checked"}>
                                     </div>
                                 </div>
 
@@ -276,7 +278,50 @@
             </div>
         </div>
         <script type="text/javascript">
+            // Set up calendar fields correctly
+            $("#startTimestamp" ).datetimepicker();
+            $("#stopTimestamp" ).datetimepicker();
+            $("#startTimestamp").data("DateTimePicker").setDate(new Date(@minTimestamp));
+            $("#stopTimestamp").data("DateTimePicker").setDate(new Date(@maxTimestamp));
+
+            // Initialize the map
             grid.initMap("public-map", [@mapCenterLat, @mapCenterLng], @mapZoom);
+
+            // When update button is clicked, generate URL and goto
+            $("#updateBtn").click(function() {
+                var requestFrequency = $("#requestFrequency").is(':checked');
+                var minFrequency = $("#frequencyGt" ).val();
+                var maxFrequency = $("#frequencyLt" ).val();
+                var requestVoltage = $("#requestVoltage").is(':checked');
+                var minVoltage = $("#voltageGt" ).val();
+                var maxVoltage = $("#voltageLt" ).val();
+                var minDuration = $("#durationGt" ).val();
+                var maxDuration = $("#durationLt" ).val();
+                var minTimestamp = moment.utc($("#startTimestamp").data("DateTimePicker").getDate())._d.getTime();
+                var maxTimestamp = moment.utc($("#stopTimestamp").data("DateTimePicker").getDate())._d.getTime();
+                var iticSevere = $("#requestIticSevere").is(':checked');
+                var iticModerate = $("#requestIticModerate").is(':checked');
+                var iticOk = $("#requestIticOk").is(':checked');
+                var mapCenterLat = grid.getCenterLat();
+                var mapCenterLng = grid.getCenterLng();
+                var mapZoom = grid.getZoom();
+                var visibleIds = grid.getVisibleIds( ).join(";");
+                visibleIds = visibleIds.split("," ).join("c");
+                visibleIds = visibleIds.split(":" ).join("C");
+                visibleIds = visibleIds.split(";" ).join("s");
+
+
+                var baseUrl = window.location.pathname;
+                var url = baseUrl + "?requestFrequency=" + requestFrequency +"&minFrequency=" + minFrequency + "&maxFrequency=" + maxFrequency +
+                "&requestVoltage=" + requestVoltage + "&minVoltage=" + minVoltage + "&maxVoltage=" + maxVoltage +
+                "&minDuration=" + minDuration + "&maxDuration=" + maxDuration +
+                "&minTimestamp=" + minTimestamp + "&maxTimestamp=" + maxTimestamp +
+                "&iticSevere=" + iticSevere + "&iticModerate=" + iticModerate + "&iticOk=" + iticOk +
+                "&mapCenterLat=" + mapCenterLat + "&mapCenterLng=" + mapCenterLng + "&mapZoom=" + mapZoom +
+                "&page=0&mapVisibleIds=" + visibleIds;
+
+                window.location.href = url;
+            });
         </script>
         @*
         <script type="text/javascript">

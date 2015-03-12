@@ -28,21 +28,27 @@ public class PublicMonitor extends Controller {
       "0,1:3;0,1:2;0,2:3;0,2:2;0,3:3;0,3:2;1,0:0;1,0:1;1,1:0;1,1:1;1,2:0;1,2:1;1,3:0;1,3:1;1,0:3;1,0:2;1,1:3;" +
       "1,1:2;1,2:3;1,2:2;1,3:3;1,3:2;2,0:0;2,0:1;2,1:0;2,1:1;2,2:0;2,2:1;2,3:0;2,3:1;2,4:0";
 
+    mapVisibleIds = mapVisibleIds
+        .replaceAll(Pattern.quote(","), "c")
+        .replaceAll(Pattern.quote(":"), "C")
+        .replaceAll(Pattern.quote(";"), "s");
 
-    System.out.println(String.format("%f %f %f %f %d %d %d %d\n", minFrequency, maxFrequency, minVoltage, maxVoltage,
-                                     minDuration, maxDuration, minTimestamp, maxTimestamp));
 
-    return redirect(routes.PublicMonitor.publicMonitorWithArgs(minFrequency, maxFrequency, minVoltage, maxVoltage,
-      minDuration, maxDuration, minTimestamp, maxTimestamp, mapCenterLat, mapCenterLng, mapZoom, new Integer(0), mapVisibleIds));
+    return redirect(routes.PublicMonitor.publicMonitorWithArgs(true, minFrequency, maxFrequency, true, minVoltage, maxVoltage,
+      minDuration, maxDuration, minTimestamp, maxTimestamp, true, true, true, mapCenterLat, mapCenterLng, mapZoom, new Integer(0), mapVisibleIds));
   }
 
-  public static Result publicMonitorWithArgs(double minFrequency, double maxFrequency, double minVoltage, double maxVoltage,
-                                     int minDuration, int maxDuration, long minTimestamp, long maxTimestamp,
+  public static Result publicMonitorWithArgs(boolean requestFrequency, double minFrequency, double maxFrequency, boolean requestVoltage, double minVoltage, double maxVoltage,
+                                     int minDuration, int maxDuration, long minTimestamp, long maxTimestamp, boolean iticSevere, boolean iticModerate, boolean iticOk,
                                      double mapCenterLat, double mapCenterLng, int mapZoom, int page, String mapVisibleIds) {
+    String replacedVisibleIds = mapVisibleIds
+        .replaceAll(Pattern.quote("c"), ",")
+        .replaceAll(Pattern.quote("C"), ":")
+        .replaceAll(Pattern.quote("s"), ";");
 
-    List<String> visibleIdList = Arrays.asList(mapVisibleIds.split(Pattern.quote(";")));
+    List<String> visibleIdList = Arrays.asList(replacedVisibleIds.split(Pattern.quote(";")));
     List<Event> totalEvents = Event.getPublicEvents(minFrequency, maxFrequency, minVoltage, maxVoltage, minDuration,
-      maxDuration, minTimestamp, maxTimestamp, true, true, true, true, true, true, visibleIdList);
+                                                    maxDuration, minTimestamp, maxTimestamp, iticSevere, iticModerate, iticOk, requestFrequency, requestVoltage, true, visibleIdList);
 
     long totalEventsCount = totalEvents.size();
     long voltageEventsCount = totalEvents.parallelStream()
@@ -50,8 +56,12 @@ public class PublicMonitor extends Controller {
     long frequencyEventsCount = totalEventsCount - voltageEventsCount;
 
     List<Event> pagedEvents = Event.getPublicEvents(minFrequency, maxFrequency, minVoltage, maxVoltage, minDuration,
-      maxDuration, minTimestamp, maxTimestamp, true, true, true, true, true, true, visibleIdList, page);
+      maxDuration, minTimestamp, maxTimestamp, iticSevere, iticModerate, iticOk, requestFrequency, requestVoltage, true, visibleIdList, page);
 
-    return ok(views.html.publicmonitor.render(pagedEvents, totalEventsCount, frequencyEventsCount, voltageEventsCount, mapCenterLat, mapCenterLng, mapZoom));
+    return ok(views.html.publicmonitor.render(pagedEvents, totalEventsCount, frequencyEventsCount, voltageEventsCount,
+                                              mapCenterLat, mapCenterLng, mapZoom, requestFrequency,
+                                              minFrequency, maxFrequency,
+                                              requestVoltage, minVoltage, maxVoltage, minDuration, maxDuration,
+                                              minTimestamp, maxTimestamp, iticSevere, iticModerate, iticOk));
   }
 }

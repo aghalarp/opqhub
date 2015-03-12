@@ -220,13 +220,14 @@ public class Event extends Model implements Comparable<Event> {
                                             boolean includeVoltage, boolean includeFrequency, boolean sharingData,
                                             List<String> gridIds) {
     return getPublicEvents(minFreq, maxFreq, minVolt, maxVolt, minDuration, maxDuration, minTimestamp, maxTimestamp,
-      includeSevere, includeModerate, includeOk, includeVoltage, includeFrequency, sharingData, gridIds, -1);
+                           includeSevere, includeModerate, includeOk, includeVoltage, includeFrequency, sharingData,
+                           gridIds, -1);
   }
 
   public static List<Event> getPublicEvents(double minFreq, double maxFreq, double minVolt, double maxVolt,
                                       int minDuration, int maxDuration, long minTimestamp, long maxTimestamp,
                                       boolean includeSevere, boolean includeModerate, boolean includeOk,
-                                      boolean includeVoltage, boolean includeFrequency, boolean sharingData,
+                                      boolean includeFrequency, boolean includeVoltage, boolean sharingData,
                                       List<String> gridIds, int page) {
 
 
@@ -238,6 +239,12 @@ public class Event extends Model implements Comparable<Event> {
                               .between("timestamp", minTimestamp, maxTimestamp)
                               .ne("eventType", OpqPacket.PacketType.EVENT_HEARTBEAT);
 
+    // If voltage and frequency events are not requested, then there is no data to return
+    if(!includeFrequency && !includeVoltage) {
+      return new ArrayList<Event>();
+    }
+
+
     // We want to find all events that occurred where the list of gridIds starts with a location id
     Junction<Event> locationJunction = eventExpressionList.disjunction();
     for(String gridId : gridIds) {
@@ -246,10 +253,16 @@ public class Event extends Model implements Comparable<Event> {
     eventExpressionList = locationJunction.endJunction();
 
     // Create another disjunction for the inclusion of frequency vs voltage events
+
     Junction<Event> eventTypeJunction = eventExpressionList.disjunction();
-    if(includeVoltage) eventTypeJunction.add(Expr.eq("eventType", OpqPacket.PacketType.EVENT_VOLTAGE));
-    if(includeFrequency) eventTypeJunction.add(Expr.eq("eventType", OpqPacket.PacketType.EVENT_FREQUENCY));
+    if(includeVoltage) {
+      eventTypeJunction.add(Expr.eq("eventType", OpqPacket.PacketType.EVENT_VOLTAGE));
+    }
+    if(includeFrequency) {
+      eventTypeJunction.add(Expr.eq("eventType", OpqPacket.PacketType.EVENT_FREQUENCY));
+    }
     eventExpressionList = eventTypeJunction.endJunction();
+
 
     List<Event> events;
     if(page < 0) {
