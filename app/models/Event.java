@@ -249,6 +249,45 @@ public class Event extends Model implements Comparable<Event> {
     return events;
   }
 
+  public static List<Event> getPrivateEvents(double minFreq, double maxFreq, double minVolt, double maxVolt,
+                                             int minDuration, int maxDuration, long minTimestamp, long maxTimestamp,
+                                             boolean includeSevere, boolean includeModerate, boolean includeOk,
+                                             boolean includeVoltage, boolean includeFrequency, boolean sharingData,
+                                             List<AccessKey> accessKeys) {
+
+    ExpressionList<Event> eventExpressionList = Event.find().where()
+      .eq("accessKey.opqDevice.sharingData", sharingData)
+      .between("frequency", minFreq, maxFreq)
+      .between("voltage", minVolt, maxVolt)
+      .between("duration", minDuration, maxDuration)
+      .between("timestamp", minTimestamp, maxTimestamp)
+      .ne("eventType", OpqPacket.PacketType.EVENT_HEARTBEAT);
+
+    // We want to find all events that are tied to the passed in access keys
+    Junction<Event> locationJunction = eventExpressionList.disjunction();
+    for(AccessKey accessKey : accessKeys) {
+      locationJunction.add(Expr.eq("accessKey", accessKey));
+    }
+    eventExpressionList = locationJunction.endJunction();
+
+    // Create another disjunction for the inclusion of frequency vs voltage events
+    Junction<Event> eventTypeJunction = eventExpressionList.disjunction();
+    if(includeVoltage) eventTypeJunction.add(Expr.eq("eventType", OpqPacket.PacketType.EVENT_VOLTAGE));
+    if(includeFrequency) eventTypeJunction.add(Expr.eq("eventType", OpqPacket.PacketType.EVENT_FREQUENCY));
+    eventExpressionList = eventTypeJunction.endJunction();
+
+    List<Event> events = PqUtils.filterEventsWithRegions(eventExpressionList.findList(), includeSevere, includeModerate,
+      includeOk);
+
+
+    return events;
+  }
+
+  public static long getLastHeartbeat(OpqDevice device) {
+    return Ebean.createSqlQuery("SELECT MAX(timestamp) FROM event WHERE event_type = 0")
+      .findUnique().getLong("max(timestamp)");
+  }
+
   public static double getMinDouble(String field) {
     return Ebean.createSqlQuery("SELECT MIN(" + field + ") FROM event WHERE event_type != 0")
                 .findUnique().getDouble("min(" + field + ")");
