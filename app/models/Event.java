@@ -215,10 +215,19 @@ public class Event extends Model implements Comparable<Event> {
   }
 
   public static List<Event> getPublicEvents(double minFreq, double maxFreq, double minVolt, double maxVolt,
+                                            int minDuration, int maxDuration, long minTimestamp, long maxTimestamp,
+                                            boolean includeSevere, boolean includeModerate, boolean includeOk,
+                                            boolean includeVoltage, boolean includeFrequency, boolean sharingData,
+                                            List<String> gridIds) {
+    return getPublicEvents(minFreq, maxFreq, minVolt, maxVolt, minDuration, maxDuration, minTimestamp, maxTimestamp,
+      includeSevere, includeModerate, includeOk, includeVoltage, includeFrequency, sharingData, gridIds, -1);
+  }
+
+  public static List<Event> getPublicEvents(double minFreq, double maxFreq, double minVolt, double maxVolt,
                                       int minDuration, int maxDuration, long minTimestamp, long maxTimestamp,
                                       boolean includeSevere, boolean includeModerate, boolean includeOk,
                                       boolean includeVoltage, boolean includeFrequency, boolean sharingData,
-                                      List<String> gridIds) {
+                                      List<String> gridIds, int page) {
 
 
     ExpressionList<Event> eventExpressionList = Event.find().where()
@@ -242,9 +251,15 @@ public class Event extends Model implements Comparable<Event> {
     if(includeFrequency) eventTypeJunction.add(Expr.eq("eventType", OpqPacket.PacketType.EVENT_FREQUENCY));
     eventExpressionList = eventTypeJunction.endJunction();
 
-    List<Event> events = PqUtils.filterEventsWithRegions(eventExpressionList.findList(), includeSevere, includeModerate,
-                                                         includeOk);
-
+    List<Event> events;
+    if(page < 0) {
+      events = PqUtils.filterEventsWithRegions(eventExpressionList.findList(), includeSevere, includeModerate,
+        includeOk);
+    }
+    else {
+      events = PqUtils.filterEventsWithRegions(eventExpressionList.findPagingList(100).getPage(page).getList(),
+        includeSevere, includeModerate, includeOk);
+    }
 
     return events;
   }

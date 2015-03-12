@@ -22,8 +22,8 @@
 # Home page
 GET         /                                            controllers.Application.index()
 
-GET         /publicd                                     controllers.PublicMonitor.publicMonitor()
-GET         /pubd                                        controllers.PublicMonitor.publicMonitorWithArgs(minFrequency: Double, maxFrequency: Double, minVoltage: Double, maxVoltage: Double, minDuration: Int, maxDuration: Int, minTimestamp: Long, maxTimestamp: Long, mapCenterLat: Double, mapCenterLng: Double, mapZoom: Int, mapVisibleIds: String)
+GET         /publicredir                                 controllers.PublicMonitor.publicMonitor()
+GET         /publicmonitor                               controllers.PublicMonitor.publicMonitorWithArgs(minFrequency: Double, maxFrequency: Double, minVoltage: Double, maxVoltage: Double, minDuration: Int, maxDuration: Int, minTimestamp: Long, maxTimestamp: Long, mapCenterLat: Double, mapCenterLng: Double, mapZoom: Int, page: Int, mapVisibleIds: String)
 
 # Sign Up
 GET         /signup                                      controllers.Person.signup()

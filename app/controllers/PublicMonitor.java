@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Event;
+import org.openpowerquality.protocol.OpqPacket;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -31,17 +32,26 @@ public class PublicMonitor extends Controller {
     System.out.println(String.format("%f %f %f %f %d %d %d %d\n", minFrequency, maxFrequency, minVoltage, maxVoltage,
                                      minDuration, maxDuration, minTimestamp, maxTimestamp));
 
-    return redirect(routes.PublicMonitor.publicMonitorWithArgs(minFrequency, maxFrequency, minVoltage, maxVoltage, minDuration, maxDuration, minTimestamp, maxTimestamp, mapCenterLat, mapCenterLng, mapZoom, mapVisibleIds));
+    return redirect(routes.PublicMonitor.publicMonitorWithArgs(minFrequency, maxFrequency, minVoltage, maxVoltage,
+      minDuration, maxDuration, minTimestamp, maxTimestamp, mapCenterLat, mapCenterLng, mapZoom, new Integer(0), mapVisibleIds));
   }
 
   public static Result publicMonitorWithArgs(double minFrequency, double maxFrequency, double minVoltage, double maxVoltage,
                                      int minDuration, int maxDuration, long minTimestamp, long maxTimestamp,
-                                     double mapCenterLat, double mapCenterLng, int mapZoom, String mapVisibleIds) {
+                                     double mapCenterLat, double mapCenterLng, int mapZoom, int page, String mapVisibleIds) {
 
     List<String> visibleIdList = Arrays.asList(mapVisibleIds.split(Pattern.quote(";")));
-    List<Event> events = Event.getPublicEvents(minFrequency, maxFrequency, minVoltage, maxVoltage, minDuration,
+    List<Event> totalEvents = Event.getPublicEvents(minFrequency, maxFrequency, minVoltage, maxVoltage, minDuration,
       maxDuration, minTimestamp, maxTimestamp, true, true, true, true, true, true, visibleIdList);
 
-    return ok(views.html.publicmonitor.render(events));
+    long totalEventsCount = totalEvents.size();
+    long voltageEventsCount = totalEvents.parallelStream()
+      .filter(evt -> evt.getEventType().equals(OpqPacket.PacketType.EVENT_VOLTAGE)).count();
+    long frequencyEventsCount = totalEventsCount - voltageEventsCount;
+
+    List<Event> pagedEvents = Event.getPublicEvents(minFrequency, maxFrequency, minVoltage, maxVoltage, minDuration,
+      maxDuration, minTimestamp, maxTimestamp, true, true, true, true, true, true, visibleIdList, page);
+
+    return ok(views.html.publicmonitor.render(pagedEvents, totalEventsCount, frequencyEventsCount, voltageEventsCount, mapCenterLat, mapCenterLng, mapZoom));
   }
 }

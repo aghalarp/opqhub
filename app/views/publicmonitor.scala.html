@@ -1,4 +1,4 @@
-@(events: List[models.Event])
+@(events: List[models.Event], totalEvents: Long, frequencyEvents: Long, voltageEvents: Long, mapCenterLat: Double, mapCenterLng: Double, mapZoom: Int)
 <!DOCTYPE html>
 <html>
     <head lang="en">
@@ -178,9 +178,9 @@
                                 <h3 class="panel-title" id="events-title">Events</h3>
                                 <table>
                                     <tr>
-                                        <td>Total Events</td> <td><span id="totalEvents" class='badge global-stats'>0</span></td>
-                                        <td>Frequency Events</td> <td><span id="totalFrequencyEvents" class='badge global-stats'>0</span></td>
-                                        <td>Voltage Events</td> <td><span id="totalVoltageEvents" class='badge global-stats'>0</span></td>
+                                        <td>Total Events</td> <td><span id="totalEvents" class='badge global-stats'>@totalEvents</span></td>
+                                        <td>Frequency Events</td> <td><span id="totalFrequencyEvents" class='badge global-stats'>@frequencyEvents</span></td>
+                                        <td>Voltage Events</td> <td><span id="totalVoltageEvents" class='badge global-stats'>@voltageEvents</span></td>
                                     </tr>
                                         <!--<tr>-->
                                         <!--<td>Registered OPQBoxes</td><td><span id="totalRegisteredDevices" class='badge global-stats'>0</span></td>-->
@@ -203,10 +203,17 @@
                                     <tbody>
                                         @for(event <- events) {
                                             <tr>
-                                                <td>@event.getTimestamp</td>
-                                                <td>@event.getEventType</td>
+                                                <td>@utils.DateUtils.toShortDateTime(event.getTimestamp)</td>
+                                                <td>@event.getEventType.getName</td>
                                                 <td>@event.getDuration</td>
-                                                <td>@event.getVoltage</td>
+                                                <td>
+                                                    @if(event.getEventType.getName.equals("Voltage Event")){
+                                                        @event.getVoltage V
+                                                    }
+                                                    @if(event.getEventType.getName.equals("Frequency Event")){
+                                                        @event.getFrequency Hz
+                                                    }
+                                                </td>
                                                 <td>N/A</td>
                                             </tr>
                                         }
@@ -268,6 +275,9 @@
                 </div>
             </div>
         </div>
+        <script type="text/javascript">
+            grid.initMap("public-map", [@mapCenterLat, @mapCenterLng], @mapZoom);
+        </script>
         @*
         <script type="text/javascript">
         $(document).ready(function () {
