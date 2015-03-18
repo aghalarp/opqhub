@@ -289,37 +289,33 @@
 
             // When update button is clicked, generate URL and goto
             $("#updateBtn").click(function() {
-                var requestFrequency = $("#requestFrequency").is(':checked');
-                var minFrequency = $("#frequencyGt" ).val();
-                var maxFrequency = $("#frequencyLt" ).val();
-                var requestVoltage = $("#requestVoltage").is(':checked');
-                var minVoltage = $("#voltageGt" ).val();
-                var maxVoltage = $("#voltageLt" ).val();
-                var minDuration = $("#durationGt" ).val();
-                var maxDuration = $("#durationLt" ).val();
-                var minTimestamp = moment.utc($("#startTimestamp").data("DateTimePicker").getDate())._d.getTime();
-                var maxTimestamp = moment.utc($("#stopTimestamp").data("DateTimePicker").getDate())._d.getTime();
-                var iticSevere = $("#requestIticSevere").is(':checked');
-                var iticModerate = $("#requestIticModerate").is(':checked');
-                var iticOk = $("#requestIticOk").is(':checked');
-                var mapCenterLat = grid.getCenterLat();
-                var mapCenterLng = grid.getCenterLng();
-                var mapZoom = grid.getZoom();
                 var visibleIds = grid.getVisibleIds( ).join(";");
                 visibleIds = visibleIds.split("," ).join("c");
                 visibleIds = visibleIds.split(":" ).join("C");
                 visibleIds = visibleIds.split(";" ).join("s");
 
+                var params = {
+                    requestFrequency: $ ( "#requestFrequency" ).is ( ':checked' ),
+                    minFrequency    : $ ( "#frequencyGt" ).val ( ),
+                    maxFrequency    : $ ( "#frequencyLt" ).val ( ),
+                    requestVoltage  : $ ( "#requestVoltage" ).is ( ':checked' ),
+                    minVoltage      : $ ( "#voltageGt" ).val ( ),
+                    maxVoltage      : $ ( "#voltageLt" ).val ( ),
+                    minDuration     : $ ( "#durationGt" ).val ( ),
+                    maxDuration     : $ ( "#durationLt" ).val ( ),
+                    minTimestamp    : moment.utc ( $ ( "#startTimestamp" ).data ( "DateTimePicker" ).getDate ( ) )._d.getTime ( ),
+                    maxTimestamp    : moment.utc ( $ ( "#stopTimestamp" ).data ( "DateTimePicker" ).getDate ( ) )._d.getTime ( ),
+                    iticSevere      : $ ( "#requestIticSevere" ).is ( ':checked' ),
+                    iticModerate    : $ ( "#requestIticModerate" ).is ( ':checked' ),
+                    iticOk          : $ ( "#requestIticOk" ).is ( ':checked' ),
+                    mapCenterLat    : grid.getCenterLat ( ),
+                    mapCenterLng    : grid.getCenterLng ( ),
+                    mapZoom         : grid.getZoom ( ),
+                    page            : 0,
+                    mapVisibleIds   : visibleIds
+                };
 
-                var baseUrl = window.location.pathname;
-                var url = baseUrl + "?requestFrequency=" + requestFrequency +"&minFrequency=" + minFrequency + "&maxFrequency=" + maxFrequency +
-                "&requestVoltage=" + requestVoltage + "&minVoltage=" + minVoltage + "&maxVoltage=" + maxVoltage +
-                "&minDuration=" + minDuration + "&maxDuration=" + maxDuration +
-                "&minTimestamp=" + minTimestamp + "&maxTimestamp=" + maxTimestamp +
-                "&iticSevere=" + iticSevere + "&iticModerate=" + iticModerate + "&iticOk=" + iticOk +
-                "&mapCenterLat=" + mapCenterLat + "&mapCenterLng=" + mapCenterLng + "&mapZoom=" + mapZoom +
-                "&page=0&mapVisibleIds=" + visibleIds;
-
+                var url = window.location.pathname + "?" + $.param(params);
                 window.location.href = url;
             });
         </script>
