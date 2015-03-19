@@ -264,6 +264,14 @@ public class Event extends Model implements Comparable<Event> {
     return events;
   }
 
+  public static Event getPublicEventById(long id) {
+    Event publicEvent = Event.find().byId(id);
+    if(publicEvent == null || !publicEvent.getAccessKey().getOpqDevice().getSharingData()) {
+      return null;
+    }
+    return publicEvent;
+  }
+
   public static List<Event> getPrivateEvents(double minFreq, double maxFreq, double minVolt, double maxVolt,
                                              int minDuration, int maxDuration, long minTimestamp, long maxTimestamp,
                                              boolean includeSevere, boolean includeModerate, boolean includeOk,

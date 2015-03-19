@@ -1,6 +1,4 @@
-@(events: List[models.Event], totalEvents: Long, frequencyEvents: Long, voltageEvents: Long, mapCenterLat: Double,
-    mapCenterLng: Double, mapZoom: Int, requestFrequency: Boolean, minFrequency: Double, maxFrequency: Double, requestVoltage: Boolean, minVoltage: Double,
-    maxVoltage: Double, minDuration: Int, maxDuration: Int, minTimestamp: Long, maxTimestamp: Long, iticSevere: Boolean, iticModerate: Boolean, iticOk: Boolean)
+@(data: template.data.PublicMonitorData)
 <!DOCTYPE html>
 <html>
     <head lang="en">
@@ -64,17 +62,17 @@
                                 <div class="row">
                                     <label class="col-sm-3">Freq. (Hz)</label>
                                     <div class="col-xs-1">
-                                        <input type="checkbox" class="checkbox" id="requestFrequency" @if(requestFrequency){checked="checked"}>
+                                        <input type="checkbox" class="checkbox" id="requestFrequency" @if(data.requestFrequency){checked="checked"}>
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label class="sr-only" for="frequencyGt">Frequency Greater Than</label>
                                         <input type="text" class="form-control" id="frequencyGt"
-                                            value="@utils.DisplayUtils.twoDecimal.format(minFrequency)">
+                                            value="@utils.DisplayUtils.twoDecimal.format(data.minFrequency)">
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label class="sr-only" for="frequencyLt">Frequency Less Than</label>
                                         <input type="text" class="form-control" id="frequencyLt"
-                                            value="@utils.DisplayUtils.twoDecimal.format(maxFrequency)">
+                                            value="@utils.DisplayUtils.twoDecimal.format(data.maxFrequency)">
                                     </div>
                                 </div>
 
@@ -82,17 +80,17 @@
                                 <div class="row">
                                     <label class="col-sm-3">Voltage (V)</label>
                                     <div class="col-xs-1">
-                                        <input type="checkbox" id="requestVoltage" @if(requestVoltage){checked="checked"}>
+                                        <input type="checkbox" id="requestVoltage" @if(data.requestVoltage){checked="checked"}>
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label class="sr-only" for="voltageGt">Voltage Greater Than</label>
                                         <input type="text" class="form-control" id="voltageGt"
-                                            value="@utils.DisplayUtils.oneDecimal.format(minVoltage)">
+                                            value="@utils.DisplayUtils.oneDecimal.format(data.minVoltage)">
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label class="sr-only" for="voltageLt">Voltage Less Than</label>
                                         <input type="text" class="form-control" id="voltageLt"
-                                            value="@utils.DisplayUtils.oneDecimal.format(maxVoltage)">
+                                            value="@utils.DisplayUtils.oneDecimal.format(data.maxVoltage)">
                                     </div>
                                 </div>
 
@@ -101,11 +99,11 @@
                                     <label class="col-sm-4">Duration (sec)</label>
                                     <div class="form-group col-sm-4">
                                         <label class="sr-only" for="durationGt">Duration Greater Than</label>
-                                        <input type="text" class="form-control" id="durationGt" value="@minDuration">
+                                        <input type="text" class="form-control" id="durationGt" value="@data.minDuration">
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label class="sr-only" for="durationLt">Duration Less Than</label>
-                                        <input type="text" class="form-control" id="durationLt" value="@maxDuration">
+                                        <input type="text" class="form-control" id="durationLt" value="@data.maxDuration">
                                     </div>
                                 </div>
 
@@ -114,15 +112,15 @@
                                     <label class="col-sm-4 control-label">ITIC</label>
                                     <label class="col-xs-2 control-label">Severe</label>
                                     <div class="col-xs-1">
-                                        <input type="checkbox" id="requestIticSevere" @if(iticSevere){checked="checked"}>
+                                        <input type="checkbox" id="requestIticSevere" @if(data.iticSevere){checked="checked"}>
                                     </div>
                                     <label class="col-xs-2 control-label">Moderate</label>
                                     <div class="col-xs-1">
-                                        <input type="checkbox" id="requestIticModerate" @if(iticModerate){checked="checked"}>
+                                        <input type="checkbox" id="requestIticModerate" @if(data.iticModerate){checked="checked"}>
                                     </div>
                                     <label class="col-xs-1 control-label">OK</label>
                                     <div class="col-xs-1">
-                                        <input type="checkbox" id="requestIticOk" @if(iticOk){checked="checked"}>
+                                        <input type="checkbox" id="requestIticOk" @if(data.iticOk){checked="checked"}>
                                     </div>
                                 </div>
 
@@ -160,7 +158,6 @@
                                     <label class="col-sm-2">Actions</label>
                                     <div class="col-sm-8">
                                         <button type="button" class="btn btn-primary btn-xs updateBtn" id="updateBtn">Update</button>
-                                        <button class="btn btn-danger btn-xs" id="resetBtn">Reset</button>
                                     </div>
                                 </div>
                             </div>
@@ -184,13 +181,14 @@
                                 <h3 class="panel-title" id="events-title">Events</h3>
                                 <table>
                                     <tr>
-                                        <td>Total Events</td> <td><span id="totalEvents" class='badge global-stats'>@totalEvents</span></td>
-                                        <td>Frequency Events</td> <td><span id="totalFrequencyEvents" class='badge global-stats'>@frequencyEvents</span></td>
-                                        <td>Voltage Events</td> <td><span id="totalVoltageEvents" class='badge global-stats'>@voltageEvents</span></td>
+                                        <td>Total Events</td> <td><span id="totalEvents" class='badge global-stats'>@data.totalEventsCount</span></td>
+                                        <td>Frequency Events</td> <td><span id="totalFrequencyEvents" class='badge global-stats'>@data.frequencyEventsCount</span></td>
+                                        <td>Voltage Events</td> <td><span id="totalVoltageEvents" class='badge global-stats'>@data.voltageEventsCount</span></td>
                                     </tr>
                                 </table>
                             </div>
                             <div class="panel-body" id="events-table">
+                                @if(data.totalEventsCount > 0) {
                                 <table class="table table-hover" id="events">
                                     <thead>
                                         <tr>
@@ -202,8 +200,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @for(event <- events) {
-                                            <tr>
+                                        @for(event <- data.totalEvents) {
+                                            <tr id="@event.getPrimaryKey">
                                                 <td>@utils.DateUtils.toDateTime(event.getTimestamp)</td>
                                                 <td>@event.getEventType.getName</td>
                                                 <td>@event.getDuration s</td>
@@ -227,10 +225,23 @@
                                         }
                                     </tbody>
                                 </table>
+                                } else {
+                                    No events to display.
+                                }
                             </div>
-                            <div class="panel-footer">
-
-            </div>
+                            <div class="panel-footer panel-title">
+                                 @if(data.page > 0) {
+                                     <button type="button" class="btn btn-primary btn-xs" id="prev-page-btn">
+                                         <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                                     </button>
+                                 }
+                                 @{data.page + 1} / @{data.totalPages + 1}
+                                 @if(data.page < data.totalPages) {
+                                    <button type="button" class="btn btn-primary btn-xs" id="next-page-btn">
+                                        <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                                    </button>
+                                 }
+                            </div>
                         </div>
                     </div>
 
@@ -247,34 +258,55 @@
                             </div>
                             <div class="panel-body">
                                 <div class="col-md-4">
-                                    <table class="table table-condensed">
-                                        <tbody>
-                                            <tr>
-                                                <td>Frequency</td>
-                                                <td id="details-frequency"></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Voltage</td>
-                                                <td id="details-voltage"></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Duration</td>
-                                                <td id="details-duration"></td>
-                                            </tr>
-                                            <tr>
-                                                <td id="details-itic-title">ITIC</td>
-                                                <td id="details-itic-severity"></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Locality</td>
-                                                <td id="details-event-level"></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Location</td>
-                                                <td><a class="btn-link" id="details-grid-id"></a></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    @if(data.detailedEvent.ne(null)) {
+                                        <table class="table table-condensed">
+                                            <tbody>
+                                                <tr>
+                                                    <td>Frequency</td>
+                                                    <td id="details-frequency">
+                                                        @utils.DisplayUtils.twoDecimal.format(data.detailedEvent.getFrequency)
+                                                        Hz
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Voltage</td>
+                                                    <td id="details-voltage">
+                                                        @utils.DisplayUtils.oneDecimal.format(data.detailedEvent.getVoltage)
+                                                        V
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Duration</td>
+                                                    <td id="details-duration">
+                                                        @data.detailedEvent.getDuration s
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td id="details-itic-title">ITIC</td>
+                                                    <td id="details-itic-severity">
+                                                    @{
+                                                        utils.PqUtils.getIticRegion(data.detailedEvent.getDuration * 1000, data.detailedEvent.getVoltage) match {
+                                                            case utils.PqUtils.IticRegion.NO_INTERRUPTION => <span class='badge itic-badge itic-no-interruption'>&nbsp;</span>
+                                                            case utils.PqUtils.IticRegion.NO_DAMAGE => <span class='badge itic-badge itic-no-damage'>&nbsp;</span>
+                                                            case utils.PqUtils.IticRegion.PROHIBITED => <span class='badge itic-badge itic-prohibited'>&nbsp;</span>
+                                                            case _ => "N/A"
+                                                        }
+                                                    }
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Location</td>
+                                                    <td>
+                                                        <a class="btn-link" id="details-grid-id">
+                                                        @data.detailedEvent.getLocation.getGridId
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    } else {
+                                        No event details to display.
+                                    }
                                 </div>
                                 <div id="waveform" class="col-md-4 plot"></div>
                             </div>
@@ -283,18 +315,9 @@
                 </div>
             </div>
         </div>
+
         <script type="text/javascript">
-            // Set up calendar fields correctly
-            $("#startTimestamp" ).datetimepicker();
-            $("#stopTimestamp" ).datetimepicker();
-            $("#startTimestamp").data("DateTimePicker").setDate(new Date(@minTimestamp));
-            $("#stopTimestamp").data("DateTimePicker").setDate(new Date(@maxTimestamp));
-
-            // Initialize the map
-            grid.initMap("public-map", [@mapCenterLat, @mapCenterLng], @mapZoom);
-
-            // When update button is clicked, generate URL and goto
-            $("#updateBtn").click(function() {
+            function update(page, detailedEventId) {
                 var visibleIds = grid.getVisibleIds( ).join(";");
                 visibleIds = visibleIds.split("," ).join("c");
                 visibleIds = visibleIds.split(":" ).join("C");
@@ -317,34 +340,43 @@
                     mapCenterLat    : grid.getCenterLat ( ),
                     mapCenterLng    : grid.getCenterLng ( ),
                     mapZoom         : grid.getZoom ( ),
-                    page            : 0,
+                    page            : page || 0,
+                    detailedEventId : detailedEventId || -1,
                     mapVisibleIds   : visibleIds
                 };
 
                 var url = window.location.pathname + "?" + $.param(params);
                 window.location.href = url;
+            }
+
+            // Set up calendar fields correctly
+            $("#startTimestamp" ).datetimepicker();
+            $("#stopTimestamp" ).datetimepicker();
+            $("#startTimestamp").data("DateTimePicker").setDate(new Date(@data.minTimestamp));
+            $("#stopTimestamp").data("DateTimePicker").setDate(new Date(@data.maxTimestamp));
+
+            // Initialize the map
+            grid.initMap("public-map", [@data.mapCenterLat, @data.mapCenterLng], @data.mapZoom);
+
+            // Click Events
+            // When update button is clicked, generate URL and goto
+            $("#updateBtn").click(function() {
+                update();
+            });
+
+            // Next and previous page buttons
+            $("#prev-page-btn").click(function() {
+                update(@{data.page - 1});
+            });
+
+            $("#next-page-btn").click(function() {
+                update(@{data.page + 1});
+            });
+
+            // Table row details update
+            $("#events tr" ).click(function(){
+               update(@data.page, this.id);
             });
         </script>
-        @*
-        <script type="text/javascript">
-        $(document).ready(function () {
-
-
-        initPage('@play.Play.application().configuration().getString("opqhub.websockets.server")');
-
-
-        $("#resetBtn").click(function() {
-        filters.reset();
-        map.gridMap.setView(map.gridMap.island.OAHU.latLng, map.gridMap.island.OAHU.defaultZoom);
-        });
-
-        $("#updateBtn").click(function() {
-        if(filters.validate('#messages')) {
-        ws.requestUpdate();
-        }
-        });
-        });
-        </script>
-        *@
     </body>
 </html>

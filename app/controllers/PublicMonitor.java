@@ -1,5 +1,6 @@
 package controllers;
 
+import template.data.PublicMonitorData;
 import models.Event;
 import org.openpowerquality.protocol.OpqPacket;
 import play.mvc.Controller;
@@ -40,7 +41,7 @@ public class PublicMonitor extends Controller {
         routes.PublicMonitor.publicMonitorWithArgs(true, minFrequency, maxFrequency, true, minVoltage, maxVoltage,
                                                    minDuration, maxDuration, minTimestamp, maxTimestamp, true, true,
                                                    true, mapCenterLat, mapCenterLng, mapZoom, new Integer(0),
-                                                   mapVisibleIds));
+                                                   new Integer(-1), mapVisibleIds));
   }
 
   public static Result publicMonitorWithArgs(boolean requestFrequency, double minFrequency, double maxFrequency,
@@ -48,8 +49,10 @@ public class PublicMonitor extends Controller {
                                              int minDuration, int maxDuration, long minTimestamp, long maxTimestamp,
                                              boolean iticSevere, boolean iticModerate, boolean iticOk,
                                              double mapCenterLat, double mapCenterLng, int mapZoom, int page,
-                                             String mapVisibleIds) {
+                                             long detailedEventId, String mapVisibleIds) {
 
+    // URLs don't really like , ; and :, so we replace those for readability purposes
+    // This could probably be cleaned up or re-thought
     String replacedVisibleIds = mapVisibleIds
         .replaceAll(Pattern.quote("c"), ",")
         .replaceAll(Pattern.quote("C"), ":")
@@ -74,12 +77,25 @@ public class PublicMonitor extends Controller {
                              .skip(page * EVENTS_PER_PAGE)
                              .limit(EVENTS_PER_PAGE)
                              .collect(Collectors.toList());
+    Event detailedEvent;
+    // If the detailed event id is -1, it has not been specified, so display the details of the first event in the list
+    // Otherwise, grab the even with the specified id
+    if(detailedEventId < 0) {
+      detailedEvent = totalEvents.size() > 0 ? totalEvents.get(0) : null;
+    }
+    else {
+      detailedEvent = Event.getPublicEventById(detailedEventId);
+    }
+
+    int totalPages = (int) totalEventsCount / 100;
 
 
-    return ok(views.html.publicmonitor.render(totalEvents, totalEventsCount, frequencyEventsCount, voltageEventsCount,
+    return ok(views.html.publicmonitor.render(new PublicMonitorData(totalEvents, totalEventsCount, frequencyEventsCount,
+                                                                    voltageEventsCount,
                                               mapCenterLat, mapCenterLng, mapZoom, requestFrequency,
                                               minFrequency, maxFrequency,
                                               requestVoltage, minVoltage, maxVoltage, minDuration, maxDuration,
-                                              minTimestamp, maxTimestamp, iticSevere, iticModerate, iticOk));
+                                              minTimestamp, maxTimestamp, iticSevere, iticModerate, iticOk,
+                                              detailedEvent, page, totalPages)));
   }
 }
