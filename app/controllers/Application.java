@@ -27,7 +27,6 @@ import play.data.validation.Constraints;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import views.html.publicmap;
 import views.html.signup;
 
 import java.util.Arrays;
@@ -45,9 +44,7 @@ public class Application extends Controller {
    * @return The rendered view for the homepage.
    */
   public static Result index() {
-//    Html html = signup.render();
-//    System.out.println(html.toString());
-    return ok(publicmap.render());
+    return redirect(routes.PublicMonitor.publicMonitor());
   }
 
   /**

@@ -53,7 +53,6 @@ public class Global extends GlobalSettings implements ServerConfigStartup {
 //      null
 //    );
 
-
   }
 
   @Override
