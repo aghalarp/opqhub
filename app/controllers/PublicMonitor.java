@@ -1,13 +1,19 @@
 package controllers;
 
+import play.libs.F;
+import template.data.EnhancedEvent;
+import template.data.GridIdEventCounts;
 import template.data.PublicMonitorData;
 import models.Event;
 import org.openpowerquality.protocol.OpqPacket;
 import play.mvc.Controller;
 import play.mvc.Result;
+import utils.PqUtils;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -59,13 +65,25 @@ public class PublicMonitor extends Controller {
         .replaceAll(Pattern.quote("s"), ";");
 
     List<String> visibleIdList = Arrays.asList(replacedVisibleIds.split(Pattern.quote(";")));
-    List<Event> totalEvents = Event.getPublicEvents(minFrequency, maxFrequency, minVoltage, maxVoltage, minDuration,
-                                                    maxDuration, minTimestamp, maxTimestamp, iticSevere, iticModerate,
-                                                    iticOk, requestFrequency, requestVoltage, true, visibleIdList);
+    List<EnhancedEvent> totalEvents = Event.getPublicEvents(minFrequency, maxFrequency, minVoltage, maxVoltage,
+                                                            minDuration,
+                                                            maxDuration, minTimestamp, maxTimestamp, iticSevere,
+                                                            iticModerate,
+                                                            iticOk, requestFrequency, requestVoltage, true,
+                                                            visibleIdList);
+
+    // Need a mapping from truncated id to number of events in that grid square
+    int truncateLen = visibleIdList.get(0).length();
+    Map<String, GridIdEventCounts> gridIdEventCountsMap = new HashMap<>();
+    totalEvents.parallelStream().forEach(evt -> {
+      String truncatedId = evt.event.getLocation().getGridId().substring(0, truncateLen);
+      gridIdEventCountsMap.putIfAbsent(truncatedId, new GridIdEventCounts());
+      gridIdEventCountsMap.get(truncatedId).update(evt.iticRegion);
+    });
 
     long totalEventsCount = totalEvents.size();
     long voltageEventsCount = totalEvents.parallelStream()
-                                         .filter(evt -> evt.getEventType().equals(OpqPacket.PacketType.EVENT_VOLTAGE))
+                                         .filter(evt -> evt.event.getEventType().equals(OpqPacket.PacketType.EVENT_VOLTAGE))
                                          .count();
     long frequencyEventsCount = totalEventsCount - voltageEventsCount;
 
@@ -77,7 +95,7 @@ public class PublicMonitor extends Controller {
                              .skip(page * EVENTS_PER_PAGE)
                              .limit(EVENTS_PER_PAGE)
                              .collect(Collectors.toList());
-    Event detailedEvent;
+    EnhancedEvent detailedEvent;
     // If the detailed event id is -1, it has not been specified, so display the details of the first event in the list
     // Otherwise, grab the even with the specified id
     if(detailedEventId < 0) {
@@ -90,12 +108,14 @@ public class PublicMonitor extends Controller {
     int totalPages = (int) totalEventsCount / 100;
 
 
+
+
     return ok(views.html.publicmonitor.render(new PublicMonitorData(totalEvents, totalEventsCount, frequencyEventsCount,
                                                                     voltageEventsCount,
                                               mapCenterLat, mapCenterLng, mapZoom, requestFrequency,
                                               minFrequency, maxFrequency,
                                               requestVoltage, minVoltage, maxVoltage, minDuration, maxDuration,
                                               minTimestamp, maxTimestamp, iticSevere, iticModerate, iticOk,
-                                              detailedEvent, page, totalPages)));
+                                              detailedEvent, page, totalPages, gridIdEventCountsMap)));
   }
 }

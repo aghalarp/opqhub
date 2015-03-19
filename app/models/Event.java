@@ -28,6 +28,7 @@ import org.openpowerquality.protocol.OpqPacket;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import scala.reflect.api.Exprs;
+import template.data.EnhancedEvent;
 import utils.DbUtils;
 import utils.PqUtils;
 
@@ -214,7 +215,7 @@ public class Event extends Model implements Comparable<Event> {
     return event.timestamp.compareTo(this.timestamp);
   }
 
-  public static List<Event> getPublicEvents(double minFreq, double maxFreq, double minVolt, double maxVolt,
+  public static List<EnhancedEvent> getPublicEvents(double minFreq, double maxFreq, double minVolt, double maxVolt,
                                       int minDuration, int maxDuration, long minTimestamp, long maxTimestamp,
                                       boolean includeSevere, boolean includeModerate, boolean includeOk,
                                       boolean includeFrequency, boolean includeVoltage, boolean sharingData,
@@ -231,7 +232,7 @@ public class Event extends Model implements Comparable<Event> {
 
     // If voltage and frequency events are not requested, then there is no data to return
     if(!includeFrequency && !includeVoltage) {
-      return new ArrayList<Event>();
+      return new ArrayList<EnhancedEvent>();
     }
 
 
@@ -254,7 +255,7 @@ public class Event extends Model implements Comparable<Event> {
     eventExpressionList = eventTypeJunction.endJunction();
 
 
-    List<Event> events;
+    List<EnhancedEvent> events;
 
     events = PqUtils.filterEventsWithRegions(eventExpressionList.findList(),
                                              includeSevere,
@@ -264,47 +265,47 @@ public class Event extends Model implements Comparable<Event> {
     return events;
   }
 
-  public static Event getPublicEventById(long id) {
+  public static EnhancedEvent getPublicEventById(long id) {
     Event publicEvent = Event.find().byId(id);
     if(publicEvent == null || !publicEvent.getAccessKey().getOpqDevice().getSharingData()) {
       return null;
     }
-    return publicEvent;
+    return new EnhancedEvent(publicEvent, PqUtils.getIticRegion(publicEvent.getDuration() * 1000, publicEvent.getVoltage()));
   }
 
-  public static List<Event> getPrivateEvents(double minFreq, double maxFreq, double minVolt, double maxVolt,
-                                             int minDuration, int maxDuration, long minTimestamp, long maxTimestamp,
-                                             boolean includeSevere, boolean includeModerate, boolean includeOk,
-                                             boolean includeVoltage, boolean includeFrequency, boolean sharingData,
-                                             List<AccessKey> accessKeys) {
-
-    ExpressionList<Event> eventExpressionList = Event.find().where()
-      .eq("accessKey.opqDevice.sharingData", sharingData)
-      .between("frequency", minFreq, maxFreq)
-      .between("voltage", minVolt, maxVolt)
-      .between("duration", minDuration, maxDuration)
-      .between("timestamp", minTimestamp, maxTimestamp)
-      .ne("eventType", OpqPacket.PacketType.EVENT_HEARTBEAT);
-
-    // We want to find all events that are tied to the passed in access keys
-    Junction<Event> locationJunction = eventExpressionList.disjunction();
-    for(AccessKey accessKey : accessKeys) {
-      locationJunction.add(Expr.eq("accessKey", accessKey));
-    }
-    eventExpressionList = locationJunction.endJunction();
-
-    // Create another disjunction for the inclusion of frequency vs voltage events
-    Junction<Event> eventTypeJunction = eventExpressionList.disjunction();
-    if(includeVoltage) eventTypeJunction.add(Expr.eq("eventType", OpqPacket.PacketType.EVENT_VOLTAGE));
-    if(includeFrequency) eventTypeJunction.add(Expr.eq("eventType", OpqPacket.PacketType.EVENT_FREQUENCY));
-    eventExpressionList = eventTypeJunction.endJunction();
-
-    List<Event> events = PqUtils.filterEventsWithRegions(eventExpressionList.findList(), includeSevere, includeModerate,
-      includeOk);
-
-
-    return events;
-  }
+//  public static List<Event> getPrivateEvents(double minFreq, double maxFreq, double minVolt, double maxVolt,
+//                                             int minDuration, int maxDuration, long minTimestamp, long maxTimestamp,
+//                                             boolean includeSevere, boolean includeModerate, boolean includeOk,
+//                                             boolean includeVoltage, boolean includeFrequency, boolean sharingData,
+//                                             List<AccessKey> accessKeys) {
+//
+//    ExpressionList<Event> eventExpressionList = Event.find().where()
+//      .eq("accessKey.opqDevice.sharingData", sharingData)
+//      .between("frequency", minFreq, maxFreq)
+//      .between("voltage", minVolt, maxVolt)
+//      .between("duration", minDuration, maxDuration)
+//      .between("timestamp", minTimestamp, maxTimestamp)
+//      .ne("eventType", OpqPacket.PacketType.EVENT_HEARTBEAT);
+//
+//    // We want to find all events that are tied to the passed in access keys
+//    Junction<Event> locationJunction = eventExpressionList.disjunction();
+//    for(AccessKey accessKey : accessKeys) {
+//      locationJunction.add(Expr.eq("accessKey", accessKey));
+//    }
+//    eventExpressionList = locationJunction.endJunction();
+//
+//    // Create another disjunction for the inclusion of frequency vs voltage events
+//    Junction<Event> eventTypeJunction = eventExpressionList.disjunction();
+//    if(includeVoltage) eventTypeJunction.add(Expr.eq("eventType", OpqPacket.PacketType.EVENT_VOLTAGE));
+//    if(includeFrequency) eventTypeJunction.add(Expr.eq("eventType", OpqPacket.PacketType.EVENT_FREQUENCY));
+//    eventExpressionList = eventTypeJunction.endJunction();
+//
+//    List<Event> events = PqUtils.filterEventsWithRegions(eventExpressionList.findList(), includeSevere, includeModerate,
+//      includeOk);
+//
+//
+//    return events;
+//  }
 
   public static long getLastHeartbeat(OpqDevice device) {
     return Ebean.createSqlQuery("SELECT MAX(timestamp) FROM event WHERE event_type = 0")

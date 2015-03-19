@@ -193,20 +193,20 @@
                                     </thead>
                                     <tbody>
                                         @for(event <- data.totalEvents) {
-                                            <tr id="@event.getPrimaryKey">
-                                                <td>@utils.DateUtils.toDateTime(event.getTimestamp)</td>
-                                                <td>@event.getEventType.getName</td>
-                                                <td>@event.getDuration s</td>
+                                            <tr id="@event.event.getPrimaryKey">
+                                                <td>@utils.DateUtils.toDateTime(event.event.getTimestamp)</td>
+                                                <td>@event.event.getEventType.getName</td>
+                                                <td>@event.event.getDuration s</td>
                                                 <td>
-                                                    @if(event.getEventType.getName.equals("Voltage Event")){
-                                                        @utils.DisplayUtils.oneDecimal.format(event.getVoltage) V
+                                                    @if(event.event.getEventType.getName.equals("Voltage Event")){
+                                                        @utils.DisplayUtils.oneDecimal.format(event.event.getVoltage) V
                                                     }
-                                                    @if(event.getEventType.getName.equals("Frequency Event")){
-                                                        @utils.DisplayUtils.twoDecimal.format(event.getFrequency) Hz
+                                                    @if(event.event.getEventType.getName.equals("Frequency Event")){
+                                                        @utils.DisplayUtils.twoDecimal.format(event.event.getFrequency) Hz
                                                     }
                                                 </td>
                                                 <td>
-                                                    @{utils.PqUtils.getIticRegion(event.getDuration * 1000, event.getVoltage) match {
+                                                    @{event.iticRegion match {
                                                         case utils.PqUtils.IticRegion.NO_INTERRUPTION => <span class='badge itic-badge itic-no-interruption'>&nbsp;</span>
                                                         case utils.PqUtils.IticRegion.NO_DAMAGE => <span class='badge itic-badge itic-no-damage'>&nbsp;</span>
                                                         case utils.PqUtils.IticRegion.PROHIBITED => <span class='badge itic-badge itic-prohibited'>&nbsp;</span>
@@ -256,28 +256,28 @@
                                                 <tr>
                                                     <td>Frequency</td>
                                                     <td id="details-frequency">
-                                                        @utils.DisplayUtils.twoDecimal.format(data.detailedEvent.getFrequency)
+                                                        @utils.DisplayUtils.twoDecimal.format(data.detailedEvent.event.getFrequency)
                                                         Hz
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>Voltage</td>
                                                     <td id="details-voltage">
-                                                        @utils.DisplayUtils.oneDecimal.format(data.detailedEvent.getVoltage)
+                                                        @utils.DisplayUtils.oneDecimal.format(data.detailedEvent.event.getVoltage)
                                                         V
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>Duration</td>
                                                     <td id="details-duration">
-                                                        @data.detailedEvent.getDuration s
+                                                        @data.detailedEvent.event.getDuration s
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td id="details-itic-title">ITIC</td>
                                                     <td id="details-itic-severity">
                                                     @{
-                                                        utils.PqUtils.getIticRegion(data.detailedEvent.getDuration * 1000, data.detailedEvent.getVoltage) match {
+                                                        data.detailedEvent.iticRegion match {
                                                             case utils.PqUtils.IticRegion.NO_INTERRUPTION => <span class='badge itic-badge itic-no-interruption'>&nbsp;</span>
                                                             case utils.PqUtils.IticRegion.NO_DAMAGE => <span class='badge itic-badge itic-no-damage'>&nbsp;</span>
                                                             case utils.PqUtils.IticRegion.PROHIBITED => <span class='badge itic-badge itic-prohibited'>&nbsp;</span>
@@ -290,7 +290,7 @@
                                                     <td>Location</td>
                                                     <td>
                                                         <a class="btn-link" id="details-grid-id">
-                                                        @data.detailedEvent.getLocation.getGridId
+                                                        @data.detailedEvent.event.getLocation.getGridId
                                                         </a>
                                                     </td>
                                                 </tr>
@@ -355,6 +355,10 @@
             // Initialize the map
             grid.initMap("public-map", [@data.mapCenterLat, @data.mapCenterLng], @data.mapZoom);
 
+            // Send grid data to map
+            @for((gridId, cnt) <- data.gridIdEventCounts) {
+                grid.addEventNumbers("@gridId", @cnt.severeEvents, @cnt.moderateEvents, @cnt.okEvents);
+            }
             // Set up plot for event details
             var plotOptions = {
 
@@ -384,7 +388,7 @@
                 }
             };
 
-            var plotPoints = "@data.detailedEvent.getEventData.getWaveform"
+            var plotPoints = "@data.detailedEvent.event.getEventData.getWaveform"
                 .split(",").map(function(pt, idx) {
                     return [idx, parseFloat(pt)];
                 });

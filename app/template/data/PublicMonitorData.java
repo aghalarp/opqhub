@@ -3,12 +3,13 @@ package template.data;
 import models.Event;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by anthony on 3/18/15.
  */
 public class PublicMonitorData {
-  public List<Event> totalEvents;
+  public List<EnhancedEvent> totalEvents;
   public long totalEventsCount;
   public long frequencyEventsCount;
   public long voltageEventsCount;
@@ -28,16 +29,18 @@ public class PublicMonitorData {
   public boolean iticSevere;
   public boolean iticModerate;
   public boolean iticOk;
-  public Event detailedEvent;
+  public EnhancedEvent detailedEvent;
   public int page;
   public int totalPages;
+  public Map<String, GridIdEventCounts> gridIdEventCounts;
 
-  public PublicMonitorData(List<Event> totalEvents, long totalEventsCount, long frequencyEventsCount,
+  public PublicMonitorData(List<EnhancedEvent> totalEvents, long totalEventsCount, long frequencyEventsCount,
                            long voltageEventsCount, double mapCenterLat, double mapCenterLng, int mapZoom,
                            boolean requestFrequency, double minFrequency, double maxFrequency, boolean requestVoltage,
                            double minVoltage, double maxVoltage, long minDuration, long maxDuration, long minTimestamp,
                            long maxTimestamp, boolean iticSevere, boolean iticModerate, boolean iticOk,
-                           Event detailedEvent, int page, int totalPages) {
+                           EnhancedEvent detailedEvent, int page, int totalPages,
+                           Map<String, GridIdEventCounts> gridIdEventCounts) {
     this.totalEvents = totalEvents;
     this.totalEventsCount = totalEventsCount;
     this.frequencyEventsCount = frequencyEventsCount;
@@ -61,5 +64,6 @@ public class PublicMonitorData {
     this.detailedEvent = detailedEvent;
     this.page = page;
     this.totalPages = totalPages;
+    this.gridIdEventCounts = gridIdEventCounts;
   }
 }

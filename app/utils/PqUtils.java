@@ -1,6 +1,8 @@
 package utils;
 
 import models.Event;
+import template.data.EnhancedEvent;
+
 import java.awt.Polygon;
 import java.util.HashSet;
 import java.util.List;
@@ -49,15 +51,20 @@ public class PqUtils {
     }
   }
 
-  public static List<Event> filterEventsWithRegions(List<Event> events, boolean includeSevere, boolean includeModerate,
+  public static List<EnhancedEvent> filterEventsWithRegions(List<Event> events, boolean includeSevere, boolean includeModerate,
                                                     boolean includeOk) {
     Set<IticRegion> regions = new HashSet<>();
     if(includeSevere) regions.add(IticRegion.PROHIBITED);
     if(includeModerate) regions.add(IticRegion.NO_DAMAGE);
     if(includeOk) regions.add(IticRegion.NO_INTERRUPTION);
-    return events.parallelStream()
-                 .filter(evt -> regions.contains(getIticRegion(evt.getDuration() * 1000, evt.getVoltage())))
-                 .collect(Collectors.toList());
+    List<EnhancedEvent> enhancedEvents = events.parallelStream()
+                                               .map(evt -> new EnhancedEvent(evt,
+                                                                             getIticRegion(
+                                                                                 evt.getDuration() * 1000,
+                                                                                 evt.getVoltage())))
+                                               .filter(evt -> regions.contains(evt.iticRegion))
+                                               .collect(Collectors.toList());
+    return enhancedEvents;
   }
 }
 
