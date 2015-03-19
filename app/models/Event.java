@@ -19,21 +19,31 @@
 
 package models;
 
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.Expr;
+import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Junction;
 import com.avaje.ebean.Query;
-import filters.Filter;
 import org.openpowerquality.protocol.OpqPacket;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
+import scala.reflect.api.Exprs;
+import template.data.EnhancedEvent;
+import utils.DbUtils;
+import utils.PqUtils;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.print.attribute.standard.JobHoldUntil;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This contains methods for viewing and modifying the persistent Event object.
@@ -84,9 +94,7 @@ public class Event extends Model implements Comparable<Event> {
    * Convenience method for creating an event during testing.
    *
    * @param eventType     The event type.
-   * @param eventValue    The event value (either in Hertz or Volts depending on the type).
    * @param timestamp     Timestamp for when alert happened representing number of milliseconds since epoch.
-   * @param eventDuration Number of milliseconds that event occurred for.
    */
   public Event(Long timestamp, OpqPacket.PacketType eventType, Double frequency, Double voltage, Long duration) {
     this.setTimestamp(timestamp);
@@ -207,21 +215,153 @@ public class Event extends Model implements Comparable<Event> {
     return event.timestamp.compareTo(this.timestamp);
   }
 
-  public static List<Event> filter(Filter<Event> ... filters) {
-    Set<Filter<Event>> filterSet = new HashSet<>();
-    Collections.addAll(filterSet, filters);
-    return filter(filterSet);
+  public static List<EnhancedEvent> getPublicEvents(double minFreq, double maxFreq, double minVolt, double maxVolt,
+                                      int minDuration, int maxDuration, long minTimestamp, long maxTimestamp,
+                                      boolean includeSevere, boolean includeModerate, boolean includeOk,
+                                      boolean includeFrequency, boolean includeVoltage, boolean sharingData,
+                                      List<String> gridIds) {
+
+
+    ExpressionList<Event> eventExpressionList = Event.find().where()
+                              .eq("accessKey.opqDevice.sharingData", sharingData)
+                              .between("frequency", minFreq, maxFreq)
+                              .between("voltage", minVolt, maxVolt)
+                              .between("duration", minDuration, maxDuration)
+                              .between("timestamp", minTimestamp, maxTimestamp)
+                              .ne("eventType", OpqPacket.PacketType.EVENT_HEARTBEAT);
+
+    // If voltage and frequency events are not requested, then there is no data to return
+    if(!includeFrequency && !includeVoltage) {
+      return new ArrayList<EnhancedEvent>();
+    }
+
+
+    // We want to find all events that occurred where the list of gridIds starts with a location id
+    Junction<Event> locationJunction = eventExpressionList.disjunction();
+    for(String gridId : gridIds) {
+      locationJunction.add(Expr.startsWith("location.gridId", gridId));
+    }
+    eventExpressionList = locationJunction.endJunction();
+
+    // Create another disjunction for the inclusion of frequency vs voltage events
+
+    Junction<Event> eventTypeJunction = eventExpressionList.disjunction();
+    if(includeVoltage) {
+      eventTypeJunction.add(Expr.eq("eventType", OpqPacket.PacketType.EVENT_VOLTAGE));
+    }
+    if(includeFrequency) {
+      eventTypeJunction.add(Expr.eq("eventType", OpqPacket.PacketType.EVENT_FREQUENCY));
+    }
+    eventExpressionList = eventTypeJunction.endJunction();
+
+
+    List<EnhancedEvent> events;
+
+    events = PqUtils.filterEventsWithRegions(eventExpressionList.findList(),
+                                             includeSevere,
+                                             includeModerate,
+                                             includeOk);
+
+    return events;
   }
 
-  public static List<Event> filter(Set<Filter<Event>> filters) {
-    List<Event> eventList = null;
-    Query<Event> eventQuery = Event.find();
-
-    for(Filter<Event> filter : filters) {
-      filter.apply(eventQuery);
+  public static EnhancedEvent getPublicEventById(long id) {
+    Event publicEvent = Event.find().byId(id);
+    if(publicEvent == null || !publicEvent.getAccessKey().getOpqDevice().getSharingData()) {
+      return null;
     }
-    eventList = eventQuery.findList();
-    return eventList;
+    return new EnhancedEvent(publicEvent, PqUtils.getIticRegion(publicEvent.getDuration() * 1000, publicEvent.getVoltage()));
+  }
+
+//  public static List<Event> getPrivateEvents(double minFreq, double maxFreq, double minVolt, double maxVolt,
+//                                             int minDuration, int maxDuration, long minTimestamp, long maxTimestamp,
+//                                             boolean includeSevere, boolean includeModerate, boolean includeOk,
+//                                             boolean includeVoltage, boolean includeFrequency, boolean sharingData,
+//                                             List<AccessKey> accessKeys) {
+//
+//    ExpressionList<Event> eventExpressionList = Event.find().where()
+//      .eq("accessKey.opqDevice.sharingData", sharingData)
+//      .between("frequency", minFreq, maxFreq)
+//      .between("voltage", minVolt, maxVolt)
+//      .between("duration", minDuration, maxDuration)
+//      .between("timestamp", minTimestamp, maxTimestamp)
+//      .ne("eventType", OpqPacket.PacketType.EVENT_HEARTBEAT);
+//
+//    // We want to find all events that are tied to the passed in access keys
+//    Junction<Event> locationJunction = eventExpressionList.disjunction();
+//    for(AccessKey accessKey : accessKeys) {
+//      locationJunction.add(Expr.eq("accessKey", accessKey));
+//    }
+//    eventExpressionList = locationJunction.endJunction();
+//
+//    // Create another disjunction for the inclusion of frequency vs voltage events
+//    Junction<Event> eventTypeJunction = eventExpressionList.disjunction();
+//    if(includeVoltage) eventTypeJunction.add(Expr.eq("eventType", OpqPacket.PacketType.EVENT_VOLTAGE));
+//    if(includeFrequency) eventTypeJunction.add(Expr.eq("eventType", OpqPacket.PacketType.EVENT_FREQUENCY));
+//    eventExpressionList = eventTypeJunction.endJunction();
+//
+//    List<Event> events = PqUtils.filterEventsWithRegions(eventExpressionList.findList(), includeSevere, includeModerate,
+//      includeOk);
+//
+//
+//    return events;
+//  }
+
+  public static long getLastHeartbeat(OpqDevice device) {
+    return Ebean.createSqlQuery("SELECT MAX(timestamp) FROM event WHERE event_type = 0")
+      .findUnique().getLong("max(timestamp)");
+  }
+
+  public static double getMinDouble(String field) {
+    return Ebean.createSqlQuery("SELECT MIN(" + field + ") FROM event WHERE event_type != 0")
+                .findUnique().getDouble("min(" + field + ")");
+  }
+
+  public static double getMaxDouble(String field) {
+    return Ebean.createSqlQuery("SELECT MAX(" + field + ") FROM event WHERE event_type != 0")
+                .findUnique().getDouble("max(" + field + ")");
+  }
+
+  public static long getMinLong(String field) {
+    return Ebean.createSqlQuery("SELECT MIN(" + field + ") FROM event WHERE event_type != 0")
+                .findUnique().getLong("min(" + field + ")");
+  }
+
+  public static long getMaxLong(String field) {
+    return Ebean.createSqlQuery("SELECT MAX(" + field + ") FROM event WHERE event_type != 0")
+                .findUnique().getLong("max(" + field + ")");
+  }
+
+  public static double getMinFrequency() {
+    return getMinDouble("frequency");
+  }
+
+  public static double getMaxFrequency() {
+    return getMaxDouble("frequency");
+  }
+
+  public static double getMinVoltage() {
+    return getMinDouble("voltage");
+  }
+
+  public static double getMaxVoltage() {
+    return getMaxDouble("voltage");
+  }
+
+  public static long getMinDuration() {
+    return getMinLong("duration");
+  }
+
+  public static long getMaxDuration() {
+    return getMaxLong("duration");
+  }
+
+  public static long getMinTimestamp() {
+    return getMinLong("timestamp");
+  }
+
+  public static long getMaxTimestamp() {
+    return getMaxLong("timestamp");
   }
 
 }
