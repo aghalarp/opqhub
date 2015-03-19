@@ -19,6 +19,8 @@
 
 package controllers;
 
+import jobs.reports.DeviceReports;
+import jobs.support_classes.PersonDeviceInfo;
 import models.AccessKey;
 import models.OpqDevice;
 import models.Person;
@@ -33,6 +35,7 @@ import views.html.deviceconfig;
 import views.html.error;
 import views.html.useradmin;
 
+import java.util.Date;
 import java.util.Set;
 
 import static play.data.Form.form;
@@ -92,8 +95,10 @@ public class Administration extends Controller {
     Person person = Person.find().where().eq("email", email).findUnique();
     Set<AccessKey> keys = person.getAccessKeys();
 
+    PersonDeviceInfo pdi = DeviceReports.generateDeviceReport(email, 0L, new Date().getTime());
+
     //return ok(admindevice.render(keyForm, keys));
-    return ok(deviceadmin.render(keyForm, keys));
+    return ok(deviceadmin.render(keyForm, keys, pdi));
   }
 
 

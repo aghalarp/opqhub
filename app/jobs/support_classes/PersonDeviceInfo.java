@@ -10,6 +10,7 @@ public class PersonDeviceInfo {
     private String personLastName;
     private String personEmail;
     private List<DeviceStats> deviceStatsList;
+    private Integer numDevices;
 
     public PersonDeviceInfo(String personFirstName, String personLastName, String personEmail,
                             List<DeviceStats> deviceStatsList) {
@@ -17,6 +18,7 @@ public class PersonDeviceInfo {
         this.personLastName = personLastName;
         this.personEmail = personEmail;
         this.deviceStatsList = deviceStatsList;
+        this.numDevices = deviceStatsList.size();
     }
 
     public String getPersonFirstName() {
@@ -49,6 +51,11 @@ public class PersonDeviceInfo {
 
     public void setDeviceStatsList(List<DeviceStats> deviceStatsList) {
         this.deviceStatsList = deviceStatsList;
+        this.numDevices = deviceStatsList.size();
+    }
+
+    public Integer getNumDevices() {
+        return numDevices;
     }
 }
 

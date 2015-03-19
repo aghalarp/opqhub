@@ -26,62 +26,119 @@
     <!-- Main content -->
     <div class="container" id="main-content">
       <div class="row">
-        <!-- Account update directions -->
-        <div class="col-lg-4 well">
-          <b>OPQHub Account Settings</b>
-          <p>This page allows you to update your account information.</p>
-          <p>Fields marked with an "<b>*</b>" are required.</p>
-        </div>
-
-        <!-- Sign Up Form -->
-        <div class="col-lg-8">
-          @if(flash.contains("updated")) {
-            <p class="success">
-            @flash.get("updated")
-            </p>
-          }
-          <form action="@routes.Administration.updateUser(session.get("email"))" method="POST" name="userAdminForm" id="userAdminForm" class="form-horizontal" role="form">
-
-            <!-- First name -->
-            @helper.textinput("firstName", "First Name *", "col-sm-3", "col-sm-7", "Jane", personForm("firstName").value)
-
-            <!-- Last name -->
-            @helper.textinput("lastName", "Last Name *", "col-sm-3", "col-sm-7", "Doe", personForm("lastName").value)
-
-            <!-- Email -->
-            @helper.emailinput("email", "E-mail *", "col-sm-3", "col-sm-7", "jane.doe@email.com", personForm("email").value)
-
-            <!-- Password -->
-            @helper.passwordinput("password", "Password *", "col-sm-3", "col-sm-7", "")
-
-            <!-- Confirm password -->
-            @helper.passwordinput("confirmPassword", "Confirm Password *", "col-sm-3", "col-sm-7", "")
-
-            <!-- Alert email -->
-            @helper.emailinput("alertEmail", "Alert Email", "col-sm-3", "col-sm-7", "jane.doe@email.com", personForm("alertEmail").value)
-
-            <!-- SMS carriers -->
-            <div class="form-group">
-              <label for="smsCarrier" class="col-sm-3 control-label">SMS Carrier</label>
-              <div class="col-sm-7">
-                <select class="form-control" id="smsCarrier" name="smsCarrier">
-                  @for(carrier <- utils.Sms.listOfCarriers()) {
-                    <option>@carrier</option>
-                  }
-                </select>
+        <!-- Left 'Sidebar' Column -->
+        <div class="col-lg-4">
+          <!-- Account update directions -->
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="bs-callout bs-callout-primary">
+                <h4>OPQHub Account Settings</h4>
+                <p>This page allows you to update your account information.</p>
+                <p>Fields marked with an "<b>*</b>" are required.</p>
               </div>
             </div>
+          </div>
+        </div>
 
-            <!-- SMS number -->
-            @helper.textinput("smsNumber", "SMS Number", "col-sm-3", "col-sm-7", "", personForm("smsNumber").value)
+        <!-- Right 'Main Body' Column -->
+        <div class="col-lg-8">
+          <!-- Sign Up Form -->
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <span class="glyphicon glyphicon-user" style="margin-right: 5px;" aria-hidden="true"></span>User Settings
+                </div>
+                <div class="panel-body">
+                  @if(flash.contains("updated")) {
+                    <p class="success">
+                    @flash.get("updated")
+                    </p>
+                  }
+                  <form action="@routes.Administration.updateUser(session.get("email"))" method="POST" name="userAdminForm" id="userAdminForm" class="form-horizontal" role="form">
 
-            <!-- Submit button -->
-            <button type="submit" class="col-sm-offset-3 btn btn-primary" id="submitBtn" name="submitBtn">Update Account</button>
+                    <!-- First name -->
+                    @helper.textinput("firstName", "First Name *", "col-sm-3", "col-sm-7", "Jane", personForm("firstName").value)
 
-          </form>
+                    <!-- Last name -->
+                    @helper.textinput("lastName", "Last Name *", "col-sm-3", "col-sm-7", "Doe", personForm("lastName").value)
+
+                    <!-- Email -->
+                    @helper.emailinput("email", "E-mail *", "col-sm-3", "col-sm-7", "jane.doe@email.com", personForm("email").value)
+
+                    <!-- Password -->
+                    @helper.passwordinput("password", "Password *", "col-sm-3", "col-sm-7", "")
+
+                    <!-- Confirm password -->
+                    @helper.passwordinput("confirmPassword", "Confirm Password *", "col-sm-3", "col-sm-7", "")
+
+                    <!-- Alert email -->
+                    @helper.emailinput("alertEmail", "Alert Email", "col-sm-3", "col-sm-7", "jane.doe@email.com", personForm("alertEmail").value)
+
+                    <!-- SMS carriers -->
+                    <div class="form-group">
+                      <label for="smsCarrier" class="col-sm-3 control-label">SMS Carrier</label>
+                      <div class="col-sm-7">
+                        <select class="form-control" id="smsCarrier" name="smsCarrier">
+                          @for(carrier <- utils.Sms.listOfCarriers()) {
+                            <option>@carrier</option>
+                          }
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- SMS number -->
+                    @helper.textinput("smsNumber", "SMS Number", "col-sm-3", "col-sm-7", "", personForm("smsNumber").value)
+
+                    <!-- Submit button -->
+                    <button type="submit" class="col-sm-offset-3 btn btn-primary" id="submitBtn" name="submitBtn">Update Account</button>
+
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Email Notification Settings Panel -->
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <span class="glyphicon glyphicon-envelope" style="margin-right: 5px;" aria-hidden="true"></span>Email Notification Settings
+                </div>
+                <div class="panel-body">
+                  <form action="" method="POST" name="notificationForm" id="notificationForm" class="form-horizontal" role="form">
+                  <!-- Notification System Toggle -->
+                  <label for="notificationToggle" class="col-sm-3 control-label">Notification System</label>
+                  <div class="form-group col-sm-7">
+                    <label class="radio-inline">
+                      <input type="radio" name="notificationToggle" id="inlineRadio1" value="enable"> Enable
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" name="notificationToggle" id="inlineRadio2" value="disable"> Disable
+                    </label>
+                  </div>
+
+                  <!-- Notification Email -->
+                  @helper.emailinput("notificationEmail", "Notification Email", "col-sm-3", "col-sm-7", "jane.doe@email.com", personForm("alertEmail").value)
+
+                  <!-- Time Picker -->
+                  @helper.textinput("time", "Notification Time", "col-sm-3", "col-sm-7", "", "")
+
+                  <!-- Submit button -->
+                  <button type="submit" class="col-sm-offset-3 btn btn-primary" id="notifSubmit" name="submitBtn">Update Settings</button>
+
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
+
+
     <script type="text/javascript">
       $(document ).ready(function() {
         $("#smsCarrier" ).val("@personForm("smsCarrier").value");
@@ -175,5 +232,7 @@
         });
 });
     </script>
+
+
   </body>
 </html>
