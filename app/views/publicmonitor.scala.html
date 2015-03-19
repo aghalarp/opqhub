@@ -317,6 +317,10 @@
         </div>
 
         <script type="text/javascript">
+            /*
+             * Grabs all of the needed parameters from the filters, pagination, and the map, and then constructs
+             * a new url to update the page.
+             */
             function update(page, detailedEventId) {
                 var visibleIds = grid.getVisibleIds( ).join(";");
                 visibleIds = visibleIds.split("," ).join("c");
@@ -349,6 +353,7 @@
                 window.location.href = url;
             }
 
+            /* ---------- Intialize the page components ----------*/
             // Set up calendar fields correctly
             $("#startTimestamp" ).datetimepicker();
             $("#stopTimestamp" ).datetimepicker();
@@ -358,7 +363,43 @@
             // Initialize the map
             grid.initMap("public-map", [@data.mapCenterLat, @data.mapCenterLng], @data.mapZoom);
 
-            // Click Events
+            // Set up plot for event details
+            var plotOptions = {
+
+                zoom: {
+                    interactive: true
+                },
+                pan: {
+                    interactive: true
+                },
+                acisLabels: {
+                    show: true
+                },
+                xaxis: {
+                    ticks: 5,
+                    min: 1000,
+                    max: 3000
+                },
+                xaxes: [{
+                    axisLabel: "Samples"
+                }],
+                yaxes: [{
+                    axisLabel: "Voltage"
+                }],
+                series: {
+                    lines: {show: true},
+                    points: {show: false}
+                }
+            };
+
+            var plotPoints = "@data.detailedEvent.getEventData.getWaveform"
+                .split(",").map(function(pt, idx) {
+                    return [idx, parseFloat(pt)];
+                });
+            $.plot($("#waveform"), [plotPoints], plotOptions)
+            console.log(plotPoints);
+
+            /* ---------- Handle click events ---------- */
             // When update button is clicked, generate URL and goto
             $("#updateBtn").click(function() {
                 update();
