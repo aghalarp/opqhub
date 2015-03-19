@@ -68,11 +68,13 @@
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label class="sr-only" for="frequencyGt">Frequency Greater Than</label>
-                                        <input type="text" class="form-control" id="frequencyGt" value="@minFrequency">
+                                        <input type="text" class="form-control" id="frequencyGt"
+                                            value="@utils.DisplayUtils.twoDecimal.format(minFrequency)">
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label class="sr-only" for="frequencyLt">Frequency Less Than</label>
-                                        <input type="text" class="form-control" id="frequencyLt" value="@maxFrequency">
+                                        <input type="text" class="form-control" id="frequencyLt"
+                                            value="@utils.DisplayUtils.twoDecimal.format(maxFrequency)">
                                     </div>
                                 </div>
 
@@ -84,11 +86,13 @@
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label class="sr-only" for="voltageGt">Voltage Greater Than</label>
-                                        <input type="text" class="form-control" id="voltageGt" value="@minVoltage">
+                                        <input type="text" class="form-control" id="voltageGt"
+                                            value="@utils.DisplayUtils.oneDecimal.format(minVoltage)">
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label class="sr-only" for="voltageLt">Voltage Less Than</label>
-                                        <input type="text" class="form-control" id="voltageLt" value="@maxVoltage">
+                                        <input type="text" class="form-control" id="voltageLt"
+                                            value="@utils.DisplayUtils.oneDecimal.format(maxVoltage)">
                                     </div>
                                 </div>
 
@@ -184,11 +188,6 @@
                                         <td>Frequency Events</td> <td><span id="totalFrequencyEvents" class='badge global-stats'>@frequencyEvents</span></td>
                                         <td>Voltage Events</td> <td><span id="totalVoltageEvents" class='badge global-stats'>@voltageEvents</span></td>
                                     </tr>
-                                        <!--<tr>-->
-                                        <!--<td>Registered OPQBoxes</td><td><span id="totalRegisteredDevices" class='badge global-stats'>0</span></td>-->
-                                        <!--<td>Active OPQBoxes</td><td><span id="totalActiveDevices" class='badge global-stats'>0</span></td>-->
-                                        <!--<td></td><td></td>-->
-                                        <!--</tr>-->
                                 </table>
                             </div>
                             <div class="panel-body" id="events-table">
@@ -205,18 +204,25 @@
                                     <tbody>
                                         @for(event <- events) {
                                             <tr>
-                                                <td>@utils.DateUtils.toShortDateTime(event.getTimestamp)</td>
+                                                <td>@utils.DateUtils.toDateTime(event.getTimestamp)</td>
                                                 <td>@event.getEventType.getName</td>
-                                                <td>@event.getDuration</td>
+                                                <td>@event.getDuration s</td>
                                                 <td>
                                                     @if(event.getEventType.getName.equals("Voltage Event")){
-                                                        @event.getVoltage V
+                                                        @utils.DisplayUtils.oneDecimal.format(event.getVoltage) V
                                                     }
                                                     @if(event.getEventType.getName.equals("Frequency Event")){
-                                                        @event.getFrequency Hz
+                                                        @utils.DisplayUtils.twoDecimal.format(event.getFrequency) Hz
                                                     }
                                                 </td>
-                                                <td>N/A</td>
+                                                <td>
+                                                    @{utils.PqUtils.getIticRegion(event.getDuration * 1000, event.getVoltage) match {
+                                                        case utils.PqUtils.IticRegion.NO_INTERRUPTION => <span class='badge itic-badge itic-no-interruption'>&nbsp;</span>
+                                                        case utils.PqUtils.IticRegion.NO_DAMAGE => <span class='badge itic-badge itic-no-damage'>&nbsp;</span>
+                                                        case utils.PqUtils.IticRegion.PROHIBITED => <span class='badge itic-badge itic-prohibited'>&nbsp;</span>
+                                                        case _ => "N/A"
+                                                    }}
+                                                </td>
                                             </tr>
                                         }
                                     </tbody>

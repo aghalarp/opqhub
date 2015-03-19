@@ -215,20 +215,10 @@ public class Event extends Model implements Comparable<Event> {
   }
 
   public static List<Event> getPublicEvents(double minFreq, double maxFreq, double minVolt, double maxVolt,
-                                            int minDuration, int maxDuration, long minTimestamp, long maxTimestamp,
-                                            boolean includeSevere, boolean includeModerate, boolean includeOk,
-                                            boolean includeVoltage, boolean includeFrequency, boolean sharingData,
-                                            List<String> gridIds) {
-    return getPublicEvents(minFreq, maxFreq, minVolt, maxVolt, minDuration, maxDuration, minTimestamp, maxTimestamp,
-                           includeSevere, includeModerate, includeOk, includeVoltage, includeFrequency, sharingData,
-                           gridIds, -1);
-  }
-
-  public static List<Event> getPublicEvents(double minFreq, double maxFreq, double minVolt, double maxVolt,
                                       int minDuration, int maxDuration, long minTimestamp, long maxTimestamp,
                                       boolean includeSevere, boolean includeModerate, boolean includeOk,
                                       boolean includeFrequency, boolean includeVoltage, boolean sharingData,
-                                      List<String> gridIds, int page) {
+                                      List<String> gridIds) {
 
 
     ExpressionList<Event> eventExpressionList = Event.find().where()
@@ -265,14 +255,11 @@ public class Event extends Model implements Comparable<Event> {
 
 
     List<Event> events;
-    if(page < 0) {
-      events = PqUtils.filterEventsWithRegions(eventExpressionList.findList(), includeSevere, includeModerate,
-        includeOk);
-    }
-    else {
-      events = PqUtils.filterEventsWithRegions(eventExpressionList.findPagingList(100).getPage(page).getList(),
-        includeSevere, includeModerate, includeOk);
-    }
+
+    events = PqUtils.filterEventsWithRegions(eventExpressionList.findList(),
+                                             includeSevere,
+                                             includeModerate,
+                                             includeOk);
 
     return events;
   }
