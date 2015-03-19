@@ -6,7 +6,8 @@ import akka.actor.UntypedActor;
 import jobs.reports.DeviceReports;
 import jobs.support_classes.HtmlMailerMessage;
 import jobs.support_classes.PersonDeviceInfo;
-import play.api.templates.Html;
+import play.Logger;
+import play.twirl.api.Html;
 import utils.CssInliner;
 import utils.DateUtils;
 import views.html.emaileventreport;
@@ -32,89 +33,30 @@ public class EventReportActor extends UntypedActor {
 
     @Override
     public void onReceive(Object msg) {
-        if (msg == Message.DAILY_REPORT) {
-            // Calculate Daily timestamp
-            long nowTimestamp = new Date().getTime();
-            long dayAgoTimestamp = DateUtils.getPastTime(nowTimestamp, DateUtils.TimeUnit.Day);
+        if (msg instanceof Message) {
+            long currentTimestamp = new Date().getTime();
+            long startTimestamp;
 
-            //Get Daily Event Data
-            Map<Long, PersonDeviceInfo> map = DeviceReports.generateAllDeviceReport(dayAgoTimestamp, nowTimestamp);
-
-            for (PersonDeviceInfo pdi : map.values()) {
-                // Create Html template string.
-                Html htmlTemplate = emaileventreport.render(pdi);
-                String htmlString = CssInliner.toInlinedCss(htmlTemplate.toString());
-
-                // Create message object to be sent to HtmlMailerActor
-                final HtmlMailerMessage htmlMessage = new HtmlMailerMessage("aghalarp@gmail.com", "OPQ Event Report", htmlString);
-                //final HtmlMailerMessage htmlMessage = new HtmlMailerMessage(pdi.getPersonEmail(), htmlTemplate);
-
-                //Create HtmlMailerActor and send message.
-                final ActorRef htmlMailer = getContext().actorOf(Props.create(jobs.HtmlMailerActor.class));
-                htmlMailer.tell(htmlMessage, getSelf());
-            }
-
-        }
-        else if (msg.equals(Message.WEEKLY_REPORT)) {
-            //Calculate Weekly timestamp
-            long nowTimestamp = new Date().getTime();
-            long weekAgoTimestamp = DateUtils.getPastTime(nowTimestamp, DateUtils.TimeUnit.Week);
-
-            //Get Weekly Event Data
-            Map<Long, PersonDeviceInfo> map = DeviceReports.generateAllDeviceReport(weekAgoTimestamp, nowTimestamp);
-
-            for (PersonDeviceInfo pdi : map.values()) {
-                // Create Html template string.
-                Html htmlTemplate = emaileventreport.render(pdi);
-                String htmlString = CssInliner.toInlinedCss(htmlTemplate.toString());
-
-                // Create message object to be sent to HtmlMailerActor
-                final HtmlMailerMessage htmlMessage = new HtmlMailerMessage("aghalarp@gmail.com", "OPQ Event Report", htmlString);
-                //final HtmlMailerMessage htmlMessage = new HtmlMailerMessage(pdi.getPersonEmail(), htmlTemplate);
-
-                //Create HtmlMailerActor and send message.
-                final ActorRef htmlMailer = getContext().actorOf(Props.create(jobs.HtmlMailerActor.class));
-                htmlMailer.tell(htmlMessage, getSelf());
-            }
-        }
-        else if (msg.equals(Message.MONTHLY_REPORT)) {
-            //Calculate Monthly timestamp
-            long nowTimestamp = new Date().getTime();
-            long monthAgoTimestamp = DateUtils.getPastTime(nowTimestamp, DateUtils.TimeUnit.Month);
-
-            //Get Monthly Event Data
-            Map<Long, PersonDeviceInfo> map = DeviceReports.generateAllDeviceReport(monthAgoTimestamp, nowTimestamp);
-
-            for (PersonDeviceInfo pdi : map.values()) {
-                // Create Html template string.
-                Html htmlTemplate = emaileventreport.render(pdi);
-                String htmlString = CssInliner.toInlinedCss(htmlTemplate.toString());
-
-                // Create message object to be sent to HtmlMailerActor
-                final HtmlMailerMessage htmlMessage = new HtmlMailerMessage("aghalarp@gmail.com", "OPQ Event Report", htmlString);
-                //final HtmlMailerMessage htmlMessage = new HtmlMailerMessage(pdi.getPersonEmail(), htmlTemplate);
-
-                //Create HtmlMailerActor and send message.
-                final ActorRef htmlMailer = getContext().actorOf(Props.create(jobs.HtmlMailerActor.class));
-                htmlMailer.tell(htmlMessage, getSelf());
-            }
-        }
-        else if (msg.equals(Message.FULL_REPORT))  {
-            //Get all data since beginning of time/universe. Or rather, the unix epoch.
-            Map<Long, PersonDeviceInfo> map = DeviceReports.generateAllDeviceReport(0L, new Date().getTime());
-
-            for (PersonDeviceInfo pdi : map.values()) {
-                // Create Html template string.
-                Html htmlTemplate = emaileventreport.render(pdi);
-                String htmlString = CssInliner.toInlinedCss(htmlTemplate.toString());
-
-                // Create message object to be sent to HtmlMailerActor
-                final HtmlMailerMessage htmlMessage = new HtmlMailerMessage("aghalarp@gmail.com", "OPQ Event Report", htmlString);
-                //final HtmlMailerMessage htmlMessage = new HtmlMailerMessage(pdi.getPersonEmail(), htmlTemplate);
-
-                //Create HtmlMailerActor and send message.
-                //final ActorRef htmlMailer = getContext().actorOf(Props.create(jobs.HtmlMailerActor.class), "htmlMailerActor");
-                this.htmlMailerActor.tell(htmlMessage, getSelf());
+            switch ((Message) msg) {
+                case DAILY_REPORT:
+                    startTimestamp = DateUtils.getPastTime(currentTimestamp, DateUtils.TimeUnit.Day);
+                    prepareAndSendmail(startTimestamp, currentTimestamp);
+                    break;
+                case WEEKLY_REPORT:
+                    startTimestamp = DateUtils.getPastTime(currentTimestamp, DateUtils.TimeUnit.Week);
+                    prepareAndSendmail(startTimestamp, currentTimestamp);
+                    break;
+                case MONTHLY_REPORT:
+                    startTimestamp = DateUtils.getPastTime(currentTimestamp, DateUtils.TimeUnit.Month);
+                    prepareAndSendmail(startTimestamp, currentTimestamp);
+                    break;
+                case FULL_REPORT:
+                    startTimestamp = 0L;
+                    prepareAndSendmail(startTimestamp, currentTimestamp);
+                    break;
+                default:
+                    Logger.error("EventReportActor received an invalid message.");
+                    break;
             }
         }
         else {
@@ -122,5 +64,22 @@ public class EventReportActor extends UntypedActor {
         }
     }
 
+    private void prepareAndSendmail(Long startTimestamp, Long endTimestamp) {
+        Map<Long, PersonDeviceInfo> map = DeviceReports.generateAllDeviceReport(startTimestamp, endTimestamp);
+
+        for (PersonDeviceInfo pdi : map.values()) {
+            // Create Html template string.
+            Html htmlTemplate = emaileventreport.render(pdi);
+            String htmlString = CssInliner.toInlinedCss(htmlTemplate.toString());
+
+            // Create message object to be sent to HtmlMailerActor
+            final HtmlMailerMessage htmlMessage = new HtmlMailerMessage("aghalarp@gmail.com", "OPQ Event Report", htmlString); // Uncomment on development.
+            //final HtmlMailerMessage htmlMessage = new HtmlMailerMessage(pdi.getPersonEmail(), "OPQ Event Report", htmlString); // Uncomment on production.
+
+            //Create HtmlMailerActor and send message.
+            //final ActorRef htmlMailer = getContext().actorOf(Props.create(jobs.HtmlMailerActor.class), "htmlMailerActor");
+            this.htmlMailerActor.tell(htmlMessage, getSelf());
+        }
+    }
 
 }
