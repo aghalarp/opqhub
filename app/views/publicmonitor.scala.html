@@ -359,6 +359,12 @@
             @for((gridId, cnt) <- data.gridIdEventCounts) {
                 grid.addEventNumbers("@gridId", @cnt.severeEvents, @cnt.moderateEvents, @cnt.okEvents);
             }
+
+            // Setup what happens when the map is changed
+            grid.callbacks.onMapChange = function() {
+                update();
+            };
+
             // Set up plot for event details
             var plotOptions = {
 
