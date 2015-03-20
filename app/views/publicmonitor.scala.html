@@ -46,7 +46,12 @@
                     <div class="row">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Display</h3>
+                                <h3 class="panel-title">
+                                  Display
+                                  <button style="margin-top:-7px" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#displayModal">
+                                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help
+                                  </button>
+                                </h3>
                             </div>
                             <div class="panel-body">
 
@@ -170,7 +175,12 @@
                     <div class="row">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title" id="events-title">Events</h3>
+                                <h3 class="panel-title" id="events-title">
+                                  Events
+                                  <button style="margin-top:-7px" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#eventsModal">
+                                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help
+                                  </button>
+                                </h3>
                                 <table>
                                     <tr>
                                         <td>Total Events</td> <td><span id="totalEvents" class='badge global-stats'>@data.totalEventsCount</span></td>
@@ -246,7 +256,12 @@
 
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 id="event-title" class="panel-title">Event Details</h3>
+                                <h3 id="event-title" class="panel-title">
+                                  Event Details
+                                  <button style="margin-top:-7px" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#eventDetailsModal">
+                                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help
+                                  </button>
+                                </h3>
                             </div>
                             <div class="panel-body">
                                 <div class="col-md-4">
@@ -307,6 +322,95 @@
                 </div>
             </div>
         </div>
+
+
+      <!-- Help Modals -->
+      <!-- Display Pane Modal -->
+      <div class="modal fade" id="displayModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Display Pane</h4>
+            </div>
+            <div class="modal-body">
+              <p>
+                The "Display" pane allows the user to filter the displayed events by a variety of criteria.
+              </p>
+              <img src="@routes.Assets.at("images/display-panel.png")">
+              <p>
+                The screenshot above illustrates the following event filters:
+            <ul>
+              <li>Frequencies ranging between 57.96 to 62.42 Hz</li>
+              <li>Voltages ranging between 89.3 to 141.1 V</li>
+              <li>Event duration ranging between 1 to 256 seconds</li>
+              <li>Events falling within all ITIC ranges</li>
+              <li>Events occurring between July 31, 2014 through November 30, 2014</li>
+            </ul>
+
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum et arcu a augue porttitor pretium. Sed arcu sapien, blandit ac commodo vel, convallis facilisis purus. In dignissim, magna et convallis vulputate, est risus venenatis neque, sit amet scelerisque ligula magna at justo. Nullam ultricies at arcu non malesuada. Cras nisi tellus, lobortis viverra facilisis nec, sodales eget elit. Aliquam erat volutpat. Donec posuere felis viverra enim auctor varius. Proin eu posuere eros. Fusce elementum est at dui rhoncus finibus id nec orci.
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Got it!</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <!-- Events Pane Modal -->
+      <div class="modal fade" id="eventsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Events Pane</h4>
+            </div>
+            <div class="modal-body">
+              <p>
+                The "Events" pane displays a listing of all events based on the filter criteria set in the "Display" pane to the right.
+              </p>
+              <img src="@routes.Assets.at("images/events-panel.png")">
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum et arcu a augue porttitor pretium. Sed arcu sapien, blandit ac commodo vel, convallis facilisis purus. In dignissim, magna et convallis vulputate, est risus venenatis neque, sit amet scelerisque ligula magna at justo. Nullam ultricies at arcu non malesuada. Cras nisi tellus, lobortis viverra facilisis nec, sodales eget elit. Aliquam erat volutpat. Donec posuere felis viverra enim auctor varius. Proin eu posuere eros. Fusce elementum est at dui rhoncus finibus id nec orci.
+              </p>
+              <p>
+                Proin varius felis eu tincidunt pharetra. Aenean ut erat ullamcorper, dignissim magna varius, tincidunt ligula. Aenean faucibus metus vel nunc dignissim condimentum. Integer hendrerit non felis vel porttitor. Maecenas elementum leo nec consequat facilisis. Sed vitae dolor justo. Nam in sem placerat, tristique arcu convallis, hendrerit magna. Nunc sit amet facilisis leo. Etiam ut aliquet risus. Duis in lectus vitae augue consequat suscipit. Pellentesque nisl massa, ornare sed ex ultricies, consectetur venenatis lorem. Duis malesuada molestie dolor, vitae consequat neque vulputate sed. Aliquam non urna quis tortor commodo imperdiet nec nec dui. Quisque a varius lorem, sit amet pharetra metus. Nullam vitae tincidunt magna.
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Got it!</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <!-- Event Details Pane Modal -->
+      <div class="modal fade" id="eventDetailsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Event Details Pane</h4>
+            </div>
+            <div class="modal-body">
+              <p>
+                The "Event Details" pane displays summary data of the selected event.
+              </p>
+              <img src="@routes.Assets.at("images/event-details-panel.png")">
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum et arcu a augue porttitor pretium. Sed arcu sapien, blandit ac commodo vel, convallis facilisis purus. In dignissim, magna et convallis vulputate, est risus venenatis neque, sit amet scelerisque ligula magna at justo. Nullam ultricies at arcu non malesuada. Cras nisi tellus, lobortis viverra facilisis nec, sodales eget elit. Aliquam erat volutpat. Donec posuere felis viverra enim auctor varius. Proin eu posuere eros. Fusce elementum est at dui rhoncus finibus id nec orci.
+              </p>
+              <p>
+                Proin varius felis eu tincidunt pharetra. Aenean ut erat ullamcorper, dignissim magna varius, tincidunt ligula. Aenean faucibus metus vel nunc dignissim condimentum. Integer hendrerit non felis vel porttitor. Maecenas elementum leo nec consequat facilisis. Sed vitae dolor justo. Nam in sem placerat, tristique arcu convallis, hendrerit magna. Nunc sit amet facilisis leo. Etiam ut aliquet risus. Duis in lectus vitae augue consequat suscipit. Pellentesque nisl massa, ornare sed ex ultricies, consectetur venenatis lorem. Duis malesuada molestie dolor, vitae consequat neque vulputate sed. Aliquam non urna quis tortor commodo imperdiet nec nec dui. Quisque a varius lorem, sit amet pharetra metus. Nullam vitae tincidunt magna.
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Got it!</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
         <script type="text/javascript">
             /*
