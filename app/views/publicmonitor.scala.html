@@ -313,7 +313,7 @@
              * Grabs all of the needed parameters from the filters, pagination, and the map, and then constructs
              * a new url to update the page.
              */
-            function update(page, detailedEventId) {
+            function update(page, detailedEventId, mapCenterLat, mapCenterLng, mapZoom) {
                 var visibleIds = grid.getVisibleIds( ).join(";");
                 visibleIds = visibleIds.split("," ).join("c");
                 visibleIds = visibleIds.split(":" ).join("C");
@@ -333,9 +333,9 @@
                     iticSevere      : $ ( "#requestIticSevere" ).is ( ':checked' ),
                     iticModerate    : $ ( "#requestIticModerate" ).is ( ':checked' ),
                     iticOk          : $ ( "#requestIticOk" ).is ( ':checked' ),
-                    mapCenterLat    : grid.getCenterLat ( ),
-                    mapCenterLng    : grid.getCenterLng ( ),
-                    mapZoom         : grid.getZoom ( ),
+                    mapCenterLat    : mapCenterLat || grid.getCenterLat ( ),
+                    mapCenterLng    : mapCenterLng || grid.getCenterLng ( ),
+                    mapZoom         : mapZoom || grid.getZoom ( ),
                     page            : page || 0,
                     detailedEventId : detailedEventId || -1,
                     mapVisibleIds   : visibleIds
@@ -359,6 +359,12 @@
             @for((gridId, cnt) <- data.gridIdEventCounts) {
                 grid.addEventNumbers("@gridId", @cnt.severeEvents, @cnt.moderateEvents, @cnt.okEvents);
             }
+
+            // Setup what happens when the map is changed
+            grid.callbacks.onMapChange = function() {
+                update();
+            };
+
             // Set up plot for event details
             var plotOptions = {
 
@@ -412,6 +418,14 @@
             // Table row details update
             $("#events tr" ).click(function(){
                update(@data.page, this.id);
+            });
+
+            // Device location click event
+            $("#details-grid-id" ).click(function() {
+               var lat = @{(data.detailedEvent.event.getLocation.getNorthEastLatitude + data.detailedEvent.event.getLocation.getSouthWestLatitude) / 2};
+               var lng = @{(data.detailedEvent.event.getLocation.getNorthEastLongitude + data.detailedEvent.event.getLocation.getSouthWestLongitude) / 2};
+               var zoom = grid.getZoomByDistance(@data.detailedEvent.event.getLocation.getGridScale);
+               update(@data.page, @data.detailedEvent.event.getPrimaryKey, lat, lng, zoom);
             });
         </script>
     </body>
