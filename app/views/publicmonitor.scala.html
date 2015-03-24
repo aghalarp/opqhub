@@ -438,11 +438,11 @@
               </p>
               <img src="@routes.Assets.at("images/event-details-panel.png")">
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum et arcu a augue porttitor pretium. Sed arcu sapien, blandit ac commodo vel, convallis facilisis purus. In dignissim, magna et convallis vulputate, est risus venenatis neque, sit amet scelerisque ligula magna at justo. Nullam ultricies at arcu non malesuada. Cras nisi tellus, lobortis viverra facilisis nec, sodales eget elit. Aliquam erat volutpat. Donec posuere felis viverra enim auctor varius. Proin eu posuere eros. Fusce elementum est at dui rhoncus finibus id nec orci.
+                Displays detailed event information. The waveform can be panned by clicking on the plot and dragging.
+                The waveform can also be scrolled by using the mouse wheel. Selecting the location link will scroll
+                pan and zoom the map to the location of the event and reload the page.
               </p>
-              <p>
-                Proin varius felis eu tincidunt pharetra. Aenean ut erat ullamcorper, dignissim magna varius, tincidunt ligula. Aenean faucibus metus vel nunc dignissim condimentum. Integer hendrerit non felis vel porttitor. Maecenas elementum leo nec consequat facilisis. Sed vitae dolor justo. Nam in sem placerat, tristique arcu convallis, hendrerit magna. Nunc sit amet facilisis leo. Etiam ut aliquet risus. Duis in lectus vitae augue consequat suscipit. Pellentesque nisl massa, ornare sed ex ultricies, consectetur venenatis lorem. Duis malesuada molestie dolor, vitae consequat neque vulputate sed. Aliquam non urna quis tortor commodo imperdiet nec nec dui. Quisque a varius lorem, sit amet pharetra metus. Nullam vitae tincidunt magna.
-              </p>
+
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Got it!</button>
@@ -575,6 +575,7 @@
                 (data.detailedEvent.event.getLocation.getNorthEastLongitude + data.detailedEvent.event.getLocation.getSouthWestLongitude) / 2
               } ;
               var zoom = grid.getZoomByDistance ( @data.detailedEvent.event.getLocation.getGridScale ) ;
+              grid.setView([lat, lng], zoom);
               update ( @data.page, @data.detailedEvent.event.getPrimaryKey, lat, lng, zoom ) ;
               } ) ;
             }
