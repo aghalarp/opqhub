@@ -331,7 +331,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title" id="myModalLabel">Display Pane</h4>
+              <h4 class="modal-title" id="myModalLabel">Display Panel</h4>
             </div>
             <div class="modal-body">
               <p>
@@ -364,7 +364,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title" id="myModalLabel">Events Pane</h4>
+              <h4 class="modal-title" id="myModalLabel">Events Panel</h4>
             </div>
             <div class="modal-body">
               <p>
@@ -391,7 +391,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title" id="myModalLabel">Event Details Pane</h4>
+              <h4 class="modal-title" id="myModalLabel">Event Details Panel</h4>
             </div>
             <div class="modal-body">
               <p>
@@ -432,8 +432,8 @@
                     maxVoltage      : $ ( "#voltageLt" ).val ( ),
                     minDuration     : $ ( "#durationGt" ).val ( ),
                     maxDuration     : $ ( "#durationLt" ).val ( ),
-                    minTimestamp    : moment.utc ( $ ( "#startTimestamp" ).data ( "DateTimePicker" ).getDate ( ) )._d.getTime ( ),
-                    maxTimestamp    : moment.utc ( $ ( "#stopTimestamp" ).data ( "DateTimePicker" ).getDate ( ) )._d.getTime ( ),
+                    minTimestamp    : moment.utc ( $ ( "#startTimestamp" ).data ( "DateTimePicker" ).date ( ) )._d.getTime ( ),
+                    maxTimestamp    : moment.utc ( $ ( "#stopTimestamp" ).data ( "DateTimePicker" ).date ( ) )._d.getTime ( ),
                     iticSevere      : $ ( "#requestIticSevere" ).is ( ':checked' ),
                     iticModerate    : $ ( "#requestIticModerate" ).is ( ':checked' ),
                     iticOk          : $ ( "#requestIticOk" ).is ( ':checked' ),
@@ -451,10 +451,10 @@
 
             /* ---------- Intialize the page components ----------*/
             // Set up calendar fields correctly
-            $("#startTimestamp" ).datetimepicker();
-            $("#stopTimestamp" ).datetimepicker();
-            $("#startTimestamp").data("DateTimePicker").setDate(new Date(@data.minTimestamp));
-            $("#stopTimestamp").data("DateTimePicker").setDate(new Date(@data.maxTimestamp));
+            $("#startTimestamp").datetimepicker();
+            $("#stopTimestamp").datetimepicker();
+            $("#startTimestamp").data("DateTimePicker").date(new Date(@data.minTimestamp));
+            $("#stopTimestamp").data("DateTimePicker").date(new Date(@data.maxTimestamp));
 
             // Initialize the map
             grid.initMap("public-map", [@data.mapCenterLat, @data.mapCenterLng], @data.mapZoom);
