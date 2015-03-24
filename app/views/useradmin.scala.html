@@ -27,9 +27,10 @@
    @navbar()
     <!-- Main content -->
     <div class="container" id="main-content">
+      <form action="@routes.Administration.updateUser(session.get("email"))" method="POST" name="userAdminForm" id="userAdminForm" class="form-horizontal" role="form">
       <!-- User Settings Row -->
       <div class="row">
-        <!-- Left Description Column -->
+          <!-- Left Description Column -->
         <div class="col-lg-4">
           <div class="bs-callout bs-callout-primary">
             <h4>User Settings</h4>
@@ -50,7 +51,6 @@
                 @flash.get("updated")
                 </p>
               }
-              <form action="@routes.Administration.updateUser(session.get("email"))" method="POST" name="userAdminForm" id="userAdminForm" class="form-horizontal" role="form">
 
                   <!-- First name -->
                 @helper.textinput("firstName", "First Name *", "col-sm-3", "col-sm-7", "Jane", personForm("firstName").value)
@@ -73,7 +73,6 @@
                   <!-- Submit button -->
                 <button type="submit" class="col-sm-offset-3 btn btn-primary" id="submitBtn" name="submitBtn">Update</button>
 
-              </form>
             </div>
           </div>
         </div>
@@ -96,14 +95,13 @@
               <span class="glyphicon glyphicon-phone" style="margin-right: 5px;" aria-hidden="true"></span>SMS Alert Settings
             </div>
             <div class="panel-body">
-              <form action="" method="POST" name="notificationForm" id="notificationForm" class="form-horizontal" role="form">
 
                   <!-- SMS Alert Toggle -->
                 <div class="form-group">
                   <label class="col-sm-3 control-label">SMS Alerts</label>
                   <div class="col-sm-7">
                     <label class="radio-inline col-sm-3" for="smsEnable">
-                      <input type="radio" name="smsToggle" id="smsEnable" value="enable"> Enable
+                      <input type="radio" name="smsToggle" id="smsEnable" value="enable" checked> Enable
                     </label>
                     <label class="radio-inline" for="smsDisable">
                       <input type="radio" name="smsToggle" id="smsDisable" value="disable"> Disable
@@ -131,7 +129,7 @@
                   <label class="col-sm-3 control-label">ITIC Threshold</label>
                   <div class="col-sm-7">
                     <label class="radio-inline col-sm-3" for="smsIticModerate">
-                      <input type="radio" name="smsItic" id="smsIticModerate" value="moderate"> Moderate
+                      <input type="radio" name="smsItic" id="smsIticModerate" value="moderate" checked> Moderate
                     </label>
                     <label class="radio-inline" for="smsIticSevere">
                       <input type="radio" name="smsItic" id="smsIticSevere" value="severe"> Severe
@@ -142,7 +140,6 @@
                   <!-- Submit button -->
                 <button type="submit" class="col-sm-offset-3 btn btn-primary" id="smsSubmit" name="submitBtn">Update</button>
 
-              </form>
             </div>
           </div>
         </div>
@@ -166,16 +163,28 @@
               <span class="glyphicon glyphicon-envelope" style="margin-right: 5px;" aria-hidden="true"></span>E-mail Notification Settings
             </div>
             <div class="panel-body">
-              <form action="" method="POST" name="notificationForm" id="notificationForm" class="form-horizontal" role="form">
-                <!-- Notification System Toggle -->
+                  <!-- Notification System Toggle -->
                 <div class="form-group">
                   <label class="col-sm-3 control-label">E-mail Notifications</label>
                   <div class="col-sm-7">
                     <label class="radio-inline col-sm-3" for="emailEnable">
-                      <input type="radio" name="emailToggle" id="emailEnable" value="enable"> Enable
+                      <input type="radio" name="emailToggle" id="emailEnable" value="enable" checked> Enable
                     </label>
                     <label class="radio-inline" for="emailDisable">
                       <input type="radio" name="emailToggle" id="emailDisable" value="disable"> Disable
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Notification Type -->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Notification Type</label>
+                  <div class="col-sm-7">
+                    <label class="checkbox-inline col-sm-3" for="emailSummary">
+                      <input type="checkbox" name="emailSummary" id="emailSummary" value="summary" checked> Summary
+                    </label>
+                    <label class="checkbox-inline" for="emailAlert">
+                      <input type="checkbox" name="emailAlert" id="emailAlert" value="alerts" checked> Alerts
                     </label>
                   </div>
                 </div>
@@ -184,25 +193,12 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label">Notification Frequency</label>
                   <div class="col-sm-7">
-                    <label class="radio-inline col-sm-3" for="emailDaily">
-                      <input type="radio" name="emailFreq" id="emailDaily" value="daily"> Daily
+                    <label class="checkbox-inline col-sm-3" for="emailFreqDaily">
+                      <input type="checkbox" name="emailFreqDaily" id="emailFreqDaily" value="daily"> Daily
                     </label>
-                    <label class="radio-inline" for="emailWeekly">
-                      <input type="radio" name="emailFreq" id="emailWeekly" value="weekly"> Weekly
+                    <label class="checkbox-inline" for="emailFreqWeekly">
+                      <input type="checkbox" name="emailFreqWeekly" id="emailFreqWeekly" value="weekly" checked> Weekly
                     </label>
-                  </div>
-                </div>
-
-                  <!-- Time Picker -->
-                <div class="form-group">
-                  <label for="timepickerInput" class="col-sm-3 control-label">Preferred Time</label>
-                  <div class="col-sm-7">
-                    <div class='input-group date' id='timepicker'>
-                      <input type='text' class="form-control" id="timepickerInput" />
-                      <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-time"></span>
-                      </span>
-                    </div>
                   </div>
                 </div>
 
@@ -211,7 +207,7 @@
                   <label class="col-sm-3 control-label">ITIC Threshold</label>
                   <div class="col-sm-7">
                     <label class="radio-inline col-sm-3" for="emailIticModerate">
-                      <input type="radio" name="emailItic" id="emailIticModerate" value="moderate"> Moderate
+                      <input type="radio" name="emailItic" id="emailIticModerate" value="moderate" checked> Moderate
                     </label>
                     <label class="radio-inline" for="emailIticSevere">
                       <input type="radio" name="emailItic" id="emailIticSevere" value="severe"> Severe
@@ -222,12 +218,11 @@
                 <!-- Submit button -->
                 <button type="submit" class="col-sm-offset-3 btn btn-primary" id="emailSubmit" name="submitBtn">Update</button>
 
-              </form>
             </div>
           </div>
         </div>
       </div>
-
+      </form>
     </div>
 
 
