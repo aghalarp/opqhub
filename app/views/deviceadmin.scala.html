@@ -127,18 +127,20 @@
                                   <th>Last Heartbeat</th>
                               </thead>
                               <tbody>
-                                 @for(devStats <- pdi.getDeviceStatsList()) {
-                                      <tr>
-                                          <td>@devStats.getDeviceID()</td>
-                                          <td>@devStats.getFreqEventCount()</td>
-                                          <td>@devStats.getVoltEventCount()</td>
-                                          @if(devStats.getIsRecentLastHeartbeat().equals(true)) {
-                                              <td style="color: green;">@devStats.getReadableLastHeartbeat()</td>
-                                          } else {
-                                              <td style="color: red;">@devStats.getReadableLastHeartbeat()</td>
-                                          }
-                                      </tr>
-                                  }
+                                 @if(pdi != null) {
+                                     @for(devStats <- pdi.getDeviceStatsList()) {
+                                         <tr>
+                                             <td>@devStats.getDeviceID()</td>
+                                             <td>@devStats.getFreqEventCount()</td>
+                                             <td>@devStats.getVoltEventCount()</td>
+                                             @if(devStats.getIsRecentLastHeartbeat().equals(true)) {
+                                                 <td style="color : green ;">@devStats.getReadableLastHeartbeat()</td>
+                                             } else {
+                                                 <td style="color : red ;">@devStats.getReadableLastHeartbeat()</td>
+                                             }
+                                         </tr>
+                                     }
+                                 }
                               </tbody>
                           </table>
                       </div>

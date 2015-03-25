@@ -78,7 +78,16 @@ public class Administration extends Controller {
 
     Logger.debug(String.format("%s user information updated", person.getPrimaryKey()));
 
-    personForm.get().update(person.getPrimaryKey());
+    // Generate person obj from form.
+    Person personFromForm = personForm.get();
+
+    // If form password field was empty, manually set password hash and salt.
+    if (personForm.field("password").value().equals(null) || personForm.field("password").value().isEmpty()) {
+      personFromForm.setPasswordHash(person.getPasswordHash());
+      personFromForm.setPasswordSalt(person.getPasswordSalt());
+    }
+
+    personFromForm.update(person.getPrimaryKey());
     flash("updated", "Account Updated");
     return redirect(controllers.routes.Administration.user(person.getEmail()));
   }

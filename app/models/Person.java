@@ -39,6 +39,9 @@ import java.util.Set;
  */
 @Entity
 public class Person extends Model {
+
+  public interface Signup{}
+
   /* ----- Fields ----- */
   /**
    * Primary key.
@@ -74,13 +77,13 @@ public class Person extends Model {
   /**
    * Password hash.
    */
-  @Required
+  @Required(groups = Signup.class)
   private byte[] passwordHash;
 
   /**
    * Password salt. The salt is a random 32 byte value generated at account creating or password update.
    */
-  @Required
+  @Required(groups = Signup.class)
   private byte[] passwordSalt;
 
   @Constraints.Email
@@ -89,7 +92,7 @@ public class Person extends Model {
   private Sms.SmsCarrier smsCarrier;
 
   private String smsNumber;
-
+  
   private boolean enableSmsAlerts;
   private boolean enableEmailAlerts;
   private PqUtils.IticRegion iticRegionEmailThreshold;
