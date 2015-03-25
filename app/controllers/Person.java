@@ -17,7 +17,7 @@ public class Person extends Controller {
   }
 
   public static Result save() {
-    Form<models.Person> form = Form.form(models.Person.class).bindFromRequest();
+    Form<models.Person> form = Form.form(models.Person.class, models.Person.Signup.class).bindFromRequest();
 
     // Validate form
     if (form.hasErrors()) {

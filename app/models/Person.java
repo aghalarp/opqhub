@@ -23,6 +23,7 @@ import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import play.mvc.Controller;
+import utils.PqUtils;
 import utils.Sms;
 
 import javax.persistence.CascadeType;
@@ -38,6 +39,9 @@ import java.util.Set;
  */
 @Entity
 public class Person extends Model {
+
+  public interface Signup{}
+
   /* ----- Fields ----- */
   /**
    * Primary key.
@@ -73,13 +77,13 @@ public class Person extends Model {
   /**
    * Password hash.
    */
-  @Required
+  @Required(groups = Signup.class)
   private byte[] passwordHash;
 
   /**
    * Password salt. The salt is a random 32 byte value generated at account creating or password update.
    */
-  @Required
+  @Required(groups = Signup.class)
   private byte[] passwordSalt;
 
   @Constraints.Email
@@ -88,6 +92,15 @@ public class Person extends Model {
   private Sms.SmsCarrier smsCarrier;
 
   private String smsNumber;
+
+  boolean enableSmsAlerts;
+  boolean enableEmailAlerts;
+  PqUtils.IticRegion iticRegionEmailThreshold;
+  PqUtils.IticRegion iticRegionSmsThreshold;
+  boolean enableEmailSummaryNotifications;
+  boolean enableEmailAlertNotifications;
+  boolean emailNotifyDaily;
+  boolean emailNotifyWeekly;
 
   /* ----- Relationships ----- */
   @ManyToMany(mappedBy = "persons", cascade = CascadeType.ALL)
