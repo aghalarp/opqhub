@@ -21,16 +21,28 @@ public class PqUtils {
       9);
 
   public enum IticRegion {
-    NO_INTERRUPTION("No Interruption", 2),
-    NO_DAMAGE("No Damage", 1),
-    PROHIBITED("Prohibited", 0);
+    NO_INTERRUPTION("No Interruption", 2, "Ok"),
+    NO_DAMAGE("No Damage", 1, "Moderate"),
+    PROHIBITED("Prohibited", 0, "Severe"),
+    UNKNOWN("Unknown", -1, "Unknown");
 
     public final String name;
     public final Integer severity; // Lower number -> higher severity
+    public final String severityName;
 
-    private IticRegion(final String name, final Integer severity) {
+    private IticRegion(final String name, final Integer severity, final String severityName) {
       this.name = name;
       this.severity = severity;
+      this.severityName = severityName;
+    }
+  }
+
+  public static IticRegion getBySeverityName(final String name) {
+    switch(name) {
+      case "Ok": return IticRegion.NO_INTERRUPTION;
+      case "Moderate": return IticRegion.NO_DAMAGE;
+      case "Severe": return IticRegion.PROHIBITED;
+      default: return IticRegion.UNKNOWN;
     }
   }
 
