@@ -179,6 +179,7 @@
                                   Events
                                   <button style="margin-top:-7px" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#eventsModal">
                                     <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help
+
                                   </button>
                                 </h3>
                                 <table>
@@ -348,7 +349,29 @@
               <li>Events occurring between July 31, 2014 through November 30, 2014</li>
             </ul>
 
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum et arcu a augue porttitor pretium. Sed arcu sapien, blandit ac commodo vel, convallis facilisis purus. In dignissim, magna et convallis vulputate, est risus venenatis neque, sit amet scelerisque ligula magna at justo. Nullam ultricies at arcu non malesuada. Cras nisi tellus, lobortis viverra facilisis nec, sodales eget elit. Aliquam erat volutpat. Donec posuere felis viverra enim auctor varius. Proin eu posuere eros. Fusce elementum est at dui rhoncus finibus id nec orci.
+              The filter values are pre-populated with default values with minimum and maximum known event frequencies, voltages, and durations, and event ranges.
+              </p>
+              <p>
+                You can can choose to filter out only voltage or frequency events by selecting the appropriated text
+                boxes to the right of the "Freq" and "Voltage" labels.
+              </p>
+              <p>
+                You can filter events within certain ranges of frequencies, voltages, and durations by modifying the
+                appropriate text fields.
+              </p>
+              <p>
+                You can filter events that meet certain ITIC criteria be selecting the check boxes to the right of the
+                "ITIC" field. "Severe" events fall into the "prohibted region" of the ITIC curve. "Moderate" events fall
+                into the "no damage region" of the ITIC curve. and "Ok" events fall into the "no damage region" of the
+                ITIC curve.
+              </p>
+              <p>
+                You can filter events by date range by selecting the appropriate date ranges to the right of "Time
+                Interval".
+              </p>
+              <p>
+                When you are done setting up your filters, press the "Update" button to reload the page with the new
+                filter values applied.
               </p>
             </div>
             <div class="modal-footer">
@@ -372,11 +395,28 @@
               </p>
               <img src="@routes.Assets.at("images/events-panel.png")">
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum et arcu a augue porttitor pretium. Sed arcu sapien, blandit ac commodo vel, convallis facilisis purus. In dignissim, magna et convallis vulputate, est risus venenatis neque, sit amet scelerisque ligula magna at justo. Nullam ultricies at arcu non malesuada. Cras nisi tellus, lobortis viverra facilisis nec, sodales eget elit. Aliquam erat volutpat. Donec posuere felis viverra enim auctor varius. Proin eu posuere eros. Fusce elementum est at dui rhoncus finibus id nec orci.
+                The numbers at the top of the Events pane display the total number of events, total number of
+                frequency events, and total number of voltage events.
               </p>
               <p>
-                Proin varius felis eu tincidunt pharetra. Aenean ut erat ullamcorper, dignissim magna varius, tincidunt ligula. Aenean faucibus metus vel nunc dignissim condimentum. Integer hendrerit non felis vel porttitor. Maecenas elementum leo nec consequat facilisis. Sed vitae dolor justo. Nam in sem placerat, tristique arcu convallis, hendrerit magna. Nunc sit amet facilisis leo. Etiam ut aliquet risus. Duis in lectus vitae augue consequat suscipit. Pellentesque nisl massa, ornare sed ex ultricies, consectetur venenatis lorem. Duis malesuada molestie dolor, vitae consequat neque vulputate sed. Aliquam non urna quis tortor commodo imperdiet nec nec dui. Quisque a varius lorem, sit amet pharetra metus. Nullam vitae tincidunt magna.
+                The table of events list 100 events per page sorted in increasing date time order. The current page can
+                be increased or decreased using the left and right arrows at the bottom of this box.
               </p>
+              <p>
+                Each event shows the timestamp (in UTC/GMT), the type of power event, the duration of event in seconds,
+                the value of the event, and the severity of the event based off of the ITIC curve.
+              </p>
+              <p>
+                Red events are severe
+                events that fall within the "prohibited region" of the ITIC curve. Yellow events are moderate events
+                that fall within the "no damange region" of the ITIC curve. Green events are ok events that fall within
+                the "no interruption" region of the ITIC curve".
+              </p>
+              <p>
+                Events in the table are clickable. Clicking on any of the rows will reload the page and display the
+                details for that event in the "Event Details" pane.
+              </p>
+
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Got it!</button>
@@ -399,11 +439,11 @@
               </p>
               <img src="@routes.Assets.at("images/event-details-panel.png")">
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum et arcu a augue porttitor pretium. Sed arcu sapien, blandit ac commodo vel, convallis facilisis purus. In dignissim, magna et convallis vulputate, est risus venenatis neque, sit amet scelerisque ligula magna at justo. Nullam ultricies at arcu non malesuada. Cras nisi tellus, lobortis viverra facilisis nec, sodales eget elit. Aliquam erat volutpat. Donec posuere felis viverra enim auctor varius. Proin eu posuere eros. Fusce elementum est at dui rhoncus finibus id nec orci.
+                Displays detailed event information. The waveform can be panned by clicking on the plot and dragging.
+                The waveform can also be scrolled by using the mouse wheel. Selecting the location link will scroll
+                pan and zoom the map to the location of the event and reload the page.
               </p>
-              <p>
-                Proin varius felis eu tincidunt pharetra. Aenean ut erat ullamcorper, dignissim magna varius, tincidunt ligula. Aenean faucibus metus vel nunc dignissim condimentum. Integer hendrerit non felis vel porttitor. Maecenas elementum leo nec consequat facilisis. Sed vitae dolor justo. Nam in sem placerat, tristique arcu convallis, hendrerit magna. Nunc sit amet facilisis leo. Etiam ut aliquet risus. Duis in lectus vitae augue consequat suscipit. Pellentesque nisl massa, ornare sed ex ultricies, consectetur venenatis lorem. Duis malesuada molestie dolor, vitae consequat neque vulputate sed. Aliquam non urna quis tortor commodo imperdiet nec nec dui. Quisque a varius lorem, sit amet pharetra metus. Nullam vitae tincidunt magna.
-              </p>
+
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Got it!</button>
@@ -498,11 +538,13 @@
                 }
             };
 
-            var plotPoints = "@data.detailedEvent.event.getEventData.getWaveform"
-                .split(",").map(function(pt, idx) {
-                    return [idx, parseFloat(pt)];
-                });
-            $.plot($("#waveform"), [plotPoints], plotOptions)
+            @if(data.detailedEvent != null) {
+              var plotPoints = " @data.detailedEvent.event.getEventData.getWaveform "
+              .split ( "," ).map ( function ( pt, idx ) {
+                return[ idx, parseFloat ( pt ) ] ;
+              } ) ;
+              $.plot ( $ ( "#waveform" ), [ plotPoints ], plotOptions );
+            }
 
             /* ---------- Handle click events ---------- */
             // When update button is clicked, generate URL and goto
@@ -525,12 +567,19 @@
             });
 
             // Device location click event
-            $("#details-grid-id" ).click(function() {
-               var lat = @{(data.detailedEvent.event.getLocation.getNorthEastLatitude + data.detailedEvent.event.getLocation.getSouthWestLatitude) / 2};
-               var lng = @{(data.detailedEvent.event.getLocation.getNorthEastLongitude + data.detailedEvent.event.getLocation.getSouthWestLongitude) / 2};
-               var zoom = grid.getZoomByDistance(@data.detailedEvent.event.getLocation.getGridScale);
-               update(@data.page, @data.detailedEvent.event.getPrimaryKey, lat, lng, zoom);
-            });
+            @if(data.detailedEvent != null) {
+              $ ( "#details-grid-id" ).click ( function ( ) {
+              var lat = @{
+                (data.detailedEvent.event.getLocation.getNorthEastLatitude + data.detailedEvent.event.getLocation.getSouthWestLatitude) / 2
+              } ;
+              var lng = @{
+                (data.detailedEvent.event.getLocation.getNorthEastLongitude + data.detailedEvent.event.getLocation.getSouthWestLongitude) / 2
+              } ;
+              var zoom = grid.getZoomByDistance ( @data.detailedEvent.event.getLocation.getGridScale ) ;
+              grid.setView([lat, lng], zoom);
+              update ( @data.page, @data.detailedEvent.event.getPrimaryKey, lat, lng, zoom ) ;
+              } ) ;
+            }
         </script>
     </body>
 </html>

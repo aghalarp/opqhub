@@ -265,6 +265,10 @@ public class Event extends Model implements Comparable<Event> {
     return events;
   }
 
+  public static Set<Person> getAffectedPersons(long id) {
+    return Event.find().byId(id).getAccessKey().getPersons();
+  }
+
   public static EnhancedEvent getPublicEventById(long id) {
     Event publicEvent = Event.find().byId(id);
     if(publicEvent == null || !publicEvent.getAccessKey().getOpqDevice().getSharingData()) {

@@ -92,15 +92,15 @@ public class Person extends Model {
   private Sms.SmsCarrier smsCarrier;
 
   private String smsNumber;
-
-  boolean enableSmsAlerts;
-  boolean enableEmailAlerts;
-  PqUtils.IticRegion iticRegionEmailThreshold;
-  PqUtils.IticRegion iticRegionSmsThreshold;
-  boolean enableEmailSummaryNotifications;
-  boolean enableEmailAlertNotifications;
-  boolean emailNotifyDaily;
-  boolean emailNotifyWeekly;
+  
+  private boolean enableSmsAlerts;
+  private boolean enableEmailAlerts;
+  private PqUtils.IticRegion iticRegionEmailThreshold;
+  private PqUtils.IticRegion iticRegionSmsThreshold;
+  private boolean enableEmailSummaryNotifications;
+  private boolean enableEmailAertNotifications;
+  private boolean emailNotifyDaily;
+  private boolean emailNotifyWeekly;
 
   /* ----- Relationships ----- */
   @ManyToMany(mappedBy = "persons", cascade = CascadeType.ALL)
@@ -317,5 +317,69 @@ public class Person extends Model {
 
   public static List<Person> getPersons() {
     return Person.find().all();
+  }
+
+  public boolean isEnableSmsAlerts() {
+    return enableSmsAlerts;
+  }
+
+  public void setEnableSmsAlerts(boolean enableSmsAlerts) {
+    this.enableSmsAlerts = enableSmsAlerts;
+  }
+
+  public boolean isEnableEmailAlerts() {
+    return enableEmailAlerts;
+  }
+
+  public void setEnableEmailAlerts(boolean enableEmailAlerts) {
+    this.enableEmailAlerts = enableEmailAlerts;
+  }
+
+  public PqUtils.IticRegion getIticRegionEmailThreshold() {
+    return iticRegionEmailThreshold;
+  }
+
+  public void setIticRegionEmailThreshold(PqUtils.IticRegion iticRegionEmailThreshold) {
+    this.iticRegionEmailThreshold = iticRegionEmailThreshold;
+  }
+
+  public PqUtils.IticRegion getIticRegionSmsThreshold() {
+    return iticRegionSmsThreshold;
+  }
+
+  public void setIticRegionSmsThreshold(PqUtils.IticRegion iticRegionSmsThreshold) {
+    this.iticRegionSmsThreshold = iticRegionSmsThreshold;
+  }
+
+  public boolean isEnableEmailSummaryNotifications() {
+    return enableEmailSummaryNotifications;
+  }
+
+  public void setEnableEmailSummaryNotifications(boolean enableEmailSummaryNotifications) {
+    this.enableEmailSummaryNotifications = enableEmailSummaryNotifications;
+  }
+
+  public boolean isEnableEmailAertNotifications() {
+    return enableEmailAertNotifications;
+  }
+
+  public void setEnableEmailAertNotifications(boolean enableEmailAertNotifications) {
+    this.enableEmailAertNotifications = enableEmailAertNotifications;
+  }
+
+  public boolean isEmailNotifyDaily() {
+    return emailNotifyDaily;
+  }
+
+  public void setEmailNotifyDaily(boolean emailNotifyDaily) {
+    this.emailNotifyDaily = emailNotifyDaily;
+  }
+
+  public boolean isEmailNotifyWeekly() {
+    return emailNotifyWeekly;
+  }
+
+  public void setEmailNotifyWeekly(boolean emailNotifyWeekly) {
+    this.emailNotifyWeekly = emailNotifyWeekly;
   }
 }
