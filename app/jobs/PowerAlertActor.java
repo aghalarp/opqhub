@@ -53,8 +53,8 @@ public class PowerAlertActor extends UntypedActor {
 
       // Send alerts to e-mail or sms
       for(Person person : affectedPersons) {
-        boolean sendSmsAlerts = true;
-        boolean sendEmailAlerts = true;
+        boolean sendSmsAlerts = person.isEnableSmsAlerts();
+        boolean sendEmailAlerts = person.isEnableEmailAlerts() && person.isEnableEmailAertNotifications();
 
         if(sendSmsAlerts) {
           this.htmlMailerActor.tell(
