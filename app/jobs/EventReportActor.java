@@ -73,8 +73,8 @@ public class EventReportActor extends UntypedActor {
             String htmlString = CssInliner.toInlinedCss(htmlTemplate.toString());
 
             // Create message object to be sent to HtmlMailerActor
-            final HtmlMailerMessage htmlMessage = new HtmlMailerMessage("aghalarp@gmail.com", "OPQ Event Report", htmlString); // Uncomment on development.
-            //final HtmlMailerMessage htmlMessage = new HtmlMailerMessage(pdi.getPersonEmail(), "OPQ Event Report", htmlString); // Uncomment on production.
+//            final HtmlMailerMessage htmlMessage = new HtmlMailerMessage("aghalarp@gmail.com", "OPQ Event Report", htmlString); // Uncomment on development.
+            final HtmlMailerMessage htmlMessage = new HtmlMailerMessage(pdi.getPersonEmail(), "OPQ Event Report", htmlString); // Uncomment on production.
 
             //Create HtmlMailerActor and send message.
             //final ActorRef htmlMailer = getContext().actorOf(Props.create(jobs.HtmlMailerActor.class), "htmlMailerActor");
