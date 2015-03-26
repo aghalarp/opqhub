@@ -104,10 +104,10 @@
               <div class="col-lg-12">
                   <div class="panel panel-default">
                       <div class="panel-heading">
-                          <span class="glyphicon glyphicon-stats" style="margin-right: 5px;" aria-hidden="true"></span>OPQBox Activity
+                          <span class="glyphicon glyphicon-stats" style="margin-right: 5px;" aria-hidden="true"></span>OPQBox Total Events
                           <!-- Single button -->
                           <div class="dropdown stats-dropdown pull-right">
-                              <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                              <!--<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                   Past Day <span class="caret"></span>
                               </button>
                               <ul class="dropdown-menu stats-menu" role="menu">
@@ -115,7 +115,7 @@
                                   <li><a href="#">Past Week </a></li>
                                   <li><a href="#">Past Month </a></li>
                                   <li><a href="#">All Time</a></li>
-                              </ul>
+                              </ul>-->
                           </div>
                       </div>
                       <div class="table-responsive">
@@ -190,11 +190,11 @@
 
   <!-- Handles dropdown menu in Device Stats panel -->
   <script>
-      $(".stats-menu li a").click(function(e){
-        e.preventDefault();
-        var caret = $(this).parents(".stats-dropdown").find(".btn").children(); // Store the bootstrap caret span code to append later.
-        $(this).parents(".stats-dropdown").find('.btn').text($(this).text()).append(caret);
-      });
+//      $(".stats-menu li a").click(function(e){
+//        e.preventDefault();
+//        var caret = $(this).parents(".stats-dropdown").find(".btn").children(); // Store the bootstrap caret span code to append later.
+//        $(this).parents(".stats-dropdown").find('.btn').text($(this).text()).append(caret);
+//      });
   </script>
   </body>
 </html>

@@ -40,19 +40,19 @@ public class EventReportActor extends UntypedActor {
             switch ((Message) msg) {
                 case DAILY_REPORT:
                     startTimestamp = DateUtils.getPastTime(currentTimestamp, DateUtils.TimeUnit.Day);
-                    prepareAndSendmail(startTimestamp, currentTimestamp);
+                    prepareAndSendmail(startTimestamp, currentTimestamp, Message.DAILY_REPORT);
                     break;
                 case WEEKLY_REPORT:
                     startTimestamp = DateUtils.getPastTime(currentTimestamp, DateUtils.TimeUnit.Week);
-                    prepareAndSendmail(startTimestamp, currentTimestamp);
+                    prepareAndSendmail(startTimestamp, currentTimestamp, Message.WEEKLY_REPORT);
                     break;
                 case MONTHLY_REPORT:
                     startTimestamp = DateUtils.getPastTime(currentTimestamp, DateUtils.TimeUnit.Month);
-                    prepareAndSendmail(startTimestamp, currentTimestamp);
+                    prepareAndSendmail(startTimestamp, currentTimestamp, Message.MONTHLY_REPORT);
                     break;
                 case FULL_REPORT:
                     startTimestamp = 0L;
-                    prepareAndSendmail(startTimestamp, currentTimestamp);
+                    prepareAndSendmail(startTimestamp, currentTimestamp, Message.FULL_REPORT);
                     break;
                 default:
                     Logger.error("EventReportActor received an invalid message.");
@@ -64,8 +64,8 @@ public class EventReportActor extends UntypedActor {
         }
     }
 
-    private void prepareAndSendmail(Long startTimestamp, Long endTimestamp) {
-        Map<Long, PersonDeviceInfo> map = DeviceReports.generateAllDeviceReport(startTimestamp, endTimestamp);
+    private void prepareAndSendmail(Long startTimestamp, Long endTimestamp, Message frequency) {
+        Map<Long, PersonDeviceInfo> map = DeviceReports.generateAllDeviceReport(startTimestamp, endTimestamp, frequency);
 
         for (PersonDeviceInfo pdi : map.values()) {
             // Create Html template string.

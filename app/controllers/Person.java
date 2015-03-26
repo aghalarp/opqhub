@@ -5,6 +5,7 @@ import play.data.Form;
 import play.data.validation.ValidationError;
 import play.mvc.Controller;
 import play.mvc.Result;
+import utils.PqUtils;
 import views.html.error;
 import views.html.signup;
 
@@ -27,6 +28,17 @@ public class Person extends Controller {
 
     // Save account information
     models.Person person = form.get();
+
+    //Set default SMS and Email Notification values
+    person.setEnableSmsAlerts(true);
+    person.setEnableEmailAlerts(true);
+    person.setIticRegionEmailThreshold(PqUtils.IticRegion.NO_DAMAGE);
+    person.setIticRegionSmsThreshold(PqUtils.IticRegion.NO_DAMAGE);
+    person.setEnableEmailAertNotifications(true);
+    person.setEnableEmailSummaryNotifications(true);
+    person.setEmailNotifyDaily(false);
+    person.setEmailNotifyWeekly(true);
+
     person.save();
 
     // Log the person in

@@ -72,6 +72,7 @@ public class Person extends Model {
    * Password. The password itself should never be stored to the DB. This field is simply used as a temp. location while
    * the password hash is created.
    */
+  @Required(groups = Signup.class)
   private String password;
 
   /**
@@ -240,7 +241,7 @@ public class Person extends Model {
     this.password = password;
     this.setPasswordSalt(utils.FormUtils.generateRandomSalt());
     this.setPasswordHash(utils.FormUtils.hashPassword(this.getPassword(), this.getPasswordSalt()));
-    this.password = null;
+    this.password = "NoneOfYourBusiness"; // Used to be null, but changed to empty string.
   }
 
   /**

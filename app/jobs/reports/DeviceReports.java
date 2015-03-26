@@ -1,12 +1,14 @@
 package jobs.reports;
 
 import com.avaje.ebean.Ebean;
+import jobs.EventReportActor;
 import jobs.support_classes.DeviceStats;
 import jobs.support_classes.PersonDeviceInfo;
 import models.AccessKey;
 import models.Event;
 import models.Person;
 import org.openpowerquality.protocol.OpqPacket;
+import play.Logger;
 
 import java.util.*;
 
@@ -21,13 +23,38 @@ public class DeviceReports {
      *
      * @param startTimestamp The starting time interval
      * @param endTimestamp The ending time interval
+     * @param frequency The emailer frequency setting to check
      * @return Mapping of Person IDs to PersonDeviceInfo
      */
-    public static Map<Long, PersonDeviceInfo> generateAllDeviceReport(Long startTimestamp, Long endTimestamp) {
+    public static Map<Long, PersonDeviceInfo> generateAllDeviceReport(Long startTimestamp, Long endTimestamp, EventReportActor.Message frequency) {
         Map<Long, PersonDeviceInfo> retMap = new HashMap<Long, PersonDeviceInfo>();
+        String strFrequency = null; // Used later in PDI object
 
         // Get all people.
-        List<Person> persons = Person.getPersons();
+        //List<Person> persons = Person.getPersons();
+        List<Person> persons = null;
+        switch (frequency) {
+            case DAILY_REPORT:
+                persons = Person.find().where()
+                        .eq("enableEmailAlerts", true)
+                        .eq("enableEmailSummaryNotifications", true)
+                        .eq("emailNotifyDaily", true)
+                        .findList();
+                strFrequency = "Daily";
+                break;
+            case WEEKLY_REPORT:
+                persons = Person.find().where()
+                        .eq("enableEmailAlerts", true)
+                        .eq("enableEmailSummaryNotifications", true)
+                        .eq("emailNotifyDaily", true)
+                        .findList();
+                strFrequency = "Weekly";
+                break;
+            default:
+                Logger.error("Invalid mailer frequency in DeviceReports.");
+                break;
+        }
+
 
         // For each person, grab event stats for each device associated to person's account.
         for (Person person : persons) {
@@ -65,7 +92,7 @@ public class DeviceReports {
             // Some users may have not yet associated a device to their account, so don't add those users.
             if (!accessKeys.isEmpty()) {
                 PersonDeviceInfo pdi = new PersonDeviceInfo(person.getFirstName(), person.getLastName(),
-                        person.getEmail(), deviceStatsList);
+                        person.getEmail(), strFrequency,  deviceStatsList);
 
                 retMap.put(person.getPrimaryKey(), pdi);
             }
@@ -118,7 +145,7 @@ public class DeviceReports {
         // Some users may have not yet associated a device to their account, so ignore those users.
         if (!accessKeys.isEmpty()) {
             PersonDeviceInfo pdi = new PersonDeviceInfo(person.getFirstName(), person.getLastName(),
-                    person.getEmail(), deviceStatsList);
+                    person.getEmail(), "", deviceStatsList);
 
             return pdi;
         }
@@ -278,7 +305,7 @@ public class DeviceReports {
             // Some users may have not yet associated a device to their account, so don't add those users.
             if (!accessKeys.isEmpty()) {
                 PersonDeviceInfo pdi = new PersonDeviceInfo(person.getFirstName(), person.getLastName(),
-                        person.getEmail(), deviceStatsList);
+                        person.getEmail(), "", deviceStatsList);
 
                 retMap.put(person.getPrimaryKey(), pdi);
             }

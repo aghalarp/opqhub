@@ -84,7 +84,7 @@
         <div class="col-lg-4">
           <div class="bs-callout bs-callout-primary">
             <h4>SMS Alerts</h4>
-            <p>Stuff about the SMS alert system here.</p>
+            <p>Enable SMS Alerts to receive text notifications during moderate or severe ITIC event occurrences.</p>
           </div>
         </div>
 
@@ -101,10 +101,10 @@
                   <label class="col-sm-3 control-label">SMS Alerts</label>
                   <div class="col-sm-7">
                     <label class="radio-inline col-sm-3" for="smsEnable">
-                      <input type="radio" name="smsToggle" id="smsEnable" value="enable" checked> Enable
+                      <input type="radio" name="enableSmsAlerts" id="smsEnable" value="true" @if(personForm("enableSmsAlerts").value.toBoolean == true){checked}> Enable
                     </label>
                     <label class="radio-inline" for="smsDisable">
-                      <input type="radio" name="smsToggle" id="smsDisable" value="disable"> Disable
+                      <input type="radio" name="enableSmsAlerts" id="smsDisable" value="false" @if(personForm("enableSmsAlerts").value.toBoolean == false){checked}> Disable
                     </label>
                   </div>
                 </div>
@@ -126,13 +126,13 @@
 
                   <!-- ITIC Thresold -->
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">ITIC Threshold</label>
+                  <label class="col-sm-3 control-label">Alert ITIC Threshold</label>
                   <div class="col-sm-7">
                     <label class="radio-inline col-sm-3" for="smsIticModerate">
-                      <input type="radio" name="smsItic" id="smsIticModerate" value="moderate" checked> Moderate
+                      <input type="radio" name="iticRegionSmsThreshold" id="smsIticModerate" value="Moderate" @if(personForm("iticRegionSmsThreshold").value == "Moderate" || personForm("iticRegionSmsThreshold").value == null){checked}> Moderate
                     </label>
                     <label class="radio-inline" for="smsIticSevere">
-                      <input type="radio" name="smsItic" id="smsIticSevere" value="severe"> Severe
+                      <input type="radio" name="iticRegionSmsThreshold" id="smsIticSevere" value="Severe" @if(personForm("iticRegionSmsThreshold").value == "Severe"){checked}> Severe
                     </label>
                   </div>
                 </div>
@@ -152,7 +152,9 @@
         <div class="col-lg-4">
           <div class="bs-callout bs-callout-primary">
             <h4>E-Mail Notifications</h4>
-            <p>Stuff about the E-mail notification system here.</p>
+            <p>Enable E-mail notifications to receive summary reports and alert messages of recent OPQBox activity. </p>
+            <p>You can receive daily and/or weekly summary reports. </p>
+            <p>Alert notifications are based upon the indicated ITIC severity.</p>
           </div>
         </div>
 
@@ -163,15 +165,15 @@
               <span class="glyphicon glyphicon-envelope" style="margin-right: 5px;" aria-hidden="true"></span>E-mail Notification Settings
             </div>
             <div class="panel-body">
-                  <!-- Notification System Toggle -->
+                  <!-- Email Notification System Toggle -->
                 <div class="form-group">
                   <label class="col-sm-3 control-label">E-mail Notifications</label>
                   <div class="col-sm-7">
                     <label class="radio-inline col-sm-3" for="emailEnable">
-                      <input type="radio" name="emailToggle" id="emailEnable" value="enable" checked> Enable
+                      <input type="radio" name="enableEmailAlerts" id="emailEnable" value="true" @if(personForm("enableEmailAlerts").value.toBoolean == true){checked}> Enable
                     </label>
                     <label class="radio-inline" for="emailDisable">
-                      <input type="radio" name="emailToggle" id="emailDisable" value="disable"> Disable
+                      <input type="radio" name="enableEmailAlerts" id="emailDisable" value="false" @if(personForm("enableEmailAlerts").value.toBoolean == false){checked}> Disable
                     </label>
                   </div>
                 </div>
@@ -180,37 +182,37 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label">Notification Type</label>
                   <div class="col-sm-7">
-                    <label class="checkbox-inline col-sm-3" for="emailSummary">
-                      <input type="checkbox" name="emailSummary" id="emailSummary" value="summary" checked> Summary
+                    <label class="checkbox-inline col-sm-3" for="enableEmailSummaryNotifications">
+                      <input type="checkbox" name="enableEmailSummaryNotifications" id="enableEmailSummaryNotifications" value="true" @if(personForm("enableEmailSummaryNotifications").value.toBoolean == true){checked}> Summary
                     </label>
-                    <label class="checkbox-inline" for="emailAlert">
-                      <input type="checkbox" name="emailAlert" id="emailAlert" value="alerts" checked> Alerts
+                    <label class="checkbox-inline" for="enableEmailAertNotifications">
+                      <input type="checkbox" name="enableEmailAertNotifications" id="enableEmailAertNotifications" value="true" @if(personForm("enableEmailAertNotifications").value.toBoolean == true){checked}> Alerts
                     </label>
                   </div>
                 </div>
 
                 <!-- Notification Frequency -->
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">Notification Frequency</label>
+                  <label class="col-sm-3 control-label">Summary Frequency</label>
                   <div class="col-sm-7">
-                    <label class="checkbox-inline col-sm-3" for="emailFreqDaily">
-                      <input type="checkbox" name="emailFreqDaily" id="emailFreqDaily" value="daily"> Daily
+                    <label class="checkbox-inline col-sm-3" for="emailNotifyDaily">
+                      <input type="checkbox" name="emailNotifyDaily" id="emailNotifyDaily" value="true" @if(personForm("emailNotifyDaily").value.toBoolean == true){checked}> Daily
                     </label>
-                    <label class="checkbox-inline" for="emailFreqWeekly">
-                      <input type="checkbox" name="emailFreqWeekly" id="emailFreqWeekly" value="weekly" checked> Weekly
+                    <label class="checkbox-inline" for="emailNotifyWeekly">
+                      <input type="checkbox" name="emailNotifyWeekly" id="emailNotifyWeekly" value="true" @if(personForm("emailNotifyWeekly").value.toBoolean == true){checked}> Weekly
                     </label>
                   </div>
                 </div>
 
                 <!-- ITIC Thresold -->
                 <div class="form-group">
-                  <label class="col-sm-3 control-label">ITIC Threshold</label>
+                  <label class="col-sm-3 control-label">Alert ITIC Threshold</label>
                   <div class="col-sm-7">
                     <label class="radio-inline col-sm-3" for="emailIticModerate">
-                      <input type="radio" name="emailItic" id="emailIticModerate" value="moderate" checked> Moderate
+                      <input type="radio" name="iticRegionEmailThreshold" id="emailIticModerate" value="Moderate" @if(personForm("iticRegionSmsThreshold").value == "Moderate" || personForm("iticRegionEmailThreshold").value == null){checked}> Moderate
                     </label>
                     <label class="radio-inline" for="emailIticSevere">
-                      <input type="radio" name="emailItic" id="emailIticSevere" value="severe"> Severe
+                      <input type="radio" name="iticRegionEmailThreshold" id="emailIticSevere" value="Severe" @if(personForm("iticRegionSmsThreshold").value == "Severe"){checked}> Severe
                     </label>
                   </div>
                 </div>
@@ -262,32 +264,18 @@
                 password: {
                   message: "The password is not valid",
                   validators: {
-                    notEmpty: {
-                      message: "The password is required and can not be empty"
-                    },
                     identical: {
                       field: "confirmPassword",
                       message: "Passwords must match"
-                    },
-                    stringLength: {
-                      min: 5,
-                      message: "Password must be at least 5 characters"
                     }
                   }
                 },
                 confirmPassword: {
                   message: "The password is not valid",
                   validators: {
-                    notEmpty: {
-                      message: "The password is required and can not be empty"
-                    },
                     identical: {
                       field: "password",
                       message: "Passwords must match"
-                    },
-                    stringLength: {
-                      min: 5,
-                      message: "Password must be at least 5 characters"
                     }
                   }
                 },
