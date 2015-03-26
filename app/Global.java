@@ -9,6 +9,7 @@ import play.data.format.Formatters;
 import play.libs.Akka;
 import play.Logger;
 import scala.concurrent.duration.Duration;
+import utils.PqUtils;
 import utils.Sms;
 
 import java.text.ParseException;
@@ -28,6 +29,18 @@ public class Global extends GlobalSettings implements ServerConfigStartup {
       @Override
       public String print(Sms.SmsCarrier smsCarrier, Locale locale) {
         return smsCarrier.getName();
+      }
+    });
+
+    Formatters.register(PqUtils.IticRegion.class, new Formatters.SimpleFormatter<PqUtils.IticRegion>() {
+      @Override
+      public PqUtils.IticRegion parse(String s, Locale locale) throws ParseException {
+        return PqUtils.getBySeverityName(s);
+      }
+
+      @Override
+      public String print(PqUtils.IticRegion iticRegion, Locale locale) {
+        return iticRegion.severityName;
       }
     });
 
