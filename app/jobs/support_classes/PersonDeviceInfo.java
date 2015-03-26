@@ -9,14 +9,16 @@ public class PersonDeviceInfo {
     private String personFirstName;
     private String personLastName;
     private String personEmail;
+    private String emailFrequency;
     private List<DeviceStats> deviceStatsList;
     private Integer numDevices;
 
-    public PersonDeviceInfo(String personFirstName, String personLastName, String personEmail,
+    public PersonDeviceInfo(String personFirstName, String personLastName, String personEmail, String emailFrequency,
                             List<DeviceStats> deviceStatsList) {
         this.personFirstName = personFirstName;
         this.personLastName = personLastName;
         this.personEmail = personEmail;
+        this.emailFrequency = emailFrequency;
         this.deviceStatsList = deviceStatsList;
         this.numDevices = deviceStatsList.size();
     }
@@ -56,6 +58,14 @@ public class PersonDeviceInfo {
 
     public Integer getNumDevices() {
         return numDevices;
+    }
+
+    public String getEmailFrequency() {
+        return emailFrequency;
+    }
+
+    public void setEmailFrequency(String emailFrequency) {
+        this.emailFrequency = emailFrequency;
     }
 }
 
