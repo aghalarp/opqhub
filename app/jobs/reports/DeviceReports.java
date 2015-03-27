@@ -92,7 +92,7 @@ public class DeviceReports {
             // Some users may have not yet associated a device to their account, so don't add those users.
             if (!accessKeys.isEmpty()) {
                 PersonDeviceInfo pdi = new PersonDeviceInfo(person.getFirstName(), person.getLastName(),
-                        person.getEmail(), strFrequency,  deviceStatsList);
+                        person.getAlertEmail(), strFrequency,  deviceStatsList);
 
                 retMap.put(person.getPrimaryKey(), pdi);
             }
@@ -145,7 +145,7 @@ public class DeviceReports {
         // Some users may have not yet associated a device to their account, so ignore those users.
         if (!accessKeys.isEmpty()) {
             PersonDeviceInfo pdi = new PersonDeviceInfo(person.getFirstName(), person.getLastName(),
-                    person.getEmail(), "", deviceStatsList);
+                    person.getAlertEmail(), "", deviceStatsList);
 
             return pdi;
         }
@@ -305,7 +305,7 @@ public class DeviceReports {
             // Some users may have not yet associated a device to their account, so don't add those users.
             if (!accessKeys.isEmpty()) {
                 PersonDeviceInfo pdi = new PersonDeviceInfo(person.getFirstName(), person.getLastName(),
-                        person.getEmail(), "", deviceStatsList);
+                        person.getAlertEmail(), "", deviceStatsList);
 
                 retMap.put(person.getPrimaryKey(), pdi);
             }
