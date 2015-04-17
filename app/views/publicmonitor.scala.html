@@ -19,6 +19,7 @@
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("contrib/css/bootstrap.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("contrib/css/bootstrap-datetimepicker.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("contrib/css/leaflet.css")">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
         <!-- Site specific details -->
         <script src="@routes.Assets.at("js/grid-map.js")" type="text/javascript"></script>
@@ -36,20 +37,20 @@
             <!-- Main content -->
         <div class="container" id="main-content">
 
-                <!-- Main two columns. Left: controls & map. Right: Events and event details. -->
+                <!-- Main two columns. Left: filters & map. Right: Events and event details. -->
             <div class="row">
 
-                    <!-- Controls and map -->
+                    <!-- Filters and map -->
                 <div class="col-md-5">
 
-                        <!-- Controls -->
+                        <!-- Filters -->
                     <div class="row">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h3 class="panel-title">
-                                  Display
+                                  <i class="fa fa-sliders" style="margin-right: 5px;"></i>Filter
                                   <button style="margin-top:-7px" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#displayModal">
-                                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help
+                                    <i class="fa fa-question-circle fa-lg"></i>
                                   </button>
                                 </h3>
                             </div>
@@ -163,9 +164,24 @@
                     </div>
 
                         <!-- Map -->
-                    <div class="row public-map">
-                        <div class="public-map" id="public-map"></div>
+                  <div class="row">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h3 class="panel-title">
+                          <i class="fa fa-map-marker" style="margin-right: 5px;"></i>Public Map
+                          <button style="margin-top:-7px" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#mapModal">
+                            <i class="fa fa-question-circle fa-lg"></i>
+                          </button>
+                        </h3>
+                      </div>
+                      <div class="panel-body" style="padding: 0px;">
+                        <div class="public-map">
+                          <div class="public-map" id="public-map"></div>
+                        </div>
+                      </div>
                     </div>
+                  </div>
+
                 </div>
 
                     <!-- Events and event details -->
@@ -175,22 +191,22 @@
                     <div class="row">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title" id="events-title">
-                                  Events
-                                  <button style="margin-top:-7px" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#eventsModal">
-                                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help
+                                <h3 class="panel-title" id="events-title" style="display: inline;">
+                                  <i class="fa fa-th-list" style="margin-right: 5px;"></i>Events
 
-                                  </button>
+                                <button style="margin-top:-7px" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#eventsModal">
+                                  <i class="fa fa-question-circle fa-lg"></i>
+                                </button>
                                 </h3>
-                                <table>
-                                    <tr>
-                                        <td>Total Events</td> <td><span id="totalEvents" class='badge global-stats'>@data.totalEventsCount</span></td>
-                                        <td>Frequency Events</td> <td><span id="totalFrequencyEvents" class='badge global-stats'>@data.frequencyEventsCount</span></td>
-                                        <td>Voltage Events</td> <td><span id="totalVoltageEvents" class='badge global-stats'>@data.voltageEventsCount</span></td>
-                                    </tr>
-                                </table>
                             </div>
                             <div class="panel-body" id="events-table">
+                              <table>
+                                <tr>
+                                  <td>Total Events</td> <td><span id="totalEvents" class='badge global-stats'>@data.totalEventsCount</span></td>
+                                  <td>Frequency Events</td> <td><span id="totalFrequencyEvents" class='badge global-stats'>@data.frequencyEventsCount</span></td>
+                                  <td>Voltage Events</td> <td><span id="totalVoltageEvents" class='badge global-stats'>@data.voltageEventsCount</span></td>
+                                </tr>
+                              </table>
                                 @if(data.totalEventsCount > 0) {
                                 <table class="table table-hover" id="events">
                                     <thead>
@@ -258,9 +274,9 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h3 id="event-title" class="panel-title">
-                                  Event Details
+                                  <i class="fa fa-plug" style="margin-right: 5px;"></i>Event Details
                                   <button style="margin-top:-7px" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#eventDetailsModal">
-                                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help
+                                    <i class="fa fa-question-circle fa-lg"></i>
                                   </button>
                                 </h3>
                             </div>
@@ -326,17 +342,17 @@
 
 
       <!-- Help Modals -->
-      <!-- Display Pane Modal -->
+      <!-- Filter Pane Modal -->
       <div class="modal fade" id="displayModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title" id="myModalLabel">Display Panel</h4>
+              <h4 class="modal-title" id="myModalLabel">Filter Panel</h4>
             </div>
             <div class="modal-body">
               <p>
-                The "Display" pane allows the user to filter the displayed events by a variety of criteria.
+                The "Filter" pane allows the user to filter the displayed events by a variety of criteria.
               </p>
               <img src="@routes.Assets.at("images/display-panel.png")">
               <p>
@@ -444,6 +460,37 @@
                 pan and zoom the map to the location of the event and reload the page.
               </p>
 
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Got it!</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <!-- Map Pane Modal -->
+      <div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Public Map Panel</h4>
+            </div>
+            <div class="modal-body">
+              <p>
+                This map displays power quality events graphically by region. The map is split up into grid-cells containing a specific geographic region based on zoom.
+                All events that are displayed on this page are contained within the current viewing area of the map.
+                To display events in different regions, zoom and pan the map to select the region you would like to display events from.
+              </p>
+              <p>
+                The map can be panned and by left clicking on on the map and while holding down the mouse key dragging the map.
+                The map can be zoomed by pressing the +/- buttons in the upper left hand corner of the map or by scrolling with the scroll wheel of your mouse.
+              </p>
+              <p>
+                Each grid-cell contains the total number of power quality events within that region displayed as a series of three numbers.
+                Red numbers represent the number of severe ITIC events within that region. Yellow numbers represent the number of moderate ITIC events within that region.
+                Green numbers represent the number of ok ITIC events within that region.
+              </p>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Got it!</button>
