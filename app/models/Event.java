@@ -254,6 +254,8 @@ public class Event extends Model implements Comparable<Event> {
     }
     eventExpressionList = eventTypeJunction.endJunction();
 
+    // Set events to reverse chronological order.
+    eventExpressionList.orderBy("timestamp desc");
 
     List<EnhancedEvent> events;
 
