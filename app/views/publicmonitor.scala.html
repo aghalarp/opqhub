@@ -339,6 +339,17 @@
                                 </div>
                                 <div id="waveform" class="col-md-4 plot"></div>
                             </div>
+                          <div class="panel-footer panel-title">
+                            <button type="button" class="btn btn-primary btn-xs" id="prev-event-btn">
+                              <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                            </button>
+
+                            Prev / Next
+
+                            <button type="button" class="btn btn-primary btn-xs" id="next-event-btn">
+                              <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                            </button>
+                          </div>
                         </div>
                     </div>
                 </div>
@@ -644,6 +655,35 @@
                 var extraOffset = 100; // Need this b/c of badge table at top of events panel.
 
                 eventsPanel.scrollTop( rowOffset - panelHeightMiddle - extraOffset ); // Scroll to selected row.
+              }
+            });
+
+            // Next and previous event buttons
+            $("#prev-event-btn").click(function() {
+              var currentEventRow = $("#@data.detailedEvent.event.getPrimaryKey");
+
+              //If at top of list, must go previous page's bottom-most event.
+              if ((currentEventRow.attr("id") == $('#events tbody>tr:first').attr('id')) && @data.page != 0) {
+                update(@{data.page - 1});
+              }
+              else {
+                //Else select previous row id.
+                var prevRowId = currentEventRow.prev().attr("id");
+                update(@data.page, prevRowId);
+              }
+            });
+
+            $("#next-event-btn").click(function() {
+              var currentEventRow = $("#@data.detailedEvent.event.getPrimaryKey");
+
+              //If at bottom of list, must go next page's top-most event.
+              if ((currentEventRow.attr("id") == $('#events tr:last').attr('id')) && @data.page < @data.totalPages) {
+                update(@{data.page + 1});
+              }
+              else {
+                //Else select next row id.
+                var nextRowId = currentEventRow.next().attr("id");
+                update(@data.page, nextRowId);
               }
             });
         </script>
