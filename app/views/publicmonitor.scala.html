@@ -632,6 +632,20 @@
               update ( @data.page, @data.detailedEvent.event.getPrimaryKey, lat, lng, zoom ) ;
               } ) ;
             }
+
+            // Center and highlight selected event.
+            $(function() {
+              var eventsPanel = $("#events-table");
+              var eventRow = $("#@data.detailedEvent.event.getPrimaryKey").addClass('info');
+
+              if (eventRow.length){
+                var rowOffset = eventRow.offset().top; // Offset position of selected row.
+                var panelHeightMiddle = eventsPanel.height()/2; // Half of panel body height.
+                var extraOffset = 100; // Need this b/c of badge table at top of events panel.
+
+                eventsPanel.scrollTop( rowOffset - panelHeightMiddle - extraOffset ); // Scroll to selected row.
+              }
+            });
         </script>
     </body>
 </html>
