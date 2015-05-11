@@ -47,12 +47,12 @@
                     <div class="row">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">
-                                  <i class="fa fa-sliders" style="margin-right: 5px;"></i>Filter
-                                  <button style="margin-top:-7px" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#displayModal">
-                                    <i class="fa fa-question-circle fa-lg"></i>
-                                  </button>
-                                </h3>
+                              <h3 class="panel-title">
+                                <i class="fa fa-sliders" style="margin-right: 5px;"></i>Filter
+                                <button style="margin-top: -7px;" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#displayModal">
+                                  <i class="fa fa-question-circle fa-lg"></i>
+                                </button>
+                              </h3>
                             </div>
                             <div class="panel-body">
 
@@ -151,13 +151,28 @@
                                     <div id="error" class="verror"></div>
                                 </div>
 
+                                <!-- Quick Views -->
+                                <div class="row" style="margin-top: 5px; margin-bottom: 10px;">
+                                  <label class="col-sm-4">Quick View</label>
+                                  <div class="col-sm-8">
+                                    <div class="pull-right">
+                                      <button type="button" class="btn btn-success btn-sm" id="pastDayTimeBtn">Today's Data</button>
+                                      <button type="button" class="btn btn-success btn-sm" id="pastWeekTimeBtn">Week's Data</button>
+                                      <button type="button" class="btn btn-success btn-sm" id="pastMonthTimeBtn">Month's Data</button>
+                                    </div>
+                                  </div>
+                                </div>
+
                                     <!-- Update/Reset buttons -->
                                 <div class="row">
-                                    <label class="col-sm-2">Actions</label>
+                                    <label class="col-sm-4">Update</label>
                                     <div class="col-sm-8">
-                                        <button type="button" class="btn btn-primary btn-xs updateBtn" id="updateBtn">Update</button>
+                                        <div class="pull-right">
+                                          <button type="button" class="btn btn-primary btn-md updateBtn" id="updateBtn">Update Filters</button>
+                                        </div>
                                     </div>
                                 </div>
+
                             </div>
                             <div id="messages" class="invalid"></div>
                         </div>
@@ -191,12 +206,11 @@
                     <div class="row">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title" id="events-title" style="display: inline;">
+                                <h3 class="panel-title" id="events-title">
                                   <i class="fa fa-th-list" style="margin-right: 5px;"></i>Events
-
-                                <button style="margin-top:-7px" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#eventsModal">
-                                  <i class="fa fa-question-circle fa-lg"></i>
-                                </button>
+                                  <button style="margin-top:-7px" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#eventsModal">
+                                    <i class="fa fa-question-circle fa-lg"></i>
+                                  </button>
                                 </h3>
                             </div>
                             <div class="panel-body" id="events-table">
@@ -274,7 +288,7 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h3 id="event-title" class="panel-title">
-                                  <i class="fa fa-plug" style="margin-right: 5px;"></i>Event Details
+                                  <i class="fa fa-plug" style="margin-right: 5px;"></i>Event Details @if(data.detailedEvent.ne(null)){- @utils.DateUtils.toDateTime(data.detailedEvent.event.getTimestamp)}
                                   <button style="margin-top:-7px" type="button" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#eventDetailsModal">
                                     <i class="fa fa-question-circle fa-lg"></i>
                                   </button>
@@ -334,6 +348,17 @@
                                 </div>
                                 <div id="waveform" class="col-md-4 plot"></div>
                             </div>
+                          <div class="panel-footer panel-title">
+                            <button type="button" class="btn btn-primary btn-xs" id="prev-event-btn">
+                              <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                            </button>
+
+                            Prev / Next
+
+                            <button type="button" class="btn btn-primary btn-xs" id="next-event-btn">
+                              <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                            </button>
+                          </div>
                         </div>
                     </div>
                 </div>
@@ -627,6 +652,95 @@
               update ( @data.page, @data.detailedEvent.event.getPrimaryKey, lat, lng, zoom ) ;
               } ) ;
             }
+
+            // Center and highlight selected event.
+            @if(data.detailedEvent != null) {
+              $(function() {
+                var eventsPanel = $("#events-table");
+                var eventRow = $("#@data.detailedEvent.event.getPrimaryKey").addClass('info');
+
+                if(eventRow.length) {
+                  var rowOffset = eventRow.offset().top; // Offset position of selected row.
+                  var panelHeightMiddle = eventsPanel.height() / 2; // Half of panel body height.
+                  var extraOffset = 100; // Need this b/c of badge table at top of events panel.
+
+                  eventsPanel.scrollTop(rowOffset - panelHeightMiddle - extraOffset); // Scroll to selected row.
+                }
+              });
+            }
+
+            // Next and previous event buttons
+            @if(data.detailedEvent != null) {
+              $("#prev-event-btn").click(function() {
+                var currentEventRow = $("#@data.detailedEvent.event.getPrimaryKey");
+
+                //If at top of list, must go previous page's bottom-most event.
+                if ((currentEventRow.attr("id") == $('#events tbody>tr:first').attr('id')) && @data.page != 0) {
+                  update(@{data.page - 1});
+                }
+                else {
+                  //Else select previous row id.
+                  var prevRowId = currentEventRow.prev().attr("id");
+                  update(@data.page, prevRowId);
+                }
+              });
+            }
+
+            @if(data.detailedEvent != null) {
+              $("#next-event-btn").click(function() {
+                var currentEventRow = $("#@data.detailedEvent.event.getPrimaryKey");
+
+                //If at bottom of list, must go next page's top-most event.
+                if ((currentEventRow.attr("id") == $('#events tr:last').attr('id')) && @data.page < @data.totalPages) {
+                  update(@{data.page + 1});
+                }
+                else {
+                  //Else select next row id.
+                  var nextRowId = currentEventRow.next().attr("id");
+                  update(@data.page, nextRowId);
+                }
+              });
+            }
+
+            // Quick View Buttons
+            $("#pastDayTimeBtn" ).click(function() {
+              // Get time
+              var now = moment.utc();
+              var dayAgo = moment.utc(now).subtract(1, 'days');
+
+              // Set input field time interval
+              $("#startTimestamp").data("DateTimePicker").date(new Date(dayAgo));
+              $("#stopTimestamp").data("DateTimePicker").date(new Date(now));
+
+              // Update page.
+              update();
+            });
+
+            $("#pastWeekTimeBtn" ).click(function() {
+              // Get time
+              var now = moment.utc();
+              var weekAgo = moment.utc(now).subtract(1, 'weeks');
+
+              // Set input field time interval
+              $("#startTimestamp").data("DateTimePicker").date(new Date(weekAgo));
+              $("#stopTimestamp").data("DateTimePicker").date(new Date(now));
+
+              // Update page.
+              update();
+            });
+
+            $("#pastMonthTimeBtn" ).click(function() {
+              // Get time
+              var now = moment.utc();
+              var monthAgo = moment.utc(now).subtract(1, 'months');
+
+              // Set input field time interval
+              $("#startTimestamp").data("DateTimePicker").date(new Date(monthAgo));
+              $("#stopTimestamp").data("DateTimePicker").date(new Date(now));
+
+              // Update page.
+              update();
+            });
         </script>
     </body>
 </html>
