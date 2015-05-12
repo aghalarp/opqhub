@@ -19,10 +19,7 @@
 
 package controllers;
 
-import akka.actor.ActorRef;
-import akka.actor.Props;
 import jobs.HeartbeatAlertActor;
-import jobs.PowerAlertActor;
 import models.Event;
 import models.EventData;
 import models.AccessKey;
@@ -31,13 +28,11 @@ import models.OpqDevice;
 import org.openpowerquality.protocol.JsonOpqPacketFactory;
 import org.openpowerquality.protocol.OpqPacket;
 import play.Logger;
-import play.libs.Akka;
 import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.WebSocket;
 import utils.DateUtils;
 import utils.Mailer;
-import utils.PqUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -59,24 +54,29 @@ public class WebSockets extends Controller {
    * @return A WebSocket object.
    */
 
-  private final static ActorRef powerAlertActor = Akka.system().actorOf(Props.create(PowerAlertActor.class, "powerAlertActor"));
-
   public static WebSocket<String> handleSocket() {
     return new WebSocket<String>() {
       @Override
       public void onReady(In<String> in, final Out<String> out) {
         Logger.info("Websocket ready");
 
-        in.onMessage(s -> {
+        in.onMessage(new F.Callback<String>() {
 
-          OpqPacket opqPacket = JsonOpqPacketFactory.opqPacketFromJson(s);
-          Logger.info(String.format("[%s] Received %s from %s with duration %d, v=%s", DateUtils.toDateTime(opqPacket.timestamp), opqPacket.packetType, opqPacket.deviceId, opqPacket.duration, opqPacket.voltage.toString()));
-          handlePacket(opqPacket, out);
+          @Override
+          public void invoke(String s) throws Throwable {
+
+            OpqPacket opqPacket = JsonOpqPacketFactory.opqPacketFromJson(s);
+            Logger.info(String.format("[%s] Received %s from %s with duration %d, v=%s", DateUtils.toDateTime(opqPacket.timestamp), opqPacket.packetType, opqPacket.deviceId, opqPacket.duration, opqPacket.voltage.toString()));
+            handlePacket(opqPacket, out);
+          }
         });
 
-        in.onClose(() -> {
-          handleDisconnect(out);
-          Logger.info("Websocket disconnected");
+        in.onClose(new F.Callback0() {
+          @Override
+          public void invoke() throws Throwable {
+            handleDisconnect(out);
+            Logger.info("Websocket disconnected");
+          }
         });
       }
     };
@@ -155,12 +155,20 @@ public class WebSockets extends Controller {
     // Update key
     accessKey.update();
 
-    // Check ITIC alert level and send alerts
-    PqUtils.IticRegion iticRegion = PqUtils.getIticRegion(event.getDuration() * 1000, event.getVoltage());
-    if(opqPacket.packetType.equals(OpqPacket.PacketType.EVENT_FREQUENCY) || opqPacket.packetType.equals(OpqPacket.PacketType.EVENT_VOLTAGE)) {
-      if(iticRegion.equals(PqUtils.IticRegion.NO_DAMAGE) || iticRegion.equals(PqUtils.IticRegion.PROHIBITED)) {
-        powerAlertActor.tell(event, null);
-      }
+    switch(opqPacket.packetType) {
+      case EVENT_DEVICE:
+      case EVENT_FREQUENCY:
+      case EVENT_VOLTAGE:
+        Mailer.sendAlerts(accessKey.getPersons(), String.format("OPQ %s", opqPacket.packetType.getName()),
+                          String.format("Received alert from %d at %s [%s, %f V, %f Hz]\n",
+                                        opqPacket.deviceId,
+                                        DateUtils.toDateTime(opqPacket.timestamp),
+                                        opqPacket.packetType.getName(),
+                                        opqPacket.voltage,
+                                        opqPacket.frequency));
+        break;
+      default:
+        break;
     }
   }
 

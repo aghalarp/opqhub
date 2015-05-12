@@ -97,18 +97,20 @@ public class PublicMonitor extends Controller {
                              .collect(Collectors.toList());
     EnhancedEvent detailedEvent;
     // If the detailed event id is -1, it has not been specified, so display the details of the first event in the list
+    // If the detailed event id is -2, then we tried going to the previous event from the top of the next page,
+    // therefore we should select the last event on the pervious page
     // Otherwise, grab the even with the specified id
-    if(detailedEventId < 0) {
+    if(detailedEventId == -1) {
       detailedEvent = totalEvents.size() > 0 ? totalEvents.get(0) : null;
+    }
+    else if(detailedEventId < -1) {
+      detailedEvent = totalEvents.size() > 0 ? totalEvents.get(totalEvents.size() - 1) : null;
     }
     else {
       detailedEvent = Event.getPublicEventById(detailedEventId);
     }
 
     int totalPages = (int) totalEventsCount / 100;
-
-
-
 
     return ok(views.html.publicmonitor.render(new PublicMonitorData(totalEvents, totalEventsCount, frequencyEventsCount,
                                                                     voltageEventsCount,

@@ -676,7 +676,7 @@
 
                 //If at top of list, must go previous page's bottom-most event.
                 if ((currentEventRow.attr("id") == $('#events tbody>tr:first').attr('id')) && @data.page != 0) {
-                  update(@{data.page - 1});
+                  update(@{data.page - 1}, -2);
                 }
                 else {
                   //Else select previous row id.
@@ -684,9 +684,7 @@
                   update(@data.page, prevRowId);
                 }
               });
-            }
 
-            @if(data.detailedEvent != null) {
               $("#next-event-btn").click(function() {
                 var currentEventRow = $("#@data.detailedEvent.event.getPrimaryKey");
 
